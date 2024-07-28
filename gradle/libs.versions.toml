@@ -1,0 +1,88 @@
+[versions]
+app = "1.0.0"
+ackpine = "0.7.1"
+activity = "1.9.1"
+android = "8.5.1"
+android-core = "1.13.1"
+coil = "3.0.0-alpha09"
+compose = "1.6.11"
+compose-report = "1.4.0"
+coroutines = "1.8.1"
+datetime = "0.6.0"
+decompose = "3.1.0"
+desugar = "2.0.4"
+haze = "0.7.3"
+immutable = "0.3.7"
+kmpalette = "3.1.0"
+kodein = "7.22.0"
+kolor = "1.7.0"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.23"
+ktor = "2.3.12"
+ktorfit = "2.0.0"
+locale = "0.7.0"
+multidex = "2.0.1"
+napier = "2.7.1"
+osdetector = "1.7.3"
+serialization = "1.7.1"
+splashscreen = "1.0.1"
+tooling = "1.6.5"
+versions = "0.51.0"
+windowsize = "0.5.0"
+
+[libraries]
+android = { group = "androidx.core", name = "core-ktx", version.ref = "android-core" }
+ackpine = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "ackpine" }
+activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor2", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
+coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "coroutines" }
+datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
+decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
+decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
+desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar" }
+haze = { group = "dev.chrisbanes.haze", name = "haze", version.ref = "haze" }
+haze-materials = { group = "dev.chrisbanes.haze", name = "haze-materials", version.ref = "haze" }
+immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "immutable" }
+kmpalette = { group = "com.kmpalette", name = "kmpalette-core", version.ref = "kmpalette" }
+kodein = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
+kodein-compose = { group = "org.kodein.di", name = "kodein-di-framework-compose", version.ref = "kodein" }
+kolor = { group = "com.materialkolor", name = "material-kolor", version.ref = "kolor" }
+ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-jvm = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
+ktor-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
+ktor-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktorfit = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-lib", version.ref = "ktorfit" }
+ktorfit-ksp = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-ksp", version.ref = "ktorfit" }
+locale = { group = "com.vanniktech", name = "multiplatform-locale", version.ref = "locale" }
+multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
+serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "serialization" }
+serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "serialization" }
+splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+tooling = { group = "dev.datlag.tooling", name = "tooling-async", version.ref = "tooling" }
+tooling-country = { group = "dev.datlag.tooling", name = "tooling-country", version.ref = "tooling" }
+tooling-decompose = { group = "dev.datlag.tooling", name = "tooling-decompose", version.ref = "tooling" }
+windowsize = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version.ref = "windowsize" }
+
+[plugins]
+android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "android" }
+android-library = { id = "com.android.library", version.ref = "android" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "compose-report" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
+multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+osdetector = { id = "com.google.osdetector", version.ref = "osdetector" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
