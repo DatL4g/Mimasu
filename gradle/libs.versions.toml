@@ -27,6 +27,9 @@ osdetector = "1.7.3"
 serialization = "1.7.1"
 splashscreen = "1.0.1"
 tooling = "1.6.5"
+tv-foundation = "1.0.0-alpha11"
+tv-lifecycle = "2.6.2"
+tv-material = "1.0.0-rc01"
 versions = "0.51.0"
 windowsize = "0.5.0"
 
@@ -71,6 +74,9 @@ splashscreen = { group = "androidx.core", name = "core-splashscreen", version.re
 tooling = { group = "dev.datlag.tooling", name = "tooling-async", version.ref = "tooling" }
 tooling-country = { group = "dev.datlag.tooling", name = "tooling-country", version.ref = "tooling" }
 tooling-decompose = { group = "dev.datlag.tooling", name = "tooling-decompose", version.ref = "tooling" }
+tv-foundation = { group = "androidx.tv", name = "tv-foundation", version.ref = "tv-foundation" }
+tv-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "tv-lifecycle" }
+tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tv-material" }
 windowsize = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version.ref = "windowsize" }
 
 [plugins]

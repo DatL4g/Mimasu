@@ -1,6 +1,6 @@
-rootProject.name = "BingeWave"
+rootProject.name = "Mimasu"
 
-include(":composeApp")
+include(":composeApp", ":composeApp:tv")
 include(":tmdb")
 
 pluginManagement {

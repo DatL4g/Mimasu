@@ -62,6 +62,7 @@ kotlin {
             implementation(libs.serialization.protobuf)
 
             implementation(project(":tmdb"))
+            implementation(project("tv"))
         }
 
         val androidMain by getting {
@@ -100,10 +101,10 @@ android {
     sourceSets["main"].assets.srcDirs("src/androidMain/assets", "src/commonMain/assets")
 
     compileSdk = 34
-    namespace = "dev.datlag.bingewave"
+    namespace = "dev.datlag.mimasu"
 
     defaultConfig {
-        applicationId = "dev.datlag.bingewave"
+        applicationId = "dev.datlag.mimasu"
         minSdk = 21
         targetSdk = 34
         versionCode = 100
@@ -131,7 +132,7 @@ composeCompiler {
 compose {
     desktop {
         application {
-            mainClass = "dev.datlag.bingewave.MainKt"
+            mainClass = "dev.datlag.mimasu.MainKt"
         }
     }
 }

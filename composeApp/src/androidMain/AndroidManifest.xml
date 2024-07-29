@@ -11,7 +11,7 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:label="BingeWave"
+        android:label="Mimasu"
         android:supportsRtl="true"
         android:appCategory="news"
         android:allowAudioPlaybackCapture="false"
