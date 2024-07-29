@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.tv.foundation.ExperimentalTvFoundationApi
 import androidx.tv.foundation.text.TvKeyboardAlignment
+import androidx.tv.material3.DrawerValue
 
 @OptIn(ExperimentalTvFoundationApi::class)
 @Composable
@@ -24,4 +25,9 @@ operator fun TvKeyboardAlignment.not(): TvKeyboardAlignment = when (this) {
     TvKeyboardAlignment.Left -> TvKeyboardAlignment.Right
     TvKeyboardAlignment.Right -> TvKeyboardAlignment.Left
     else -> this
+}
+
+operator fun DrawerValue.not(): DrawerValue = when (this) {
+    DrawerValue.Open -> DrawerValue.Closed
+    DrawerValue.Closed -> DrawerValue.Open
 }
