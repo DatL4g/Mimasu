@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.screen.home
+package dev.datlag.mimasu.ui.navigation.screen.initial.home
 
 import dev.datlag.mimasu.ui.navigation.Component
 

@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 sealed class RootConfig {
 
     @Serializable
-    data object Home : RootConfig()
+    data object Initial : RootConfig()
 }

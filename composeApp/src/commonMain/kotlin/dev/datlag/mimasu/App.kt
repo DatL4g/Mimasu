@@ -9,6 +9,9 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import dev.chrisbanes.haze.HazeState
+import dev.datlag.mimasu.ui.theme.Colors
+import dev.datlag.mimasu.ui.theme.dynamicDark
+import dev.datlag.mimasu.ui.theme.dynamicLight
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.CombinedPlatformMaterialTheme
 import dev.datlag.tooling.compose.platform.PlatformSurface
@@ -32,7 +35,7 @@ fun App(
         LocalDarkMode provides systemDarkTheme,
     ) {
         CombinedPlatformMaterialTheme(
-            // colorScheme = if (systemDarkTheme)
+            colorScheme = if (systemDarkTheme) Colors.dynamicDark() else Colors.dynamicLight()
         ) {
             PlatformSurface(
                 modifier = Modifier.fillMaxSize(),

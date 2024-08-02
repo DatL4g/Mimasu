@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.screen.home
+package dev.datlag.mimasu.ui.navigation.screen.initial.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
@@ -10,7 +10,6 @@ import dev.datlag.mimasu.common.localized
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.tmdb.model.TrendingWindow
 import dev.datlag.mimasu.tmdb.response.Trending
-import dev.datlag.mimasu.tv.TvTest
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -69,7 +68,7 @@ class HomeScreenComponent(
     @NonRestartableComposable
     override fun renderTv() {
         onRender {
-            TvTest()
+
         }
     }
 }

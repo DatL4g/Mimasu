@@ -11,7 +11,8 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
-import dev.datlag.mimasu.ui.navigation.screen.home.HomeScreenComponent
+import dev.datlag.mimasu.ui.navigation.screen.initial.InitialScreenComponent
+import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeScreenComponent
 import org.kodein.di.DI
 
 class RootComponent(
@@ -23,7 +24,7 @@ class RootComponent(
     private val stack = childStack(
         source = navigation,
         serializer = RootConfig.serializer(),
-        initialConfiguration = RootConfig.Home,
+        initialConfiguration = RootConfig.Initial,
         handleBackButton = true,
         childFactory = ::createScreenComponent
     )
@@ -32,7 +33,7 @@ class RootComponent(
         rootConfig: RootConfig,
         componentContext: ComponentContext
     ): Component = when (rootConfig) {
-        is RootConfig.Home -> HomeScreenComponent(
+        is RootConfig.Initial -> InitialScreenComponent(
             componentContext = componentContext,
             di = di
         )
