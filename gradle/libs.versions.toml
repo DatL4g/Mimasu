@@ -24,6 +24,7 @@ locale = "0.7.0"
 multidex = "2.0.1"
 napier = "2.7.1"
 osdetector = "1.7.3"
+sekret = "2.0.0-alpha-05"
 serialization = "1.7.1"
 splashscreen = "1.0.1"
 tooling = "1.6.5"
@@ -67,6 +68,7 @@ ktorfit-ksp = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-ksp", vers
 locale = { group = "com.vanniktech", name = "multiplatform-locale", version.ref = "locale" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
+sekret = { group = "dev.datlag.sekret", name = "sekret", version.ref = "sekret" }
 serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "serialization" }
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "serialization" }
@@ -90,5 +92,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 osdetector = { id = "com.google.osdetector", version.ref = "osdetector" }
+sekret = { id = "dev.datlag.sekret", version.ref = "sekret" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }

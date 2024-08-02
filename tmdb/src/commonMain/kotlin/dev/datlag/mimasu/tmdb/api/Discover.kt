@@ -1,7 +1,6 @@
-package dev.datlag.mimasu.tmdb
+package dev.datlag.mimasu.tmdb.api
 
 import de.jensklingenberg.ktorfit.http.GET
-import de.jensklingenberg.ktorfit.http.Header
 import de.jensklingenberg.ktorfit.http.Query
 import io.ktor.client.statement.HttpResponse
 
@@ -9,6 +8,8 @@ import io.ktor.client.statement.HttpResponse
 interface Discover {
 
     /**
+     * Find movies using over 30 filters and sort options.
+     *
      * @param certification use in conjunction with [region]
      * @param certificationGTE use in conjunction with [region]
      * @param certificationLTE use in conjunction with [region]
@@ -29,7 +30,7 @@ interface Discover {
      */
     @GET("discover/movie")
     suspend fun movie(
-        @Header("Authorization") authorization: String,
+        @Query("api_key") apiKey: String,
         @Query("certification") certification: String? = null,
         @Query("certification.gte") certificationGTE: String? = null,
         @Query("certification.lte") certificationLTE: String? = null,
@@ -70,9 +71,12 @@ interface Discover {
         @Query("year") year: Int? = null,
     ): HttpResponse
 
+    /**
+     * Find TV shows using over 30 filters and sort options.
+     */
     @GET("discover/tv")
     suspend fun tv(
-        @Header("Authorization") authorization: String,
+        @Query("api_key") apiKey: String,
         @Query("air_date.gte") airDateGTE: String? = null,
         @Query("air_date.lte") airDateLTE: String? = null,
         @Query("first_air_date_year") firstAirDateYear: Int? = null,

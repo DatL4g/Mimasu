@@ -61,6 +61,7 @@ kotlin {
             implementation(libs.serialization.json)
             implementation(libs.serialization.protobuf)
 
+            implementation(libs.ktor.jvm)
             implementation(project(":tmdb"))
             implementation(project("tv"))
         }

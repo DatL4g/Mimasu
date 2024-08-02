@@ -19,14 +19,26 @@ sealed class TrendingWindow : CharSequence {
         return value.subSequence(startIndex, endIndex)
     }
 
+    override fun toString(): String {
+        return value
+    }
+
     @Serializable
     data object Day : TrendingWindow() {
         override val value: String = "day"
+
+        override fun toString(): String {
+            return value
+        }
     }
 
     @Serializable
     data object Week : TrendingWindow() {
         override val value: String = "week"
+
+        override fun toString(): String {
+            return value
+        }
     }
 
     companion object {

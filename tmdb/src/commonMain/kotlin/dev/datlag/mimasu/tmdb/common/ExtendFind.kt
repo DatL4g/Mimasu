@@ -1,91 +1,116 @@
 package dev.datlag.mimasu.tmdb.common
 
-import dev.datlag.mimasu.tmdb.Find
+import dev.datlag.mimasu.tmdb.api.Find
 import dev.datlag.mimasu.tmdb.model.FindSource
 
+/**
+ * Find data by IMDb ID's.
+ */
 suspend fun Find.imdb(
-    authorization: String,
+    apiKey: String,
     id: String,
     language: String,
 ) = find(
-    authorization = authorization,
+    apiKey = apiKey,
     id = id,
     source = FindSource.IMDb.value,
     language = language
 )
 
+/**
+ * Find data by Facebook ID's.
+ */
 suspend fun Find.facebook(
-    authorization: String,
+    apiKey: String,
     id: String,
     language: String,
 ) = find(
-    authorization = authorization,
+    apiKey = apiKey,
     id = id,
     source = FindSource.Facebook.value,
     language = language
 )
 
+/**
+ * Find data by Instagram ID's.
+ */
 suspend fun Find.instagram(
-    authorization: String,
+    apiKey: String,
     id: String,
     language: String,
 ) = find(
-    authorization = authorization,
+    apiKey = apiKey,
     id = id,
     source = FindSource.Instagram.value,
     language = language
 )
 
+/**
+ * Find data by TVDB ID's.
+ */
 suspend fun Find.tvdb(
-    authorization: String,
+    apiKey: String,
     id: String,
     language: String,
 ) = find(
-    authorization = authorization,
+    apiKey = apiKey,
     id = id,
     source = FindSource.TVDB.value,
     language = language
 )
 
+
+/**
+ * Find data by TikTok ID's.
+ */
 suspend fun Find.tiktok(
-    authorization: String,
+    apiKey: String,
     id: String,
     language: String,
 ) = find(
-    authorization = authorization,
+    apiKey = apiKey,
     id = id,
     source = FindSource.TikTok.value,
     language = language
 )
 
+/**
+ * Find data by Twitter ID's.
+ */
 suspend fun Find.twitter(
-    authorization: String,
+    apiKey: String,
     id: String,
     language: String,
 ) = find(
-    authorization = authorization,
+    apiKey = apiKey,
     id = id,
     source = FindSource.Twitter.value,
     language = language
 )
 
+/**
+ * Find data by Wikidata ID's.
+ */
 suspend fun Find.wikidata(
-    authorization: String,
+    apiKey: String,
     id: String,
     language: String,
 ) = find(
-    authorization = authorization,
+    apiKey = apiKey,
     id = id,
     source = FindSource.Wikidata.value,
     language = language
 )
 
+/**
+ * Find data by YouTube ID's.
+ */
 suspend fun Find.youtube(
-    authorization: String,
+    apiKey: String,
     id: String,
     language: String,
 ) = find(
-    authorization = authorization,
+    apiKey = apiKey,
     id = id,
     source = FindSource.YouTube.value,
     language = language

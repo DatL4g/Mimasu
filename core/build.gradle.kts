@@ -1,9 +1,6 @@
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.ktorfit)
-    alias(libs.plugins.sekret)
 }
 
 kotlin {
@@ -12,6 +9,11 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
+    linuxX64()
+    linuxArm64()
+
+    mingwX64()
 
     macosX64()
     macosArm64()
@@ -26,13 +28,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.sekret)
             implementation(libs.serialization)
-            implementation(libs.tooling)
             api(libs.immutable)
-            api(libs.ktorfit)
-
-            implementation(project(":core"))
         }
     }
 }

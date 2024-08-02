@@ -1,27 +1,36 @@
-package dev.datlag.mimasu.tmdb
+package dev.datlag.mimasu.tmdb.api
 
 import de.jensklingenberg.ktorfit.http.GET
-import de.jensklingenberg.ktorfit.http.Header
 import de.jensklingenberg.ktorfit.http.Path
+import de.jensklingenberg.ktorfit.http.Query
 import io.ktor.client.statement.HttpResponse
 
 interface Companies {
 
+    /**
+     * Get the company details by ID.
+     */
     @GET("company/{id}")
     suspend fun details(
-        @Header("Authorization") authorization: String,
+        @Query("api_key") apiKey: String,
         @Path("id") id: Int
     ): HttpResponse
 
+    /**
+     * Get the company details by ID.
+     */
     @GET("company/{id}/alternative_names")
     suspend fun alternativeNames(
-        @Header("Authorization") authorization: String,
+        @Query("api_key") apiKey: String,
         @Path("id") id: Int
     ): HttpResponse
 
+    /**
+     * Get the company logos by id.
+     */
     @GET("company/{id}/images")
     suspend fun images(
-        @Header("Authorization") authorization: String,
+        @Query("api_key") apiKey: String,
         @Path("id") id: Int
     ): HttpResponse
 }

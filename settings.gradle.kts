@@ -1,6 +1,7 @@
 rootProject.name = "Mimasu"
 
 include(":composeApp", ":composeApp:tv")
+include(":core")
 include(":tmdb")
 
 pluginManagement {
