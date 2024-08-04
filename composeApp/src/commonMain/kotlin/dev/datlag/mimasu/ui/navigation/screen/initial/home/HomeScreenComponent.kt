@@ -39,6 +39,15 @@ class HomeScreenComponent(
         )
     }
 
+    override val trendingSeries = flow {
+        emit(
+            tmdb.trending.tv(
+                window = TrendingWindow.Day,
+                language = Locale.default().localized()
+            )
+        )
+    }
+
     override val trendingPeople = flow {
         emit(
             tmdb.trending.person(
