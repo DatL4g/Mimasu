@@ -28,7 +28,10 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.sekret)
             implementation(libs.serialization)
+            implementation(libs.serialization.json)
             implementation(libs.tooling)
+            implementation(libs.kache)
+            implementation(libs.napier)
             api(libs.immutable)
             api(libs.ktorfit)
 

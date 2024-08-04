@@ -1,19 +1,23 @@
 package dev.datlag.mimasu.tv
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.onFocusedBoundsChanged
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,8 +25,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
@@ -32,6 +40,7 @@ import androidx.tv.material3.TabRow
 import androidx.tv.material3.TabRowScope
 import androidx.tv.material3.Text
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 actual fun TvInitial(
     profile: TvInitialNavigation,
@@ -40,14 +49,40 @@ actual fun TvInitial(
     search: TvInitialSearch,
     content: @Composable () -> Unit
 ) {
-    Column {
+    Box {
         var showKeyboard by remember {
             mutableStateOf(false)
         }
 
+        Row(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            AnimatedVisibility(
+                modifier = Modifier.padding(top = 56.dp),
+                visible = showKeyboard
+            ) {
+                Column {
+                    SearchView(search.query)
+                    MiniKeyboard(
+                        query = search.query,
+                        onQueryChange = {
+                            search.onQueryChange(it.trimStart())
+                        },
+                        onSearch = search.onSearch,
+                        modifier = Modifier.width(250.dp)
+                    )
+                }
+            }
+            CompositionLocalProvider(
+                LocalTVPadding provides PaddingValues(top = 56.dp)
+            ) {
+                content()
+            }
+        }
+
         TabRow(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.TopCenter)
                 .padding(vertical = 8.dp),
             selectedTabIndex = when {
                 profile.selected -> 0
@@ -87,25 +122,6 @@ actual fun TvInitial(
                 isSelected = showKeyboard,
                 onSelect = { showKeyboard = !showKeyboard }
             )
-        }
-
-        Row(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            AnimatedVisibility(visible = showKeyboard) {
-                Column {
-                    SearchView(search.query)
-                    MiniKeyboard(
-                        query = search.query,
-                        onQueryChange = {
-                            search.onQueryChange(it.trimStart())
-                        },
-                        onSearch = search.onSearch,
-                        modifier = Modifier.width(250.dp)
-                    )
-                }
-            }
-            content()
         }
     }
 }

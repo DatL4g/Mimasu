@@ -16,6 +16,9 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(libs.immutable)
             implementation(libs.serialization)
+            implementation(libs.coil.compose)
+
+            implementation(project(":tmdb"))
         }
 
         val androidMain by getting {

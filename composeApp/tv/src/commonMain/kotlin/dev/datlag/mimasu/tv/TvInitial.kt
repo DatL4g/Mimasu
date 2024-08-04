@@ -1,7 +1,12 @@
 package dev.datlag.mimasu.tv
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+
+val LocalTVPadding = compositionLocalOf { PaddingValues(0.dp) }
 
 @Composable
 expect fun TvInitial(

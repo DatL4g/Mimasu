@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.tmdb
 
+import com.mayakapps.kache.InMemoryKache
+import com.mayakapps.kache.KacheStrategy
 import de.jensklingenberg.ktorfit.ktorfit
 import dev.datlag.mimasu.tmdb.api.Certifications
 import dev.datlag.mimasu.tmdb.api.Companies
@@ -17,7 +19,12 @@ import dev.datlag.mimasu.tmdb.api.createTrending
 import dev.datlag.mimasu.tmdb.api.createTvSeriesList
 import dev.datlag.mimasu.tmdb.model.TrendingWindow
 import dev.datlag.sekret.Secret
+import dev.datlag.tooling.async.suspendCatching
+import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.http.isSuccess
+import kotlin.time.Duration.Companion.days
 
 data class TMDB internal constructor(
     @Secret private val apiKey: String,
@@ -34,14 +41,113 @@ data class TMDB internal constructor(
         @Secret private val apiKey: String,
         private val trending: TrendingAPI
     ) {
+        private val allKache = InMemoryKache<TrendingWindow, TrendingAPI.Response>(maxSize = 5 * 1024 * 1024) {
+            strategy = KacheStrategy.LRU
+            expireAfterWriteDuration = 1.days
+        }
+
+        private val movieKache = InMemoryKache<TrendingWindow, TrendingAPI.Response>(maxSize = 5 * 1024 * 1024) {
+            strategy = KacheStrategy.LRU
+            expireAfterWriteDuration = 1.days
+        }
+
+        private val tvKache = InMemoryKache<TrendingWindow, TrendingAPI.Response>(maxSize = 5 * 1024 * 1024) {
+            strategy = KacheStrategy.LRU
+            expireAfterWriteDuration = 1.days
+        }
+
+        private val personKache = InMemoryKache<TrendingWindow, TrendingAPI.Response>(maxSize = 5 * 1024 * 1024) {
+            strategy = KacheStrategy.LRU
+            expireAfterWriteDuration = 1.days
+        }
+
         suspend fun all(
             window: TrendingWindow,
             language: String
-        ) = trending.all(
-            apiKey = apiKey,
-            window = window.value,
-            language = language
-        )
+        ) = allKache.getOrPut(window) {
+            val response = trending.all(
+                apiKey = apiKey,
+                window = window.value,
+                language = language
+            )
+
+            if (response.status.isSuccess()) {
+                suspendCatching {
+                    response.body<TrendingAPI.Response>()
+                }.onFailure {
+                    Napier.e("Failed parsing", it)
+                }.getOrNull()
+            } else {
+                Napier.e("Failed request: [${response.status.value}] ${response.status.description}")
+                null
+            }
+        }
+
+        suspend fun movie(
+            window: TrendingWindow,
+            language: String
+        ) = movieKache.getOrPut(window) {
+            val response = trending.movies(
+                apiKey = apiKey,
+                window = window.value,
+                language = language
+            )
+
+            if (response.status.isSuccess()) {
+                suspendCatching {
+                    response.body<TrendingAPI.Response>()
+                }.onFailure {
+                    Napier.e("Failed parsing", it)
+                }.getOrNull()
+            } else {
+                Napier.e("Failed request: [${response.status.value}] ${response.status.description}")
+                null
+            }
+        }
+
+        suspend fun tv(
+            window: TrendingWindow,
+            language: String
+        ) = tvKache.getOrPut(window) {
+            val response = trending.tv(
+                apiKey = apiKey,
+                window = window.value,
+                language = language
+            )
+
+            if (response.status.isSuccess()) {
+                suspendCatching {
+                    response.body<TrendingAPI.Response>()
+                }.onFailure {
+                    Napier.e("Failed parsing", it)
+                }.getOrNull()
+            } else {
+                Napier.e("Failed request: [${response.status.value}] ${response.status.description}")
+                null
+            }
+        }
+
+        suspend fun person(
+            window: TrendingWindow,
+            language: String
+        ) = personKache.getOrPut(window) {
+            val response = trending.people(
+                apiKey = apiKey,
+                window = window.value,
+                language = language
+            )
+
+            if (response.status.isSuccess()) {
+                suspendCatching {
+                    response.body<TrendingAPI.Response>()
+                }.onFailure {
+                    Napier.e("Failed parsing", it)
+                }.getOrNull()
+            } else {
+                Napier.e("Failed request: [${response.status.value}] ${response.status.description}")
+                null
+            }
+        }
     }
 
     companion object {

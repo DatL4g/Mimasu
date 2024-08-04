@@ -9,7 +9,7 @@ import dev.datlag.mimasu.common.default
 import dev.datlag.mimasu.common.localized
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.tmdb.model.TrendingWindow
-import dev.datlag.mimasu.tmdb.response.Trending
+import dev.datlag.mimasu.tv.screen.home.TvHomeScreen
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -18,42 +18,34 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 import org.kodein.di.DI
+import org.kodein.di.instance
 
 class HomeScreenComponent(
     componentContext: ComponentContext,
     override val di: DI
 ): HomeComponent, ComponentContext by componentContext {
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
-
-    private val client = HttpClient(OkHttp) {
-        followRedirects = true
-
-        install(ContentNegotiation) {
-            json(json, ContentType.Application.Json)
-            json(json, ContentType.Text.Plain)
-        }
-    }
-
-    private val tmdb = TMDB.create(
-        apiKey = "",
-        client = client
-    )
-
-    init {
-        launchIO {
-            val response = tmdb.trending.all(
+    private val tmdb by instance<TMDB>()
+    override val trendingMovies = flow {
+        emit(
+            tmdb.trending.movie(
                 window = TrendingWindow.Day,
                 language = Locale.default().localized()
             )
+        )
+    }
 
-            Napier.e("Status: ${response.status.value}, ${response.status.description}")
-        }
+    override val trendingPeople = flow {
+        emit(
+            tmdb.trending.person(
+                window = TrendingWindow.Day,
+                language = Locale.default().localized()
+            )
+        )
     }
 
     @Composable
@@ -68,7 +60,7 @@ class HomeScreenComponent(
     @NonRestartableComposable
     override fun renderTv() {
         onRender {
-
+            TvHomeScreen(this)
         }
     }
 }
