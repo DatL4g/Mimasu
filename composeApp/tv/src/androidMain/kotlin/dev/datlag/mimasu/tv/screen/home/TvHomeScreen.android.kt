@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,6 +58,9 @@ import dev.datlag.mimasu.tv.LocalTVPadding
 import dev.datlag.mimasu.tv.common.ifElse
 import dev.datlag.mimasu.tv.common.immersiveListGradient
 import dev.datlag.mimasu.tv.common.requestFocusOnFirstGainingVisibility
+import dev.datlag.mimasu.tv.ui.ImmersiveList
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalTvMaterial3Api::class, ExperimentalAnimationApi::class,
@@ -64,108 +68,91 @@ import kotlinx.coroutines.flow.map
 )
 @Composable
 actual fun TvHomeScreen(component: TvHomeComponent) {
+    LazyColumn(
+        modifier = Modifier.padding(LocalTVPadding.current),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item { 
+            MovieCatalog(component = component)
+        }
+        item { 
+            TVCatalog(component = component)
+        }
+    }
+}
+
+@Composable
+private fun MovieCatalog(component: TvHomeComponent) {
     val trendingMovies by component.trendingMovies.map {
         it?.results?.mapNotNull { m -> m as? Trending.Response.Media.Movie }
     }.collectAsStateWithLifecycle(
         initialValue = null
     )
-    var selectedCard by remember(trendingMovies) { mutableStateOf(trendingMovies?.firstOrNull()) }
-
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        AsyncImage(
-            model = selectedCard?.backdropPicture,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.TopEnd),
-            contentScale = ContentScale.FillHeight,
-            alignment = Alignment.TopEnd,
-            error = rememberAsyncImagePainter(
-                model = selectedCard?.backdropPictureW500,
-                contentScale = ContentScale.FillHeight
-            )
-        )
-
-        Box(
-            modifier = Modifier.fillMaxSize().immersiveListGradient(),
-            contentAlignment = Alignment.TopStart
-        ) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(LocalTVPadding.current)
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth(fraction = 0.6F)
-                    .wrapContentHeight()
-            ) {
-                selectedCard?.alternativeTitle?.let { t ->
-                    Text(
-                        text = t,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.6f)
-                    )
-                }
 
 
-                Text(
-                    text = selectedCard?.title ?: "Movie",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(18.dp))
-
-                Text(
-                    text = selectedCard?.overview ?: "Description",
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.8f)
-                )
-            }
-        }
-
-        val firstChildRequester = remember {
-            FocusRequester()
-        }
-
-        LazyRow(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(bottom = 20.dp)
-                .focusRestorer { firstChildRequester },
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            itemsIndexed(trendingMovies ?: emptyList()) {index, card ->
-                CompactCard(
-                    modifier = Modifier
-                        .width(196.dp)
-                        .aspectRatio(16F / 9)
-                        .ifElse(index == 0, Modifier.focusRequester(firstChildRequester))
-                        .onFocusChanged {
-                            if (it.isFocused) {
-                                selectedCard = card
-                            }
-                        },
-                    onClick = { },
-                    image = {
-                        AsyncImage(
-                            model = card.backdropPicture,
-                            contentDescription = card.title,
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.FillBounds,
-                            error = rememberAsyncImagePainter(
-                                model = card.backdropPictureW500,
-                                contentScale = ContentScale.FillBounds
-                            )
-                        )
-                    },
-                    title = { },
-                    colors = CardDefaults.colors(containerColor = Color.Transparent)
-                )
-            }
-        }
+    var isListFocused by remember {
+        mutableStateOf(false)
     }
+    var selectedMovie by remember(trendingMovies) {
+        mutableStateOf(trendingMovies?.firstOrNull())
+    }
+
+    val sectionTitle = if (isListFocused) {
+        null
+    } else {
+        "Trending Movies"
+    }
+
+    ImmersiveList(
+        selectedMovie = selectedMovie,
+        isListFocused = isListFocused,
+        gradientColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7F),
+        movies = trendingMovies?.toImmutableSet() ?: persistentSetOf(),
+        sectionTitle = sectionTitle,
+        onFocusChanged = {
+            isListFocused = it.hasFocus
+        },
+        onMovieFocused = {
+            selectedMovie = it
+        },
+        onMovieClick = {}
+    )
+}
+
+@Composable
+private fun TVCatalog(component: TvHomeComponent) {
+    val trendingShows by component.trendingSeries.map {
+        it?.results?.mapNotNull { m -> m as? Trending.Response.Media.TV }
+    }.collectAsStateWithLifecycle(
+        initialValue = null
+    )
+
+
+    var isListFocused by remember {
+        mutableStateOf(false)
+    }
+    var selectedShow by remember(trendingShows) {
+        mutableStateOf(trendingShows?.firstOrNull())
+    }
+
+    val sectionTitle = if (isListFocused) {
+        null
+    } else {
+        "Trending Shows"
+    }
+
+    ImmersiveList(
+        selectedShow = selectedShow,
+        isListFocused = isListFocused,
+        gradientColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7F),
+        shows = trendingShows?.toImmutableSet() ?: persistentSetOf(),
+        sectionTitle = sectionTitle,
+        onFocusChanged = {
+            isListFocused = it.hasFocus
+        },
+        onShowFocused = {
+            selectedShow = it
+        },
+        onShowClick = {}
+    )
 }
