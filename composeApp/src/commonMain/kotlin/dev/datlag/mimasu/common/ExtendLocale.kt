@@ -16,7 +16,7 @@ fun Locale.Companion.default(): Locale {
 
         return fromOrNull(Locales.currentLocaleString()) ?: Locale(
             language = Language.ENGLISH,
-            country = Country.USA
+            territory = Country.USA
         )
     }
 }

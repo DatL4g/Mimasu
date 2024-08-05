@@ -97,7 +97,7 @@ android {
     namespace = "dev.datlag.mimasu.sekret"
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 21
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
