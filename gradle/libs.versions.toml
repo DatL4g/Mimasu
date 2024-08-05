@@ -17,6 +17,7 @@ kache = "2.1.0"
 kmpalette = "3.1.0"
 kodein = "7.22.0"
 kolor = "1.7.0"
+konfig = "0.15.1"
 kotlin = "2.0.0"
 ksp = "2.0.0-1.0.23"
 ktor = "2.3.12"
@@ -90,6 +91,7 @@ android-library = { id = "com.android.library", version.ref = "android" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "compose-report" }
+konfig = { id = "com.codingfeline.buildkonfig", version.ref = "konfig" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

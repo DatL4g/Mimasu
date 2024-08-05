@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.compose) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.compose.report) apply false
+    alias(libs.plugins.konfig) apply false
     alias(libs.plugins.ktorfit) apply false
     alias(libs.plugins.multiplatform) apply false
     alias(libs.plugins.osdetector) apply false

@@ -1,4 +1,4 @@
-import kotlin.math.min
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -6,14 +6,38 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.report)
+    alias(libs.plugins.konfig)
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktorfit)
     alias(libs.plugins.osdetector)
+    alias(libs.plugins.sekret)
     alias(libs.plugins.serialization)
 }
 
 htmlComposeCompilerReport {
     outputDirectory.set(rootProject.layout.buildDirectory.asFile)
+}
+
+val artifact = "dev.datlag.mimasu"
+
+buildkonfig {
+    packageName = artifact
+
+    defaultConfigs {
+        buildConfigField(FieldSpec.Type.STRING, "packageName", artifact)
+    }
+}
+
+sekret {
+    properties {
+        enabled.set(true)
+        packageName.set(artifact)
+
+        nativeCopy {
+            androidJNIFolder.set(project.layout.projectDirectory.dir("src/androidMain/jniLibs"))
+            desktopComposeResourcesFolder.set(project.layout.projectDirectory.dir("src/jvmMain/resources"))
+        }
+    }
 }
 
 kotlin {

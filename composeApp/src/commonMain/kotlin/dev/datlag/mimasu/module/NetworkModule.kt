@@ -7,6 +7,8 @@ import coil3.memory.MemoryCache
 import coil3.network.ktor2.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
+import dev.datlag.mimasu.BuildKonfig
+import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.tmdb.api.Trending
 import io.ktor.client.HttpClient
@@ -62,7 +64,7 @@ data object NetworkModule {
         }
         bindSingleton<TMDB> {
             TMDB.create(
-                apiKey = "",
+                apiKey = Sekret.tmdbApiKey(BuildKonfig.packageName)!!,
                 client = instance()
             )
         }

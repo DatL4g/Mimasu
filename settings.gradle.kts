@@ -1,6 +1,6 @@
 rootProject.name = "Mimasu"
 
-include(":composeApp", ":composeApp:tv")
+include(":composeApp", ":composeApp:tv", ":composeApp:sekret")
 include(":core")
 include(":tmdb")
 
