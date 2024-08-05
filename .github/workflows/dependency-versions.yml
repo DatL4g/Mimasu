@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - compose
+      - master
 
 jobs:
   dependency-versions:
