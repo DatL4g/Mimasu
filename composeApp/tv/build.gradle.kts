@@ -17,6 +17,7 @@ kotlin {
             implementation(libs.immutable)
             implementation(libs.serialization)
             implementation(libs.coil.compose)
+            implementation(libs.paging.compose)
 
             implementation(project(":tmdb"))
         }

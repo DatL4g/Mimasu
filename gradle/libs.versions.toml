@@ -26,6 +26,7 @@ locale = "0.8.0"
 multidex = "2.0.1"
 napier = "2.7.1"
 osdetector = "1.7.3"
+paging = "3.3.0-alpha02-0.5.1"
 sekret = "2.0.0-alpha-05"
 serialization = "1.7.1"
 splashscreen = "1.0.1"
@@ -71,6 +72,8 @@ ktorfit-ksp = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-ksp", vers
 locale = { group = "com.vanniktech", name = "multiplatform-locale", version.ref = "locale" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
+paging = { group = "app.cash.paging", name = "paging-common", version.ref = "paging" }
+paging-compose = { group = "app.cash.paging", name = "paging-compose-common", version.ref = "paging" }
 sekret = { group = "dev.datlag.sekret", name = "sekret", version.ref = "sekret" }
 serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "serialization" }
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }

@@ -18,6 +18,7 @@ import dev.datlag.mimasu.tmdb.api.createFind
 import dev.datlag.mimasu.tmdb.api.createTrending
 import dev.datlag.mimasu.tmdb.api.createTvSeriesList
 import dev.datlag.mimasu.tmdb.model.TrendingWindow
+import dev.datlag.mimasu.tmdb.repository.TrendingRepository
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import io.github.aakira.napier.Napier
@@ -33,122 +34,9 @@ data class TMDB internal constructor(
     private val credits: Credits,
     private val discover: Discover,
     private val find: Find,
-    val trending: Trending,
+    val trending: TrendingRepository,
     private val tvSeriesList: TvSeriesList
 ) {
-
-    data class Trending internal constructor(
-        @Secret private val apiKey: String,
-        private val trending: TrendingAPI
-    ) {
-        private val allKache = InMemoryKache<TrendingWindow, TrendingAPI.Response>(maxSize = 5 * 1024 * 1024) {
-            strategy = KacheStrategy.LRU
-            expireAfterWriteDuration = 1.days
-        }
-
-        private val movieKache = InMemoryKache<TrendingWindow, TrendingAPI.Response>(maxSize = 5 * 1024 * 1024) {
-            strategy = KacheStrategy.LRU
-            expireAfterWriteDuration = 1.days
-        }
-
-        private val tvKache = InMemoryKache<TrendingWindow, TrendingAPI.Response>(maxSize = 5 * 1024 * 1024) {
-            strategy = KacheStrategy.LRU
-            expireAfterWriteDuration = 1.days
-        }
-
-        private val personKache = InMemoryKache<TrendingWindow, TrendingAPI.Response>(maxSize = 5 * 1024 * 1024) {
-            strategy = KacheStrategy.LRU
-            expireAfterWriteDuration = 1.days
-        }
-
-        suspend fun all(
-            window: TrendingWindow,
-            language: String
-        ) = allKache.getOrPut(window) {
-            val response = trending.all(
-                apiKey = apiKey,
-                window = window.value,
-                language = language
-            )
-
-            if (response.status.isSuccess()) {
-                suspendCatching {
-                    response.body<TrendingAPI.Response>()
-                }.onFailure {
-                    Napier.e("Failed parsing", it)
-                }.getOrNull()
-            } else {
-                Napier.e("Failed request: [${response.status.value}] ${response.status.description}")
-                null
-            }
-        }
-
-        suspend fun movie(
-            window: TrendingWindow,
-            language: String
-        ) = movieKache.getOrPut(window) {
-            val response = trending.movies(
-                apiKey = apiKey,
-                window = window.value,
-                language = language
-            )
-
-            if (response.status.isSuccess()) {
-                suspendCatching {
-                    response.body<TrendingAPI.Response>()
-                }.onFailure {
-                    Napier.e("Failed parsing", it)
-                }.getOrNull()
-            } else {
-                Napier.e("Failed request: [${response.status.value}] ${response.status.description}")
-                null
-            }
-        }
-
-        suspend fun tv(
-            window: TrendingWindow,
-            language: String
-        ) = tvKache.getOrPut(window) {
-            val response = trending.tv(
-                apiKey = apiKey,
-                window = window.value,
-                language = language
-            )
-
-            if (response.status.isSuccess()) {
-                suspendCatching {
-                    response.body<TrendingAPI.Response>()
-                }.onFailure {
-                    Napier.e("Failed parsing", it)
-                }.getOrNull()
-            } else {
-                Napier.e("Failed request: [${response.status.value}] ${response.status.description}")
-                null
-            }
-        }
-
-        suspend fun person(
-            window: TrendingWindow,
-            language: String
-        ) = personKache.getOrPut(window) {
-            val response = trending.people(
-                apiKey = apiKey,
-                window = window.value,
-                language = language
-            )
-
-            if (response.status.isSuccess()) {
-                suspendCatching {
-                    response.body<TrendingAPI.Response>()
-                }.onFailure {
-                    Napier.e("Failed parsing", it)
-                }.getOrNull()
-            } else {
-                Napier.e("Failed request: [${response.status.value}] ${response.status.description}")
-                null
-            }
-        }
-    }
 
     companion object {
         private const val BASE_URL = "https://api.themoviedb.org/3/"
@@ -156,6 +44,7 @@ data class TMDB internal constructor(
         fun create(
             apiKey: String,
             client: HttpClient,
+            language: String,
             baseUrl: String = BASE_URL
         ): TMDB {
             val ktorfit = ktorfit {
@@ -170,9 +59,10 @@ data class TMDB internal constructor(
                 credits = ktorfit.createCredits(),
                 discover = ktorfit.createDiscover(),
                 find = ktorfit.createFind(),
-                trending = Trending(
+                trending = TrendingRepository(
                     apiKey = apiKey,
-                    trending = ktorfit.createTrending()
+                    trending = ktorfit.createTrending(),
+                    language = language
                 ),
                 tvSeriesList = ktorfit.createTvSeriesList()
             )

@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.napier)
             api(libs.immutable)
             api(libs.ktorfit)
+            api(libs.paging)
 
             implementation(project(":core"))
         }

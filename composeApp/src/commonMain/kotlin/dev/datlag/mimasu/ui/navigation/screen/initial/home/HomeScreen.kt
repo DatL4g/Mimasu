@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
+import app.cash.paging.compose.collectAsLazyPagingItems
 import com.vanniktech.locale.Locale
 import com.vanniktech.locale.Locales
 import dev.datlag.mimasu.common.default
@@ -25,7 +26,7 @@ import io.github.aakira.napier.Napier
 @Composable
 fun HomeScreen(component: HomeComponent) {
     val trendingAll by component.trendingMovies.collectAsStateWithLifecycle(null)
-    val trendingPeople by component.trendingPeople.collectAsStateWithLifecycle(null)
+    val trendingPeople = component.trendingPeople.collectAsLazyPagingItems()
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -33,24 +34,11 @@ fun HomeScreen(component: HomeComponent) {
         stickyHeader {
             Text(text = "All may include movies, tv and people")
         }
-        trendingAll?.let {
-            items(it.results.toList()) { t ->
-                Text(text = t.mediaType ?: t.id.toString())
-            }
-        }
         stickyHeader {
             Text(text = "People only")
         }
-        trendingPeople?.let {
-            items(it.results.toList()) { t ->
-                Text(text = t.mediaType ?: t.id.toString())
-
-                LaunchedEffect(Unit) {
-                    if (t is Trending.Response.Media.Person) {
-                        Napier.e(t.profilePicture ?: t.name)
-                    }
-                }
-            }
+        items(trendingPeople.itemCount) { index ->
+            Text(text = trendingPeople[index]!!.name)
         }
     }
 }

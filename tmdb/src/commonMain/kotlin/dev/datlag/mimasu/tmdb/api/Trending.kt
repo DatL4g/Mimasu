@@ -38,7 +38,8 @@ interface Trending {
     suspend fun movies(
         @Query("api_key") apiKey: String,
         @Path("window") window: String,
-        @Query("language") language: String
+        @Query("language") language: String,
+        @Query("page") page: Int
     ): HttpResponse
 
     /**
@@ -48,7 +49,8 @@ interface Trending {
     suspend fun people(
         @Query("api_key") apiKey: String,
         @Path("window") window: String,
-        @Query("language") language: String
+        @Query("language") language: String,
+        @Query("page") page: Int
     ): HttpResponse
 
     /**
@@ -58,7 +60,8 @@ interface Trending {
     suspend fun tv(
         @Query("api_key") apiKey: String,
         @Path("window") window: String,
-        @Query("language") language: String
+        @Query("language") language: String,
+        @Query("page") page: Int
     ): HttpResponse
 
     @Serializable

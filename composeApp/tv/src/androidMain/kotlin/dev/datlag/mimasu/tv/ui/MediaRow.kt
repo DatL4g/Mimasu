@@ -261,7 +261,7 @@ fun ImmersiveListShowRow(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun MediaRowItem(
+fun MediaRowItem(
     index: Int,
     movie: Trending.Response.Media.Movie,
     onMovieSelected: (Trending.Response.Media.Movie) -> Unit,
