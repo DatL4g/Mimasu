@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface TvHomeComponent {
 
-    val trendingMovies: Flow<PagingData<Trending.Response.Media.Movie>>
-    val trendingSeries: Flow<PagingData<Trending.Response.Media.TV>>
+    val trendingDayMovies: Flow<PagingData<Trending.Response.Media.Movie>>
+    val trendingWeekMovies: Flow<PagingData<Trending.Response.Media.Movie>>
+    val trendingDayShows: Flow<PagingData<Trending.Response.Media.TV>>
+    val trendingWeekShows: Flow<PagingData<Trending.Response.Media.TV>>
 
 }

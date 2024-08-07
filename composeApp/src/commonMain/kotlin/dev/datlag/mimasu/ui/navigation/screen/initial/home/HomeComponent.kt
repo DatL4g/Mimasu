@@ -7,5 +7,7 @@ import dev.datlag.mimasu.ui.navigation.Component
 import kotlinx.coroutines.flow.Flow
 
 interface HomeComponent : TvHomeComponent, Component {
+    val trendingMovies: Flow<PagingData<Trending.Response.Media.Movie>>
+    val trendingShows: Flow<PagingData<Trending.Response.Media.TV>>
     val trendingPeople: Flow<PagingData<Trending.Response.Media.Person>>
 }

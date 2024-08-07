@@ -22,24 +22,57 @@ data class TrendingRepository internal constructor(
     private val language: String
 ) {
 
-    inner class MoviesPaging : PagingSource<Int, Trending.Response.Media.Movie>() {
+    private val movieDayKache = InMemoryKache<Int, Trending.Response>(
+        maxSize = 5 * 1024 * 1024
+    ) {
+        strategy = KacheStrategy.LRU
+        expireAfterWriteDuration = 1.days
+    }
 
-        private val movieKache = InMemoryKache<Int, Trending.Response>(
-            maxSize = 5 * 1024 * 1024
-        ) {
-            strategy = KacheStrategy.LRU
-            expireAfterWriteDuration = 1.days
-        }
+    private val movieWeekKache = InMemoryKache<Int, Trending.Response>(
+        maxSize = 5 * 1024 * 1024
+    ) {
+        strategy = KacheStrategy.LRU
+        expireAfterWriteDuration = 1.days
+    }
+
+    private val tvDayKache = InMemoryKache<Int, Trending.Response>(
+        maxSize = 5 * 1024 * 1024
+    ) {
+        strategy = KacheStrategy.LRU
+        expireAfterWriteDuration = 1.days
+    }
+
+    private val tvWeekKache = InMemoryKache<Int, Trending.Response>(
+        maxSize = 5 * 1024 * 1024
+    ) {
+        strategy = KacheStrategy.LRU
+        expireAfterWriteDuration = 1.days
+    }
+
+    private fun movieCache(window: TrendingWindow) = when (window) {
+        is TrendingWindow.Day -> movieDayKache
+        is TrendingWindow.Week -> movieWeekKache
+    }
+
+    private fun tvCache(window: TrendingWindow) = when (window) {
+        is TrendingWindow.Day -> tvDayKache
+        is TrendingWindow.Week -> tvWeekKache
+    }
+
+    inner class MoviesPaging(
+        private val window: TrendingWindow
+    ) : PagingSource<Int, Trending.Response.Media.Movie>() {
 
         override suspend fun load(
             params: PagingSourceLoadParams<Int>
         ): PagingSourceLoadResult<Int, Trending.Response.Media.Movie> {
             val key = params.key ?: 1
             val result = suspendCatching {
-                movieKache.getOrPut(key) {
+                movieCache(window).getOrPut(key) {
                     val response = trending.movies(
                         apiKey = apiKey,
-                        window = TrendingWindow.Day.value,
+                        window = window.value,
                         language = language,
                         page = key
                     )
@@ -75,21 +108,16 @@ data class TrendingRepository internal constructor(
         }
     }
 
-    inner class TVPaging : PagingSource<Int, Trending.Response.Media.TV>() {
-
-        private val tvKache = InMemoryKache<Int, Trending.Response>(
-            maxSize = 5 * 1024 * 1024
-        ) {
-            strategy = KacheStrategy.LRU
-            expireAfterWriteDuration = 1.days
-        }
+    inner class TVPaging(
+        private val window: TrendingWindow
+    ) : PagingSource<Int, Trending.Response.Media.TV>() {
 
         override suspend fun load(
             params: PagingSourceLoadParams<Int>
         ): PagingSourceLoadResult<Int, Trending.Response.Media.TV> {
             val key = params.key ?: 1
             val result = suspendCatching {
-                tvKache.getOrPut(key) {
+                tvCache(window).getOrPut(key) {
                     val response = trending.tv(
                         apiKey = apiKey,
                         window = TrendingWindow.Day.value,

@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -55,6 +56,7 @@ import androidx.tv.material3.Text
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
+import app.cash.paging.PagingData
 import app.cash.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
@@ -69,10 +71,11 @@ import dev.datlag.mimasu.tv.ui.MediaRowItem
 import dev.datlag.tooling.scopeCatching
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalTvMaterial3Api::class, ExperimentalAnimationApi::class,
-    ExperimentalComposeUiApi::class
+    ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class
 )
 @Composable
 actual fun TvHomeScreen(component: TvHomeComponent) {
@@ -80,19 +83,48 @@ actual fun TvHomeScreen(component: TvHomeComponent) {
         modifier = Modifier.padding(LocalTVPadding.current),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item { 
-            MovieCatalog(component = component)
+        stickyHeader {
+            Text(
+                modifier = Modifier.fillParentMaxWidth(),
+                text = "Trending Movies Today"
+            )
         }
         item { 
-            TVCatalog(component = component)
+            MovieCatalog(flow = component.trendingDayMovies)
+        }
+        stickyHeader {
+            Text(
+                modifier = Modifier.fillParentMaxWidth(),
+                text = "Trending Movies This Week"
+            )
+        }
+        item {
+            MovieCatalog(flow = component.trendingWeekMovies)
+        }
+        stickyHeader {
+            Text(
+                modifier = Modifier.fillParentMaxWidth(),
+                text = "Trending Shows Today"
+            )
+        }
+        item { 
+            TVCatalog(flow = component.trendingDayShows)
+        }
+        stickyHeader {
+            Text(
+                modifier = Modifier.fillParentMaxWidth(),
+                text = "Trending Shows This Week"
+            )
+        }
+        item {
+            TVCatalog(flow = component.trendingWeekShows)
         }
     }
 }
 
 @Composable
-private fun MovieCatalog(component: TvHomeComponent) {
-    val trendingMovies = component.trendingMovies.collectAsLazyPagingItems()
-
+private fun MovieCatalog(flow: Flow<PagingData<Trending.Response.Media.Movie>>) {
+    val trendingMovies = flow.collectAsLazyPagingItems()
 
     var isListFocused by remember {
         mutableStateOf(false)
@@ -159,8 +191,8 @@ private fun MovieCatalog(component: TvHomeComponent) {
 }
 
 @Composable
-private fun TVCatalog(component: TvHomeComponent) {
-    val trendingShows = component.trendingSeries.collectAsLazyPagingItems()
+private fun TVCatalog(flow: Flow<PagingData<Trending.Response.Media.TV>>) {
+    val trendingShows = flow.collectAsLazyPagingItems()
 
 
     var isListFocused by remember {

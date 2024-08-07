@@ -2,30 +2,21 @@ package dev.datlag.mimasu.ui.navigation.screen.initial.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
-import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import app.cash.paging.Pager
+import app.cash.paging.PagingConfig
+import app.cash.paging.PagingData
 import com.arkivanov.decompose.ComponentContext
-import com.vanniktech.locale.Locale
-import com.vanniktech.locale.Locales
-import dev.datlag.mimasu.common.default
-import dev.datlag.mimasu.common.localized
 import dev.datlag.mimasu.tmdb.TMDB
+import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.mimasu.tmdb.model.TrendingWindow
 import dev.datlag.mimasu.tv.screen.home.TvHomeScreen
 import dev.datlag.tooling.decompose.ioScope
-import io.github.aakira.napier.Napier
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
-import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.serialization.json.Json
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -36,17 +27,51 @@ class HomeScreenComponent(
 
     private val tmdb by instance<TMDB>()
 
-    override val trendingMovies = Pager(
+    private val _trendingMoviesWindow = MutableStateFlow<TrendingWindow>(TrendingWindow.Day)
+    val trendingMoviesWindow: StateFlow<TrendingWindow> = _trendingMoviesWindow
+
+    private val _trendingShowsWindow = MutableStateFlow<TrendingWindow>(TrendingWindow.Day)
+    val trendingShowsWindow: StateFlow<TrendingWindow> = _trendingShowsWindow
+
+    override val trendingDayMovies = Pager(
         config = PagingConfig(1)
     ) {
-        tmdb.trending.MoviesPaging()
+        tmdb.trending.MoviesPaging(TrendingWindow.Day)
     }.flow.cachedIn(ioScope())
 
-    override val trendingSeries = Pager(
+    override val trendingWeekMovies = Pager(
         config = PagingConfig(1)
     ) {
-        tmdb.trending.TVPaging()
+        tmdb.trending.MoviesPaging(TrendingWindow.Week)
     }.flow.cachedIn(ioScope())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val trendingMovies = _trendingMoviesWindow.flatMapLatest { window ->
+        when (window) {
+            is TrendingWindow.Day -> trendingDayMovies
+            is TrendingWindow.Week -> trendingWeekMovies
+        }
+    }.cachedIn(ioScope())
+
+    override val trendingDayShows = Pager(
+        config = PagingConfig(1)
+    ) {
+        tmdb.trending.TVPaging(TrendingWindow.Day)
+    }.flow.cachedIn(ioScope())
+
+    override val trendingWeekShows = Pager(
+        config = PagingConfig(1)
+    ) {
+        tmdb.trending.TVPaging(TrendingWindow.Week)
+    }.flow.cachedIn(ioScope())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val trendingShows = _trendingShowsWindow.flatMapLatest { window ->
+        when (window) {
+            is TrendingWindow.Day -> trendingDayShows
+            is TrendingWindow.Week -> trendingWeekShows
+        }
+    }.cachedIn(ioScope())
 
     override val trendingPeople = Pager(
         config = PagingConfig(1)
