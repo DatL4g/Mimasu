@@ -66,10 +66,13 @@ data object NetworkModule {
                 .build()
         }
         bindSingleton<TMDB> {
+            val locale = Locale.default()
+
             TMDB.create(
                 apiKey = Sekret.tmdbApiKey(BuildKonfig.packageName)!!,
                 client = instance(),
-                language = Locale.default().localized()
+                language = locale.localized(),
+                region = locale.territory?.code?.ifBlank { null } ?: locale.territory?.code3?.ifBlank { null }
             )
         }
     }

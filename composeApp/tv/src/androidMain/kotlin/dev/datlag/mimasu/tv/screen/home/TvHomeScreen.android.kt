@@ -95,29 +95,26 @@ actual fun TvHomeScreen(component: TvHomeComponent) {
         stickyHeader {
             Text(
                 modifier = Modifier.fillParentMaxWidth(),
-                text = "Trending Movies This Week"
+                text = "Installed Provider"
             )
         }
         item {
-            MovieCatalog(flow = component.trendingWeekMovies)
-        }
-        stickyHeader {
-            Text(
-                modifier = Modifier.fillParentMaxWidth(),
-                text = "Trending Shows Today"
-            )
-        }
-        item { 
-            TVCatalog(flow = component.trendingDayShows)
-        }
-        stickyHeader {
-            Text(
-                modifier = Modifier.fillParentMaxWidth(),
-                text = "Trending Shows This Week"
-            )
+            Text(text = "Netflix: ${component.netflixInstalled}")
         }
         item {
-            TVCatalog(flow = component.trendingWeekShows)
+            Text(text = "Disney Plus: ${component.disneyPlusInstalled}")
+        }
+        item {
+            Text(text = "Amazon Prime: ${component.amazonPrimeVideoInstalled}")
+        }
+        item {
+            Text(text = "Burning-Series: ${component.burningSeriesInstalled}")
+        }
+        item {
+            Text(text = "Crunchyroll: ${component.crunchyRollInstalled}")
+        }
+        item {
+            Text(text = "Paramount Plus: ${component.paramountPlusInstalled}")
         }
     }
 }

@@ -1,7 +1,9 @@
 package dev.datlag.mimasu.module
 
+import android.content.Context
 import coil3.ImageLoader
 import coil3.request.allowHardware
+import dev.datlag.mimasu.other.PackageResolver
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -24,6 +26,9 @@ actual data object PlatformModule {
                     json(instance(), ContentType.Text.Plain)
                 }
             }
+        }
+        bindSingleton<PackageResolver> {
+            PackageResolver(instance<Context>())
         }
     }
 }

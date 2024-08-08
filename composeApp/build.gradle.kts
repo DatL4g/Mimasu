@@ -159,6 +159,46 @@ compose {
     desktop {
         application {
             mainClass = "dev.datlag.mimasu.MainKt"
+
+            when (getHost()) {
+                Host.Linux -> {
+                    jvmArgs("--add-opens", "java.desktop/sun.awt.X11=ALL-UNNAMED")
+                    jvmArgs("--add-opens", "java.desktop/sun.awt.wl=ALL-UNNAMED")
+                }
+                else -> { }
+            }
+
+            nativeDistributions {
+                packageName = "Mimasu"
+                packageVersion = "1.0.0"
+
+                appResourcesRootDir.set(project.layout.projectDirectory.dir("src/jvmMain/resources"))
+            }
         }
     }
+}
+
+fun getHost(): Host {
+    return when (osdetector.os) {
+        "linux" -> Host.Linux
+        "osx" -> Host.MAC
+        "windows" -> Host.Windows
+        else -> {
+            val hostOs = System.getProperty("os.name")
+            val isMingwX64 = hostOs.startsWith("Windows")
+
+            when {
+                hostOs == "Linux" -> Host.Linux
+                hostOs == "Mac OS X" -> Host.MAC
+                isMingwX64 -> Host.Windows
+                else -> throw IllegalStateException("Unknown OS: ${osdetector.classifier}")
+            }
+        }
+    }
+}
+
+enum class Host(val label: String) {
+    Linux("linux"),
+    Windows("win"),
+    MAC("mac");
 }

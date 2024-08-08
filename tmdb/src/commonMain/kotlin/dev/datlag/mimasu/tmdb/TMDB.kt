@@ -17,8 +17,11 @@ import dev.datlag.mimasu.tmdb.api.createDiscover
 import dev.datlag.mimasu.tmdb.api.createFind
 import dev.datlag.mimasu.tmdb.api.createTrending
 import dev.datlag.mimasu.tmdb.api.createTvSeriesList
+import dev.datlag.mimasu.tmdb.api.createWatchProviders
 import dev.datlag.mimasu.tmdb.model.TrendingWindow
+import dev.datlag.mimasu.tmdb.repository.PopularRepository
 import dev.datlag.mimasu.tmdb.repository.TrendingRepository
+import dev.datlag.mimasu.tmdb.repository.WatchProvidersRepository
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import io.github.aakira.napier.Napier
@@ -32,19 +35,22 @@ data class TMDB internal constructor(
     private val certifications: Certifications,
     private val companies: Companies,
     private val credits: Credits,
-    private val discover: Discover,
     private val find: Find,
     val trending: TrendingRepository,
-    private val tvSeriesList: TvSeriesList
+    val popular: PopularRepository,
+    val watchProviders: WatchProvidersRepository
 ) {
 
     companion object {
         private const val BASE_URL = "https://api.themoviedb.org/3/"
+        internal const val ORIGINAL_IMAGE = "https://image.tmdb.org/t/p/original/"
+        internal const val W500_IMAGE = "https://image.tmdb.org/t/p/w500/"
 
         fun create(
             apiKey: String,
             client: HttpClient,
             language: String,
+            region: String?,
             baseUrl: String = BASE_URL
         ): TMDB {
             val ktorfit = ktorfit {
@@ -57,14 +63,23 @@ data class TMDB internal constructor(
                 certifications = ktorfit.createCertifications(),
                 companies = ktorfit.createCompanies(),
                 credits = ktorfit.createCredits(),
-                discover = ktorfit.createDiscover(),
                 find = ktorfit.createFind(),
                 trending = TrendingRepository(
                     apiKey = apiKey,
                     trending = ktorfit.createTrending(),
                     language = language
                 ),
-                tvSeriesList = ktorfit.createTvSeriesList()
+                popular = PopularRepository(
+                    apiKey = apiKey,
+                    discover = ktorfit.createDiscover(),
+                    language = language,
+                    region = region
+                ),
+                watchProviders = WatchProvidersRepository(
+                    apiKey = apiKey,
+                    watchProviders = ktorfit.createWatchProviders(),
+                    language = language
+                )
             )
         }
     }

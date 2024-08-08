@@ -34,6 +34,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ): Movie() {
             override val label: String = "original_title"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -41,6 +46,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ): Movie() {
             override val label: String = "popularity"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -48,6 +58,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ): Movie() {
             override val label: String = "revenue"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -55,6 +70,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ): Movie() {
             override val label: String = "primary_release_date"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -62,6 +82,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ): Movie() {
             override val label: String = "title"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -69,6 +94,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ): Movie() {
             override val label: String = "vote_average"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -76,6 +106,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ): Movie() {
             override val label: String = "vote_count"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
     }
 
@@ -105,6 +140,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ) : Tv() {
             override val label: String = "first_air_date"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -112,6 +152,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ) : Tv() {
             override val label: String = "name"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -119,6 +164,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ) : Tv() {
             override val label: String = "original_name"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -126,6 +176,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ) : Tv() {
             override val label: String = "popularity"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -133,6 +188,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ) : Tv() {
             override val label: String = "vote_average"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
 
         @Serializable
@@ -140,6 +200,11 @@ sealed interface DiscoverSorting {
             override val direction: Direction?
         ) : Tv() {
             override val label: String = "vote_count"
+
+            override fun toString(): String = when (val current = direction) {
+                null -> label
+                else -> "$label.$current"
+            }
         }
     }
 

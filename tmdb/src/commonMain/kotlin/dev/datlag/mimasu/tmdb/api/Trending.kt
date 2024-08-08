@@ -5,6 +5,8 @@ import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 import dev.datlag.mimasu.core.serializer.ImmutableSetSerializer
 import dev.datlag.mimasu.core.serializer.SerializableImmutableSet
+import dev.datlag.mimasu.tmdb.TMDB.Companion.ORIGINAL_IMAGE
+import dev.datlag.mimasu.tmdb.TMDB.Companion.W500_IMAGE
 import io.ktor.client.statement.HttpResponse
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.serialization.DeserializationStrategy
@@ -170,9 +172,6 @@ interface Trending {
             }
 
             companion object Serializer : JsonContentPolymorphicSerializer<Media>(Media::class) {
-                private const val ORIGINAL_IMAGE = "https://image.tmdb.org/t/p/original/"
-                private const val W500_IMAGE = "https://image.tmdb.org/t/p/w500/"
-
                 override fun selectDeserializer(element: JsonElement): DeserializationStrategy<Media> {
                     val mediaType = element.jsonObject["media_type"]?.jsonPrimitive?.content
                     return when {

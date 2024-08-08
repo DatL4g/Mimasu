@@ -2,7 +2,15 @@ package dev.datlag.mimasu.tmdb.api
 
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Query
+import dev.datlag.mimasu.core.serializer.SerializableImmutableSet
+import dev.datlag.mimasu.tmdb.TMDB.Companion.ORIGINAL_IMAGE
+import dev.datlag.mimasu.tmdb.TMDB.Companion.W500_IMAGE
+import dev.datlag.mimasu.tmdb.api.Discover.MovieResponse.Movie
 import io.ktor.client.statement.HttpResponse
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 // ToDo("replace with [DiscoverSorting] and [DiscoverType]")
 interface Discover {
@@ -111,4 +119,89 @@ interface Discover {
         @Query("without_watch_providers") withoutWatchProviders: String? = null,
         @Query("with_type") withType: String? = null,
     ): HttpResponse
+
+    @Serializable
+    data class MovieResponse(
+        @SerialName("page") val page: Int = 1,
+        @SerialName("results") val results: SerializableImmutableSet<Movie>,
+        @SerialName("total_pages") val totalPages: Int = page,
+        @SerialName("total_results") val totalResults: Int = results.size,
+    ) {
+        @Serializable
+        data class Movie(
+            @SerialName("id") val id: Int,
+            @SerialName("title") val title: String,
+            @SerialName("original_title") val originalTitle: String? = null,
+            @SerialName("backdrop_path") val backdropPath: String? = null,
+            @SerialName("overview") val overview: String? = null,
+            @SerialName("poster_path") val posterPath: String? = null,
+            @SerialName("adult") val adult: Boolean = false,
+            @SerialName("original_language") val originalLanguage: String? = null,
+            @SerialName("genre_ids") val genreIds: SerializableImmutableSet<Int> = persistentSetOf(),
+            @SerialName("video") val video: Boolean = false,
+            @SerialName("vote_average") val voteAverage: Float = 0F,
+            @SerialName("vote_count") val voteCount: Int = 0
+        ) {
+            @Transient
+            val backdropPicture: String? = backdropPath?.ifBlank { null }?.let { "$ORIGINAL_IMAGE$it" }
+
+            @Transient
+            val backdropPictureW500: String? = backdropPath?.ifBlank { null }?.let { "$W500_IMAGE$it" }
+
+            @Transient
+            val posterPicture: String? = posterPath?.ifBlank { null }?.let { "$ORIGINAL_IMAGE$it" }
+
+            @Transient
+            val posterPictureW500: String? = posterPath?.ifBlank { null }?.let { "$W500_IMAGE$it" }
+
+            @Transient
+            val alternativeName: String? = if (originalTitle.equals(title, ignoreCase = true)) {
+                null
+            } else {
+                originalTitle
+            }
+        }
+    }
+
+    @Serializable
+    data class TVResponse(
+        @SerialName("page") val page: Int = 1,
+        @SerialName("results") val results: SerializableImmutableSet<TV>,
+        @SerialName("total_pages") val totalPages: Int = page,
+        @SerialName("total_results") val totalResults: Int = results.size,
+    ) {
+        @Serializable
+        data class TV(
+            @SerialName("id") val id: Int,
+            @SerialName("name") val name: String,
+            @SerialName("original_name") val originalName: String? = null,
+            @SerialName("backdrop_path") val backdropPath: String? = null,
+            @SerialName("overview") val overview: String? = null,
+            @SerialName("poster_path") val posterPath: String? = null,
+            @SerialName("adult") val adult: Boolean = false,
+            @SerialName("original_language") val originalLanguage: String? = null,
+            @SerialName("genre_ids") val genreIds: SerializableImmutableSet<Int> = persistentSetOf(),
+            @SerialName("vote_average") val voteAverage: Float = 0F,
+            @SerialName("vote_count") val voteCount: Int = 0
+        ) {
+            @Transient
+            val backdropPicture: String? = backdropPath?.ifBlank { null }?.let { "$ORIGINAL_IMAGE$it" }
+
+            @Transient
+            val backdropPictureW500: String? = backdropPath?.ifBlank { null }?.let { "$W500_IMAGE$it" }
+
+            @Transient
+            val posterPicture: String? = posterPath?.ifBlank { null }?.let { "$ORIGINAL_IMAGE$it" }
+
+            @Transient
+            val posterPictureW500: String? = posterPath?.ifBlank { null }?.let { "$W500_IMAGE$it" }
+
+            @Transient
+            val alternativeName: String? = if (originalName.equals(name, ignoreCase = true)) {
+                null
+            } else {
+                originalName
+            }
+        }
+    }
 }
