@@ -10,6 +10,10 @@ kotlin {
     androidTarget()
     jvm()
 
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -37,6 +41,7 @@ kotlin {
             dependsOn(commonMain.get())
 
             jvmMain.orNull?.dependsOn(this)
+            appleMain.orNull?.dependsOn(this)
         }
     }
 }

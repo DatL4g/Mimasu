@@ -42,7 +42,10 @@ sekret {
 
 kotlin {
     androidTarget()
-    jvm()
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     applyDefaultHierarchyTemplate()
 
@@ -86,8 +89,8 @@ kotlin {
             implementation(libs.serialization.json)
             implementation(libs.serialization.protobuf)
 
-            implementation(libs.ktor.jvm)
             implementation(project(":tmdb"))
+            implementation(project(":firebase"))
             implementation(project("tv"))
         }
 
@@ -108,11 +111,8 @@ kotlin {
             }
         }
 
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-
-            implementation(libs.ktor.jvm)
-            implementation(libs.coroutines.swing)
+        iosMain.dependencies {
+            implementation(libs.ktor.darwin)
         }
     }
 }
