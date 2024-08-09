@@ -3,6 +3,7 @@ rootProject.name = "Mimasu"
 include(":composeApp", ":composeApp:tv", ":composeApp:sekret")
 include(":core")
 include(":tmdb")
+include(":firebase")
 
 pluginManagement {
     repositories {
