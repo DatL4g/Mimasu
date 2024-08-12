@@ -2,6 +2,7 @@ package dev.datlag.mimasu.module
 
 import coil3.ImageLoader
 import coil3.PlatformContext
+import coil3.annotation.ExperimentalCoilApi
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.network.ktor2.KtorNetworkFetcherFactory
@@ -12,9 +13,11 @@ import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.common.default
 import dev.datlag.mimasu.common.localized
+import dev.datlag.mimasu.other.Connection
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.tmdb.api.Trending
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -27,6 +30,7 @@ data object NetworkModule {
 
     const val NAME = "NetworkModule"
 
+    @OptIn(ExperimentalCoilApi::class)
     val di: DI.Module = DI.Module(NAME) {
         import(PlatformModule.di)
 
@@ -47,7 +51,12 @@ data object NetworkModule {
         bindSingleton<ImageLoader> {
             ImageLoader.Builder(instance<PlatformContext>())
                 .components {
-                    add(KtorNetworkFetcherFactory(instance<HttpClient>()))
+                    add(
+                        KtorNetworkFetcherFactory(
+                            httpClient = { instance<HttpClient>() },
+                            connectivityChecker = { Connection }
+                        )
+                    )
                     add(SvgDecoder.Factory())
                 }
                 .memoryCache {

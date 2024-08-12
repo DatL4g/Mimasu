@@ -71,6 +71,7 @@ kotlin {
             implementation(libs.tooling.decompose)
             implementation(libs.locale)
             implementation(libs.napier)
+            implementation(libs.connectivity)
 
             implementation(libs.windowsize)
             implementation(libs.ktor)
@@ -106,13 +107,15 @@ kotlin {
 
                 implementation(libs.ktor.jvm)
                 implementation(libs.coroutines.android)
+                implementation(libs.connectivity.device)
 
                 implementation(libs.splashscreen)
             }
         }
 
-        iosMain.dependencies {
+        appleMain.dependencies {
             implementation(libs.ktor.darwin)
+            implementation(libs.connectivity.device)
         }
     }
 }
