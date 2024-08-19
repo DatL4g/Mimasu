@@ -4,24 +4,8 @@ plugins {
 }
 
 kotlin {
-    jvm()
     androidTarget()
 
-    linuxArm64 {
-        binaries {
-            sharedLib()
-        }
-    }
-    linuxX64 {
-        binaries {
-            sharedLib()
-        }
-    }
-    mingwX64 {
-        binaries {
-            sharedLib()
-        }
-    }
     macosArm64 {
         binaries {
             sharedLib()

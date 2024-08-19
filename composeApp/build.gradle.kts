@@ -35,7 +35,6 @@ sekret {
 
         nativeCopy {
             androidJNIFolder.set(project.layout.projectDirectory.dir("src/androidMain/jniLibs"))
-            desktopComposeResourcesFolder.set(project.layout.projectDirectory.dir("src/jvmMain/resources"))
         }
     }
 }
@@ -158,28 +157,7 @@ composeCompiler {
     enableNonSkippingGroupOptimization.set(true)
 }
 
-compose {
-    desktop {
-        application {
-            mainClass = "dev.datlag.mimasu.MainKt"
 
-            when (getHost()) {
-                Host.Linux -> {
-                    jvmArgs("--add-opens", "java.desktop/sun.awt.X11=ALL-UNNAMED")
-                    jvmArgs("--add-opens", "java.desktop/sun.awt.wl=ALL-UNNAMED")
-                }
-                else -> { }
-            }
-
-            nativeDistributions {
-                packageName = "Mimasu"
-                packageVersion = "1.0.0"
-
-                appResourcesRootDir.set(project.layout.projectDirectory.dir("src/jvmMain/resources"))
-            }
-        }
-    }
-}
 
 fun getHost(): Host {
     return when (osdetector.os) {
