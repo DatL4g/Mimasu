@@ -14,7 +14,10 @@ class FirebaseAuthDataSource(
      *
      * @return A Flow emitting the currently logged-in FirebaseUser, or null if no user is logged in.
      */
-    val currentUser: Flow<FirebaseUser?> = firebaseAuthService.currentUser
+    val user: Flow<FirebaseUser?> = firebaseAuthService.user
+
+    val currentUser: FirebaseUser?
+        get() = firebaseAuthService.currentUser
 
     /**
      * Authenticates a user with a Google ID token.
@@ -22,8 +25,8 @@ class FirebaseAuthDataSource(
      * @param idToken The Google ID token used for authentication.
      * @return The authenticated FirebaseUser, or null if authentication fails.
      */
-    suspend fun authenticateWithGoogleIdToken(idToken: String): FirebaseUser? {
-        val firebaseCredential = GoogleAuthProvider.credential(idToken = idToken, accessToken = null)
+    suspend fun authenticateWithGoogleIdToken(idToken: String, accessToken: String? = null): FirebaseUser? {
+        val firebaseCredential = GoogleAuthProvider.credential(idToken = idToken, accessToken = accessToken)
         return firebaseAuthService.signIn(credential = firebaseCredential)
     }
 

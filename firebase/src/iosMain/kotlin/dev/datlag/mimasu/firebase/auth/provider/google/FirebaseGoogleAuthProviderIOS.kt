@@ -28,11 +28,12 @@ class FirebaseGoogleAuthProviderIOS(
     override suspend fun signIn(params: Any): Result<FirebaseUser> = suspendCatching {
         val token = retrieveIdToken().getOrThrow()
         firebaseAuthDataSource.authenticateWithGoogleIdToken(
-            idToken = token
+            idToken = token.idToken,
+            accessToken = token.accessToken
         ) ?: throw FirebaseAuthException.UnknownUser(provider = FirebaseProvider.Google)
     }
 
-    private suspend fun retrieveIdToken() = suspendCoroutine<Result<String>> { continuation ->
+    private suspend fun retrieveIdToken() = suspendCoroutine<Result<GoogleTokens>> { continuation ->
         UIApplication.sharedApplication.keyWindow?.rootViewController?.let { controller ->
             GIDSignIn.sharedInstance.signInWithPresentingViewController(controller) { gidSingInResult, nsError ->
                 when {
@@ -40,11 +41,16 @@ class FirebaseGoogleAuthProviderIOS(
 
                     else -> {
                         gidSingInResult?.user?.idToken?.tokenString?.let { idToken ->
-                            continuation.resume(Result.success(idToken))
+                            continuation.resume(Result.success(GoogleTokens(idToken = idToken, accessToken = gidSingInResult?.user?.accessToken?.tokenString)))
                         } ?: continuation.resume(Result.failure(FirebaseAuthException.Google.Unknown))
                     }
                 }
             }
         }
     }
+
+    data class GoogleTokens(
+        val idToken: String,
+        val accessToken: String?
+    )
 }

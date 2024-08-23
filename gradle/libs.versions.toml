@@ -60,8 +60,10 @@ datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
 decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
 desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar" }
+firebase = { group = "dev.gitlive", name = "firebase-app", version.ref = "firebase" }
 firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "firebase" }
 firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "firebase" }
+firebase-config = { group = "dev.gitlive", name = "firebase-config", version.ref = "firebase" }
 google-play-service = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services" }
 google-identity = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-identity" }
 google-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "android-credentials" }

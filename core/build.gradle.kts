@@ -29,6 +29,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.serialization)
+            implementation(libs.datetime)
             api(libs.immutable)
         }
     }

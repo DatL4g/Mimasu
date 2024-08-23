@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.serialization)
     alias(libs.plugins.cocoapods)
+    alias(libs.plugins.sekret)
 }
 
 kotlin {
@@ -32,8 +33,13 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.tooling)
             implementation(libs.coroutines)
-            implementation(libs.firebase.firestore)
-            implementation(libs.firebase.auth)
+            api(libs.firebase)
+            api(libs.firebase.firestore)
+            api(libs.firebase.auth)
+            api(libs.firebase.config)
+            implementation(libs.datetime)
+            implementation(libs.napier)
+            implementation(libs.sekret)
 
             implementation(project(":core"))
         }

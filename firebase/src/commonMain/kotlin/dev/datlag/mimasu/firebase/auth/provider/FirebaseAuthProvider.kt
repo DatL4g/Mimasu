@@ -8,7 +8,7 @@ abstract class FirebaseAuthProvider<SignInParams>(
     protected val firebaseAuthDataSource: FirebaseAuthDataSource
 ) {
 
-    val currentUser: Flow<FirebaseUser?> = firebaseAuthDataSource.currentUser
+    val user: Flow<FirebaseUser?> = firebaseAuthDataSource.user
 
     abstract suspend fun signIn(params: SignInParams & Any): Result<FirebaseUser>
 

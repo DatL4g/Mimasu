@@ -26,7 +26,15 @@ class FirebaseAuthService(
      *
      * @return A Flow emitting the currently logged-in FirebaseUser, or null if no user is logged in.
      */
-    val currentUser: Flow<FirebaseUser?> = Firebase.auth(app).authStateChanged
+    val user: Flow<FirebaseUser?> = Firebase.auth(app).authStateChanged
+
+    /**
+     * Retrieves the currently logged-in user.
+     *
+     * @return the currently logged-in FirebaseUser, or null if no user is logged in.
+     */
+    val currentUser: FirebaseUser?
+        get() = Firebase.auth(app).currentUser
 
     /**
      * Signs in a user with the given authentication credentials.

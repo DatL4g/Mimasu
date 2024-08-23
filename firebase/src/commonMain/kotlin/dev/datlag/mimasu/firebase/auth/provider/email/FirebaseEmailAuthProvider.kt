@@ -20,12 +20,22 @@ class FirebaseEmailAuthProvider(
         ) ?: throw FirebaseAuthException.UnknownUser(provider = FirebaseProvider.Email)
     }
 
+    suspend fun signIn(
+        email: String,
+        password: String
+    ): Result<FirebaseUser> = signIn(EmailAuthParams(email, password))
+
     suspend fun signUp(params: EmailAuthParams): Result<FirebaseUser> = suspendCatching {
         firebaseAuthDataSource.createUserWithEmailAndPassword(
             email = params.email,
             password = params.password
         ) ?: throw FirebaseAuthException.UnknownUser(provider = FirebaseProvider.Email)
     }
+
+    suspend fun signUp(
+        email: String,
+        password: String
+    ): Result<FirebaseUser> = signUp(EmailAuthParams(email, password))
 
     suspend fun sendPasswordResetEmail(
         params: ForgotPasswordParams

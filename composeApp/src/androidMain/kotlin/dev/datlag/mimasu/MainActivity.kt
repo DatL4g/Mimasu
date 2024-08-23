@@ -12,7 +12,9 @@ import com.arkivanov.essenty.backhandler.backHandler
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
+import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.navigation.RootComponent
+import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DIAware
@@ -23,7 +25,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen()
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                NetworkModule.showSplashscreen
+            }
+        }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
@@ -47,7 +53,16 @@ class MainActivity : ComponentActivity() {
                 LocalEdgeToEdge provides true
             ) {
                 App(
-                    di = di
+                    di = di,
+                    fetchingContent = {
+                        PlatformText(text = "Fetching config please wait")
+                    },
+                    failureContent = {
+                        PlatformText(text = "Failure: $it")
+                    },
+                    maintenanceContent = {
+                        PlatformText(text = "App currently under maintenance, please come back later")
+                    }
                 ) {
                     root.render()
                 }

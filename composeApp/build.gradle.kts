@@ -91,6 +91,7 @@ kotlin {
 
             implementation(project(":tmdb"))
             implementation(project(":firebase"))
+            implementation(project(":core"))
             implementation(project("tv"))
         }
 
