@@ -8,10 +8,13 @@ import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.app
+import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException as AndroidCollisionException
 import com.google.firebase.auth.AuthResult as AndroidAuthResult
 import dev.gitlive.firebase.auth.FirebaseUser
 import com.google.firebase.auth.FirebaseUser as AndroidFirebaseUser
 import dev.gitlive.firebase.auth.auth
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -31,8 +34,24 @@ class FirebaseGitHubAuthProviderAndroid(
         val currentUser = Firebase.auth(app).currentUser?.android
 
         // Link with current user or sign in
-        val authResult = currentUser?.startActivityForLinkWithProvider(params, provider.android)?.linkOrSignInUser(currentUser)
-            ?: auth.startActivityForSignInWithProvider(params, provider.android).linkOrSignInUser(currentUser)
+        var collisionEmail: String? = null
+        val linkAuthResult = currentUser?.startActivityForLinkWithProvider(
+            params,
+            provider.android
+        )?.linkOrSignInUser(currentUser)?.onFailure {
+            if (it is FirebaseAuthUserCollisionException || it is AndroidCollisionException) {
+                it.email?.ifBlank { null }?.let { m -> collisionEmail = m }
+            }
+        }?.getOrNull()
+
+        val authResult = linkAuthResult ?: auth.startActivityForSignInWithProvider(
+            params,
+            provider.android
+        ).linkOrSignInUser(currentUser).onFailure {
+            if (it is FirebaseAuthUserCollisionException || it is AndroidCollisionException) {
+                it.email?.ifBlank { null }?.let { m -> collisionEmail = m }
+            }
+        }.getOrNull()
 
         authResult?.let {
             Firebase.auth(app).android.updateCurrentUser(it).await()
@@ -40,24 +59,37 @@ class FirebaseGitHubAuthProviderAndroid(
 
         return Firebase.auth(app).currentUser?.let {
             Result.success(it)
-        } ?: Result.failure(FirebaseNoSignedInUserException("Not able to link or sign in through GitHub"))
+        } ?: run {
+            val email = collisionEmail
+            if (!email.isNullOrBlank()) {
+                Result.failure(
+                    FirebaseAuthService.CollisionException(
+                        email = email,
+                        provider = Firebase.auth(app).fetchSignInMethodsForEmail(email).toImmutableSet()
+                    )
+                )
+            } else {
+                Result.failure(FirebaseNoSignedInUserException("Not able to link or sign in through GitHub"))
+            }
+        }
     }
 
-    private suspend fun Task<AndroidAuthResult?>.linkOrSignInUser(existing: AndroidFirebaseUser?): AndroidFirebaseUser? = suspendCoroutine { continuation ->
+    private suspend fun Task<AndroidAuthResult?>.linkOrSignInUser(existing: AndroidFirebaseUser?): Result<AndroidFirebaseUser> = suspendCoroutine { continuation ->
         this.addOnSuccessListener {
             val credential = it?.credential
+            it?.user?.email
 
             if (existing != null && credential != null) {
                 existing.linkWithCredential(credential).addOnSuccessListener { link ->
-                    continuation.resume(link?.user)
+                    continuation.resume(Result.success(link?.user ?: existing))
                 }.addOnFailureListener { _ ->
-                    continuation.resume(it.user)
+                    continuation.resume(Result.success(it.user ?: existing))
                 }
             } else {
-                continuation.resume(it?.user)
+                continuation.resume((it?.user ?: existing)?.let { u -> Result.success(u) } ?: Result.failure(IllegalStateException()))
             }
         }.addOnFailureListener {
-            continuation.resume(null)
+            continuation.resume(Result.failure(it))
         }
     }
 }

@@ -8,6 +8,9 @@ import dev.gitlive.firebase.auth.AndroidPackageName
 import dev.gitlive.firebase.auth.AuthCredential
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
+import kotlinx.collections.immutable.ImmutableCollection
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -115,10 +118,23 @@ class FirebaseAuthService(
         Firebase.auth(app).sendPasswordResetEmail(email = email, actionCodeSettings = actionCodeSettings)
     }
 
+    suspend fun updateCurrentUser(user: FirebaseUser) {
+        Firebase.auth(app).updateCurrentUser(user)
+    }
+
+    suspend fun fetchSignInMethodsForEmail(email: String): ImmutableCollection<String> {
+        return Firebase.auth(app).fetchSignInMethodsForEmail(email).toImmutableSet()
+    }
+
     /**
      * Signs out the currently logged-in user.
      */
     suspend fun signOut() {
         Firebase.auth(app).signOut()
     }
+
+    data class CollisionException(
+        val email: String,
+        val provider: ImmutableCollection<String>
+    ) : Exception("Logging in with $email requires to use any of the following provider: ${provider.joinToString()}")
 }

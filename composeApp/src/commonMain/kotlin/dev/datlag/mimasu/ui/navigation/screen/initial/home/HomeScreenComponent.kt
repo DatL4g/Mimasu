@@ -7,6 +7,7 @@ import app.cash.paging.PagingConfig
 import app.cash.paging.cachedIn
 import com.arkivanov.decompose.ComponentContext
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
+import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.tmdb.TMDB
@@ -30,9 +31,6 @@ class HomeScreenComponent(
 ): HomeComponent, ComponentContext by componentContext, PackageAware by packageResolver {
 
     private val tmdb by instance<TMDB>()
-    override val authService by instance<FirebaseAuthService>()
-    override val googleAuthProvider by instanceOrNull<FirebaseGoogleAuthProvider>()
-    override val githubAuthProvider by instanceOrNull<FirebaseGitHubAuthProvider>()
 
     private val _trendingMoviesWindow = MutableStateFlow<TrendingWindow>(TrendingWindow.Day)
     val trendingMoviesWindow: StateFlow<TrendingWindow> = _trendingMoviesWindow

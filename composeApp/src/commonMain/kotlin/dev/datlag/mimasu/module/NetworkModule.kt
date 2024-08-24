@@ -15,6 +15,8 @@ import dev.datlag.mimasu.common.default
 import dev.datlag.mimasu.common.localized
 import dev.datlag.mimasu.core.common.now
 import dev.datlag.mimasu.core.common.toEpochMilliseconds
+import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
+import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.other.Connection
 import dev.datlag.mimasu.tmdb.TMDB
@@ -128,6 +130,13 @@ data object NetworkModule {
                 client = instance(),
                 language = locale.localized(),
                 region = locale.territory?.code?.ifBlank { null } ?: locale.territory?.code3?.ifBlank { null }
+            )
+        }
+        bindSingleton<FirebaseEmailAuthProvider> {
+            FirebaseEmailAuthProvider(
+                firebaseAuthDataSource = FirebaseAuthDataSource(
+                    firebaseAuthService = instance()
+                )
             )
         }
     }

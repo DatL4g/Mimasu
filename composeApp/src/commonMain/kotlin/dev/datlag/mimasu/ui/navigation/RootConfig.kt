@@ -7,4 +7,7 @@ sealed class RootConfig {
 
     @Serializable
     data object Initial : RootConfig()
+
+    @Serializable
+    data object Login : RootConfig()
 }

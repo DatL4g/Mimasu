@@ -17,8 +17,10 @@ import dev.datlag.tooling.safeCast
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.app
+import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.GoogleAuthProvider
+import dev.gitlive.firebase.auth.auth
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
 import kotlin.coroutines.suspendCoroutine
@@ -71,13 +73,44 @@ class FirebaseGoogleAuthProviderAndroid(
                     GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL -> {
                         val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                         val idToken = googleIdTokenCredential.idToken
+                        val currentUser = firebaseAuthDataSource.currentUser
 
-                        // Link with current user or sign in
-                        firebaseAuthDataSource.currentUser?.linkWithCredential(
-                            credential = GoogleAuthProvider.credential(idToken, null)
-                        )?.user ?: firebaseAuthDataSource.authenticateWithGoogleIdToken(
-                            idToken = idToken
-                        ) ?: throw FirebaseAuthException.UnknownUser(provider = FirebaseProvider.Google)
+                        var collisionEmail: String? = null
+                        val linkAuthResult = suspendCatching {
+                            currentUser?.linkWithCredential(
+                                credential = GoogleAuthProvider.credential(idToken, null)
+                            )
+                        }.onFailure {
+                            if (it is FirebaseAuthUserCollisionException) {
+                                it.email?.ifBlank { null }?.let { m -> collisionEmail = m }
+                            }
+                        }.getOrNull()
+
+                        val authResult = linkAuthResult?.user ?: suspendCatching {
+                            firebaseAuthDataSource.authenticateWithGoogleIdToken(
+                                idToken = idToken
+                            )
+                        }.onFailure {
+                            if (it is FirebaseAuthUserCollisionException) {
+                                it.email?.ifBlank { null }?.let { m -> collisionEmail = m }
+                            }
+                        }.getOrNull()
+
+                        authResult?.let {
+                            firebaseAuthDataSource.updateCurrentUser(it)
+                        }
+
+                        authResult ?: firebaseAuthDataSource.currentUser ?: run {
+                            val email = collisionEmail
+                            if (!email.isNullOrBlank()) {
+                                throw FirebaseAuthService.CollisionException(
+                                    email = email,
+                                    provider = firebaseAuthDataSource.fetchSignInMethodsForEmail(email)
+                                )
+                            } else {
+                                throw FirebaseAuthException.UnknownUser(provider = FirebaseProvider.Google)
+                            }
+                        }
                     }
                     else -> throw FirebaseAuthException.Google.UnknownCredential
                 }

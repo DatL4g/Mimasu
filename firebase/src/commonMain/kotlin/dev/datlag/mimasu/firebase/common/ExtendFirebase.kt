@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.firebase.common
 
+import dev.gitlive.firebase.auth.AuthResult
+import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
 import dev.gitlive.firebase.auth.FirebaseUser
 
 /**
@@ -13,3 +15,5 @@ fun FirebaseUser?.githubHandle(): String? {
         it.providerId.equals("github", ignoreCase = true) || it.providerId.equals("github.com", ignoreCase = true)
     }?.uid?.ifBlank { null }
 }
+
+expect val FirebaseAuthUserCollisionException.commonEmail: String?

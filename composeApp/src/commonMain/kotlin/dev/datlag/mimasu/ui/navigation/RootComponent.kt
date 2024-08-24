@@ -11,9 +11,18 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.replaceAll
+import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.ui.navigation.screen.initial.InitialScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeScreenComponent
+import dev.datlag.mimasu.ui.navigation.screen.login.LoginScreen
+import dev.datlag.mimasu.ui.navigation.screen.login.LoginScreenComponent
+import dev.datlag.tooling.scopeCatching
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
 import org.kodein.di.DI
+import org.kodein.di.instance
+import org.kodein.di.instanceOrNull
 
 class RootComponent(
     componentContext: ComponentContext,
@@ -24,7 +33,7 @@ class RootComponent(
     private val stack = childStack(
         source = navigation,
         serializer = RootConfig.serializer(),
-        initialConfiguration = RootConfig.Initial,
+        initialConfiguration = if (isLoggedIn()) RootConfig.Initial else RootConfig.Login,
         handleBackButton = true,
         childFactory = ::createScreenComponent
     )
@@ -34,6 +43,10 @@ class RootComponent(
         componentContext: ComponentContext
     ): Component = when (rootConfig) {
         is RootConfig.Initial -> InitialScreenComponent(
+            componentContext = componentContext,
+            di = di
+        )
+        is RootConfig.Login -> LoginScreenComponent(
             componentContext = componentContext,
             di = di
         )
@@ -57,5 +70,15 @@ class RootComponent(
                 it.instance.render()
             }
         }
+    }
+
+    private fun isLoggedIn(): Boolean {
+        return scopeCatching {
+            Firebase.auth.currentUser
+        }.getOrNull() != null
+    }
+
+    private fun login() {
+        navigation.replaceAll(RootConfig.Login)
     }
 }

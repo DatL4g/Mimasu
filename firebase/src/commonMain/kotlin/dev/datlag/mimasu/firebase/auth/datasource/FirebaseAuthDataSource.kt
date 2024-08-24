@@ -3,6 +3,7 @@ package dev.datlag.mimasu.firebase.auth.datasource
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.GoogleAuthProvider
+import kotlinx.collections.immutable.ImmutableCollection
 import kotlinx.coroutines.flow.Flow
 
 class FirebaseAuthDataSource(
@@ -83,6 +84,14 @@ class FirebaseAuthDataSource(
             minimumVersion = minimumVersion,
             canHandleCodeInApp = canHandleCodeInApp
         )
+    }
+
+    suspend fun updateCurrentUser(user: FirebaseUser) {
+        firebaseAuthService.updateCurrentUser(user)
+    }
+
+    suspend fun fetchSignInMethodsForEmail(email: String): ImmutableCollection<String> {
+        return firebaseAuthService.fetchSignInMethodsForEmail(email)
     }
 
     /**
