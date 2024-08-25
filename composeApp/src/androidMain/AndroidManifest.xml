@@ -33,10 +33,14 @@
         android:allowAudioPlaybackCapture="false"
         android:enableOnBackInvokedCallback="true"
         android:name=".App"
+        android:resizeableActivity="true"
         android:theme="@style/SplashScreenTheme">
         
         <activity android:name=".MainActivity"
             android:visibleToInstantApps="true"
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleInstance"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -14,6 +14,8 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -34,6 +36,7 @@ kotlin {
                 implementation(libs.tv.lifecycle)
                 implementation(libs.tv.material)
                 implementation(libs.tooling)
+                api(libs.android.autofill)
             }
         }
 
