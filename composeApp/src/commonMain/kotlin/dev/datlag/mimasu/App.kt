@@ -41,7 +41,7 @@ fun App(
         LocalDarkMode provides systemDarkTheme,
     ) {
         CombinedPlatformMaterialTheme(
-            colorScheme = if (systemDarkTheme) Colors.dynamicDark() else Colors.dynamicLight()
+            colorScheme = if (systemDarkTheme) Colors.getDarkScheme() else Colors.getLightScheme()
         ) {
             PlatformSurface(
                 modifier = Modifier.fillMaxSize(),

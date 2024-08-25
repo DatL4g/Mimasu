@@ -44,7 +44,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import dev.datlag.mimasu.common.githubAuthParams
 import dev.datlag.mimasu.tv.common.autoFill
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import kotlinx.collections.immutable.persistentListOf
 
@@ -56,6 +58,8 @@ fun LoginScreen(component: LoginComponent) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
     ) {
+        val emailPasswordEnabled by component.emailPasswordEnabled.collectAsStateWithLifecycle()
+
         LazyColumn(
             modifier = Modifier.fillMaxWidth().weight(1F),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
@@ -77,6 +81,7 @@ fun LoginScreen(component: LoginComponent) {
                     onValueChange = {
                         component.updateEmail(it)
                     },
+                    enabled = emailPasswordEnabled,
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Rounded.Email,
@@ -112,6 +117,7 @@ fun LoginScreen(component: LoginComponent) {
                     onValueChange = {
                         component.updatePassword(it)
                     },
+                    enabled = emailPasswordEnabled,
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Rounded.Password,
@@ -136,7 +142,8 @@ fun LoginScreen(component: LoginComponent) {
                     modifier = Modifier.padding(top = 16.dp).fillParentMaxWidth(),
                     onClick = {
 
-                    }
+                    },
+                    enabled = emailPasswordEnabled
                 ) {
                     Icon(
                         modifier = Modifier.size(ButtonDefaults.IconSize),
@@ -152,7 +159,8 @@ fun LoginScreen(component: LoginComponent) {
                     modifier = Modifier.fillParentMaxWidth(),
                     onClick = {
 
-                    }
+                    },
+                    enabled = emailPasswordEnabled
                 ) {
                     Text("Forgot Password")
                 }
@@ -164,21 +172,32 @@ fun LoginScreen(component: LoginComponent) {
                     verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
                     maxItemsInEachRow = 2
                 ) {
-                    Button(
-                        modifier = Modifier.weight(1F),
-                        onClick = {
+                    if (component.googleAuthProvider != null) {
+                        val googleEnabled by component.googleEnabled.collectAsStateWithLifecycle()
 
+                        Button(
+                            modifier = Modifier.weight(1F),
+                            onClick = {
+                                component.googleLogin()
+                            },
+                            enabled = googleEnabled
+                        ) {
+                            Text(text = "Google")
                         }
-                    ) {
-                        Text(text = "Google")
                     }
-                    Button(
-                        modifier = Modifier.weight(1F),
-                        onClick = {
+                    if (component.githubAuthProvider != null) {
+                        val authParams = Platform.githubAuthParams()
+                        val githubEnabled by component.githubEnabled.collectAsStateWithLifecycle()
 
+                        Button(
+                            modifier = Modifier.weight(1F),
+                            onClick = {
+                                component.githubLogin(authParams)
+                            },
+                            enabled = githubEnabled
+                        ) {
+                            Text(text = "GitHub")
                         }
-                    ) {
-                        Text(text = "GitHub")
                     }
                 }
             }
