@@ -10,15 +10,16 @@ interface LoginComponent : Component {
     val emailInput: StateFlow<String>
     val passwordInput: StateFlow<String>
 
-    val googleAuthProvider: FirebaseGoogleAuthProvider?
-    val githubAuthProvider: FirebaseGitHubAuthProvider?
-
-    val emailPasswordEnabled: StateFlow<Boolean>
-    val googleEnabled: StateFlow<Boolean>
-    val githubEnabled: StateFlow<Boolean>
+    val emailValid: StateFlow<Boolean>
+    val passwordValid: StateFlow<Boolean>
+    val loginClickable: StateFlow<Boolean>
+    val sendClickable: StateFlow<Boolean>
+    val emailPasswordFailure: StateFlow<Boolean>
 
     fun updateEmail(input: String)
     fun updatePassword(input: String)
+    fun emailLogin()
+
 
     fun googleLogin()
     fun githubLogin(params: GitHubAuthParams)

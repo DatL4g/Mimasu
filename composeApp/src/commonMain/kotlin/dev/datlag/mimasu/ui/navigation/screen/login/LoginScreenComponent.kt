@@ -3,9 +3,13 @@ package dev.datlag.mimasu.ui.navigation.screen.login
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
+import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
+import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
+import dev.datlag.mimasu.firebase.auth.provider.email.ForgotPasswordParams
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
+import dev.datlag.tooling.compose.withMainContext
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,11 +17,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import org.kodein.di.DI
+import org.kodein.di.instance
 import org.kodein.di.instanceOrNull
 
 class LoginScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
+    private val toHome: () -> Unit
 ) : LoginComponent, ComponentContext by componentContext {
 
     private val _emailInput = MutableStateFlow("")
@@ -26,17 +32,24 @@ class LoginScreenComponent(
     private val _passwordInput = MutableStateFlow("")
     override val passwordInput: StateFlow<String> = _passwordInput.asStateFlow()
 
-    override val googleAuthProvider by instanceOrNull<FirebaseGoogleAuthProvider>()
-    override val githubAuthProvider by instanceOrNull<FirebaseGitHubAuthProvider>()
+    private val emailAuthProvider by instance<FirebaseEmailAuthProvider>()
+    private val googleAuthProvider by instanceOrNull<FirebaseGoogleAuthProvider>()
+    private val githubAuthProvider by instanceOrNull<FirebaseGitHubAuthProvider>()
 
-    private val _emailPasswordEnabled = MutableStateFlow(true)
-    override val emailPasswordEnabled: StateFlow<Boolean> = _emailPasswordEnabled
+    private val _emailPasswordFailure = MutableStateFlow(false)
+    override val emailPasswordFailure: StateFlow<Boolean> = _emailPasswordFailure
 
-    private val _googleEnabled = MutableStateFlow(true)
-    override val googleEnabled: StateFlow<Boolean> = _googleEnabled
+    private val _emailValid = MutableStateFlow(true)
+    override val emailValid: StateFlow<Boolean> = _emailValid
 
-    private val _githubEnabled = MutableStateFlow(true)
-    override val githubEnabled: StateFlow<Boolean> = _githubEnabled
+    private val _passwordValid = MutableStateFlow(true)
+    override val passwordValid: StateFlow<Boolean> = _passwordValid
+
+    private val _loginClickable = MutableStateFlow(false)
+    override val loginClickable: StateFlow<Boolean> = _loginClickable
+
+    private val _sendClickable = MutableStateFlow(false)
+    override val sendClickable: StateFlow<Boolean> = _sendClickable
 
     @Composable
     override fun renderCommon() {
@@ -46,11 +59,58 @@ class LoginScreenComponent(
     }
 
     override fun updateEmail(input: String) {
-        _emailInput.update { input }
+        val newEmail = _emailInput.updateAndGet { input.trimStart() }
+        val valid = _emailValid.updateAndGet { EMAIL_REGEX.matches(newEmail) }
+
+        updateEmailState(email = newEmail, emailGood = valid)
     }
 
     override fun updatePassword(input: String) {
-        _passwordInput.update { input }
+        val newPassword = _passwordInput.updateAndGet { input.trimStart() }
+        val valid = _passwordValid.updateAndGet { newPassword.length >= 8 }
+
+        updateEmailState(password = newPassword, passwordGood = valid)
+    }
+
+    private fun updateEmailState(
+        email: String = emailInput.value,
+        emailGood: Boolean = emailValid.value,
+        password: String = passwordInput.value,
+        passwordGood: Boolean = passwordValid.value
+    ) {
+        _emailPasswordFailure.update { false }
+        _loginClickable.update {
+            emailGood && passwordGood && email.isNotBlank() && password.isNotBlank()
+        }
+        _sendClickable.update {
+            email.isNotBlank() && emailGood
+        }
+    }
+
+    override fun emailLogin() {
+        launchIO {
+            emailAuthProvider.signIn(
+                params = EmailAuthParams(
+                    email = emailInput.value.trim(),
+                    password = passwordInput.value.trim()
+                )
+            ).onFailure {
+                Napier.e("Login failure", it)
+                _emailPasswordFailure.update { true }
+                providerAvailability(
+                    exception = it,
+                    noCollision = {
+
+                    },
+                    onEmpty = {
+                    }
+                )
+            }.onSuccess {
+                withMainContext {
+                    toHome()
+                }
+            }
+        }
     }
 
     override fun googleLogin() {
@@ -58,10 +118,11 @@ class LoginScreenComponent(
             // signIn **false** indicates that it's the first run, and will try again on failure
             googleAuthProvider?.signIn(false)?.onFailure {
                 providerAvailability(it) {
-                    _googleEnabled.update { false }
                 }
             }?.onSuccess {
-                Napier.e("Navigate to HomeScreen")
+                withMainContext {
+                    toHome()
+                }
             }
         }
     }
@@ -70,38 +131,34 @@ class LoginScreenComponent(
         launchIO {
             githubAuthProvider?.signIn(params)?.onFailure {
                 providerAvailability(it) {
-                    _githubEnabled.update { false }
                 }
             }?.onSuccess {
-                Napier.e("Navigate to HomeScreen")
+                withMainContext {
+                    toHome()
+                }
             }
         }
     }
 
-    private fun providerAvailability(exception: Throwable, onEmpty: () -> Unit) {
+    private fun providerAvailability(
+        exception: Throwable,
+        noCollision: () -> Unit = { },
+        onEmpty: () -> Unit
+    ) {
         if (exception is FirebaseAuthService.CollisionException) {
             val email = exception.email.ifBlank { null }
             val allProvider = exception.provider
             if (allProvider.isNotEmpty()) {
-                val changeEmail = _emailPasswordEnabled.updateAndGet {
-                    allProvider.any { p -> p.equals("password", ignoreCase = true) }
-                }
-                if (changeEmail && !email.isNullOrBlank()) {
-                    _emailInput.update { email }
-                }
-                _googleEnabled.update {
-                    allProvider.any { p ->
-                        p.equals("google", ignoreCase = true) || p.equals("google.com", ignoreCase = true)
-                    }
-                }
-                _githubEnabled.update {
-                    allProvider.any { p ->
-                        p.equals("github", ignoreCase = true) || p.equals("github.com", ignoreCase = true)
-                    }
-                }
             } else {
                 onEmpty()
             }
+        } else {
+            noCollision()
         }
+    }
+
+    companion object {
+        private const val EMAIL_PATTERN = """^\S+@\S+\.\S+$"""
+        private val EMAIL_REGEX = Regex(EMAIL_PATTERN, setOf(RegexOption.IGNORE_CASE))
     }
 }

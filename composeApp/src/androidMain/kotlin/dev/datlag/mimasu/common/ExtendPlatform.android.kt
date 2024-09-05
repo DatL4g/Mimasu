@@ -10,11 +10,11 @@ import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.tooling.Platform
 
 @Composable
-actual fun Platform.githubAuthParams(): GitHubAuthParams {
+actual fun Platform.githubAuthParams(): GitHubAuthParams? {
     val context = LocalContext.current
     return remember(context) {
-        context.findActivity()!!
-    }
+        context.findActivity()
+    } ?: context.findActivity()
 }
 
 private tailrec fun Context.findActivity(): Activity? {

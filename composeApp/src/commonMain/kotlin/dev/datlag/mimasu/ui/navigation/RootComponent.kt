@@ -48,7 +48,10 @@ class RootComponent(
         )
         is RootConfig.Login -> LoginScreenComponent(
             componentContext = componentContext,
-            di = di
+            di = di,
+            toHome = {
+                navigation.replaceAll(RootConfig.Initial)
+            }
         )
     }
 
