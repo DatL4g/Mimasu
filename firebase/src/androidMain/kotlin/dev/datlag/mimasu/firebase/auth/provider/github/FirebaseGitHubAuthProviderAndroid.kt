@@ -12,6 +12,7 @@ import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException as AndroidCollisionException
 import com.google.firebase.auth.AuthResult as AndroidAuthResult
 import dev.gitlive.firebase.auth.FirebaseUser
+import dev.gitlive.firebase.auth.android
 import com.google.firebase.auth.FirebaseUser as AndroidFirebaseUser
 import dev.gitlive.firebase.auth.auth
 import kotlinx.collections.immutable.toImmutableSet

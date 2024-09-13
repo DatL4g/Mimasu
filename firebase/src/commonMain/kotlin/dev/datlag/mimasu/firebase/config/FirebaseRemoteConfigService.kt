@@ -7,6 +7,7 @@ import dev.gitlive.firebase.app
 import dev.gitlive.firebase.remoteconfig.FirebaseRemoteConfig
 import dev.gitlive.firebase.remoteconfig.get
 import dev.gitlive.firebase.remoteconfig.remoteConfig
+import kotlin.time.Duration.Companion.seconds
 
 class FirebaseRemoteConfigService(
     private val isDebug: Boolean,
@@ -17,7 +18,7 @@ class FirebaseRemoteConfigService(
         if (isDebug) {
             settings {
                 // Force refresh to 10 seconds when in Debug
-                minimumFetchIntervalInSeconds = 10
+                minimumFetchInterval = 10.seconds
             }
         }
     }.also { it.fetchAndActivate() }
