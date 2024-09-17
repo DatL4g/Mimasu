@@ -8,7 +8,9 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
+import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -21,6 +23,7 @@ import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_DETECT_AC
 import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
+import dev.datlag.tooling.async.scopeCatching
 import okio.FileSystem
 import org.chromium.net.CronetEngine
 import java.util.concurrent.Executors
@@ -42,6 +45,10 @@ class PlayerWrapper(
         .setKeepPostFor302Redirects(true)
         .setHandleSetCookieRequests(true)
 
+    private val httpDataSourceFactory = DefaultHttpDataSource.Factory()
+        .setAllowCrossProtocolRedirects(true)
+        .setKeepPostFor302Redirects(true)
+
     private val cache = SimpleCache(
         (FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "video").toFile(),
         LeastRecentlyUsedCacheEvictor(50 * 1024 * 1024),
@@ -51,12 +58,18 @@ class PlayerWrapper(
         .setCache(cache)
         .setUpstreamDataSourceFactory(cronetDataSourceFactory)
 
+    private val fallbackDataSourceFactory = DataSource.Factory {
+        scopeCatching {
+            cacheDataSourceFactory.createDataSource()
+        }.getOrNull() ?: httpDataSourceFactory.createDataSource()
+    }
+
     private val localPlayer = ExoPlayer.Builder(context).apply {
         setSeekBackIncrementMs(10000)
         setSeekForwardIncrementMs(10000)
         setMediaSourceFactory(
             DefaultMediaSourceFactory(
-                DefaultDataSource.Factory(context, cacheDataSourceFactory),
+                DefaultDataSource.Factory(context, fallbackDataSourceFactory),
                 extractorFactory
             )
         )
