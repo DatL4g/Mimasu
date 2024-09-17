@@ -11,6 +11,8 @@ compose = "1.7.0-beta02"
 compose-report = "1.4.0"
 connectivity = "1.1.2"
 coroutines = "1.8.1"
+cronet = "18.1.0"
+cronet-okhttp = "0.1.0"
 datetime = "0.6.1"
 decompose = "3.1.0"
 desugar = "2.1.2"
@@ -58,6 +60,8 @@ connectivity-device = { group = "dev.jordond.connectivity", name = "connectivity
 coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "coroutines" }
+cronet = { group = "com.google.android.gms", name = "play-services-cronet", version.ref = "cronet" }
+cronet-okhttp = { group = "com.google.net.cronet", name = "cronet-okhttp", version.ref = "cronet-okhttp" }
 datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
 decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }

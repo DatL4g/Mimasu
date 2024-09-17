@@ -8,15 +8,15 @@ import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import dev.datlag.mimasu.ui.custom.AdaptiveScaffold
 
 @Composable
 fun CommonInitialScreen(
     content: @Composable () -> Unit
 ) {
-    NavigationSuiteScaffold(
+    AdaptiveScaffold(
         navigationSuiteItems = {
             item(
                 selected = false,
@@ -59,10 +59,6 @@ fun CommonInitialScreen(
             )
         }
     ) {
-        Box(
-            modifier = Modifier.safeDrawingPadding()
-        ) {
-            content()
-        }
+        content()
     }
 }

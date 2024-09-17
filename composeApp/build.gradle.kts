@@ -118,6 +118,8 @@ kotlin {
                 implementation(libs.ktor.jvm)
                 implementation(libs.coroutines.android)
                 implementation(libs.connectivity.device)
+                implementation(libs.cronet)
+                implementation(libs.cronet.okhttp)
 
                 implementation(libs.splashscreen)
             }
@@ -160,6 +162,9 @@ android {
     }
     buildFeatures {
         buildConfig = true
+    }
+    androidResources {
+        generateLocaleConfig = true
     }
 }
 

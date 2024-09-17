@@ -5,6 +5,7 @@ import androidx.multidex.MultiDexApplication
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
+import com.google.android.gms.net.CronetProviderInstaller
 import dev.datlag.mimasu.BuildConfig
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.firebase.initializeFirebase
@@ -77,5 +78,6 @@ class App : MultiDexApplication(), DIAware {
         applicationScope.launchIO {
             NetworkModule.fetchConfig(config)
         }
+        CronetProviderInstaller.installProvider(this)
     }
 }

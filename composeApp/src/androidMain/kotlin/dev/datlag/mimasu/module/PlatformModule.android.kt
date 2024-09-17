@@ -3,6 +3,7 @@ package dev.datlag.mimasu.module
 import android.content.Context
 import coil3.ImageLoader
 import coil3.request.allowHardware
+import com.google.net.cronet.okhttptransport.CronetInterceptor
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
@@ -18,6 +19,7 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
+import org.chromium.net.CronetEngine
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
@@ -27,9 +29,22 @@ actual data object PlatformModule {
     private const val NAME = "AndroidPlatformModule"
 
     actual val di: DI.Module = DI.Module(NAME) {
+        bindSingleton<CronetEngine> {
+            CronetEngine.Builder(instance<Context>())
+                .enableBrotli(true)
+                .enableQuic(true)
+                .enableHttp2(true)
+                .enablePublicKeyPinningBypassForLocalTrustAnchors(true)
+                .build()
+        }
         bindSingleton<HttpClient> {
             HttpClient(OkHttp) {
                 followRedirects = true
+                engine {
+                    addInterceptor(
+                        CronetInterceptor.newBuilder(instance()).build()
+                    )
+                }
                 install(ContentNegotiation) {
                     json(instance(), ContentType.Application.Json)
                     json(instance(), ContentType.Text.Plain)
