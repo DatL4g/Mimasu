@@ -16,4 +16,6 @@ interface TvHomeComponent : PackageAware {
     val popularMovies: Flow<PagingData<Discover.MovieResponse.Movie>>
     val popularShows: Flow<PagingData<Discover.TVResponse.TV>>
 
+    fun watchVideo()
+
 }

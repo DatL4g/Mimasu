@@ -73,5 +73,14 @@ fun HomeScreen(component: HomeComponent) {
                 }
             }
         }
+        item {
+            Button(
+                onClick = {
+                    component.watchVideo()
+                }
+            ) {
+                Text(text = "Watch Video")
+            }
+        }
     }
 }

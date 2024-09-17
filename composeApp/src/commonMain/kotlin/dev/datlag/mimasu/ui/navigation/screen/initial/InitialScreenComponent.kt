@@ -25,6 +25,7 @@ import org.kodein.di.DI
 class InitialScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
+    private val watchVideo: () -> Unit
 ) : InitialComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<InitialConfig>()
@@ -42,7 +43,8 @@ class InitialScreenComponent(
     ): Component = when (config) {
         is InitialConfig.Home -> HomeScreenComponent(
             componentContext = componentContext,
-            di = di
+            di = di,
+            watchVideo = watchVideo
         )
     }
 

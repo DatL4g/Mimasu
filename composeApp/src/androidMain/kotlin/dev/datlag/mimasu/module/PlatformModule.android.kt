@@ -1,6 +1,9 @@
 package dev.datlag.mimasu.module
 
 import android.content.Context
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.database.DatabaseProvider
+import androidx.media3.database.StandaloneDatabaseProvider
 import coil3.ImageLoader
 import coil3.request.allowHardware
 import com.google.net.cronet.okhttptransport.CronetInterceptor
@@ -24,6 +27,7 @@ import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
+@UnstableApi
 actual data object PlatformModule {
 
     private const val NAME = "AndroidPlatformModule"
@@ -41,6 +45,7 @@ actual data object PlatformModule {
             HttpClient(OkHttp) {
                 followRedirects = true
                 engine {
+                    // Add the Cronet interceptor last, otherwise the subsequent interceptors will be skipped.
                     addInterceptor(
                         CronetInterceptor.newBuilder(instance()).build()
                     )
@@ -72,6 +77,9 @@ actual data object PlatformModule {
                     firebaseAuthService = instance()
                 )
             )
+        }
+        bindSingleton<DatabaseProvider> {
+            StandaloneDatabaseProvider(instance())
         }
     }
 }

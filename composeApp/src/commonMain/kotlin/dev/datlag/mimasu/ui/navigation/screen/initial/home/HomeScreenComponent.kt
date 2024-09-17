@@ -27,7 +27,8 @@ import org.kodein.di.instanceOrNull
 class HomeScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
-    private val packageResolver: PackageResolver = di.packageResolver()
+    private val packageResolver: PackageResolver = di.packageResolver(),
+    private val watchVideo: () -> Unit
 ): HomeComponent, ComponentContext by componentContext, PackageAware by packageResolver {
 
     private val tmdb by instance<TMDB>()
@@ -110,6 +111,10 @@ class HomeScreenComponent(
         onRender {
             TvHomeScreen(this)
         }
+    }
+
+    override fun watchVideo() {
+        watchVideo.invoke()
     }
 
     companion object {

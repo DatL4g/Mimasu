@@ -9,14 +9,17 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceAll
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.ui.navigation.screen.initial.InitialScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.login.LoginScreen
 import dev.datlag.mimasu.ui.navigation.screen.login.LoginScreenComponent
+import dev.datlag.mimasu.ui.navigation.screen.video.VideoScreenComponent
 import dev.datlag.tooling.scopeCatching
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
@@ -44,7 +47,10 @@ class RootComponent(
     ): Component = when (rootConfig) {
         is RootConfig.Initial -> InitialScreenComponent(
             componentContext = componentContext,
-            di = di
+            di = di,
+            watchVideo = {
+                navigation.bringToFront(RootConfig.Video)
+            }
         )
         is RootConfig.Login -> LoginScreenComponent(
             componentContext = componentContext,
@@ -52,6 +58,10 @@ class RootComponent(
             toHome = {
                 navigation.replaceAll(RootConfig.Initial)
             }
+        )
+        is RootConfig.Video -> VideoScreenComponent(
+            componentContext = componentContext,
+            di = di
         )
     }
 

@@ -17,7 +17,7 @@ actual fun Platform.githubAuthParams(): GitHubAuthParams? {
     } ?: context.findActivity()
 }
 
-private tailrec fun Context.findActivity(): Activity? {
+tailrec fun Context.findActivity(): Activity? {
     return when (this) {
         is Activity -> this
         is ContextWrapper -> this.baseContext.findActivity()

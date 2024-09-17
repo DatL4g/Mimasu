@@ -10,4 +10,7 @@ sealed class RootConfig {
 
     @Serializable
     data object Login : RootConfig()
+
+    @Serializable
+    data object Video : RootConfig()
 }

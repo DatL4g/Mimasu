@@ -122,6 +122,7 @@ kotlin {
                 implementation(libs.cronet.okhttp)
 
                 implementation(libs.splashscreen)
+                implementation(libs.bundles.android.media)
             }
         }
 
