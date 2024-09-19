@@ -28,6 +28,7 @@ import androidx.media3.database.DatabaseProvider
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -50,7 +51,7 @@ class PlayerWrapper(
     private val context: Context,
     private val castContext: CastContext?,
     cronetEngine: CronetEngine?,
-    databaseProvider: DatabaseProvider
+    cache: Cache
 ) : Player, SessionAvailabilityListener, Player.Listener {
 
     private val extractorFactory = DefaultExtractorsFactory().setTsExtractorFlags(
@@ -73,12 +74,6 @@ class PlayerWrapper(
             cronetDataSourceFactory?.createDataSource()
         }.getOrNull() ?: httpDataSourceFactory.createDataSource()
     }
-
-    private val cache = SimpleCache(
-        (FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "video").toFile(),
-        LeastRecentlyUsedCacheEvictor(50 * 1024 * 1024),
-        databaseProvider
-    )
 
     private val cacheDataSourceFactory = CacheDataSource.Factory()
         .setCache(cache)

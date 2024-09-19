@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.database.StandaloneDatabaseProvider
+import androidx.media3.datasource.cache.Cache
+import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
+import androidx.media3.datasource.cache.SimpleCache
 import coil3.ImageLoader
 import coil3.request.allowHardware
 import com.google.net.cronet.okhttptransport.CronetInterceptor
@@ -24,6 +27,7 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
+import okio.FileSystem
 import org.chromium.net.CronetEngine
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
@@ -86,6 +90,13 @@ actual data object PlatformModule {
         }
         bindSingleton<DatabaseProvider> {
             StandaloneDatabaseProvider(instance())
+        }
+        bindSingleton<Cache> {
+            SimpleCache(
+                (FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "video").toFile(),
+                LeastRecentlyUsedCacheEvictor(50 * 1024 * 1024),
+                instance()
+            )
         }
     }
 
