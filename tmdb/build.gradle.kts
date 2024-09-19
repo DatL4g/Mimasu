@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktorfit)
     alias(libs.plugins.sekret)
+    alias(libs.plugins.stacktrace.decoroutinator) apply false
 }
 
 kotlin {
@@ -37,6 +38,10 @@ kotlin {
             api(libs.paging)
 
             implementation(project(":core"))
+        }
+
+        val jvmMain by getting {
+            // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
         }
     }
 }

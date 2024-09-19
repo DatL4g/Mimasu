@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.cocoapods)
     alias(libs.plugins.sekret)
+    alias(libs.plugins.stacktrace.decoroutinator) apply false
 }
 
 kotlin {
@@ -44,8 +45,12 @@ kotlin {
             implementation(project(":core"))
         }
 
-        androidMain.dependencies {
-            implementation(libs.bundles.google.auth)
+        val androidMain by getting {
+            // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
+
+            dependencies {
+                implementation(libs.bundles.google.auth)
+            }
         }
     }
 

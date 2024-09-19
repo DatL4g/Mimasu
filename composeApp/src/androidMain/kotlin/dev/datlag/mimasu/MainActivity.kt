@@ -54,11 +54,7 @@ class MainActivity : ComponentActivity() {
         )
 
         Kast.setup(this)
-        Intent(MimasuConnection.CONNECTION_ACTION).apply {
-            setPackage(PackageResolver.extension(this@MainActivity, 0))
-        }.also { intent ->
-            bindService(intent, MimasuConnection, Context.BIND_AUTO_CREATE)
-        }
+        PackageResolver.bindExtension(this)
         
         setContent { 
             CompositionLocalProvider(

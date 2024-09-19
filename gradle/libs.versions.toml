@@ -40,6 +40,7 @@ play-services = "21.2.0"
 sekret = "2.0.0-alpha-07"
 serialization = "1.7.1"
 splashscreen = "1.0.1"
+stacktrace-decoroutinator = "2.4.5"
 tooling = "1.6.5"
 tv-foundation = "1.0.0-alpha11"
 tv-lifecycle = "2.8.6"
@@ -139,4 +140,5 @@ multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotl
 osdetector = { id = "com.google.osdetector", version.ref = "osdetector" }
 sekret = { id = "dev.datlag.sekret", version.ref = "sekret" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+stacktrace-decoroutinator = { id = "dev.reformator.stacktracedecoroutinator", version.ref = "stacktrace-decoroutinator" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }

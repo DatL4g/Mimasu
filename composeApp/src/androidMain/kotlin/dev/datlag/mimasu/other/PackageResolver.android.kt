@@ -198,15 +198,36 @@ actual class PackageResolver(
             ?: context.applicationContext.packageManager
         )
 
-        fun extension(packageManager: PackageManager, index: Int): String {
-            return extensions(packageManager).getOrNull(index) ?: MIMASU_EXTENSION_PACKAGE
-        }
+        /**
+         * Binds the watch extension from any available provider.
+         *
+         * @return [Boolean] whether the service could be bound.
+         */
+        fun bindExtension(context: Context): Boolean {
+            val availablePackages = extensions(
+                context.packageManager ?: context.applicationContext.packageManager
+            ).ifEmpty { return MimasuConnection.bound.value }
 
-        fun extension(context: Context, index: Int): String = extension(
-            context.packageManager
-                ?: context.applicationContext.packageManager,
-            index
-        )
+            var index = 0
+            var bound = false
+            while (index < availablePackages.size && !MimasuConnection.bound.value) {
+                val bindIntent = Intent(MimasuConnection.CONNECTION_ACTION).apply {
+                    setPackage(availablePackages[index])
+                }
+                val result = scopeCatching {
+                    context.bindService(bindIntent, MimasuConnection, Context.BIND_AUTO_CREATE)
+                }
+                if (result.isSuccess) {
+                    bound = true
+                    break
+                } else if (result.isFailure) {
+                    bound = false
+                }
+
+                index++
+            }
+            return bound || MimasuConnection.bound.value
+        }
     }
 
 }

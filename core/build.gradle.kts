@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.stacktrace.decoroutinator) apply false
 }
 
 kotlin {
@@ -34,6 +35,14 @@ kotlin {
             implementation(libs.serialization)
             implementation(libs.datetime)
             api(libs.immutable)
+        }
+
+        val androidMain by getting {
+            // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
+        }
+
+        val jvmMain by getting {
+            // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
         }
     }
 }

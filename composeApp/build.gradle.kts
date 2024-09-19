@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.osdetector)
     alias(libs.plugins.sekret)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.stacktrace.decoroutinator) apply false
 }
 
 htmlComposeCompilerReport {
@@ -100,6 +101,7 @@ kotlin {
 
         val androidMain by getting {
             apply(plugin = "kotlin-parcelize")
+            // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
 
             dependencies {
                 implementation(libs.android)

@@ -18,6 +18,7 @@ plugins {
     alias(libs.plugins.osdetector) apply false
     alias(libs.plugins.sekret) apply false
     alias(libs.plugins.serialization) apply false
+    alias(libs.plugins.stacktrace.decoroutinator) apply false
     alias(libs.plugins.versions)
 }
 

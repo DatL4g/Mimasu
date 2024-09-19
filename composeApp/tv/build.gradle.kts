@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.stacktrace.decoroutinator) apply false
 }
 
 kotlin {
@@ -30,6 +31,7 @@ kotlin {
 
         val androidMain by getting {
             apply(plugin = "kotlin-parcelize")
+            // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
 
             dependencies {
                 implementation(libs.tv.foundation)
@@ -40,10 +42,14 @@ kotlin {
             }
         }
 
+        val jvmMain by getting {
+            // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
+        }
+
         val nonAndroidMain by creating {
             dependsOn(commonMain.get())
 
-            jvmMain.orNull?.dependsOn(this)
+            jvmMain.dependsOn(this)
             appleMain.orNull?.dependsOn(this)
         }
     }
