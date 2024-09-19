@@ -9,14 +9,16 @@ import coil3.request.allowHardware
 import com.google.net.cronet.okhttptransport.CronetInterceptor
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
+import dev.datlag.mimasu.common.cronetEngine
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProviderAndroid
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderAndroid
-import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
+import dev.datlag.mimasu.module.PlatformModule.Cronet.Available
 import dev.datlag.mimasu.other.PackageResolver
+import dev.datlag.tooling.scopeCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -33,22 +35,26 @@ actual data object PlatformModule {
     private const val NAME = "AndroidPlatformModule"
 
     actual val di: DI.Module = DI.Module(NAME) {
-        bindSingleton<CronetEngine> {
-            CronetEngine.Builder(instance<Context>())
-                .enableBrotli(true)
-                .enableQuic(true)
-                .enableHttp2(true)
-                .enablePublicKeyPinningBypassForLocalTrustAnchors(true)
-                .build()
+        bindSingleton<Cronet> {
+            scopeCatching {
+                CronetEngine.Builder(instance<Context>())
+                    .enableBrotli(true)
+                    .enableQuic(true)
+                    .enableHttp2(true)
+                    .enablePublicKeyPinningBypassForLocalTrustAnchors(true)
+                    .build()
+            }.getOrNull()?.let(::Available) ?: Cronet.NonAvailable
         }
         bindSingleton<HttpClient> {
             HttpClient(OkHttp) {
                 followRedirects = true
                 engine {
                     // Add the Cronet interceptor last, otherwise the subsequent interceptors will be skipped.
-                    addInterceptor(
-                        CronetInterceptor.newBuilder(instance()).build()
-                    )
+                    cronetEngine()?.let {
+                        addInterceptor(
+                            CronetInterceptor.newBuilder(it).build()
+                        )
+                    }
                 }
                 install(ContentNegotiation) {
                     json(instance(), ContentType.Application.Json)
@@ -81,6 +87,14 @@ actual data object PlatformModule {
         bindSingleton<DatabaseProvider> {
             StandaloneDatabaseProvider(instance())
         }
+    }
+
+    sealed interface Cronet {
+        val engine: CronetEngine?
+            get() = null
+
+        data class Available(override val engine: CronetEngine) : Cronet
+        data object NonAvailable : Cronet
     }
 }
 

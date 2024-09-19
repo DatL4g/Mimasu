@@ -20,7 +20,8 @@ interface LoginComponent : Component {
     fun updatePassword(input: String)
     fun emailLogin()
 
-
     fun googleLogin()
     fun githubLogin(params: GitHubAuthParams)
+
+    fun skipLogin()
 }

@@ -243,7 +243,7 @@ fun LoginScreen(component: LoginComponent) {
         FilledTonalButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-
+                component.skipLogin()
             }
         ) {
             Text("Skip for now")

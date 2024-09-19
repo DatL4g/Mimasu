@@ -32,7 +32,7 @@ import java.util.concurrent.Executors
 class PlayerWrapper(
     private val context: Context,
     private val castContext: CastContext?,
-    private val cronetEngine: CronetEngine,
+    private val cronetEngine: CronetEngine?,
     private val databaseProvider: DatabaseProvider
 ) : SessionAvailabilityListener, Player.Listener {
 
@@ -41,13 +41,21 @@ class PlayerWrapper(
     )
 
     private val cronetExecutor = Executors.newSingleThreadExecutor()
-    private val cronetDataSourceFactory = CronetDataSource.Factory(cronetEngine, cronetExecutor)
-        .setKeepPostFor302Redirects(true)
-        .setHandleSetCookieRequests(true)
+    private val cronetDataSourceFactory = cronetEngine?.let {
+        CronetDataSource.Factory(it, cronetExecutor)
+            .setKeepPostFor302Redirects(true)
+            .setHandleSetCookieRequests(true)
+    }
 
     private val httpDataSourceFactory = DefaultHttpDataSource.Factory()
         .setAllowCrossProtocolRedirects(true)
         .setKeepPostFor302Redirects(true)
+
+    private val fallbackDataSourceFactory = DataSource.Factory {
+        scopeCatching {
+            cronetDataSourceFactory?.createDataSource()
+        }.getOrNull() ?: httpDataSourceFactory.createDataSource()
+    }
 
     private val cache = SimpleCache(
         (FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "video").toFile(),
@@ -56,20 +64,14 @@ class PlayerWrapper(
     )
     private val cacheDataSourceFactory = CacheDataSource.Factory()
         .setCache(cache)
-        .setUpstreamDataSourceFactory(cronetDataSourceFactory)
-
-    private val fallbackDataSourceFactory = DataSource.Factory {
-        scopeCatching {
-            cacheDataSourceFactory.createDataSource()
-        }.getOrNull() ?: httpDataSourceFactory.createDataSource()
-    }
+        .setUpstreamDataSourceFactory(fallbackDataSourceFactory)
 
     private val localPlayer = ExoPlayer.Builder(context).apply {
         setSeekBackIncrementMs(10000)
         setSeekForwardIncrementMs(10000)
         setMediaSourceFactory(
             DefaultMediaSourceFactory(
-                DefaultDataSource.Factory(context, fallbackDataSourceFactory),
+                DefaultDataSource.Factory(context, cacheDataSourceFactory),
                 extractorFactory
             )
         )

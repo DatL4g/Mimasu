@@ -140,6 +140,10 @@ class LoginScreenComponent(
         }
     }
 
+    override fun skipLogin() {
+        toHome()
+    }
+
     private fun providerAvailability(
         exception: Throwable,
         noCollision: () -> Unit = { },
