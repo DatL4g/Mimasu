@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.navigation.screen.video
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.SurfaceView
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -9,7 +10,6 @@ import androidx.media3.ui.PlayerView
 import dev.datlag.mimasu.common.findActivity
 import dev.datlag.mimasu.other.AudioHelper
 import dev.datlag.mimasu.other.BrightnessHelper
-import io.github.aakira.napier.Napier
 
 @OptIn(UnstableApi::class)
 class MimasuPlayerView @JvmOverloads constructor(
@@ -36,6 +36,10 @@ class MimasuPlayerView @JvmOverloads constructor(
         } else {
             showController()
         }
+    }
+
+    fun setSecure(isSecure: Boolean) {
+        (videoSurfaceView as? SurfaceView)?.setSecure(isSecure)
     }
 
     override fun onSingleTap() {

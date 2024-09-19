@@ -56,7 +56,9 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
             .fillMaxSize()
             .background(Color.Black),
         factory = { viewContext ->
-            MimasuPlayerView(viewContext)
+            MimasuPlayerView(viewContext).also {
+                it.setSecure(true)
+            }
         },
         update = { player ->
             player.isSoundEffectsEnabled = false
