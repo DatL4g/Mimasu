@@ -40,7 +40,8 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     }
 
     LaunchedEffect(playerWrapper, mediaItem) {
-        playerWrapper.play(mediaItem)
+        playerWrapper.setMediaItem(mediaItem)
+        playerWrapper.prepare()
     }
 
     DisposableEffect(playerWrapper) {
@@ -59,7 +60,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
         update = { player ->
             player.isSoundEffectsEnabled = false
             player.keepScreenOn = true // change to be play store compliant
-            player.player = playerWrapper.player
+            player.player = playerWrapper
         }
     )
 }
