@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,10 +14,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.database.DatabaseProvider
 import androidx.media3.datasource.cache.Cache
 import dev.datlag.kast.Kast
 import dev.datlag.mimasu.common.rememberCronetEngine
+import dev.datlag.mimasu.core.MimasuConnection
+import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
 
@@ -52,16 +54,17 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
         }
     }
 
+    val videoPlayerSecure by MimasuConnection.isVideoPlayerSecure.collectAsStateWithLifecycle()
+
     AndroidView(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
         factory = { viewContext ->
-            MimasuPlayerView(viewContext).also {
-                it.setSecure(true)
-            }
+            MimasuPlayerView(viewContext)
         },
         update = { player ->
+            player.setSecure(videoPlayerSecure)
             player.isSoundEffectsEnabled = false
             player.keepScreenOn = true // change to be play store compliant
             player.player = playerWrapper

@@ -23,6 +23,9 @@
         <package android:name="com.crunchyroll.crunchyroid" />
 
         <package android:name="com.cbs.ca" />
+        <intent>
+            <action android:name="dev.datlag.mimasu.core.IMimasuService" />
+        </intent>
     </queries>
 
     <application

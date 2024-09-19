@@ -1,9 +1,11 @@
 plugins {
+    alias(libs.plugins.android.library)
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.serialization)
 }
 
 kotlin {
+    androidTarget()
     jvm()
 
     iosX64()
@@ -28,9 +30,27 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.coroutines)
             implementation(libs.serialization)
             implementation(libs.datetime)
             api(libs.immutable)
         }
+    }
+}
+
+android {
+    compileSdk = 34
+    namespace = "dev.datlag.mimasu.core"
+    sourceSets["main"].aidl.srcDirs("src/androidMain/aidl")
+
+    defaultConfig {
+        minSdk = 23
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        aidl = true
     }
 }

@@ -1,9 +1,11 @@
 package dev.datlag.mimasu.other
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import dev.datlag.mimasu.core.MimasuConnection
 import dev.datlag.mimasu.tv.Package
 import dev.datlag.mimasu.tv.PackageAware
 import dev.datlag.tooling.scopeCatching
@@ -160,10 +162,51 @@ actual class PackageResolver(
         private const val AMAZON_PRIME_VIDEO_TV_PACKAGE = "com.amazon.amazonvideo.livingroom"
 
         private const val BURNING_SERIES_PACKAGE = "dev.datlag.burningseries"
+        private const val MIMASU_EXTENSION_PACKAGE = "dev.datlag.mimasu.extension"
 
         private const val CRUNCHY_ROLL_PACKAGE = "com.crunchyroll.crunchyroid"
 
         private const val PARAMOUNT_PLUS_PACKAGE = "com.cbs.ca"
+
+        fun extensions(packageManager: PackageManager): List<String> {
+            val intent = Intent(MimasuConnection.CONNECTION_ACTION)
+            val resolveInfoList = scopeCatching {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    packageManager.queryIntentServices(intent, PackageManager.ResolveInfoFlags.of(0))
+                } else {
+                    packageManager.queryIntentServices(intent, 0)
+                }
+            }.getOrNull() ?: return emptyList()
+
+            return resolveInfoList.mapNotNull {
+                it.serviceInfo?.packageName?.ifBlank { null } ?: it.resolvePackageName?.ifBlank { null }
+            }.toSet().sortedWith(compareBy(
+                { it != MIMASU_EXTENSION_PACKAGE },
+                { it != BURNING_SERIES_PACKAGE },
+                { it != CRUNCHY_ROLL_PACKAGE },
+                { it != DISNEY_PLUS_PACKAGE },
+                { it != NETFLIX_DEFAULT_PACKAGE },
+                { it != NETFLIX_TV_PACKAGE },
+                { it != AMAZON_PRIME_VIDEO_DEFAULT_PACKAGE },
+                { it != AMAZON_PRIME_VIDEO_TV_PACKAGE },
+                { it != PARAMOUNT_PLUS_PACKAGE }
+            ))
+        }
+
+        fun extensions(context: Context) = extensions(
+            context.packageManager
+            ?: context.applicationContext.packageManager
+        )
+
+        fun extension(packageManager: PackageManager, index: Int): String {
+            return extensions(packageManager).getOrNull(index) ?: MIMASU_EXTENSION_PACKAGE
+        }
+
+        fun extension(context: Context, index: Int): String = extension(
+            context.packageManager
+                ?: context.applicationContext.packageManager,
+            index
+        )
     }
 
 }

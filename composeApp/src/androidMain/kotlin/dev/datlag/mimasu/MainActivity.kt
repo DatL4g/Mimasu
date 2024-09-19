@@ -1,5 +1,7 @@
 package dev.datlag.mimasu
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,11 +15,14 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import dev.datlag.kast.Kast
+import dev.datlag.mimasu.core.MimasuConnection
 import dev.datlag.mimasu.module.NetworkModule
+import dev.datlag.mimasu.other.PackageResolver
 import dev.datlag.mimasu.ui.navigation.RootComponent
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.safeCast
+import io.github.aakira.napier.Napier
 import org.kodein.di.DIAware
 
 class MainActivity : ComponentActivity() {
@@ -49,6 +54,11 @@ class MainActivity : ComponentActivity() {
         )
 
         Kast.setup(this)
+        Intent(MimasuConnection.CONNECTION_ACTION).apply {
+            setPackage(PackageResolver.extension(this@MainActivity, 0))
+        }.also { intent ->
+            bindService(intent, MimasuConnection, Context.BIND_AUTO_CREATE)
+        }
         
         setContent { 
             CompositionLocalProvider(
@@ -71,5 +81,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        unbindService(MimasuConnection)
     }
 }
