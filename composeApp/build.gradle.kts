@@ -60,13 +60,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             // implementation(compose.material3AdaptiveNavigationSuite)
             implementation("org.jetbrains.compose.material3:material3-adaptive-navigation-suite:1.7.0-beta02")
-            implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.0.0-alpha03")
-            implementation("org.jetbrains.compose.material3.adaptive:adaptive-layout:1.0.0-alpha03")
-            implementation("org.jetbrains.compose.material3.adaptive:adaptive-navigation:1.0.0-alpha03")
-
-            implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.8.2")
-            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
             implementation(libs.paging.compose)
 
             implementation(libs.kodein)
@@ -123,6 +116,7 @@ kotlin {
 
                 implementation(libs.splashscreen)
                 implementation(libs.bundles.android.media)
+                implementation(libs.kast)
             }
         }
 

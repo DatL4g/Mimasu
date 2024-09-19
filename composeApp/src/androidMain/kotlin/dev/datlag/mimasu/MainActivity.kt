@@ -12,6 +12,7 @@ import com.arkivanov.essenty.backhandler.backHandler
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
+import dev.datlag.kast.Kast
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.navigation.RootComponent
 import dev.datlag.tooling.compose.platform.PlatformText
@@ -46,6 +47,8 @@ class MainActivity : ComponentActivity() {
             ),
             di = di
         )
+
+        Kast.setup(this)
         
         setContent { 
             CompositionLocalProvider(

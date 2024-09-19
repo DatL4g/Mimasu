@@ -14,6 +14,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
+import dev.datlag.kast.Kast
 import dev.datlag.mimasu.common.rememberCronetEngine
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
@@ -33,7 +34,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     val playerWrapper = remember(cronetEngine, databaseProvider) {
         PlayerWrapper(
             context = context,
-            castContext = null,
+            castContext = Kast.castContext,
             cronetEngine = cronetEngine,
             databaseProvider = databaseProvider
         )

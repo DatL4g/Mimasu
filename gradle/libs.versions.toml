@@ -21,6 +21,7 @@ google-identity = "1.1.1"
 haze = "0.7.3"
 immutable = "0.3.7"
 kache = "2.1.0"
+kast = "0.2.1"
 kmpalette = "3.1.0"
 kodein = "7.22.0"
 kolor = "1.7.0"
@@ -41,7 +42,7 @@ serialization = "1.7.1"
 splashscreen = "1.0.1"
 tooling = "1.6.5"
 tv-foundation = "1.0.0-alpha11"
-tv-lifecycle = "2.8.5"
+tv-lifecycle = "2.8.6"
 tv-material = "1.0.0"
 versions = "0.51.0"
 windowsize = "0.5.0"
@@ -79,6 +80,7 @@ haze = { group = "dev.chrisbanes.haze", name = "haze", version.ref = "haze" }
 haze-materials = { group = "dev.chrisbanes.haze", name = "haze-materials", version.ref = "haze" }
 immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "immutable" }
 kache = { group = "com.mayakapps.kache", name = "kache", version.ref = "kache" }
+kast = { group = "dev.datlag.kast", name = "kast", version.ref = "kast" }
 kmpalette = { group = "com.kmpalette", name = "kmpalette-core", version.ref = "kmpalette" }
 kodein = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
 kodein-compose = { group = "org.kodein.di", name = "kodein-di-framework-compose", version.ref = "kodein" }

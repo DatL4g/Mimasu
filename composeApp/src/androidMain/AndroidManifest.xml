@@ -50,6 +50,10 @@
         </activity>
 
         <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="dev.datlag.mimasu.other.CastOptionsProvider" />
+
+        <meta-data
             android:name="instantapps.clients.allowed"
             android:value="true" />
 
@@ -60,5 +64,10 @@
         <meta-data
             android:name="open_source_license"
             android:value="GNU GENERAL PUBLIC LICENSE Version 3" />
+
+        <receiver
+            android:name="androidx.mediarouter.media.MediaTransferReceiver"
+            android:exported="true" />
+
     </application>
 </manifest>
