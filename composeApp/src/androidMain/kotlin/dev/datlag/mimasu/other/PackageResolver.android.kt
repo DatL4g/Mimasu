@@ -5,9 +5,13 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.graphics.toColor
+import androidx.core.graphics.toColorInt
 import dev.datlag.mimasu.core.MimasuConnection
+import dev.datlag.mimasu.core.common.toColorIntCompat
 import dev.datlag.mimasu.tv.Package
 import dev.datlag.mimasu.tv.PackageAware
+import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.tooling.scopeCatching
 
 actual class PackageResolver(
@@ -17,6 +21,7 @@ actual class PackageResolver(
     actual val disneyPlus: DisneyPlus = DisneyPlus()
     actual val amazonPrimeVideo: AmazonPrimeVideo = AmazonPrimeVideo()
     actual val burningSeries: BurningSeries = BurningSeries()
+    actual val mimasuExtension: MimasuExtension = MimasuExtension()
     actual val crunchyRoll: CrunchyRoll = CrunchyRoll()
     actual val paramountPlus: ParamountPlus = ParamountPlus()
 
@@ -31,6 +36,9 @@ actual class PackageResolver(
 
     override val burningSeriesInstalled: Boolean
         get() = burningSeries.installed
+
+    override val mimasuExtensionInstalled: Boolean
+        get() = mimasuExtension.installed
 
     override val crunchyRollInstalled: Boolean
         get() = crunchyRoll.installed
@@ -111,6 +119,12 @@ actual class PackageResolver(
             } else {
                 packageManager.getPackageInfo(BURNING_SERIES_PACKAGE, 0)
             }
+        }.getOrNull() ?: scopeCatching {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager.getPackageInfo(OLD_BURNING_SERIES_PACKAGE, PackageManager.PackageInfoFlags.of(0))
+            } else {
+                packageManager.getPackageInfo(OLD_BURNING_SERIES_PACKAGE, 0)
+            }
         }.getOrNull()
 
         actual override val installed: Boolean
@@ -118,6 +132,28 @@ actual class PackageResolver(
 
         override val brandColor: Int
             get() = 0xFF094576.toInt()
+    }
+
+    actual inner class MimasuExtension : Package {
+        private val packageInfo: PackageInfo? = scopeCatching {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager.getPackageInfo(MIMASU_EXTENSION_PACKAGE, PackageManager.PackageInfoFlags.of(0))
+            } else {
+                packageManager.getPackageInfo(MIMASU_EXTENSION_PACKAGE, 0)
+            }
+        }.getOrNull()
+
+        actual override val installed: Boolean
+            get() = packageInfo != null
+
+        override val brandColor: Int
+            get() {
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Colors.THEME_LIGHT_PRIMARY.toColorInt()
+                } else {
+                    Colors.THEME_LIGHT_PRIMARY.toColorIntCompat()
+                }
+            }
     }
 
     actual inner class CrunchyRoll : Package {
@@ -162,12 +198,16 @@ actual class PackageResolver(
         private const val AMAZON_PRIME_VIDEO_TV_PACKAGE = "com.amazon.amazonvideo.livingroom"
 
         private const val BURNING_SERIES_PACKAGE = "dev.datlag.burningseries"
+        private const val OLD_BURNING_SERIES_PACKAGE = "de.datlag.burningseries"
         private const val MIMASU_EXTENSION_PACKAGE = "dev.datlag.mimasu.extension"
 
         private const val CRUNCHY_ROLL_PACKAGE = "com.crunchyroll.crunchyroid"
 
         private const val PARAMOUNT_PLUS_PACKAGE = "com.cbs.ca"
 
+        /**
+         * Get all available packageNames implementing the extension.
+         */
         fun extensions(packageManager: PackageManager): List<String> {
             val intent = Intent(MimasuConnection.CONNECTION_ACTION)
             val resolveInfoList = scopeCatching {
@@ -193,6 +233,9 @@ actual class PackageResolver(
             ))
         }
 
+        /**
+         * Get all available packageNames implementing the extension.
+         */
         fun extensions(context: Context) = extensions(
             context.packageManager
             ?: context.applicationContext.packageManager

@@ -20,3 +20,11 @@ fun Long.normalize(oldMin: Long, oldMax: Long, newMin: Long, newMax: Long): Long
 
     return (this - oldMin) * newRange / oldRange + newMin
 }
+
+fun Long.toColorIntCompat(): Int {
+    val alpha = (this shr 24 and 0xFF).toInt()
+    val red = (this shr 16 and 0xFF).toInt()
+    val green = (this shr 8 and 0xFF).toInt()
+    val blue = (this and 0xFF).toInt()
+    return (alpha shl 24) or (red shl 16) or (green shl 8) or blue
+}

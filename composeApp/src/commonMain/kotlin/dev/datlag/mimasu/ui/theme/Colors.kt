@@ -8,12 +8,12 @@ import androidx.compose.ui.graphics.Color
 
 data object Colors {
 
-    private const val THEME_LIGHT_PRIMARY = 0xff775084
+    const val THEME_LIGHT_PRIMARY = 0xff775084
     private const val THEME_LIGHT_ON_PRIMARY = 0xffffffff
     private const val THEME_LIGHT_PRIMARY_CONTAINER = 0xfff9d8ff
     private const val THEME_LIGHT_ON_PRIMARY_CONTAINER = 0xff2e0a3c
 
-    private const val THEME_DARK_PRIMARY = 0xffe5b6f2
+    const val THEME_DARK_PRIMARY = 0xffe5b6f2
     private const val THEME_DARK_ON_PRIMARY = 0xff452152
     private const val THEME_DARK_PRIMARY_CONTAINER = 0xff5d386b
     private const val THEME_DARK_ON_PRIMARY_CONTAINER = 0xfff9d8ff

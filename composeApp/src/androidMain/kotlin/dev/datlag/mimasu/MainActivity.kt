@@ -1,7 +1,5 @@
 package dev.datlag.mimasu
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,7 +20,6 @@ import dev.datlag.mimasu.ui.navigation.RootComponent
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.safeCast
-import io.github.aakira.napier.Napier
 import org.kodein.di.DIAware
 
 class MainActivity : ComponentActivity() {

@@ -9,6 +9,7 @@ expect class PackageResolver : PackageAware {
     val disneyPlus: DisneyPlus
     val amazonPrimeVideo: AmazonPrimeVideo
     val burningSeries: BurningSeries
+    val mimasuExtension: MimasuExtension
     val crunchyRoll: CrunchyRoll
     val paramountPlus: ParamountPlus
 
@@ -25,6 +26,10 @@ expect class PackageResolver : PackageAware {
     }
 
     inner class BurningSeries : Package {
+        override val installed: Boolean
+    }
+
+    inner class MimasuExtension : Package {
         override val installed: Boolean
     }
 

@@ -6,6 +6,7 @@ interface PackageAware {
     val disneyPlusInstalled: Boolean
     val amazonPrimeVideoInstalled: Boolean
     val burningSeriesInstalled: Boolean
+    val mimasuExtensionInstalled: Boolean
     val crunchyRollInstalled: Boolean
     val paramountPlusInstalled: Boolean
 }

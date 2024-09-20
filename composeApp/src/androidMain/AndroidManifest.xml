@@ -18,6 +18,7 @@
         <package android:name="com.amazon.amazonvideo.livingroom" />
 
         <package android:name="dev.datlag.burningseries" />
+        <package android:name="de.datlag.burningseries" />
         <package android:name="dev.datlag.mimasu.extension" />
 
         <package android:name="com.crunchyroll.crunchyroid" />
