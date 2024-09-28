@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
         )
 
         Kast.setup(this)
-        PackageResolver.bindExtension(this)
+        PackageResolver.bindUpdate(this)
         
         setContent { 
             CompositionLocalProvider(
@@ -76,9 +76,21 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        PackageResolver.bindUpdate(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        PackageResolver.bindUpdate(this)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
-        unbindService(MimasuConnection)
+        unbindService(MimasuConnection.Update)
     }
 }

@@ -27,6 +27,9 @@
         <intent>
             <action android:name="dev.datlag.mimasu.core.IMimasuService" />
         </intent>
+        <intent>
+            <action android:name="dev.datlag.mimasu.core.update.IUpdateService" />
+        </intent>
     </queries>
 
     <application

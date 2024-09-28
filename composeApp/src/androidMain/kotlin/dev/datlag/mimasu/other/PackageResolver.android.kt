@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.graphics.toColor
 import androidx.core.graphics.toColorInt
+import dev.datlag.mimasu.core.AIDLService
 import dev.datlag.mimasu.core.MimasuConnection
 import dev.datlag.mimasu.core.common.toColorIntCompat
 import dev.datlag.mimasu.tv.Package
@@ -242,34 +243,40 @@ actual class PackageResolver(
         )
 
         /**
-         * Binds the watch extension from any available provider.
+         * Binds an extension from any available provider.
          *
          * @return [Boolean] whether the service could be bound.
          */
-        fun bindExtension(context: Context): Boolean {
+        private fun bind(context: Context, service: AIDLService<*>): Boolean {
             val availablePackages = extensions(
                 context.packageManager ?: context.applicationContext.packageManager
-            ).ifEmpty { return MimasuConnection.bound.value }
+            ).ifEmpty { return service.isBound }
 
             var index = 0
             var bound = false
-            while (index < availablePackages.size && !MimasuConnection.bound.value) {
-                val bindIntent = Intent(MimasuConnection.CONNECTION_ACTION).apply {
+            while (index < availablePackages.size && !service.isBound) {
+                val bindIntent = Intent(service.connectionAction).apply {
                     setPackage(availablePackages[index])
                 }
-                val result = scopeCatching {
-                    context.bindService(bindIntent, MimasuConnection, Context.BIND_AUTO_CREATE)
-                }
-                if (result.isSuccess) {
+                val couldBind = scopeCatching {
+                    context.bindService(bindIntent, service, Context.BIND_AUTO_CREATE)
+                }.getOrNull() ?: false
+
+                if (couldBind) {
                     bound = true
                     break
-                } else if (result.isFailure) {
+                } else {
                     bound = false
                 }
 
                 index++
             }
-            return bound || MimasuConnection.bound.value
+
+            return bound || service.isBound
+        }
+
+        fun bindUpdate(context: Context): Boolean {
+            return bind(context, MimasuConnection.Update)
         }
     }
 
