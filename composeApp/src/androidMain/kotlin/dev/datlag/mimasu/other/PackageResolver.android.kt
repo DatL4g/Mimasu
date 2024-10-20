@@ -147,6 +147,9 @@ actual class PackageResolver(
         actual override val installed: Boolean
             get() = packageInfo != null
 
+        actual val packageName: String
+            get() = packageInfo?.packageName?.ifBlank { null } ?: MIMASU_EXTENSION_PACKAGE
+
         override val brandColor: Int
             get() {
                 return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -209,8 +212,8 @@ actual class PackageResolver(
         /**
          * Get all available packageNames implementing the extension.
          */
-        fun extensions(packageManager: PackageManager): List<String> {
-            val intent = Intent(MimasuConnection.CONNECTION_ACTION)
+        fun extensions(packageManager: PackageManager, action: String): List<String> {
+            val intent = Intent(action)
             val resolveInfoList = scopeCatching {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     packageManager.queryIntentServices(intent, PackageManager.ResolveInfoFlags.of(0))
@@ -237,9 +240,10 @@ actual class PackageResolver(
         /**
          * Get all available packageNames implementing the extension.
          */
-        fun extensions(context: Context) = extensions(
+        fun extensions(context: Context, action: String) = extensions(
             context.packageManager
-            ?: context.applicationContext.packageManager
+            ?: context.applicationContext.packageManager,
+            action
         )
 
         /**
@@ -249,7 +253,8 @@ actual class PackageResolver(
          */
         private fun bind(context: Context, service: AIDLService<*>): Boolean {
             val availablePackages = extensions(
-                context.packageManager ?: context.applicationContext.packageManager
+                context.packageManager ?: context.applicationContext.packageManager,
+                service.connectionAction
             ).ifEmpty { return service.isBound }
 
             var index = 0

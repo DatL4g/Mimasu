@@ -31,6 +31,7 @@ expect class PackageResolver : PackageAware {
 
     inner class MimasuExtension : Package {
         override val installed: Boolean
+        val packageName: String
     }
 
     inner class CrunchyRoll : Package {

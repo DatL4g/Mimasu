@@ -13,6 +13,8 @@ import com.google.net.cronet.okhttptransport.CronetInterceptor
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.common.cronetEngine
+import dev.datlag.mimasu.core.MimasuConnection
+import dev.datlag.mimasu.core.model.UpdateInfo
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
@@ -97,6 +99,9 @@ actual data object PlatformModule {
                 LeastRecentlyUsedCacheEvictor(50 * 1024 * 1024),
                 instance()
             )
+        }
+        bindSingleton<UpdateInfo> {
+            MimasuConnection.Update
         }
     }
 
