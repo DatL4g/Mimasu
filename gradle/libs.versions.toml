@@ -6,7 +6,7 @@ android = "8.7.1"
 android-autofill = "1.3.0-beta01"
 android-core = "1.13.1"
 android-credentials = "1.3.0"
-coil = "3.0.0-rc01"
+coil = "3.0.0-rc02"
 compose = "1.7.0"
 compose-report = "1.4.1"
 connectivity = "1.1.2"
@@ -26,9 +26,9 @@ kmpalette = "3.1.0"
 kodein = "7.22.0"
 kolor = "2.0.0"
 konfig = "0.15.2"
-kotlin = "2.0.20"
-ksp = "2.0.20-1.0.25"
-ktor = "2.3.12"
+kotlin = "2.0.21"
+ksp = "2.0.21-1.0.25"
+ktor = "3.0.1"
 ktorfit = "2.1.0"
 locale = "0.8.0"
 media3 = "1.4.1"
@@ -55,7 +55,7 @@ ackpine = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
-coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor2", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
 connectivity = { group = "dev.jordond.connectivity", name = "connectivity-core", version.ref = "connectivity" }
@@ -92,7 +92,7 @@ ktor-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
 ktor-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
-ktorfit = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-lib", version.ref = "ktorfit" }
+ktorfit = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-lib-ktor-3.0.0", version.ref = "ktorfit" }
 ktorfit-ksp = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-ksp", version.ref = "ktorfit" }
 locale = { group = "com.vanniktech", name = "multiplatform-locale", version.ref = "locale" }
 media3 = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
