@@ -138,13 +138,13 @@ android {
     sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     sourceSets["main"].assets.srcDirs("src/androidMain/assets", "src/commonMain/assets")
 
-    compileSdk = 34
+    compileSdk = 35
     namespace = "dev.datlag.mimasu"
 
     defaultConfig {
         applicationId = "dev.datlag.mimasu"
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 100
         versionName = "1.0.0"
 
