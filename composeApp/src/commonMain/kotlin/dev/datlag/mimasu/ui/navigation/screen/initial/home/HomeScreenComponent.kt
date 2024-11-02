@@ -21,13 +21,16 @@ import kotlinx.coroutines.flow.flatMapLatest
 import org.kodein.di.DI
 import org.kodein.di.instance
 import dev.datlag.mimasu.other.PackageResolver
+import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.mimasu.tv.PackageAware
+import dev.datlag.mimasu.ui.navigation.RootConfig
 import org.kodein.di.instanceOrNull
 
 class HomeScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
     private val packageResolver: PackageResolver = di.packageResolver(),
+    private val onMovie: (RootConfig.Movie) -> Unit,
     private val watchVideo: () -> Unit
 ): HomeComponent, ComponentContext by componentContext, PackageAware by packageResolver {
 
@@ -111,6 +114,10 @@ class HomeScreenComponent(
         onRender {
             TvHomeScreen(this)
         }
+    }
+
+    override fun viewMovie(trending: Trending.Response.Media.Movie) {
+        onMovie(RootConfig.Movie(trending))
     }
 
     override fun watchVideo() {

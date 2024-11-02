@@ -19,13 +19,17 @@ import dev.datlag.mimasu.ui.navigation.screen.initial.InitialScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.login.LoginScreen
 import dev.datlag.mimasu.ui.navigation.screen.login.LoginScreenComponent
+import dev.datlag.mimasu.ui.navigation.screen.movie.MovieScreen
+import dev.datlag.mimasu.ui.navigation.screen.movie.MovieScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoScreenComponent
 import dev.datlag.tooling.scopeCatching
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
+import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.instance
 import org.kodein.di.instanceOrNull
+import kotlin.coroutines.cancellation.CancellationException
 
 class RootComponent(
     componentContext: ComponentContext,
@@ -48,6 +52,9 @@ class RootComponent(
         is RootConfig.Initial -> InitialScreenComponent(
             componentContext = componentContext,
             di = di,
+            onMovie = {
+                navigation.pushToFront(it)
+            },
             watchVideo = {
                 navigation.bringToFront(RootConfig.Video)
             }
@@ -58,6 +65,11 @@ class RootComponent(
             toHome = {
                 navigation.replaceAll(RootConfig.Initial)
             }
+        )
+        is RootConfig.Movie -> MovieScreenComponent(
+            componentContext = componentContext,
+            di = di,
+            trending = rootConfig.trending
         )
         is RootConfig.Video -> VideoScreenComponent(
             componentContext = componentContext,

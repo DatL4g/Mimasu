@@ -25,6 +25,7 @@ import dev.datlag.mimasu.tv.TvInitial
 import dev.datlag.mimasu.tv.TvInitialNavigation
 import dev.datlag.mimasu.tv.TvInitialSearch
 import dev.datlag.mimasu.ui.navigation.Component
+import dev.datlag.mimasu.ui.navigation.RootConfig
 import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeScreenComponent
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import org.kodein.di.DI
@@ -32,6 +33,7 @@ import org.kodein.di.DI
 class InitialScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
+    private val onMovie: (RootConfig.Movie) -> Unit,
     private val watchVideo: () -> Unit
 ) : InitialComponent, ComponentContext by componentContext, UpdateInfo by di.updateInfo() {
 
@@ -51,6 +53,7 @@ class InitialScreenComponent(
         is InitialConfig.Home -> HomeScreenComponent(
             componentContext = componentContext,
             di = di,
+            onMovie = onMovie,
             watchVideo = watchVideo
         )
     }
@@ -110,7 +113,8 @@ class InitialScreenComponent(
             val updateDirectDownload by directDownload.collectAsStateWithLifecycle()
             var showUpdateDialog by remember(updateAvailable) { mutableStateOf(updateAvailable) }
 
-            if (updateAvailable && showUpdateDialog) {
+            // Popping backstack doesn't work because dialog cancels and catches back gesture
+            if (updateAvailable && showUpdateDialog && false) {
                 AlertDialog(
                     onDismissRequest = {
                         if (!updateRequired) {

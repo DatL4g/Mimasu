@@ -57,7 +57,10 @@ fun HomeScreen(component: HomeComponent) {
                         modifier = Modifier
                             .width(140.dp)
                             .height(200.dp),
-                        onClick = { }
+                        onClick = {
+                            Napier.e { "Clicked $index" }
+                            component.viewMovie(trendingMovies[index]!!)
+                        }
                     ) {
                         AsyncImage(
                             modifier = Modifier.fillMaxSize(),
