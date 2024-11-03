@@ -69,7 +69,10 @@ class RootComponent(
         is RootConfig.Movie -> MovieScreenComponent(
             componentContext = componentContext,
             di = di,
-            trending = rootConfig.trending
+            trending = rootConfig.trending,
+            onBack = {
+                navigation.pop()
+            }
         )
         is RootConfig.Video -> VideoScreenComponent(
             componentContext = componentContext,

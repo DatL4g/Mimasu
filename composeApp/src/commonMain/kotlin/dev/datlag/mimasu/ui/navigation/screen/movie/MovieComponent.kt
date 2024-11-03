@@ -6,4 +6,6 @@ import dev.datlag.mimasu.ui.navigation.Component
 interface MovieComponent : Component {
 
     val trending: Trending.Response.Media.Movie
+
+    fun back()
 }

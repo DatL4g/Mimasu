@@ -8,7 +8,8 @@ import org.kodein.di.DI
 class MovieScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
-    override val trending: Trending.Response.Media.Movie
+    override val trending: Trending.Response.Media.Movie,
+    private val onBack: () -> Unit
 ) : MovieComponent, ComponentContext by componentContext {
 
     @Composable
@@ -16,5 +17,9 @@ class MovieScreenComponent(
         onRender {
             MovieScreen(this)
         }
+    }
+
+    override fun back() {
+        onBack()
     }
 }

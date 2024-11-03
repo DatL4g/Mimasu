@@ -111,7 +111,7 @@ interface Trending {
                 val alternativeTitle: String? = if (originalTitle.equals(title, ignoreCase = true)) {
                     null
                 } else {
-                    originalTitle
+                    originalTitle?.ifBlank { null }
                 }
             }
 
@@ -147,7 +147,7 @@ interface Trending {
                 val alternativeName: String? = if (originalName.equals(name, ignoreCase = true)) {
                     null
                 } else {
-                    originalName
+                    originalName?.ifBlank { null }
                 }
             }
 
