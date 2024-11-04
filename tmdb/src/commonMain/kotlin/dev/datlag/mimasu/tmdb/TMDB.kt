@@ -13,12 +13,14 @@ import dev.datlag.mimasu.tmdb.api.TvSeriesList
 import dev.datlag.mimasu.tmdb.api.createCertifications
 import dev.datlag.mimasu.tmdb.api.createCompanies
 import dev.datlag.mimasu.tmdb.api.createCredits
+import dev.datlag.mimasu.tmdb.api.createDetails
 import dev.datlag.mimasu.tmdb.api.createDiscover
 import dev.datlag.mimasu.tmdb.api.createFind
 import dev.datlag.mimasu.tmdb.api.createTrending
 import dev.datlag.mimasu.tmdb.api.createTvSeriesList
 import dev.datlag.mimasu.tmdb.api.createWatchProviders
 import dev.datlag.mimasu.tmdb.model.TrendingWindow
+import dev.datlag.mimasu.tmdb.repository.DetailsRepository
 import dev.datlag.mimasu.tmdb.repository.PopularRepository
 import dev.datlag.mimasu.tmdb.repository.TrendingRepository
 import dev.datlag.mimasu.tmdb.repository.WatchProvidersRepository
@@ -28,6 +30,7 @@ import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.http.isSuccess
+import kotlin.jvm.JvmStatic
 import kotlin.time.Duration.Companion.days
 
 data class TMDB internal constructor(
@@ -38,7 +41,8 @@ data class TMDB internal constructor(
     private val find: Find,
     val trending: TrendingRepository,
     val popular: PopularRepository,
-    val watchProviders: WatchProvidersRepository
+    val watchProviders: WatchProvidersRepository,
+    val details: DetailsRepository
 ) {
 
     companion object {
@@ -78,6 +82,11 @@ data class TMDB internal constructor(
                 watchProviders = WatchProvidersRepository(
                     apiKey = apiKey,
                     watchProviders = ktorfit.createWatchProviders(),
+                    language = language
+                ),
+                details = DetailsRepository(
+                    apiKey = apiKey,
+                    details = ktorfit.createDetails(),
                     language = language
                 )
             )
