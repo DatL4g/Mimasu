@@ -1,20 +1,33 @@
 package dev.datlag.mimasu.ui.navigation.screen.video
 
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.AndroidExternalSurface
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ZoomIn
-import androidx.compose.material.icons.rounded.ZoomOut
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
+import androidx.compose.material.icons.rounded.LightMode
+import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -25,11 +38,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
@@ -37,8 +54,6 @@ import dev.datlag.kast.Kast
 import dev.datlag.mimasu.common.detectPinchGestures
 import dev.datlag.mimasu.common.rememberCronetEngine
 import dev.datlag.mimasu.core.MimasuConnection
-import dev.datlag.tooling.compose.ifFalse
-import dev.datlag.tooling.compose.ifTrue
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import io.github.aakira.napier.Napier
 import org.kodein.di.compose.rememberInstance
@@ -94,6 +109,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectPinchGestures(
+                    pass = PointerEventPass.Initial,
                     onGesture = { _, newZoom ->
                         zoom *= newZoom
                     },
@@ -112,7 +128,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
         contentAlignment = Alignment.Center
     ) {
         val sizeModifier = if (isZoomed) {
-            Modifier.fillMaxSize().scale(min(zoom, 1F))
+            Modifier.fillMaxSize().scale(min(max(zoom, 0.75F), 1F))
         } else {
             Modifier.aspectRatio(aspectRatio).scale(max(zoom, 0.95F))
         }
@@ -124,6 +140,16 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
                 onSurface { surface, _, _ ->
                     playerWrapper.setVideoSurface(surface)
                 }
+            }
+        )
+
+        VolumeBrightnessControl(
+            modifier = Modifier.matchParentSize(),
+            onDoubleClickLeft = {
+                playerWrapper.seekBack()
+            },
+            onDoubleClickRight = {
+                playerWrapper.seekForward()
             }
         )
     }
@@ -143,3 +169,4 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
         }
     )*/
 }
+
