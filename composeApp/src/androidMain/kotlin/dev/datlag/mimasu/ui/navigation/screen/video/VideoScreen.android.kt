@@ -80,11 +80,12 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
 
     val videoPlayerSecure by MimasuConnection.isVideoPlayerSecure.collectAsStateWithLifecycle()
     val aspectRatio by playerWrapper.aspectRatio.collectAsStateWithLifecycle()
+    val isCasting by playerWrapper.usingCastPlayer.collectAsStateWithLifecycle()
 
-    var isZoomed by remember {
+    var isZoomed by remember(isCasting) {
         mutableStateOf(false)
     }
-    var zoom by remember {
+    var zoom by remember(isCasting) {
         mutableFloatStateOf(1F)
     }
 

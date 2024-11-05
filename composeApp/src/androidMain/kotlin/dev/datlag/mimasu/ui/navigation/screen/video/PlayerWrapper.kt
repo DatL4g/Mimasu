@@ -99,6 +99,7 @@ class PlayerWrapper(
 
             // Playing works, can switch to casting
             castSupported = true
+            aspectRatio.update { calculateAspectRatio() }
         }
     }
 
@@ -171,6 +172,8 @@ class PlayerWrapper(
             field = value
 
             if (previous != value) {
+                usingCastPlayer.update { value is CastPlayer }
+
                 // Create meta data
                 // Create new session
             }
@@ -183,6 +186,7 @@ class PlayerWrapper(
         }
 
     val aspectRatio = MutableStateFlow(calculateAspectRatio())
+    val usingCastPlayer = MutableStateFlow(player is CastPlayer)
 
     init {
         castPlayer?.addListener(this)
@@ -201,12 +205,6 @@ class PlayerWrapper(
 
     override fun onCastSessionUnavailable() {
         castSessionAvailable = false
-    }
-
-    override fun onRenderedFirstFrame() {
-        super.onRenderedFirstFrame()
-
-        aspectRatio.update { calculateAspectRatio() }
     }
 
     override fun getApplicationLooper(): Looper {
