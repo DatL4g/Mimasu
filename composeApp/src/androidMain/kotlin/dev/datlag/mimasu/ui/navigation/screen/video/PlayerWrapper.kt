@@ -9,7 +9,11 @@ import android.view.TextureView
 import androidx.media3.cast.CastPlayer
 import androidx.media3.cast.SessionAvailabilityListener
 import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C.VIDEO_SCALING_MODE_DEFAULT
+import androidx.media3.common.C.VIDEO_SCALING_MODE_SCALE_TO_FIT
+import androidx.media3.common.C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import androidx.media3.common.C.VOLUME_FLAG_SHOW_UI
+import androidx.media3.common.C.VideoScalingMode
 import androidx.media3.common.DeviceInfo
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -24,14 +28,11 @@ import androidx.media3.common.VideoSize
 import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.Size
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.database.DatabaseProvider
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
-import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.cronet.CronetDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
@@ -42,7 +43,6 @@ import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ENABLE_HD
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
 import dev.datlag.tooling.async.scopeCatching
-import okio.FileSystem
 import org.chromium.net.CronetEngine
 import java.util.concurrent.Executors
 
@@ -82,6 +82,7 @@ class PlayerWrapper(
     private val localPlayer = ExoPlayer.Builder(context).apply {
         setSeekBackIncrementMs(10000)
         setSeekForwardIncrementMs(10000)
+        setVideoScalingMode(VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
         setMediaSourceFactory(
             DefaultMediaSourceFactory(
                 DefaultDataSource.Factory(context, cacheDataSourceFactory),
@@ -171,6 +172,12 @@ class PlayerWrapper(
                 // Create meta data
                 // Create new session
             }
+        }
+
+    var videoScaling: @VideoScalingMode Int
+        get() = localPlayer.videoScalingMode
+        set(value) {
+            localPlayer.videoScalingMode = value
         }
 
     init {
