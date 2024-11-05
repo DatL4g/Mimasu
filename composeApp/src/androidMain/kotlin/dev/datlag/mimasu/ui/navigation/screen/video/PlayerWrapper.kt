@@ -43,6 +43,8 @@ import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ENABLE_HD
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
 import dev.datlag.tooling.async.scopeCatching
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import org.chromium.net.CronetEngine
 import java.util.concurrent.Executors
 
@@ -180,6 +182,8 @@ class PlayerWrapper(
             localPlayer.videoScalingMode = value
         }
 
+    val aspectRatio = MutableStateFlow(calculateAspectRatio())
+
     init {
         castPlayer?.addListener(this)
         localPlayer.addListener(localPlayerListener)
@@ -197,6 +201,12 @@ class PlayerWrapper(
 
     override fun onCastSessionUnavailable() {
         castSessionAvailable = false
+    }
+
+    override fun onRenderedFirstFrame() {
+        super.onRenderedFirstFrame()
+
+        aspectRatio.update { calculateAspectRatio() }
     }
 
     override fun getApplicationLooper(): Looper {
@@ -791,6 +801,17 @@ class PlayerWrapper(
 
     override fun setAudioAttributes(audioAttributes: AudioAttributes, handleAudioFocus: Boolean) {
         return player.setAudioAttributes(audioAttributes, handleAudioFocus)
+    }
+
+    fun calculateAspectRatio(): Float {
+        val height = videoSize.height
+        val width = videoSize.width
+
+        return if (height != 0 && width != 0) {
+            width.toFloat() / height.toFloat()
+        } else {
+            16F / 9F
+        }
     }
 
     /**

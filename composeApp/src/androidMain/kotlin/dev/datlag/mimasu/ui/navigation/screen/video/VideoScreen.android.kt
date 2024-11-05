@@ -79,18 +79,8 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     }
 
     val videoPlayerSecure by MimasuConnection.isVideoPlayerSecure.collectAsStateWithLifecycle()
-    val aspectRatio by remember(playerWrapper.videoSize) {
-        val height = playerWrapper.videoSize.height
-        val width = playerWrapper.videoSize.width
+    val aspectRatio by playerWrapper.aspectRatio.collectAsStateWithLifecycle()
 
-        val calculated = if (height != 0 && width != 0) {
-            width.toFloat() / height.toFloat()
-        } else {
-            16F / 9F
-        }
-
-        mutableFloatStateOf(calculated)
-    }
     var isZoomed by remember {
         mutableStateOf(false)
     }
