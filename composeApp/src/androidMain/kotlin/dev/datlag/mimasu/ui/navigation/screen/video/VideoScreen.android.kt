@@ -28,11 +28,13 @@ import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -56,10 +58,13 @@ import dev.datlag.mimasu.common.rememberCronetEngine
 import dev.datlag.mimasu.core.MimasuConnection
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -104,54 +109,85 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
         mutableFloatStateOf(1F)
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectPinchGestures(
-                    pass = PointerEventPass.Initial,
-                    onGesture = { _, newZoom ->
-                        zoom *= newZoom
-                    },
-                    onGestureEnd = {
-                        if (zoom > 1.2F) {
-                            isZoomed = true
-                        } else if (zoom < 0.8F) {
-                            isZoomed = false
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { contentPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectPinchGestures(
+                        pass = PointerEventPass.Initial,
+                        onGesture = { _, newZoom ->
+                            zoom *= newZoom
+                        },
+                        onGestureEnd = {
+                            if (zoom > 1.2F) {
+                                isZoomed = true
+                            } else if (zoom < 0.8F) {
+                                isZoomed = false
+                            }
+
+                            zoom = 1F
                         }
-
-                        zoom = 1F
-                    }
-                )
+                    )
+                }
+                .background(Color.Black),
+            contentAlignment = Alignment.Center
+        ) {
+            val sizeModifier = if (isZoomed) {
+                Modifier.fillMaxSize().scale(min(max(zoom, 0.75F), 1F))
+            } else {
+                Modifier.aspectRatio(aspectRatio).scale(max(zoom, 0.95F))
             }
-            .background(Color.Black),
-        contentAlignment = Alignment.Center
-    ) {
-        val sizeModifier = if (isZoomed) {
-            Modifier.fillMaxSize().scale(min(max(zoom, 0.75F), 1F))
-        } else {
-            Modifier.aspectRatio(aspectRatio).scale(max(zoom, 0.95F))
-        }
 
-        AndroidExternalSurface(
-            modifier = sizeModifier.background(Color.Black),
-            isSecure = videoPlayerSecure,
-            onInit = {
-                onSurface { surface, _, _ ->
-                    playerWrapper.setVideoSurface(surface)
+            AndroidExternalSurface(
+                modifier = sizeModifier.background(Color.Black),
+                isSecure = videoPlayerSecure,
+                onInit = {
+                    onSurface { surface, _, _ ->
+                        playerWrapper.setVideoSurface(surface)
+                    }
+                }
+            )
+
+            VolumeBrightnessControl(
+                modifier = Modifier.matchParentSize(),
+                onDoubleClickLeft = {
+                    playerWrapper.seekBack()
+                },
+                onDoubleClickRight = {
+                    playerWrapper.seekForward()
+                }
+            )
+
+            var contentCurrentPosition by remember { mutableLongStateOf(playerWrapper.contentPosition) }
+            var contentDuration by remember { mutableLongStateOf(playerWrapper.contentDuration) }
+
+            LaunchedEffect(Unit) {
+                while (isActive) {
+                    delay(300)
+
+                    contentCurrentPosition = playerWrapper.currentPosition
+                    contentDuration = playerWrapper.contentDuration
                 }
             }
-        )
 
-        VolumeBrightnessControl(
-            modifier = Modifier.matchParentSize(),
-            onDoubleClickLeft = {
-                playerWrapper.seekBack()
-            },
-            onDoubleClickRight = {
-                playerWrapper.seekForward()
-            }
-        )
+            PlayerControls(
+                modifier = Modifier.matchParentSize().padding(contentPadding),
+                contentProgress = contentCurrentPosition.milliseconds,
+                contentDuration = contentDuration.milliseconds,
+                onSeek = {
+                    contentCurrentPosition = playerWrapper.contentDuration.times(it).toLong()
+                },
+                onSeekFinished = {
+                    val calculated = playerWrapper.contentDuration.times(it).toLong()
+
+                    contentCurrentPosition = calculated
+                    playerWrapper.seekTo(calculated)
+                }
+            )
+        }
     }
 
     /*AndroidView(

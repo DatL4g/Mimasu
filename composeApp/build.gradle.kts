@@ -62,6 +62,7 @@ kotlin {
             // implementation(compose.material3AdaptiveNavigationSuite)
             implementation("org.jetbrains.compose.material3:material3-adaptive-navigation-suite:1.7.0-beta02")
             implementation(libs.paging.compose)
+            implementation(libs.wavy.slider)
 
             implementation(libs.kodein)
             implementation(libs.kodein.compose)

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -92,6 +93,7 @@ fun VolumeBrightnessControl(
             horizontalAlignment = Alignment.Start
         ) {
             AnimatedVisibility(
+                modifier = Modifier.safeDrawingPadding(),
                 visible = volumeVisible,
                 enter = fadeIn(),
                 exit = fadeOut()
@@ -99,7 +101,7 @@ fun VolumeBrightnessControl(
                 Column(
                     modifier = Modifier
                         .background(color = Color.Black.copy(alpha = 0.25F), CircleShape)
-                        .padding(4.dp),
+                        .padding(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -144,6 +146,7 @@ fun VolumeBrightnessControl(
             horizontalAlignment = Alignment.End
         ) {
             AnimatedVisibility(
+                modifier = Modifier.safeDrawingPadding(),
                 visible = brightnessVisible,
                 enter = fadeIn(),
                 exit = fadeOut()
@@ -151,7 +154,7 @@ fun VolumeBrightnessControl(
                 Column(
                     modifier = Modifier
                         .background(color = Color.Black.copy(alpha = 0.25F), CircleShape)
-                        .padding(4.dp),
+                        .padding(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -183,7 +186,7 @@ private fun VerticalProgress(
     progress: Float,
     modifier: Modifier = Modifier,
     color: Color = Color.White,
-    backgroundColor: Color = Color.Black,
+    backgroundColor: Color = Color.Black.copy(alpha = 0.5F),
 ) {
     Canvas(
         modifier = modifier
