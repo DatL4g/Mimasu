@@ -49,7 +49,8 @@ import dev.datlag.mimasu.other.BrightnessHelper
 fun VolumeBrightnessControl(
     modifier: Modifier = Modifier,
     onDoubleClickLeft: (Offset) -> Unit = { },
-    onDoubleClickRight: (Offset) -> Unit = { }
+    onDoubleClickRight: (Offset) -> Unit = { },
+    onTap: (Offset) -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -85,7 +86,8 @@ fun VolumeBrightnessControl(
                 }
                 .pointerInput(Unit) {
                     detectTapGestures(
-                        onDoubleTap = onDoubleClickLeft
+                        onDoubleTap = onDoubleClickLeft,
+                        onTap = onTap
                     )
                 }
                 .padding(8.dp),
@@ -138,7 +140,8 @@ fun VolumeBrightnessControl(
                 }
                 .pointerInput(Unit) {
                     detectTapGestures(
-                        onDoubleTap = onDoubleClickRight
+                        onDoubleTap = onDoubleClickRight,
+                        onTap = onTap
                     )
                 }
                 .padding(8.dp),

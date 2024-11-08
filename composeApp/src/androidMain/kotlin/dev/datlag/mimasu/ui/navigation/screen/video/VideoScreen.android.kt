@@ -54,6 +54,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import dev.datlag.kast.Kast
 import dev.datlag.mimasu.common.detectPinchGestures
+import dev.datlag.mimasu.common.detectSingleTap
 import dev.datlag.mimasu.common.rememberCronetEngine
 import dev.datlag.mimasu.core.MimasuConnection
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
@@ -112,6 +113,8 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { contentPadding ->
+        val playerState = rememberVideoPlayerState(playerWrapper)
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -158,34 +161,19 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
                 },
                 onDoubleClickRight = {
                     playerWrapper.seekForward()
+                },
+                onTap = {
+                    playerState.toggleControls()
                 }
             )
 
-            var contentCurrentPosition by remember { mutableLongStateOf(playerWrapper.contentPosition) }
-            var contentDuration by remember { mutableLongStateOf(playerWrapper.contentDuration) }
-
-            LaunchedEffect(Unit) {
-                while (isActive) {
-                    delay(300)
-
-                    contentCurrentPosition = playerWrapper.currentPosition
-                    contentDuration = playerWrapper.contentDuration
-                }
-            }
-
             PlayerControls(
+                state = playerState,
                 modifier = Modifier.matchParentSize().padding(contentPadding),
-                contentProgress = contentCurrentPosition.milliseconds,
-                contentDuration = contentDuration.milliseconds,
-                onSeek = {
-                    contentCurrentPosition = playerWrapper.contentDuration.times(it).toLong()
-                },
-                onSeekFinished = {
-                    val calculated = playerWrapper.contentDuration.times(it).toLong()
-
-                    contentCurrentPosition = calculated
-                    playerWrapper.seekTo(calculated)
-                }
+                onRewind = playerWrapper::seekBack,
+                onPlayPause = playerWrapper::togglePlay,
+                onForward = playerWrapper::seekForward,
+                onSeekFinished = playerWrapper::seekTo
             )
         }
     }

@@ -57,11 +57,13 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
+            implementation(compose.uiTooling)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             // implementation(compose.material3AdaptiveNavigationSuite)
             implementation("org.jetbrains.compose.material3:material3-adaptive-navigation-suite:1.7.0-beta02")
             implementation(libs.paging.compose)
+            implementation(libs.constraint.layout)
             implementation(libs.wavy.slider)
 
             implementation(libs.kodein)
@@ -105,6 +107,8 @@ kotlin {
             // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
 
             dependencies {
+                implementation(compose.preview)
+
                 implementation(libs.android)
                 implementation(libs.activity)
                 implementation(libs.activity.compose)

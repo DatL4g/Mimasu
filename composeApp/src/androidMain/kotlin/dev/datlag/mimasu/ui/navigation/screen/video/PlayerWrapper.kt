@@ -21,6 +21,8 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
+import androidx.media3.common.Player.Listener
+import androidx.media3.common.Player.STATE_ENDED
 import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
@@ -188,6 +190,9 @@ class PlayerWrapper(
     val aspectRatio = MutableStateFlow(calculateAspectRatio())
     val usingCastPlayer = MutableStateFlow(player is CastPlayer)
 
+    private var progressListener: ProgressChange? = null
+    private var playbackListener: PlaybackChange? = null
+
     init {
         castPlayer?.addListener(this)
         localPlayer.addListener(localPlayerListener)
@@ -205,6 +210,48 @@ class PlayerWrapper(
 
     override fun onCastSessionUnavailable() {
         castSessionAvailable = false
+    }
+
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        super.onIsPlayingChanged(isPlaying)
+
+        if (isPlaying) {
+            playbackListener?.playing()
+        } else {
+            playbackListener?.paused()
+        }
+
+        if (playbackState == STATE_ENDED) {
+            playbackListener?.finished()
+        }
+
+        progressListener?.content(contentPosition, contentDuration)
+        progressListener?.whole(currentPosition, duration)
+    }
+
+    override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+        super.onTimelineChanged(timeline, reason)
+
+        if (isPlaying) {
+            playbackListener?.playing()
+        } else {
+            playbackListener?.paused()
+        }
+
+        if (playbackState == STATE_ENDED) {
+            playbackListener?.finished()
+        }
+
+        progressListener?.content(contentPosition, contentDuration)
+        progressListener?.whole(currentPosition, duration)
+    }
+
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+
+        if (playbackState == STATE_ENDED) {
+            playbackListener?.finished()
+        }
     }
 
     override fun getApplicationLooper(): Looper {
@@ -812,6 +859,22 @@ class PlayerWrapper(
         }
     }
 
+    fun togglePlay() {
+        if (isPlaying && !isPlayingAd) {
+            pause()
+        } else {
+            play()
+        }
+    }
+
+    internal fun listenProgress(listener: ProgressChange) {
+        progressListener = listener
+    }
+
+    internal fun listenPlayback(listener: PlaybackChange) {
+        playbackListener = listener
+    }
+
     /**
      * Sets a mime type for [CastPlayer] as it won't work without.
      */
@@ -821,5 +884,16 @@ class PlayerWrapper(
         } else {
             this
         }
+    }
+
+    interface ProgressChange {
+        fun content(position: Long, duration: Long)
+        fun whole(position: Long, duration: Long)
+    }
+
+    interface PlaybackChange {
+        fun playing() { }
+        fun paused() { }
+        fun finished() { }
     }
 }
