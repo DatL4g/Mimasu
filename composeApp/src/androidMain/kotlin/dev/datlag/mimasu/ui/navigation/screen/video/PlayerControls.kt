@@ -9,6 +9,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,8 +30,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,6 +46,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import dev.datlag.mimasu.common.drawProgress
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import ir.mahozad.multiplatform.wavyslider.material3.WavySlider
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.max
 import kotlin.math.roundToLong
@@ -69,7 +74,7 @@ fun PlayerControls(
                 start.linkTo(parent.start)
                 end.linkTo(playPause.start)
                 top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
+                bottom.linkTo(parent.bottom, 8.dp)
             },
             visible = visibility,
             enter = slideInHorizontally() + fadeIn(),
@@ -80,7 +85,11 @@ fun PlayerControls(
                     color = Color.Black.copy(alpha = 0.25F),
                     shape = CircleShape
                 ),
-                onClick = onRewind
+                onClick = {
+                    state.showControls()
+
+                    onRewind()
+                }
             ) {
                 Icon(
                     imageVector = Icons.Rounded.FastRewind,
@@ -94,7 +103,7 @@ fun PlayerControls(
                 start.linkTo(rewind.end)
                 end.linkTo(forward.start)
                 top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
+                bottom.linkTo(parent.bottom, 8.dp)
             },
             visible = visibility,
             enter = fadeIn(),
@@ -105,7 +114,11 @@ fun PlayerControls(
                     color = Color.Black.copy(alpha = 0.25F),
                     shape = CircleShape
                 ),
-                onClick = onPlayPause
+                onClick = {
+                    state.showControls()
+
+                    onPlayPause()
+                }
             ) {
                 val isPlaying by state.isPlaying.collectAsStateWithLifecycle()
 
@@ -125,7 +138,7 @@ fun PlayerControls(
                 start.linkTo(playPause.end)
                 end.linkTo(parent.end)
                 top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
+                bottom.linkTo(parent.bottom, 8.dp)
             },
             visible = visibility,
             enter = slideInHorizontally { it / 2 } + fadeIn(),
@@ -136,7 +149,11 @@ fun PlayerControls(
                     color = Color.Black.copy(alpha = 0.25F),
                     shape = CircleShape
                 ),
-                onClick = onForward
+                onClick = {
+                    state.showControls()
+
+                    onForward()
+                }
             ) {
                 Icon(
                     modifier = Modifier
@@ -154,34 +171,43 @@ fun PlayerControls(
         }
 
         val interactionSource = remember { MutableInteractionSource() }
-        val contentLength by state.contentLength.collectAsStateWithLifecycle()
-        val contentDuration by state.contentDuration.collectAsStateWithLifecycle()
-        var seeking by remember { mutableFloatStateOf(
-            if (contentLength <= 0) {
-                0F
-            } else {
-                (contentLength / max(contentDuration, contentLength)).toFloat()
+        val isDragging by interactionSource.collectIsDraggedAsState()
+        val position by state.contentPosition.collectAsStateWithLifecycle()
+        val duration by state.contentDuration.collectAsStateWithLifecycle()
+        var progress by remember { mutableFloatStateOf(0F) }
+
+        LaunchedEffect(position, duration) {
+            if (!isDragging) {
+                progress = if (position <= 0L || duration <= 0L) {
+                    0F
+                } else {
+                    position.toFloat() / duration.toFloat()
+                }
             }
-        ) }
+        }
 
         AnimatedVisibility(
-            modifier = Modifier.fillMaxWidth().constrainAs(seeker) {
-                start.linkTo(parent.start, 16.dp)
-                end.linkTo(parent.end, 16.dp)
-                bottom.linkTo(parent.bottom, 8.dp)
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(seeker) {
+                    start.linkTo(parent.start, 16.dp)
+                    end.linkTo(parent.end, 16.dp)
+                    bottom.linkTo(parent.bottom, 8.dp)
+                },
             visible = visibility,
             enter = slideInVertically { it / 2 } + fadeIn(),
             exit = slideOutVertically { it / 2 } + fadeOut()
         ) {
             WavySlider(
                 modifier = Modifier.fillMaxWidth(),
-                value = seeking,
+                value = progress,
                 onValueChange = {
-                    seeking = it
+                    state.showControls()
+
+                    progress = it
                 },
                 onValueChangeFinished = {
-                    onSeekFinished(contentDuration.times(seeking).roundToLong())
+                    onSeekFinished(duration.times(progress).roundToLong())
                 },
                 incremental = true,
                 trackThickness = 8.dp,
@@ -205,7 +231,9 @@ fun PlayerControls(
 @Composable
 private fun PlayerControlsPreview() {
     Box(
-        modifier = Modifier.fillMaxSize().background(Color.Black),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
         PlayerControls(

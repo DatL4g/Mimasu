@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.ui.navigation.screen.video
 
+import android.view.WindowManager
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -27,8 +28,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.VolumeUp
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -49,6 +54,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
@@ -78,13 +84,19 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     val context = LocalContext.current
     val cronetEngine = rememberCronetEngine()
     val cache by rememberInstance<Cache>()
+    val windowController = rememberWindowController()
 
     val playerWrapper = remember(cronetEngine, cache) {
         PlayerWrapper(
             context = context,
             castContext = Kast.castContext,
             cronetEngine = cronetEngine,
-            cache = cache
+            cache = cache,
+            onFirstFrame = {
+                windowController.isSystemBarsVisible = false
+                windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                windowController.addWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
         )
     }
 
@@ -103,6 +115,14 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     val aspectRatio by playerWrapper.aspectRatio.collectAsStateWithLifecycle()
     val isCasting by playerWrapper.usingCastPlayer.collectAsStateWithLifecycle()
 
+    LaunchedEffect(videoPlayerSecure) {
+        if (videoPlayerSecure) {
+            windowController.addWindowFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else {
+            windowController.clearWindowFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+    }
+
     var isZoomed by remember(isCasting) {
         mutableStateOf(false)
     }
@@ -111,7 +131,13 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopControls()
+        },
+        bottomBar = {
+
+        }
     ) { contentPadding ->
         val playerState = rememberVideoPlayerState(playerWrapper)
 
@@ -156,6 +182,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
 
             VolumeBrightnessControl(
                 modifier = Modifier.matchParentSize(),
+                contentPadding = contentPadding,
                 onDoubleClickLeft = {
                     playerWrapper.seekBack()
                 },
@@ -169,7 +196,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
 
             PlayerControls(
                 state = playerState,
-                modifier = Modifier.matchParentSize().padding(contentPadding),
+                modifier = Modifier.matchParentSize(),
                 onRewind = playerWrapper::seekBack,
                 onPlayPause = playerWrapper::togglePlay,
                 onForward = playerWrapper::seekForward,
@@ -178,19 +205,12 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
         }
     }
 
-    /*AndroidView(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        factory = { viewContext ->
-            MimasuPlayerView(viewContext)
-        },
-        update = { player ->
-            player.setSecure(videoPlayerSecure)
-            player.isSoundEffectsEnabled = false
-            player.keepScreenOn = true // change to be play store compliant
-            player.player = playerWrapper
+    DisposableEffect(windowController) {
+        onDispose {
+            windowController.isSystemBarsVisible = true
+            windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+            windowController.clearWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON and WindowManager.LayoutParams.FLAG_SECURE)
         }
-    )*/
+    }
 }
 

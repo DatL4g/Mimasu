@@ -36,14 +36,14 @@ data class VideoPlayerState internal constructor(
 
     private val channel = Channel<Long>(CONFLATED)
 
-    private val _contentLength = MutableStateFlow(0L)
-    val contentLength = _contentLength.asStateFlow()
+    private val _contentPosition = MutableStateFlow(0L)
+    val contentPosition = _contentPosition.asStateFlow()
 
     private val _contentDuration = MutableStateFlow(0L)
     val contentDuration = _contentDuration.asStateFlow()
 
-    private val _wholeLength = MutableStateFlow(0L)
-    val wholeLength = _wholeLength.asStateFlow()
+    private val _wholePosition = MutableStateFlow(0L)
+    val wholePosition = _wholePosition.asStateFlow()
 
     private val _wholeDuration = MutableStateFlow(0L)
     val wholeDuration = _wholeDuration.asStateFlow()
@@ -81,7 +81,7 @@ data class VideoPlayerState internal constructor(
         contentDuration: Long,
 
     ) {
-        _contentLength.update { contentLength }
+        _contentPosition.update { contentLength }
         _contentDuration.update { contentDuration }
     }
 
@@ -89,7 +89,7 @@ data class VideoPlayerState internal constructor(
         wholeLength: Long,
         wholeDuration: Long
     ) {
-        _wholeLength.update { wholeLength }
+        _wholePosition.update { wholeLength }
         _wholeDuration.update { wholeDuration }
     }
 
@@ -136,6 +136,7 @@ fun rememberVideoPlayerState(
     }
 
     LaunchedEffect(player, state) {
+        state.showControls()
         do {
             val (cLength, cDuration) = withMainContext {
                 player.contentPosition to player.contentDuration

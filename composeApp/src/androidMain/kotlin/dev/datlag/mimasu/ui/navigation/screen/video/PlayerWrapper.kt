@@ -55,7 +55,8 @@ class PlayerWrapper(
     private val context: Context,
     private val castContext: CastContext?,
     cronetEngine: CronetEngine?,
-    cache: Cache
+    cache: Cache,
+    private val onFirstFrame: () -> Unit = { }
 ) : Player, SessionAvailabilityListener, Player.Listener {
 
     private val extractorFactory = DefaultExtractorsFactory().setTsExtractorFlags(
@@ -102,6 +103,7 @@ class PlayerWrapper(
             // Playing works, can switch to casting
             castSupported = true
             aspectRatio.update { calculateAspectRatio() }
+            onFirstFrame()
         }
     }
 

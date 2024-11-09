@@ -3,6 +3,7 @@ package dev.datlag.mimasu.common
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.view.Window
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -37,6 +38,12 @@ tailrec fun Context.findActivity(): Activity? {
         is ContextWrapper -> this.baseContext.findActivity()
         else -> null
     }
+}
+
+tailrec fun Context.findWindow(): Window? = when (this) {
+    is Activity -> window
+    is ContextWrapper -> baseContext.findWindow()
+    else -> null
 }
 
 @OptIn(UnstableApi::class)
