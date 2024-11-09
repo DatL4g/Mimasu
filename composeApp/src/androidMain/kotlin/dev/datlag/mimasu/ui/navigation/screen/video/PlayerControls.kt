@@ -57,11 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview as AndroidPreview
 @Composable
 fun PlayerControls(
     state: VideoPlayerState,
-    modifier: Modifier = Modifier,
-    onRewind: () -> Unit,
-    onPlayPause: () -> Unit,
-    onForward: () -> Unit,
-    onSeekFinished: (Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
         modifier = modifier
@@ -86,9 +82,7 @@ fun PlayerControls(
                     shape = CircleShape
                 ),
                 onClick = {
-                    state.showControls()
-
-                    onRewind()
+                    state.seekBack()
                 }
             ) {
                 Icon(
@@ -115,9 +109,7 @@ fun PlayerControls(
                     shape = CircleShape
                 ),
                 onClick = {
-                    state.showControls()
-
-                    onPlayPause()
+                    state.togglePlayPause()
                 }
             ) {
                 val isPlaying by state.isPlaying.collectAsStateWithLifecycle()
@@ -150,9 +142,7 @@ fun PlayerControls(
                     shape = CircleShape
                 ),
                 onClick = {
-                    state.showControls()
-
-                    onForward()
+                    state.seekForward()
                 }
             ) {
                 Icon(
@@ -172,6 +162,8 @@ fun PlayerControls(
 
         val interactionSource = remember { MutableInteractionSource() }
         val isDragging by interactionSource.collectIsDraggedAsState()
+        val adInfo by state.adInfo.collectAsStateWithLifecycle()
+        val seekable by state.isSeekable.collectAsStateWithLifecycle()
         val position by state.contentPosition.collectAsStateWithLifecycle()
         val duration by state.contentDuration.collectAsStateWithLifecycle()
         var progress by remember { mutableFloatStateOf(0F) }
@@ -201,13 +193,16 @@ fun PlayerControls(
             WavySlider(
                 modifier = Modifier.fillMaxWidth(),
                 value = progress,
+                enabled = !adInfo.playing && seekable,
                 onValueChange = {
                     state.showControls()
 
                     progress = it
                 },
                 onValueChangeFinished = {
-                    onSeekFinished(duration.times(progress).roundToLong())
+                    state.seekTo(
+                        positionMs = duration.times(progress).roundToLong()
+                    )
                 },
                 incremental = true,
                 trackThickness = 8.dp,
@@ -223,26 +218,5 @@ fun PlayerControls(
                 }
             )
         }
-    }
-}
-
-@AndroidPreview
-@Preview
-@Composable
-private fun PlayerControlsPreview() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        contentAlignment = Alignment.Center
-    ) {
-        PlayerControls(
-            state = VideoPlayerState(),
-            modifier = Modifier.fillMaxSize(),
-            onRewind = { },
-            onPlayPause = { },
-            onForward = { },
-            onSeekFinished = { }
-        )
     }
 }

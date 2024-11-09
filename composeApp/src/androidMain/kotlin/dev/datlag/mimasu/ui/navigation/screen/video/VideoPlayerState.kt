@@ -3,6 +3,7 @@ package dev.datlag.mimasu.ui.navigation.screen.video
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import dev.datlag.tooling.compose.withDefaultContext
@@ -19,16 +20,17 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.serialization.Serializable
+import kotlin.math.max
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
 data class VideoPlayerState internal constructor(
+    private val player: Player,
     private val hide: Duration = 2.seconds
 ) {
-
     private val _controlsVisibility = MutableStateFlow(true)
-
     val controlsVisibility = _controlsVisibility.asStateFlow()
 
     val controlsVisible: Boolean
@@ -36,20 +38,42 @@ data class VideoPlayerState internal constructor(
 
     private val channel = Channel<Long>(CONFLATED)
 
-    private val _contentPosition = MutableStateFlow(0L)
+    private val _contentPosition = MutableStateFlow(getContentPosition())
     val contentPosition = _contentPosition.asStateFlow()
 
-    private val _contentDuration = MutableStateFlow(0L)
+    private val _contentDuration = MutableStateFlow(getContentDuration())
     val contentDuration = _contentDuration.asStateFlow()
 
-    private val _wholePosition = MutableStateFlow(0L)
-    val wholePosition = _wholePosition.asStateFlow()
+    private val _contentBufferedPosition = MutableStateFlow(getContentBufferedPosition())
+    val contentBufferedPosition = _contentBufferedPosition.asStateFlow()
 
-    private val _wholeDuration = MutableStateFlow(0L)
-    val wholeDuration = _wholeDuration.asStateFlow()
+    private val _position = MutableStateFlow(getPosition())
+    val position = _position.asStateFlow()
 
-    private val _isPlaying = MutableStateFlow(false)
+    private val _duration = MutableStateFlow(getDuration())
+    val duration = _duration.asStateFlow()
+
+    private val _bufferedPosition = MutableStateFlow(getBufferedPosition())
+    val bufferedPosition = _bufferedPosition.asStateFlow()
+
+    private val _isPlaying = MutableStateFlow(player.isPlaying)
     val isPlaying = _isPlaying.asStateFlow()
+
+    val currentlyPlaying: Boolean
+        get() = isPlaying.value
+
+    private val _adInfo = MutableStateFlow(getAdInfo())
+    val adInfo = _adInfo.asStateFlow()
+
+    private val _isSeekable = MutableStateFlow(getSeekingAvailable())
+    val isSeekable = _isSeekable.asStateFlow()
+
+    private val _liveInfo = MutableStateFlow(getLiveInfo())
+    val liveInfo = _liveInfo.asStateFlow()
+
+    init {
+        channel.trySend(hide.inWholeSeconds)
+    }
 
     fun showControls(duration: Duration = hide) {
         _controlsVisibility.update { true }
@@ -76,26 +100,185 @@ data class VideoPlayerState internal constructor(
             .collect { _controlsVisibility.emit(false) }
     }
 
-    internal fun updateContent(
-        contentLength: Long,
-        contentDuration: Long,
+    suspend fun update() = withDefaultContext {
+        _contentPosition.emit(withMainContext { getContentPosition() })
+        _contentDuration.emit(withMainContext { getContentDuration() })
+        _contentBufferedPosition.emit(withMainContext { getContentBufferedPosition() })
 
-    ) {
-        _contentPosition.update { contentLength }
-        _contentDuration.update { contentDuration }
+        _position.emit(withMainContext { getPosition() })
+        _duration.emit(withMainContext { getDuration() })
+        _bufferedPosition.emit(withMainContext { getBufferedPosition() })
+
+        _isPlaying.emit(withMainContext { player.isPlaying })
+        _adInfo.emit(withMainContext { getAdInfo() })
+
+        _isSeekable.emit(withMainContext { getSeekingAvailable() })
+        _liveInfo.emit(withMainContext { getLiveInfo() })
     }
 
-    internal fun updateWhole(
-        wholeLength: Long,
-        wholeDuration: Long
-    ) {
-        _wholePosition.update { wholeLength }
-        _wholeDuration.update { wholeDuration }
+    suspend fun poll(rate: Duration = 100.milliseconds) = withDefaultContext {
+        do {
+            update()
+
+            delay(max(rate.inWholeMilliseconds, 100))
+        } while (isActive)
     }
 
-    internal fun updatePlaying(value: Boolean) {
-        _isPlaying.update { value }
+    @JvmOverloads
+    fun seekBack(showControls: Boolean = true) {
+        if (showControls) {
+            showControls()
+        }
+
+        if (player.isCommandAvailable(Player.COMMAND_SEEK_BACK)) {
+            player.seekBack()
+        }
     }
+
+    @JvmOverloads
+    fun seekForward(showControls: Boolean = true) {
+        if (showControls) {
+            showControls()
+        }
+
+        if (player.isCommandAvailable(Player.COMMAND_SEEK_FORWARD)) {
+            player.seekForward()
+        }
+    }
+
+    @JvmOverloads
+    fun seekTo(positionMs: Long, showControls: Boolean = true) {
+        if (showControls) {
+            showControls()
+        }
+
+        if (player.isCommandAvailable(Player.COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)) {
+            player.seekTo(positionMs)
+        }
+    }
+
+    @JvmOverloads
+    fun play(showControls: Boolean = true) {
+        if (showControls) {
+            showControls()
+        }
+
+        if (player.isCommandAvailable(Player.COMMAND_PLAY_PAUSE)) {
+            player.play()
+        }
+    }
+
+    @JvmOverloads
+    fun pause(showControls: Boolean = true) {
+        if (showControls) {
+            showControls()
+        }
+
+        if (player.isCommandAvailable(Player.COMMAND_PLAY_PAUSE)) {
+            player.pause()
+        }
+    }
+
+    @JvmOverloads
+    fun togglePlayPause(showControls: Boolean = true) {
+        if (currentlyPlaying) {
+            pause(showControls)
+        } else {
+            play(showControls)
+        }
+    }
+
+    private fun getContentPosition(): Long {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+            player.contentPosition
+        } else {
+            0L
+        }
+    }
+
+    private fun getContentDuration(): Long {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+            player.contentDuration
+        } else {
+            0L
+        }
+    }
+
+    private fun getContentBufferedPosition(): Long {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+            player.contentBufferedPosition
+        } else {
+            0L
+        }
+    }
+
+    private fun getPosition(): Long {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+            player.currentPosition
+        } else {
+            0L
+        }
+    }
+
+    private fun getDuration(): Long {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+            player.duration
+        } else {
+            0L
+        }
+    }
+
+    private fun getBufferedPosition(): Long {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+            player.bufferedPosition
+        } else {
+            0L
+        }
+    }
+
+    private fun getAdInfo(): AdInfo {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+            AdInfo(
+                playing = player.isPlayingAd,
+                groupIndex = player.currentAdGroupIndex,
+                indexInGroup = player.currentAdIndexInAdGroup
+            )
+        } else {
+            AdInfo(playing = false)
+        }
+    }
+
+    private fun getSeekingAvailable(): Boolean {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+            player.isCurrentMediaItemSeekable
+        } else {
+            false
+        }
+    }
+
+    private fun getLiveInfo(): LiveInfo {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+            LiveInfo(
+                isLive = player.isCurrentMediaItemLive,
+                offset = player.currentLiveOffset
+            )
+        } else {
+            LiveInfo(isLive = false)
+        }
+    }
+
+    @Serializable
+    data class AdInfo(
+        val playing: Boolean,
+        val groupIndex: Int = C.INDEX_UNSET,
+        val indexInGroup: Int = C.INDEX_UNSET
+    )
+
+    @Serializable
+    data class LiveInfo(
+        val isLive: Boolean,
+        val offset: Long = C.TIME_UNSET
+    )
 
 }
 
@@ -105,54 +288,11 @@ fun rememberVideoPlayerState(
     player: Player,
     hide: Duration = 2.seconds
 ): VideoPlayerState {
-    val state = remember { VideoPlayerState(hide) }
-
-    LaunchedEffect(player) {
-        val wrapper = (player as? PlayerWrapper)
-
-        wrapper?.listenProgress(object : PlayerWrapper.ProgressChange {
-            override fun content(position: Long, duration: Long) {
-                state.updateContent(position, duration)
-            }
-
-            override fun whole(position: Long, duration: Long) {
-                state.updateWhole(position, duration)
-            }
-        })
-
-        wrapper?.listenPlayback(object : PlayerWrapper.PlaybackChange {
-            override fun playing() {
-                state.updatePlaying(true)
-            }
-
-            override fun paused() {
-                state.updatePlaying(false)
-            }
-        })
-    }
+    val state = remember(player, hide) { VideoPlayerState(player, hide) }
 
     LaunchedEffect(state) {
+        state.poll()
         state.observe()
-    }
-
-    LaunchedEffect(player, state) {
-        state.showControls()
-        do {
-            val (cLength, cDuration) = withMainContext {
-                player.contentPosition to player.contentDuration
-            }
-            val (wLength, wDuration) = withMainContext {
-                player.currentPosition to player.duration
-            }
-
-            withIOContext {
-                state.updateContent(cLength, cDuration)
-                state.updateWhole(wLength, wDuration)
-            }
-            withDefaultContext {
-                delay(100)
-            }
-        } while (isActive)
     }
 
     return state

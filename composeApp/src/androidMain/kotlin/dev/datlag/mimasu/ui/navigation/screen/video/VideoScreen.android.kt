@@ -184,10 +184,10 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
                 modifier = Modifier.matchParentSize(),
                 contentPadding = contentPadding,
                 onDoubleClickLeft = {
-                    playerWrapper.seekBack()
+                    playerState.seekBack()
                 },
                 onDoubleClickRight = {
-                    playerWrapper.seekForward()
+                    playerState.seekForward()
                 },
                 onTap = {
                     playerState.toggleControls()
@@ -196,11 +196,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
 
             PlayerControls(
                 state = playerState,
-                modifier = Modifier.matchParentSize(),
-                onRewind = playerWrapper::seekBack,
-                onPlayPause = playerWrapper::togglePlay,
-                onForward = playerWrapper::seekForward,
-                onSeekFinished = playerWrapper::seekTo
+                modifier = Modifier.matchParentSize()
             )
         }
     }
