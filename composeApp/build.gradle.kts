@@ -57,7 +57,6 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
-            implementation(compose.uiTooling)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             // implementation(compose.material3AdaptiveNavigationSuite)
@@ -107,6 +106,7 @@ kotlin {
             // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
 
             dependencies {
+                implementation(compose.uiTooling)
                 implementation(compose.preview)
 
                 implementation(libs.android)
