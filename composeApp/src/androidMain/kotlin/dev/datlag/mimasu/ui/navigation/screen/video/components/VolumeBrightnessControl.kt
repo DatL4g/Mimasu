@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.screen.video
+package dev.datlag.mimasu.ui.navigation.screen.video.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -9,7 +9,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -49,16 +47,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.other.AudioHelper
 import dev.datlag.mimasu.other.BrightnessHelper
-import io.github.aakira.napier.Napier
+import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
+import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun VolumeBrightnessControl(
+    state: VideoPlayerState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onDoubleClickLeft: (Offset) -> Unit = { },
-    onDoubleClickRight: (Offset) -> Unit = { },
-    onTap: (Offset) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -137,6 +134,8 @@ fun VolumeBrightnessControl(
         ) {
             var widthLeft by remember { mutableIntStateOf(0) }
             var widthRight by remember { mutableIntStateOf(0) }
+            val canSeekBack by state.canSeekBack.collectAsStateWithLifecycle()
+            val canSeekForward by state.canSeekForward.collectAsStateWithLifecycle()
 
             Box(
                 modifier = Modifier
@@ -164,11 +163,13 @@ fun VolumeBrightnessControl(
                             onDoubleTap = {
                                 val center = widthLeft.toFloat() / 2F
 
-                                if (it.x < center) {
-                                    onDoubleClickLeft(it)
+                                if (it.x < center && canSeekBack) {
+                                    state.seekBack()
                                 }
                             },
-                            onTap = onTap
+                            onTap = {
+                                state.toggleControls()
+                            }
                         )
                     }
                     .padding(8.dp)
@@ -199,11 +200,13 @@ fun VolumeBrightnessControl(
                             onDoubleTap = {
                                 val center = widthRight.toFloat() / 2F
 
-                                if (it.x > center) {
-                                    onDoubleClickRight(it)
+                                if (it.x > center && canSeekForward) {
+                                    state.seekForward()
                                 }
                             },
-                            onTap = onTap
+                            onTap = {
+                                state.toggleControls()
+                            }
                         )
                     }
                     .padding(8.dp)

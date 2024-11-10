@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.screen.video
+package dev.datlag.mimasu.ui.navigation.screen.video.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -10,21 +10,17 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FastForward
 import androidx.compose.material.icons.rounded.FastRewind
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,8 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,25 +38,21 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import dev.datlag.mimasu.common.drawProgress
+import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import ir.mahozad.multiplatform.wavyslider.material3.WavySlider
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.math.max
 import kotlin.math.roundToLong
-import androidx.compose.ui.tooling.preview.Preview as AndroidPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerControls(
+fun CenterControls(
     state: VideoPlayerState,
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
         modifier = modifier
     ) {
-        val (rewind, playPause, forward, seeker) = createRefs()
+        val (rewind, playPause, forward) = createRefs()
         val visibility by state.controlsVisibility.collectAsStateWithLifecycle()
 
         AnimatedVisibility(
@@ -76,6 +66,8 @@ fun PlayerControls(
             enter = slideInHorizontally() + fadeIn(),
             exit = slideOutHorizontally() + fadeOut()
         ) {
+            val canSeekBack by state.canSeekBack.collectAsStateWithLifecycle()
+
             IconButton(
                 modifier = Modifier.background(
                     color = Color.Black.copy(alpha = 0.25F),
@@ -83,7 +75,8 @@ fun PlayerControls(
                 ),
                 onClick = {
                     state.seekBack()
-                }
+                },
+                enabled = canSeekBack
             ) {
                 Icon(
                     imageVector = Icons.Rounded.FastRewind,
@@ -103,26 +96,43 @@ fun PlayerControls(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            IconButton(
-                modifier = Modifier.background(
-                    color = Color.Black.copy(alpha = 0.25F),
-                    shape = CircleShape
-                ),
-                onClick = {
-                    state.togglePlayPause()
-                }
+            Box(
+                contentAlignment = Alignment.Center
             ) {
-                val isPlaying by state.isPlaying.collectAsStateWithLifecycle()
+                val isLoading by state.isLoading.collectAsStateWithLifecycle()
+                val canPlayPause by state.canPlayPause.collectAsStateWithLifecycle()
 
-                Icon(
-                    imageVector = if (isPlaying) {
-                        Icons.Rounded.Pause
-                    } else {
-                        Icons.Rounded.PlayArrow
+                IconButton(
+                    modifier = Modifier.background(
+                        color = Color.Black.copy(alpha = 0.25F),
+                        shape = CircleShape
+                    ),
+                    onClick = {
+                        state.togglePlayPause()
                     },
-                    contentDescription = null,
-                    tint = Color.White
-                )
+                    enabled = canPlayPause
+                ) {
+                    val isPlaying by state.isPlaying.collectAsStateWithLifecycle()
+
+                    Icon(
+                        imageVector = if (isPlaying) {
+                            Icons.Rounded.Pause
+                        } else {
+                            Icons.Rounded.PlayArrow
+                        },
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+
+                AnimatedVisibility(
+                    modifier = Modifier.matchParentSize(),
+                    visible = isLoading,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
         AnimatedVisibility(
@@ -136,6 +146,8 @@ fun PlayerControls(
             enter = slideInHorizontally { it / 2 } + fadeIn(),
             exit = slideOutHorizontally { it / 2 } + fadeOut()
         ) {
+            val canSeekForward by state.canSeekForward.collectAsStateWithLifecycle()
+
             IconButton(
                 modifier = Modifier.background(
                     color = Color.Black.copy(alpha = 0.25F),
@@ -143,7 +155,8 @@ fun PlayerControls(
                 ),
                 onClick = {
                     state.seekForward()
-                }
+                },
+                enabled = canSeekForward
             ) {
                 Icon(
                     modifier = Modifier
@@ -160,63 +173,6 @@ fun PlayerControls(
             }
         }
 
-        val interactionSource = remember { MutableInteractionSource() }
-        val isDragging by interactionSource.collectIsDraggedAsState()
-        val adInfo by state.adInfo.collectAsStateWithLifecycle()
-        val seekable by state.isSeekable.collectAsStateWithLifecycle()
-        val position by state.contentPosition.collectAsStateWithLifecycle()
-        val duration by state.contentDuration.collectAsStateWithLifecycle()
-        var progress by remember { mutableFloatStateOf(0F) }
 
-        LaunchedEffect(position, duration) {
-            if (!isDragging) {
-                progress = if (position <= 0L || duration <= 0L) {
-                    0F
-                } else {
-                    position.toFloat() / duration.toFloat()
-                }
-            }
-        }
-
-        AnimatedVisibility(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(seeker) {
-                    start.linkTo(parent.start, 16.dp)
-                    end.linkTo(parent.end, 16.dp)
-                    bottom.linkTo(parent.bottom, 8.dp)
-                },
-            visible = visibility,
-            enter = slideInVertically { it / 2 } + fadeIn(),
-            exit = slideOutVertically { it / 2 } + fadeOut()
-        ) {
-            WavySlider(
-                modifier = Modifier.fillMaxWidth(),
-                value = progress,
-                enabled = !adInfo.playing && seekable,
-                onValueChange = {
-                    state.showControls()
-
-                    progress = it
-                },
-                onValueChangeFinished = {
-                    state.seekTo(
-                        positionMs = duration.times(progress).roundToLong()
-                    )
-                },
-                incremental = true,
-                trackThickness = 8.dp,
-                interactionSource = interactionSource,
-                thumb = {
-                    SliderDefaults.Thumb(
-                        interactionSource = interactionSource,
-                        thumbSize = DpSize(
-                            width = 4.dp,
-                            height = 22.dp
-                        )
-                    )
-                }
-            )
-        }
     }
 }

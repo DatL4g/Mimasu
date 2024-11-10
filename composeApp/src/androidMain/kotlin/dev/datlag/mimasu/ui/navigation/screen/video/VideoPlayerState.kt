@@ -9,9 +9,13 @@ import androidx.media3.common.util.UnstableApi
 import dev.datlag.tooling.compose.withDefaultContext
 import dev.datlag.tooling.compose.withIOContext
 import dev.datlag.tooling.compose.withMainContext
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
+import kotlinx.coroutines.channels.onClosed
+import kotlinx.coroutines.channels.onFailure
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -62,27 +66,42 @@ data class VideoPlayerState internal constructor(
     val currentlyPlaying: Boolean
         get() = isPlaying.value
 
+    private val _isLoading = MutableStateFlow(player.isLoading)
+    val isLoading = _isLoading.asStateFlow()
+
+    val currentlyLoading: Boolean
+        get() = isLoading.value
+
+    private val _canPlayPause = MutableStateFlow(getPlayPauseAvailable())
+    val canPlayPause = _canPlayPause.asStateFlow()
+
     private val _adInfo = MutableStateFlow(getAdInfo())
     val adInfo = _adInfo.asStateFlow()
 
     private val _isSeekable = MutableStateFlow(getSeekingAvailable())
     val isSeekable = _isSeekable.asStateFlow()
 
+    private val _canSeekBack = MutableStateFlow(getSeekingBackAvailable())
+    val canSeekBack = _canSeekBack.asStateFlow()
+
+    private val _canSeekForward = MutableStateFlow(getSeekingForwardAvailable())
+    val canSeekForward = _canSeekForward.asStateFlow()
+
     private val _liveInfo = MutableStateFlow(getLiveInfo())
     val liveInfo = _liveInfo.asStateFlow()
 
     init {
-        channel.trySend(hide.inWholeSeconds)
+        channel.sendSafely(hide.inWholeSeconds)
     }
 
     fun showControls(duration: Duration = hide) {
         _controlsVisibility.update { true }
-        channel.trySend(duration.inWholeSeconds)
+        channel.sendSafely(duration.inWholeSeconds)
     }
 
     fun hideControls() {
         _controlsVisibility.update { false }
-        channel.trySend(1L)
+        channel.sendSafely(1L)
     }
 
     fun toggleControls(duration: Duration = hide) {
@@ -110,9 +129,14 @@ data class VideoPlayerState internal constructor(
         _bufferedPosition.emit(withMainContext { getBufferedPosition() })
 
         _isPlaying.emit(withMainContext { player.isPlaying })
-        _adInfo.emit(withMainContext { getAdInfo() })
+        _isLoading.emit(withMainContext { player.isLoading })
+        _canPlayPause.emit(withMainContext { getPlayPauseAvailable() })
 
         _isSeekable.emit(withMainContext { getSeekingAvailable() })
+        _canSeekBack.emit(withMainContext { getSeekingBackAvailable() })
+        _canSeekForward.emit(withMainContext { getSeekingForwardAvailable() })
+
+        _adInfo.emit(withMainContext { getAdInfo() })
         _liveInfo.emit(withMainContext { getLiveInfo() })
     }
 
@@ -130,7 +154,7 @@ data class VideoPlayerState internal constructor(
             showControls()
         }
 
-        if (player.isCommandAvailable(Player.COMMAND_SEEK_BACK)) {
+        if (getSeekingBackAvailable()) {
             player.seekBack()
         }
     }
@@ -141,7 +165,7 @@ data class VideoPlayerState internal constructor(
             showControls()
         }
 
-        if (player.isCommandAvailable(Player.COMMAND_SEEK_FORWARD)) {
+        if (getSeekingForwardAvailable()) {
             player.seekForward()
         }
     }
@@ -248,12 +272,24 @@ data class VideoPlayerState internal constructor(
         }
     }
 
+    private fun getPlayPauseAvailable(): Boolean {
+        return player.isCommandAvailable(Player.COMMAND_PLAY_PAUSE)
+    }
+
     private fun getSeekingAvailable(): Boolean {
         return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
             player.isCurrentMediaItemSeekable
         } else {
             false
         }
+    }
+
+    private fun getSeekingBackAvailable(): Boolean {
+        return player.isCommandAvailable(Player.COMMAND_SEEK_BACK)
+    }
+
+    private fun getSeekingForwardAvailable(): Boolean {
+        return player.isCommandAvailable(Player.COMMAND_SEEK_FORWARD)
     }
 
     private fun getLiveInfo(): LiveInfo {
@@ -264,6 +300,12 @@ data class VideoPlayerState internal constructor(
             )
         } else {
             LiveInfo(isLive = false)
+        }
+    }
+
+    private fun <T> Channel<T>.sendSafely(value: T) {
+        this.trySend(value).onFailure {
+            this.trySendBlocking(value)
         }
     }
 
@@ -292,6 +334,9 @@ fun rememberVideoPlayerState(
 
     LaunchedEffect(state) {
         state.poll()
+    }
+
+    LaunchedEffect(state) {
         state.observe()
     }
 
