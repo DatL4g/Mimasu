@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.common.toDuration
+import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import ir.mahozad.multiplatform.wavyslider.material3.WaveHeight
@@ -35,13 +36,14 @@ import kotlin.math.roundToLong
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomControls(
-    state: VideoPlayerState
+    state: VideoPlayerState,
+    pipActive: Boolean = PiPHelper.active.value
 ) {
     val visibility by state.controlsVisibility.collectAsStateWithLifecycle()
 
     AnimatedVisibility(
         modifier = Modifier.fillMaxWidth(),
-        visible = visibility,
+        visible = visibility && !pipActive,
         enter = slideInVertically { it / 2 } + fadeIn(),
         exit = slideOutVertically { it / 2 } + fadeOut()
     ) {

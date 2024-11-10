@@ -1,5 +1,6 @@
 package dev.datlag.mimasu
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,9 +14,11 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import dev.datlag.kast.Kast
+import dev.datlag.mimasu.common.isActivityInPiPMode
 import dev.datlag.mimasu.core.MimasuConnection
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.other.PackageResolver
+import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.navigation.RootComponent
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
@@ -52,6 +55,7 @@ class MainActivity : ComponentActivity() {
 
         Kast.setup(this)
         PackageResolver.bindUpdate(this)
+        PiPHelper.setActive(this.isActivityInPiPMode())
         
         setContent { 
             CompositionLocalProvider(
@@ -80,17 +84,47 @@ class MainActivity : ComponentActivity() {
         super.onStart()
 
         PackageResolver.bindUpdate(this)
+        PiPHelper.setActive(this.isActivityInPiPMode())
     }
 
     override fun onResume() {
         super.onResume()
 
         PackageResolver.bindUpdate(this)
+        PiPHelper.setActive(this.isActivityInPiPMode())
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        PiPHelper.setActive(this.isActivityInPiPMode())
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        PiPHelper.setActive(this.isActivityInPiPMode())
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         unbindService(MimasuConnection.Update)
+        PiPHelper.setActive(this.isActivityInPiPMode())
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+
+        PiPHelper.registerEnter()
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+
+        PiPHelper.setActive(isInPictureInPictureMode)
     }
 }

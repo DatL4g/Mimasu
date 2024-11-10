@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.ui.navigation.screen.video
 
+import android.graphics.Rect
 import android.view.WindowManager
 import androidx.annotation.OptIn
 import androidx.compose.foundation.AndroidExternalSurface
@@ -20,9 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toAndroidRectF
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.graphics.toRect
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -31,6 +36,7 @@ import dev.datlag.kast.Kast
 import dev.datlag.mimasu.common.detectPinchGestures
 import dev.datlag.mimasu.common.rememberCronetEngine
 import dev.datlag.mimasu.core.MimasuConnection
+import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.navigation.screen.video.components.BottomControls
 import dev.datlag.mimasu.ui.navigation.screen.video.components.CenterControls
 import dev.datlag.mimasu.ui.navigation.screen.video.components.TopControls
@@ -82,6 +88,11 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     val videoPlayerSecure by MimasuConnection.isVideoPlayerSecure.collectAsStateWithLifecycle()
     val aspectRatio by playerWrapper.aspectRatio.collectAsStateWithLifecycle()
     val isCasting by playerWrapper.usingCastPlayer.collectAsStateWithLifecycle()
+    val pipHelper = remember(context) { PiPHelper(context) }
+    val pipActive by PiPHelper.active.collectAsStateWithLifecycle()
+    var videoViewBounds by remember {
+        mutableStateOf(Rect())
+    }
 
     LaunchedEffect(videoPlayerSecure) {
         if (videoPlayerSecure) {
@@ -103,12 +114,14 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopControls(
-                state = playerState
+                state = playerState,
+                pipActive = pipActive
             )
         },
         bottomBar = {
             BottomControls(
-                state = playerState
+                state = playerState,
+                pipActive = pipActive
             )
         }
     ) { contentPadding ->
@@ -142,7 +155,9 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
             }
 
             AndroidExternalSurface(
-                modifier = sizeModifier.background(Color.Black),
+                modifier = sizeModifier.background(Color.Black).onGloballyPositioned {
+                    videoViewBounds = it.boundsInWindow().toAndroidRectF().toRect()
+                },
                 isSecure = videoPlayerSecure,
                 onInit = {
                     onSurface { surface, _, _ ->
@@ -161,6 +176,19 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
                 state = playerState,
                 modifier = Modifier.matchParentSize()
             )
+        }
+    }
+
+    LaunchedEffect(pipHelper) {
+        PiPHelper.onEnter {
+            pipHelper.enter(aspectRatio, videoViewBounds)
+        }
+    }
+
+    DisposableEffect(PiPHelper) {
+        onDispose {
+            videoViewBounds = Rect()
+            PiPHelper.clearEnter()
         }
     }
 

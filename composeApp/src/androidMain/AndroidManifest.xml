@@ -49,6 +49,7 @@
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleInstance"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:supportsPictureInPicture="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

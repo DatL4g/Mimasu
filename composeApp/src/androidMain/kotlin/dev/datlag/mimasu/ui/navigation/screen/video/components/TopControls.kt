@@ -14,19 +14,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopControls(
-    state: VideoPlayerState
+    state: VideoPlayerState,
+    pipActive: Boolean = PiPHelper.active.value
 ) {
     val visibility by state.controlsVisibility.collectAsStateWithLifecycle()
 
     AnimatedVisibility(
         modifier = Modifier.fillMaxWidth(),
-        visible = visibility,
+        visible = visibility && !pipActive,
         enter = slideInVertically() + fadeIn(),
         exit = slideOutVertically() + fadeOut()
     ) {

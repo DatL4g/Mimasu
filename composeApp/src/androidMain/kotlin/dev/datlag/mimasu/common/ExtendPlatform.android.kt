@@ -3,6 +3,7 @@ package dev.datlag.mimasu.common
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Build
 import android.view.Window
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
@@ -44,6 +45,16 @@ tailrec fun Context.findWindow(): Window? = when (this) {
     is Activity -> window
     is ContextWrapper -> baseContext.findWindow()
     else -> null
+}
+
+fun Context.isActivityInPiPMode(): Boolean {
+    val currentActivity = findActivity() ?: return false
+
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        currentActivity.isInPictureInPictureMode
+    } else {
+        false
+    }
 }
 
 @OptIn(UnstableApi::class)
