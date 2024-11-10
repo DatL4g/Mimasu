@@ -34,6 +34,7 @@ ktorfit = "2.1.0"
 locale = "0.8.0"
 media3 = "1.4.1"
 multidex = "2.0.1"
+nanoid = "1.0.1"
 napier = "2.7.1"
 osdetector = "1.7.3"
 paging = "3.3.0-alpha02-0.5.1"
@@ -108,6 +109,7 @@ media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "medi
 media3-cast = { group = "androidx.media3", name = "media3-cast", version.ref = "media3" }
 media3-cronet = { group = "androidx.media3", name = "media3-datasource-cronet", version.ref = "media3" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+nanoid = { group = "dev.datlag.nanoid", name = "nanoid", version.ref = "nanoid" }
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 paging = { group = "app.cash.paging", name = "paging-common", version.ref = "paging" }
 paging-compose = { group = "app.cash.paging", name = "paging-compose-common", version.ref = "paging" }

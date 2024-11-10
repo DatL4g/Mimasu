@@ -6,6 +6,8 @@ import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.TextureView
+import androidx.core.app.NotificationCompat
+import androidx.media3.session.MediaStyleNotificationHelper.MediaStyle
 import androidx.media3.cast.CastPlayer
 import androidx.media3.cast.SessionAvailabilityListener
 import androidx.media3.common.AudioAttributes
@@ -15,6 +17,7 @@ import androidx.media3.common.C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import androidx.media3.common.C.VOLUME_FLAG_SHOW_UI
 import androidx.media3.common.C.VideoScalingMode
 import androidx.media3.common.DeviceInfo
+import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
@@ -28,6 +31,7 @@ import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import androidx.media3.common.VideoSize
 import androidx.media3.common.text.CueGroup
+import androidx.media3.common.util.NotificationUtil
 import androidx.media3.common.util.Size
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
@@ -42,13 +46,17 @@ import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ALLOW_NON_IDR_KEYFRAMES
 import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_DETECT_ACCESS_UNITS
 import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS
+import androidx.media3.session.MediaSession
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
+import dev.datlag.mimasu.R
+import dev.datlag.nanoid.NanoIdUtils
 import dev.datlag.tooling.async.scopeCatching
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import org.chromium.net.CronetEngine
 import java.util.concurrent.Executors
+import kotlin.random.Random
 
 @UnstableApi
 class PlayerWrapper(
@@ -178,8 +186,12 @@ class PlayerWrapper(
             if (previous != value) {
                 usingCastPlayer.update { value is CastPlayer }
 
-                // Create meta data
-                // Create new session
+                val metadata = currentMediaItem?.let {
+                    val prepared = it.forPlayer(value)
+                    prepared.mediaMetadata
+                } ?: currentMediaItem?.mediaMetadata ?: value.mediaMetadata
+
+                Session.create(context, player, metadata)
             }
         }
 
@@ -246,17 +258,23 @@ class PlayerWrapper(
 
     override fun setMediaItem(mediaItem: MediaItem) {
         castPlayer?.setMediaItem(mediaItem.forPlayer(castPlayer))
-        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer))
+        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer)).also {
+            Session.create(context, player, mediaItem.forPlayer(player).mediaMetadata)
+        }
     }
 
     override fun setMediaItem(mediaItem: MediaItem, startPositionMs: Long) {
         castPlayer?.setMediaItem(mediaItem.forPlayer(castPlayer), startPositionMs)
-        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer), startPositionMs)
+        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer), startPositionMs).also {
+            Session.create(context, player, mediaItem.forPlayer(player).mediaMetadata)
+        }
     }
 
     override fun setMediaItem(mediaItem: MediaItem, resetPosition: Boolean) {
         castPlayer?.setMediaItem(mediaItem.forPlayer(castPlayer), resetPosition)
-        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer), resetPosition)
+        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer), resetPosition).also {
+            Session.create(context, player, mediaItem.forPlayer(player).mediaMetadata)
+        }
     }
 
     override fun addMediaItem(mediaItem: MediaItem) {
@@ -516,7 +534,8 @@ class PlayerWrapper(
         localPlayer.release()
         castPlayer?.stop()
         castPlayer?.clearMediaItems()
-        // release session
+
+        Session.release(context)
     }
 
     override fun getCurrentTracks(): Tracks {
@@ -832,6 +851,54 @@ class PlayerWrapper(
             this.buildUpon().setMimeType(MimeTypes.VIDEO_UNKNOWN).build()
         } else {
             this
+        }
+    }
+
+    data object Session {
+        private var current: MediaSession? = null
+        private val PseudoRandom = Random((10000..12345).random())
+        private val Alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        private const val CHANNEL = "Video"
+        private const val NOTIFY_ID = 69
+
+        fun create(context: Context, player: Player, metadata: MediaMetadata) {
+            release(context)
+
+            current = MediaSession.Builder(
+                context,
+                ForwardingPlayer(player)
+            ).setId(
+                NanoIdUtils.randomNanoId(
+                    random = PseudoRandom,
+                    alphabet = Alphabet.toCharArray()
+                )
+            ).build().also { session ->
+                NotificationUtil.createNotificationChannel(
+                    context,
+                    CHANNEL,
+                    R.string.session_title,
+                    R.string.session_description,
+                    NotificationUtil.IMPORTANCE_LOW
+                )
+
+                val notification = NotificationCompat.Builder(context, CHANNEL)
+                    .setContentTitle(metadata.title)
+                    .setContentText(metadata.subtitle?.ifBlank { null } ?: metadata.albumTitle?.ifBlank { null })
+                    .setContentInfo(metadata.genre?.ifBlank { null })
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setStyle(MediaStyle(session))
+                    .build()
+
+                NotificationUtil.setNotification(context, NOTIFY_ID, notification)
+            }
+        }
+
+        fun release(context: Context?) {
+            if (context != null) {
+                NotificationUtil.setNotification(context, NOTIFY_ID, null)
+            }
+            current?.release()
+            current = null
         }
     }
 }
