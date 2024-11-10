@@ -162,6 +162,13 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
                 onInit = {
                     onSurface { surface, _, _ ->
                         playerWrapper.setVideoSurface(surface)
+
+                        surface.onChanged { _, _ ->
+                            playerWrapper.setVideoSurface(surface)
+                        }
+                        surface.onDestroyed {
+                            playerWrapper.clearVideoSurface()
+                        }
                     }
                 }
             )
