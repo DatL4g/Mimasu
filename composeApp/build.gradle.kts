@@ -41,6 +41,12 @@ sekret {
     }
 }
 
+compose {
+    resources {
+        generateResClass = auto
+    }
+}
+
 kotlin {
     androidTarget()
 
@@ -141,7 +147,7 @@ dependencies {
 
 android {
     sourceSets["main"].setRoot("src/androidMain/")
-    sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
+    sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources", "src/commonMain/composeResources")
     sourceSets["main"].assets.srcDirs("src/androidMain/assets", "src/commonMain/assets")
 
     compileSdk = 35

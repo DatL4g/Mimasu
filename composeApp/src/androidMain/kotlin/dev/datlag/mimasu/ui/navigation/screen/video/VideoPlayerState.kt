@@ -4,12 +4,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.media3.common.C
+import androidx.media3.common.C.TRACK_TYPE_TEXT
 import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.text.Cue
+import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
+import com.vanniktech.locale.Locale
+import com.vanniktech.locale.displayName
+import dev.datlag.mimasu.core.serializer.SerializableImmutableSet
+import dev.datlag.mimasu.other.CountryImage
 import dev.datlag.tooling.compose.withDefaultContext
 import dev.datlag.tooling.compose.withIOContext
 import dev.datlag.tooling.compose.withMainContext
 import io.github.aakira.napier.Napier
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
@@ -22,8 +36,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.isActive
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import org.jetbrains.compose.resources.DrawableResource
 import kotlin.math.max
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -33,7 +50,7 @@ import kotlin.time.Duration.Companion.seconds
 data class VideoPlayerState internal constructor(
     private val player: Player,
     private val hide: Duration = 2.seconds
-) {
+): Player.Listener {
     private val _controlsVisibility = MutableStateFlow(true)
     val controlsVisibility = _controlsVisibility.asStateFlow()
 
@@ -90,7 +107,18 @@ data class VideoPlayerState internal constructor(
     private val _liveInfo = MutableStateFlow(getLiveInfo())
     val liveInfo = _liveInfo.asStateFlow()
 
+    private val _subTitle = MutableStateFlow(SubTitle())
+    val subTitle = _subTitle.asStateFlow()
+
+    @Transient
+    private val _cues = MutableStateFlow(getPlayerCues())
+
+    @Transient
+    val cues = _cues.asStateFlow()
+
     init {
+        player.addListener(this)
+
         channel.sendSafely(hide.inWholeSeconds)
     }
 
@@ -212,6 +240,61 @@ data class VideoPlayerState internal constructor(
         }
     }
 
+    @JvmOverloads
+    fun select(language: Language?, hideControls: Boolean = true) {
+        val selected = _subTitle.updateAndGet {
+            it.copy(selected = language)
+        }.selected
+
+        player.trackSelectionParameters = player.trackSelectionParameters
+            .buildUpon()
+            .setPreferredTextLanguage(selected?.code)
+            .build()
+
+        if (hideControls) {
+            hideControls()
+        }
+    }
+
+    override fun onTracksChanged(tracks: Tracks) {
+        super.onTracksChanged(tracks)
+
+        _subTitle.update {
+            SubTitle(
+                selected = null,
+                available = languagesFromTrack(tracks)
+            )
+        }
+    }
+
+    override fun onCues(cueGroup: CueGroup) {
+        super.onCues(cueGroup)
+
+        _cues.update { getCuesFrom(cueGroup) }
+    }
+
+    private fun languagesFromTrack(tracks: Tracks): ImmutableSet<Language> {
+        return tracks.groups.asSequence().mapNotNull {
+            if (it.type != TRACK_TYPE_TEXT) {
+                return@mapNotNull null
+            }
+
+            (0 until it.length).map { index ->
+                it.getTrackFormat(index)
+            }.mapNotNull { format ->
+                format.language?.ifBlank { null }
+            }
+        }.flatten().toSet().mapNotNull { code ->
+            val locale = Locale.fromOrNull(code) ?: return@mapNotNull null
+
+            Language(
+                name = locale.language.displayName(),
+                code = code,
+                icon = CountryImage.getByCode(code) ?: CountryImage.getByCode(locale.language.code)
+            )
+        }.toList().toImmutableSet()
+    }
+
     private fun getContentPosition(): Long {
         return if (player.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
             player.contentPosition
@@ -303,6 +386,18 @@ data class VideoPlayerState internal constructor(
         }
     }
 
+    private fun getPlayerCues(): ImmutableList<Cue> {
+        return if (player.isCommandAvailable(Player.COMMAND_GET_TEXT)) {
+            getCuesFrom(player.currentCues)
+        } else {
+            persistentListOf()
+        }
+    }
+
+    private fun getCuesFrom(group: CueGroup): ImmutableList<Cue> {
+        return group.cues.toImmutableList()
+    }
+
     private fun <T> Channel<T>.sendSafely(value: T) {
         this.trySend(value).onFailure {
             this.trySendBlocking(value)
@@ -320,6 +415,21 @@ data class VideoPlayerState internal constructor(
     data class LiveInfo(
         val isLive: Boolean,
         val offset: Long = C.TIME_UNSET
+    )
+
+    @Serializable
+    data class SubTitle(
+        val selected: Language? = null,
+        val available: SerializableImmutableSet<Language> = persistentSetOf()
+    )
+
+    @Serializable
+    data class Language(
+        val name: String,
+        val code: String,
+        @Transient val icon: DrawableResource? = CountryImage.getByCode(code) ?: Locale.fromOrNull(code)?.let {
+            CountryImage.getByCode(it.language.code)
+        }
     )
 
 }

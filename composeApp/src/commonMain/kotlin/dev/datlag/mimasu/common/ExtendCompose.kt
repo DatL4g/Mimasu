@@ -7,12 +7,19 @@ import androidx.compose.foundation.gestures.calculateCentroidSize
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.changedToUp
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.max
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -77,38 +84,27 @@ suspend fun PointerInputScope.detectPinchGestures(
     }
 }
 
-suspend fun PointerInputScope.detectSingleTap(
-    pass: PointerEventPass = PointerEventPass.Main,
-    onSingleTap: (Offset) -> Unit
-) = coroutineScope {
-    awaitEachGesture {
-        // Wait for the first touch event
-        val down: PointerInputChange = awaitFirstDown(pass = pass)
+@Composable
+fun PaddingValues.merge(other: PaddingValues): PaddingValues {
+    val direction = LocalLayoutDirection.current
 
-        // Capture the position of the down event
-        val downPosition = down.position
-        val touchSlop = viewConfiguration.touchSlop
-        var isSingleTap = true
+    return PaddingValues(
+        start = max(this.calculateStartPadding(direction), other.calculateStartPadding(direction)),
+        top = max(this.calculateTopPadding(), other.calculateTopPadding()),
+        end = max(this.calculateEndPadding(direction), other.calculateEndPadding(direction)),
+        bottom = max(this.calculateBottomPadding(), other.calculateBottomPadding())
+    )
+}
 
-        do {
-            val event = awaitPointerEvent(pass = pass)
-            val pointer = event.changes.first()
+@Composable
+fun PaddingValues.merge(all: Dp): PaddingValues {
+    val direction = LocalLayoutDirection.current
+    val other = PaddingValues(all)
 
-            // Check if there’s movement beyond the touch slop, which would disqualify it as a single tap
-            if (abs(pointer.position.x - downPosition.x) > touchSlop ||
-                abs(pointer.position.y - downPosition.y) > touchSlop
-            ) {
-                isSingleTap = false
-            }
-
-            // If the pointer has been lifted, check if it's still a valid single tap
-            if (pointer.changedToUp()) {
-                if (isSingleTap) {
-                    onSingleTap(downPosition)
-                }
-                break
-            }
-
-        } while (event.changes.any { it.pressed })
-    }
+    return PaddingValues(
+        start = max(this.calculateStartPadding(direction), other.calculateStartPadding(direction)),
+        top = max(this.calculateTopPadding(), other.calculateTopPadding()),
+        end = max(this.calculateEndPadding(direction), other.calculateEndPadding(direction)),
+        bottom = max(this.calculateBottomPadding(), other.calculateBottomPadding())
+    )
 }

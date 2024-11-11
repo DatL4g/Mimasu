@@ -6,9 +6,13 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.AndroidExternalSurface
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -27,18 +31,23 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toRect
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
+import androidx.media3.exoplayer.text.TextOutput
 import dev.datlag.kast.Kast
 import dev.datlag.mimasu.common.detectPinchGestures
+import dev.datlag.mimasu.common.merge
 import dev.datlag.mimasu.common.rememberCronetEngine
 import dev.datlag.mimasu.core.MimasuConnection
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.navigation.screen.video.components.BottomControls
 import dev.datlag.mimasu.ui.navigation.screen.video.components.CenterControls
+import dev.datlag.mimasu.ui.navigation.screen.video.components.SubTitles
 import dev.datlag.mimasu.ui.navigation.screen.video.components.TopControls
 import dev.datlag.mimasu.ui.navigation.screen.video.components.VolumeBrightnessControl
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
@@ -52,7 +61,8 @@ import kotlin.math.min
 actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     val mediaItem = remember {
         MediaItem.Builder()
-            .setUri("https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8")
+            //.setUri("https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8")
+            .setUri("https://stream.mux.com/HDGj01zK01esWsWf9WJj5t5yuXQZJFF6bo.m3u8")
             .build()
     }
     val context = LocalContext.current
@@ -173,10 +183,19 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
                 }
             )
 
+            SubTitles(
+                state = playerState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(contentPadding.merge(PaddingValues(bottom = 16.dp)))
+                    .background(Color.Black.copy(alpha = 0.25F), CircleShape)
+                    .padding(8.dp)
+            )
+
             VolumeBrightnessControl(
                 state = playerState,
                 modifier = Modifier.matchParentSize(),
-                contentPadding = contentPadding,
+                contentPadding = contentPadding.merge(PaddingValues(top = 16.dp)),
             )
 
             CenterControls(

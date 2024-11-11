@@ -178,7 +178,7 @@ class PlayerWrapper(
      * The currently used [Player].
      * Either [ExoPlayer] or [CastPlayer]
      */
-    private var player: Player = if (useCastPlayer) castPlayer ?: localPlayer else localPlayer
+    private var player: Player = (if (useCastPlayer) castPlayer ?: localPlayer else localPlayer).also { Session.create(context, it) }
         private set(value) {
             val previous = field
             field = value
@@ -186,12 +186,7 @@ class PlayerWrapper(
             if (previous != value) {
                 usingCastPlayer.update { value is CastPlayer }
 
-                val metadata = currentMediaItem?.let {
-                    val prepared = it.forPlayer(value)
-                    prepared.mediaMetadata
-                } ?: currentMediaItem?.mediaMetadata ?: value.mediaMetadata
-
-                Session.create(context, player, metadata)
+                Session.create(context, player)
             }
         }
 
@@ -258,23 +253,17 @@ class PlayerWrapper(
 
     override fun setMediaItem(mediaItem: MediaItem) {
         castPlayer?.setMediaItem(mediaItem.forPlayer(castPlayer))
-        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer)).also {
-            Session.create(context, player, mediaItem.forPlayer(player).mediaMetadata)
-        }
+        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer))
     }
 
     override fun setMediaItem(mediaItem: MediaItem, startPositionMs: Long) {
         castPlayer?.setMediaItem(mediaItem.forPlayer(castPlayer), startPositionMs)
-        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer), startPositionMs).also {
-            Session.create(context, player, mediaItem.forPlayer(player).mediaMetadata)
-        }
+        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer), startPositionMs)
     }
 
     override fun setMediaItem(mediaItem: MediaItem, resetPosition: Boolean) {
         castPlayer?.setMediaItem(mediaItem.forPlayer(castPlayer), resetPosition)
-        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer), resetPosition).also {
-            Session.create(context, player, mediaItem.forPlayer(player).mediaMetadata)
-        }
+        return localPlayer.setMediaItem(mediaItem.forPlayer(localPlayer), resetPosition)
     }
 
     override fun addMediaItem(mediaItem: MediaItem) {
@@ -861,7 +850,7 @@ class PlayerWrapper(
         private const val CHANNEL = "Video"
         private const val NOTIFY_ID = 69
 
-        fun create(context: Context, player: Player, metadata: MediaMetadata) {
+        fun create(context: Context, player: Player) {
             release(context)
 
             current = MediaSession.Builder(
@@ -872,25 +861,7 @@ class PlayerWrapper(
                     random = PseudoRandom,
                     alphabet = Alphabet.toCharArray()
                 )
-            ).build().also { session ->
-                NotificationUtil.createNotificationChannel(
-                    context,
-                    CHANNEL,
-                    R.string.session_title,
-                    R.string.session_description,
-                    NotificationUtil.IMPORTANCE_LOW
-                )
-
-                val notification = NotificationCompat.Builder(context, CHANNEL)
-                    .setContentTitle(metadata.title)
-                    .setContentText(metadata.subtitle?.ifBlank { null } ?: metadata.albumTitle?.ifBlank { null })
-                    .setContentInfo(metadata.genre?.ifBlank { null })
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setStyle(MediaStyle(session))
-                    .build()
-
-                NotificationUtil.setNotification(context, NOTIFY_ID, notification)
-            }
+            ).build()
         }
 
         fun release(context: Context?) {
