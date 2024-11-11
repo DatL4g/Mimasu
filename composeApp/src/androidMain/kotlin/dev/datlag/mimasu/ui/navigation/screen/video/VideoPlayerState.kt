@@ -260,10 +260,7 @@ data class VideoPlayerState internal constructor(
         super.onTracksChanged(tracks)
 
         _subTitle.update {
-            SubTitle(
-                selected = null,
-                available = languagesFromTrack(tracks)
-            )
+            it.copy(available = languagesFromTrack(tracks))
         }
     }
 

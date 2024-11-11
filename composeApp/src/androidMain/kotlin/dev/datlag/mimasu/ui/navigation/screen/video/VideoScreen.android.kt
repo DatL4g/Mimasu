@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -188,7 +189,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(contentPadding.merge(PaddingValues(bottom = 16.dp)))
-                    .background(Color.Black.copy(alpha = 0.25F), CircleShape)
+                    .background(Color.Black.copy(alpha = 0.5F), MaterialTheme.shapes.small)
                     .padding(8.dp)
             )
 
