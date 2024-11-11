@@ -93,6 +93,7 @@ kotlin {
             implementation(libs.kmpalette)
             implementation(libs.kolor)
             implementation(libs.nanoid)
+            implementation(libs.kase.change)
 
             implementation(libs.coil)
             implementation(libs.coil.network)

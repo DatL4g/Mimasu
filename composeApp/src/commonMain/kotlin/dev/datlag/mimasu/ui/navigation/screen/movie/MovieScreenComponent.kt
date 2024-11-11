@@ -1,7 +1,12 @@
 package dev.datlag.mimasu.ui.navigation.screen.movie
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocal
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import com.arkivanov.decompose.ComponentContext
+import dev.chrisbanes.haze.HazeState
+import dev.datlag.mimasu.LocalHaze
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.tmdb.api.Trending
 import io.github.aakira.napier.Napier
@@ -29,7 +34,11 @@ class MovieScreenComponent(
     @Composable
     override fun renderCommon() {
         onRender {
-            MovieScreen(this)
+            CompositionLocalProvider(
+                LocalHaze provides remember { HazeState() }
+            ) {
+                MovieScreen(this)
+            }
         }
     }
 

@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.isActive
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import net.pearx.kasechange.toTitleCase
 import org.jetbrains.compose.resources.DrawableResource
 import kotlin.math.max
 import kotlin.time.Duration
@@ -241,7 +242,7 @@ data class VideoPlayerState internal constructor(
     }
 
     @JvmOverloads
-    fun select(language: Language?, hideControls: Boolean = true) {
+    fun selectLanguage(language: Language?, hideControls: Boolean = true) {
         val selected = _subTitle.updateAndGet {
             it.copy(selected = language)
         }.selected
@@ -285,7 +286,7 @@ data class VideoPlayerState internal constructor(
             val locale = Locale.fromOrNull(code) ?: return@mapNotNull null
 
             Language(
-                name = locale.language.displayName(),
+                name = locale.language.displayName().toTitleCase(),
                 code = code,
                 icon = CountryImage.getByCode(code) ?: CountryImage.getByCode(locale.language.code)
             )

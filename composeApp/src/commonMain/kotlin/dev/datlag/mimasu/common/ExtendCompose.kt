@@ -10,8 +10,12 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
 import androidx.compose.ui.input.pointer.PointerInputChange
@@ -20,6 +24,11 @@ import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.max
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.datlag.mimasu.LocalHaze
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -107,4 +116,20 @@ fun PaddingValues.merge(all: Dp): PaddingValues {
         end = max(this.calculateEndPadding(direction), other.calculateEndPadding(direction)),
         bottom = max(this.calculateBottomPadding(), other.calculateBottomPadding())
     )
+}
+
+@Composable
+fun Modifier.hazeChild(
+    state: HazeState = LocalHaze.current,
+    style: HazeStyle = HazeMaterials.thin(),
+    listState: LazyListState
+) = Modifier.hazeChild(
+    state = state,
+    style = style
+) {
+    alpha = if (listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0) {
+        0F
+    } else {
+        1F
+    }
 }

@@ -66,106 +66,12 @@ fun TopControls(
         enter = slideInVertically() + fadeIn(),
         exit = slideOutVertically() + fadeOut()
     ) {
-        val subTitle by state.subTitle.collectAsStateWithLifecycle()
-
         TopAppBar(
             title = {
                 Text(text = "Video Player")
             },
             actions = {
-                var expanded by remember { mutableStateOf(false) }
-
-                if (subTitle.available.isNotEmpty() || subTitle.selected != null) {
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = it }
-                    ) {
-                        IconButton(
-                            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
-                            onClick = {
-                                state.showControls(2.minutes)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Subtitles,
-                                contentDescription = null
-                            )
-                        }
-                        ExposedDropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = {
-                                expanded = false
-                                state.hideControls()
-                            },
-                            matchTextFieldWidth = false
-                        ) {
-                            DropdownMenuItem(
-                                onClick = {
-                                    state.select(null)
-
-                                    expanded = false
-                                    state.hideControls()
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Rounded.PublicOff,
-                                        contentDescription = null
-                                    )
-                                },
-                                text = {
-                                    Text(text = stringResource(Res.string.no_subtitle))
-                                },
-                                trailingIcon = if (subTitle.selected == null) {
-                                    {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Check,
-                                            contentDescription = null
-                                        )
-                                    }
-                                } else null,
-                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                            )
-                            subTitle.available.forEach { lang ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                        state.select(lang)
-                                    },
-                                    leadingIcon = {
-                                        Icon(
-                                            modifier = Modifier.size(24.dp).clip(CircleShape),
-                                            painter = lang.icon?.let {
-                                                painterResource(it)
-                                            } ?: rememberVectorPainter(Icons.Rounded.Public),
-                                            contentDescription = null,
-                                            tint = if (lang.icon != null) {
-                                                Color.Unspecified
-                                            } else {
-                                                LocalContentColor.current
-                                            }
-                                        )
-                                    },
-                                    text = {
-                                        Text(
-                                            text = lang.name,
-                                            maxLines = 1,
-                                            softWrap = true,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    },
-                                    trailingIcon = if (subTitle.selected == lang) {
-                                        {
-                                            Icon(
-                                                imageVector = Icons.Rounded.Check,
-                                                contentDescription = null
-                                            )
-                                        }
-                                    } else null,
-                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                                )
-                            }
-                        }
-                    }
-                }
+                SubTitleSelector(state)
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
