@@ -51,6 +51,7 @@ tv-material = "1.0.0"
 versions = "0.51.0"
 wavy-slider = "2.0.0"
 windowsize = "0.5.0"
+youtube-player = "2.0.2"
 
 [libraries]
 android = { group = "androidx.core", name = "core-ktx", version.ref = "android-core" }
@@ -128,6 +129,7 @@ tv-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose
 tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tv-material" }
 wavy-slider = { group = "ir.mahozad.multiplatform", name = "wavy-slider", version.ref = "wavy-slider" }
 windowsize = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version.ref = "windowsize" }
+youtube-player = { group = "io.github.khubaibkhan4", name = "mediaplayer-kmp", version.ref = "youtube-player" }
 
 [bundles]
 google-auth = [ "google-credentials", "google-credentials-play-service", "google-identity", "google-play-service" ]

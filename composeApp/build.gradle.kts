@@ -94,6 +94,7 @@ kotlin {
             implementation(libs.kolor)
             implementation(libs.nanoid)
             implementation(libs.kase.change)
+            implementation(libs.youtube.player)
 
             implementation(libs.coil)
             implementation(libs.coil.network)

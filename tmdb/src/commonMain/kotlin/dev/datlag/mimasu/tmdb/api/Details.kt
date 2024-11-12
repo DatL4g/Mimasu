@@ -7,7 +7,9 @@ import dev.datlag.mimasu.core.serializer.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.TMDB.Companion.ORIGINAL_IMAGE
 import dev.datlag.mimasu.tmdb.TMDB.Companion.W500_IMAGE
 import io.ktor.client.statement.HttpResponse
+import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -19,6 +21,7 @@ interface Details {
         @Query("api_key") apiKey: String,
         @Path("id") id: Int,
         @Query("language") language: String,
+        @Query("append_to_response") appendToResponse: String? = null
     ): HttpResponse
 
     @Serializable
@@ -31,9 +34,14 @@ interface Details {
         @SerialName("genres") val genres: SerializableImmutableSet<Genre> = persistentSetOf(),
         @SerialName("homepage") val homepage: String? = null,
         @SerialName("overview") val overview: String? = null,
+        @SerialName("original_language") val originalLanguage: String? = null,
         @SerialName("original_title") val originalTitle: String? = null,
         @SerialName("title") val title: String,
         @SerialName("poster_path") private val posterPath: String? = null,
+        @SerialName("imdb_id") val imdbId: String? = null,
+        @SerialName("runtime") val runtime: Int = 0,
+        @SerialName("tagline") val tagline: String? = null,
+        @SerialName("videos") private val videos: VideoResult? = null
     ) {
         @Transient
         val backdropPicture: String? = backdropPath?.ifBlank {
@@ -62,6 +70,27 @@ interface Details {
             originalTitle?.ifBlank { null }
         }
 
+        @Transient
+        val trailer: ImmutableSet<VideoResult.Video> = videos?.results?.filter {
+            it.type.equals("Trailer", ignoreCase = true)
+        }?.let { list ->
+            list.filter { it.official }.ifEmpty { list }
+        }?.toImmutableSet() ?: persistentSetOf()
+
+        fun youtubeTrailer(language: String, country: String): VideoResult.Video? {
+            val youtubeVideos = trailer.filter {
+                it.site.equals("youtube", ignoreCase = true)
+            }.ifEmpty { return null }.sortedByDescending { it.size }
+
+            return youtubeVideos.firstOrNull {
+                it.language.equals(language, ignoreCase = true)
+            } ?: youtubeVideos.firstOrNull {
+                it.country.equals(country, ignoreCase = true)
+            } ?: youtubeVideos.firstOrNull {
+                it.language.equals(originalLanguage ?: "", ignoreCase = true)
+            }
+        }
+
         @Serializable
         data class Genre(
             @SerialName("id") val id: Int,
@@ -86,6 +115,23 @@ interface Details {
 
             @Transient
             val posterPictureW500: String? = posterPath?.ifBlank { null }?.let { "$W500_IMAGE$it" }
+        }
+
+        @Serializable
+        data class VideoResult(
+            @SerialName("results") val results: SerializableImmutableSet<Video>
+        ) {
+
+            @Serializable
+            data class Video(
+                @SerialName("key") val key: String,
+                @SerialName("site") val site: String? = null,
+                @SerialName("size") val size: Int = 0,
+                @SerialName("type") val type: String? = null,
+                @SerialName("official") val official: Boolean = false,
+                @SerialName("iso_639_1") val language: String? = null,
+                @SerialName("iso_3166_1") val country: String? = null
+            )
         }
     }
 }

@@ -29,7 +29,8 @@ data class DetailsRepository(
                 val response = details.movie(
                     apiKey = apiKey,
                     id = id,
-                    language = language
+                    language = language,
+                    appendToResponse = "videos"
                 )
 
                 response.body<Details.Movie>()
