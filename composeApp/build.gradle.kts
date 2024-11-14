@@ -133,6 +133,7 @@ kotlin {
                 implementation(libs.splashscreen)
                 implementation(libs.bundles.android.media)
                 implementation(libs.kast)
+                implementation(libs.telephoto)
             }
         }
 
