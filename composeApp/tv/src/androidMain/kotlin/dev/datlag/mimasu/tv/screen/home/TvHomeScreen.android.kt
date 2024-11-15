@@ -99,6 +99,15 @@ actual fun TvHomeScreen(component: TvHomeComponent) {
             )
         }
         item {
+            Button(
+                onClick = {
+                    component.watchVideo()
+                }
+            ) {
+                Text("Watch Video")
+            }
+        }
+        item {
             Text(text = "Netflix: ${component.netflixInstalled}")
         }
         item {

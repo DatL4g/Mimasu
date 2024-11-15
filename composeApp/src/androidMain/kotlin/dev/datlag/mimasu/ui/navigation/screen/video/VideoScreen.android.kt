@@ -5,6 +5,7 @@ import android.view.WindowManager
 import androidx.annotation.OptIn
 import androidx.compose.foundation.AndroidExternalSurface
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -25,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toAndroidRectF
 import androidx.compose.ui.input.pointer.PointerEventPass
@@ -42,6 +45,8 @@ import androidx.media3.datasource.cache.Cache
 import androidx.media3.exoplayer.text.TextOutput
 import dev.datlag.kast.Kast
 import dev.datlag.mimasu.common.detectPinchGestures
+import dev.datlag.mimasu.common.handleDPadKeyEvents
+import dev.datlag.mimasu.common.handlePlayerShortcuts
 import dev.datlag.mimasu.common.merge
 import dev.datlag.mimasu.common.rememberCronetEngine
 import dev.datlag.mimasu.core.MimasuConnection
@@ -164,6 +169,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
             } else {
                 Modifier.aspectRatio(aspectRatio).scale(max(zoom, 0.95F))
             }
+            val controlsFocus = remember { FocusRequester() }
 
             AndroidExternalSurface(
                 modifier = sizeModifier.background(Color.Black).onGloballyPositioned {
@@ -201,8 +207,17 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
 
             CenterControls(
                 state = playerState,
-                modifier = Modifier.matchParentSize()
+                modifier = Modifier
+                    .matchParentSize()
+                    .handleDPadKeyEvents(playerState)
+                    .handlePlayerShortcuts(playerState)
+                    .focusRequester(controlsFocus)
+                    .focusable()
             )
+
+            LaunchedEffect(Unit) {
+                controlsFocus.requestFocus()
+            }
         }
     }
 
