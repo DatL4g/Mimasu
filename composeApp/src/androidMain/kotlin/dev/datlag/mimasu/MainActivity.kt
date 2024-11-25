@@ -23,6 +23,7 @@ import dev.datlag.mimasu.ui.navigation.RootComponent
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.safeCast
+import dev.datlag.tooling.scopeCatching
 import org.kodein.di.DIAware
 
 class MainActivity : ComponentActivity() {
@@ -109,7 +110,9 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        unbindService(MimasuConnection.Update)
+        scopeCatching {
+            unbindService(MimasuConnection.Update)
+        }.getOrNull()
         PiPHelper.setActive(this.isActivityInPiPMode())
     }
 

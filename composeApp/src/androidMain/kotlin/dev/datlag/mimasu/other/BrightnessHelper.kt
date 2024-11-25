@@ -20,8 +20,8 @@ class BrightnessHelper(
     private val window: Window?
         get() = activity?.window
 
-    private val minBrightness = 0.0f
-    private val maxBrightness = 1.0f
+    val minBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_OFF
+    val maxBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
 
     /**
      * Wrapper for the current screen brightness
@@ -35,8 +35,8 @@ class BrightnessHelper(
             }
         }?.coerceIn(minBrightness, maxBrightness) ?: systemBrightness
         set(value) {
-            val newBrightness = if (value == WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE) {
-                value
+            val newBrightness = if (value == WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE || value < minBrightness) {
+                WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
             } else {
                 value.coerceIn(minBrightness, maxBrightness)
             }

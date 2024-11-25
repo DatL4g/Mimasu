@@ -16,6 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
 import androidx.compose.ui.input.pointer.PointerInputChange
@@ -132,4 +138,72 @@ fun Modifier.hazeChild(
     } else {
         1F
     }
+}
+
+/**
+ * Return true/null per event to consume it, false otherwise.
+ * Consuming results in no further handling of next key event listeners.
+ */
+@Composable
+fun Modifier.handleDPadKeyEvents(
+    onLeft: (() -> Any)? = null,
+    onRight: (() -> Any)? = null,
+    onUp: (() -> Any)? = null,
+    onDown: (() -> Any)? = null,
+    onEnter: (() -> Any)? = null,
+): Modifier = onKeyEvent {
+    if (it.type == KeyEventType.KeyUp) {
+        when (it.key) {
+            Key.DirectionLeft, Key.SystemNavigationLeft -> {
+                onLeft?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+            Key.DirectionRight, Key.SystemNavigationRight -> {
+                onRight?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+            Key.DirectionUp, Key.SystemNavigationUp -> {
+                onUp?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+            Key.DirectionDown, Key.SystemNavigationDown -> {
+                onDown?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+            Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
+                onEnter?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+        }
+    }
+    false
+}
+
+/**
+ * Return true/null per event to consume it, false otherwise.
+ * Consuming results in no further handling of next key event listeners.
+ */
+@Composable
+fun Modifier.handlePlayerShortcuts(
+    play: (() -> Any)? = null,
+    playPause: (() -> Any)? = null,
+    pause: (() -> Any)? = null,
+    rewind: (() -> Any)? = null,
+    forward: (() -> Any)? = null,
+): Modifier = onKeyEvent {
+    if (it.type == KeyEventType.KeyUp) {
+        when (it.key) {
+            Key.MediaPlay -> {
+                play?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+            Key.MediaPlayPause, Key.K, Key.Spacebar -> {
+                playPause?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+            Key.MediaPause -> {
+                pause?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+            Key.MediaRewind, Key.J -> {
+                rewind?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+            Key.MediaFastForward, Key.L -> {
+                forward?.invoke().also { consume -> return@onKeyEvent (consume as? Boolean) ?: true }
+            }
+        }
+    }
+    false
 }

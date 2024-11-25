@@ -26,6 +26,7 @@ import androidx.compose.material.icons.automirrored.rounded.VolumeOff
 import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -49,6 +50,9 @@ import dev.datlag.mimasu.other.AudioHelper
 import dev.datlag.mimasu.other.BrightnessHelper
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import io.github.aakira.napier.Napier
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -100,6 +104,12 @@ fun VolumeBrightnessControl(
                         modifier = Modifier.height(8.dp).width(120.dp),
                         progress = volumeProgress
                     )
+
+                    Text(
+                        text = (volumeProgress * 100F).roundToInt().toString(),
+                        maxLines = 1,
+                        color = Color.White
+                    )
                 }
             }
 
@@ -123,7 +133,17 @@ fun VolumeBrightnessControl(
 
                     HorizontalProgress(
                         modifier = Modifier.height(8.dp).width(120.dp),
-                        progress = brightnessProgress
+                        progress = max(brightnessProgress, 0F)
+                    )
+
+                    Text(
+                        text = if (brightnessProgress < brightnessHelper.minBrightness) {
+                            "Auto"
+                        } else {
+                            (brightnessProgress * 100F).roundToInt().toString()
+                        },
+                        maxLines = 1,
+                        color = Color.White
                     )
                 }
             }
@@ -153,7 +173,7 @@ fun VolumeBrightnessControl(
                                 brightnessVisible = false
                             }
                         ) { _, dragAmount ->
-                            brightnessProgress = (brightnessProgress + -dragAmount / 1000F).coerceIn(0F, 1F)
+                            brightnessProgress = (brightnessProgress + -dragAmount / 1000F).coerceIn(brightnessHelper.minBrightness - 0.01F, brightnessHelper.maxBrightness)
 
                             brightnessHelper.brightness = brightnessProgress
                         }

@@ -124,7 +124,8 @@ fun MovieScreen(component: MovieComponent) {
                     ) {
                         VideoPlayer(
                             modifier = Modifier.fillMaxSize(),
-                            url = "https://youtube.com/watch?v=${trailer.key}"
+                            url = "https://youtube.com/watch?v=${trailer.key}",
+                            autoPlay = false
                         )
                     }
                 }

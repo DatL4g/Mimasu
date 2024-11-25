@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
-import android.view.KeyEvent
+import android.view.KeyEvent as AndroidKeyEvent
 import android.view.Window
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
@@ -100,82 +100,24 @@ fun Modifier.drawProgress(
 
 @Composable
 fun Modifier.handleDPadKeyEvents(
-    onLeft: (() -> Unit)? = null,
-    onRight: (() -> Unit)? = null,
-    onUp: (() -> Unit)? = null,
-    onDown: (() -> Unit)? = null,
-    onEnter: (() -> Unit)? = null,
-): Modifier = onKeyEvent {
-    if (it.nativeKeyEvent.action == KeyEvent.ACTION_UP) {
-        when (it.nativeKeyEvent.keyCode) {
-            KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_SYSTEM_NAVIGATION_LEFT -> {
-                onLeft?.invoke().also { return@onKeyEvent true }
-            }
-            KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.KEYCODE_SYSTEM_NAVIGATION_RIGHT -> {
-                onRight?.invoke().also { return@onKeyEvent true }
-            }
-            KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_SYSTEM_NAVIGATION_UP -> {
-                onUp?.invoke().also { return@onKeyEvent true }
-            }
-            KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN -> {
-                onDown?.invoke().also { return@onKeyEvent true }
-            }
-            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                onEnter?.invoke().also { return@onKeyEvent true }
-            }
-        }
-    }
-    false
-}
-
-@Composable
-fun Modifier.handleDPadKeyEvents(
     state: VideoPlayerState
 ) = this.handleDPadKeyEvents(
     onLeft = {
         if (!state.controlsVisible) {
             state.seekBack(showControls = false)
         }
+        !state.controlsVisible
     },
     onRight = {
         if (!state.controlsVisible) {
             state.seekForward(showControls = false)
         }
+        !state.controlsVisible
     },
     onUp = state::showControls,
     onDown = state::showControls,
     onEnter = state::togglePlayPause
 )
-
-@Composable
-fun Modifier.handlePlayerShortcuts(
-    play: (() -> Unit)? = null,
-    playPause: (() -> Unit)? = null,
-    pause: (() -> Unit)? = null,
-    rewind: (() -> Unit)? = null,
-    forward: (() -> Unit)? = null,
-): Modifier = onKeyEvent {
-    if (it.nativeKeyEvent.action == KeyEvent.ACTION_UP) {
-        when (it.nativeKeyEvent.keyCode) {
-            KeyEvent.KEYCODE_MEDIA_PLAY -> {
-                play?.invoke().also { return@onKeyEvent true }
-            }
-            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_K, KeyEvent.KEYCODE_SPACE -> {
-                playPause?.invoke().also { return@onKeyEvent true }
-            }
-            KeyEvent.KEYCODE_MEDIA_PAUSE -> {
-                pause?.invoke().also { return@onKeyEvent true }
-            }
-            KeyEvent.KEYCODE_MEDIA_REWIND, KeyEvent.KEYCODE_J -> {
-                rewind?.invoke().also { return@onKeyEvent true }
-            }
-            KeyEvent.KEYCODE_MEDIA_FAST_FORWARD, KeyEvent.KEYCODE_L -> {
-                forward?.invoke().also { return@onKeyEvent true }
-            }
-        }
-    }
-    false
-}
 
 @Composable
 fun Modifier.handlePlayerShortcuts(
