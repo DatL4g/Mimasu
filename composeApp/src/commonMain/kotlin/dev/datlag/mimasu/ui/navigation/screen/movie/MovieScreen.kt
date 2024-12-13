@@ -37,6 +37,7 @@ import dev.datlag.mimasu.common.default
 import dev.datlag.mimasu.common.hazeChild
 import dev.datlag.mimasu.common.localized
 import dev.datlag.mimasu.common.youtubeTrailer
+import dev.datlag.mimasu.ui.navigation.screen.movie.component.DescriptionSection
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.MovieToolbar
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
@@ -95,13 +96,10 @@ fun MovieScreen(component: MovieComponent) {
                 )
             }
             item {
-                Text(
-                    text = "Description"
-                )
-            }
-            item {
-                Text(
-                    text = component.trending.overview ?: component.trending.alternativeTitle ?: "NaN"
+                DescriptionSection(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    value = movie?.overview,
+                    fallbackValue = component.trending.overview
                 )
             }
             if (trailer != null) {

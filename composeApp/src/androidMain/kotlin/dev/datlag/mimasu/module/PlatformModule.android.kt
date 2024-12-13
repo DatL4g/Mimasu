@@ -23,6 +23,7 @@ import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvide
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderAndroid
 import dev.datlag.mimasu.module.PlatformModule.Cronet.Available
 import dev.datlag.mimasu.other.PackageResolver
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.scopeCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -102,6 +103,9 @@ actual data object PlatformModule {
         }
         bindSingleton<UpdateInfo> {
             MimasuConnection.Update
+        }
+        bindSingleton<Boolean>("TELEVISION") {
+            Platform.isTelevision(instance<Context>())
         }
     }
 

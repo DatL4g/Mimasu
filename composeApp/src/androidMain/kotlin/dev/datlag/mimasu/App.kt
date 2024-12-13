@@ -13,6 +13,7 @@ import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.compose.launchIO
+import dev.datlag.tooling.scopeCatching
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope

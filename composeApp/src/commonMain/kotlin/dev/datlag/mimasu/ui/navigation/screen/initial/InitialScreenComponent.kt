@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.window.DialogProperties
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.stack.Children
@@ -28,6 +29,7 @@ import dev.datlag.mimasu.ui.navigation.Component
 import dev.datlag.mimasu.ui.navigation.RootConfig
 import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeScreenComponent
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import io.github.aakira.napier.Napier
 import org.kodein.di.DI
 
 class InitialScreenComponent(
@@ -109,12 +111,12 @@ class InitialScreenComponent(
         ) {
             val updateAvailable by available.collectAsStateWithLifecycle()
             val updateRequired by required.collectAsStateWithLifecycle()
-            val updatePlayStore by playStore.collectAsStateWithLifecycle()
+            val updatePlayStore by storeURL.collectAsStateWithLifecycle()
             val updateDirectDownload by directDownload.collectAsStateWithLifecycle()
             var showUpdateDialog by remember(updateAvailable) { mutableStateOf(updateAvailable) }
 
             // Popping backstack doesn't work because dialog cancels and catches back gesture
-            if (updateAvailable && showUpdateDialog && false) {
+            if (updateAvailable && showUpdateDialog) {
                 AlertDialog(
                     onDismissRequest = {
                         if (!updateRequired) {
@@ -125,7 +127,9 @@ class InitialScreenComponent(
                         Text(text = "Update Available")
                     },
                     text = {
-                        Text(text = "Please update all apps compatible with Mimasu")
+                        Text(
+                            text = updatePlayStore?.ifBlank { null } ?: updateDirectDownload?.ifBlank { null } ?: "Please update all apps compatible with Mimasu"
+                        )
                     },
                     confirmButton = {
                         TextButton(

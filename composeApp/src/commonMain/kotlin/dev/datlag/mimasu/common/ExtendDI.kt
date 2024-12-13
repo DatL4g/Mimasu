@@ -13,3 +13,12 @@ fun DIAware.updateInfo(): UpdateInfo {
 fun DirectDI.updateInfo(): UpdateInfo {
     return this.instanceOrNull<UpdateInfo>() ?: UpdateInfo.Default
 }
+
+fun DIAware.isTv(): Boolean {
+    val instance by this.instanceOrNull<Boolean>("TELEVISION")
+    return instance ?: false
+}
+
+fun DirectDI.isTv(): Boolean {
+    return this.instanceOrNull<Boolean>("TELEVISION") ?: false
+}

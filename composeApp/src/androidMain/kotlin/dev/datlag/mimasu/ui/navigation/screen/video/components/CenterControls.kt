@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,6 +39,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import dev.datlag.mimasu.common.drawProgress
+import dev.datlag.mimasu.ui.custom.WindowSize
+import dev.datlag.mimasu.ui.custom.calculateWindowWidthSize
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import ir.mahozad.multiplatform.wavyslider.material3.WavySlider
@@ -47,6 +50,7 @@ import kotlin.math.roundToLong
 @Composable
 fun CenterControls(
     state: VideoPlayerState,
+    shownInDialog: Boolean,
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
@@ -54,6 +58,11 @@ fun CenterControls(
     ) {
         val (rewind, playPause, forward) = createRefs()
         val visibility by state.controlsVisibility.collectAsStateWithLifecycle()
+        val showSeekButtons = if (shownInDialog) {
+            calculateWindowWidthSize() !is WindowSize.Compact
+        } else {
+            true
+        }
 
         AnimatedVisibility(
             modifier = Modifier.constrainAs(rewind) {
@@ -62,7 +71,7 @@ fun CenterControls(
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom, 8.dp)
             },
-            visible = visibility,
+            visible = visibility && showSeekButtons,
             enter = slideInHorizontally() + fadeIn(),
             exit = slideOutHorizontally() + fadeOut()
         ) {
@@ -87,8 +96,8 @@ fun CenterControls(
         }
         AnimatedVisibility(
             modifier = Modifier.constrainAs(playPause) {
-                start.linkTo(rewind.end)
-                end.linkTo(forward.start)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom, 8.dp)
             },
@@ -142,7 +151,7 @@ fun CenterControls(
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom, 8.dp)
             },
-            visible = visibility,
+            visible = visibility && showSeekButtons,
             enter = slideInHorizontally { it / 2 } + fadeIn(),
             exit = slideOutHorizontally { it / 2 } + fadeOut()
         ) {

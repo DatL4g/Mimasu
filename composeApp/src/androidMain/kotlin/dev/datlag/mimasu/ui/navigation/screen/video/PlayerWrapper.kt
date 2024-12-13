@@ -54,6 +54,7 @@ import dev.datlag.nanoid.NanoIdUtils
 import dev.datlag.tooling.async.scopeCatching
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import org.chromium.net.CronetEngine
 import java.util.concurrent.Executors
 import kotlin.random.Random
@@ -64,7 +65,7 @@ class PlayerWrapper(
     private val castContext: CastContext?,
     cronetEngine: CronetEngine?,
     cache: Cache,
-    private val onFirstFrame: () -> Unit = { }
+    private val onFirstFrame: (Float) -> Unit = { }
 ) : Player, SessionAvailabilityListener, Player.Listener {
 
     private val extractorFactory = DefaultExtractorsFactory().setTsExtractorFlags(
@@ -110,8 +111,7 @@ class PlayerWrapper(
 
             // Playing works, can switch to casting
             castSupported = true
-            aspectRatio.update { calculateAspectRatio() }
-            onFirstFrame()
+            onFirstFrame(aspectRatio.updateAndGet { calculateAspectRatio() })
         }
     }
 
@@ -425,23 +425,8 @@ class PlayerWrapper(
         return player.seekForward()
     }
 
-    @Deprecated("Deprecated in Java", ReplaceWith("hasPreviousMediaItem()"))
-    override fun hasPrevious(): Boolean {
-        return hasPreviousMediaItem()
-    }
-
-    @Deprecated("Deprecated in Java", ReplaceWith("hasPreviousMediaItem()"))
-    override fun hasPreviousWindow(): Boolean {
-        return hasPreviousMediaItem()
-    }
-
     override fun hasPreviousMediaItem(): Boolean {
         return player.hasPreviousMediaItem()
-    }
-
-    @Deprecated("Deprecated in Java", ReplaceWith("seekToPreviousMediaItem()"))
-    override fun previous() {
-        return seekToPreviousMediaItem()
     }
 
     @Deprecated("Deprecated in Java", ReplaceWith("seekToPreviousMediaItem()"))

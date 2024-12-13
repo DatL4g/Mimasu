@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.serialization)
             implementation(libs.datetime)
             api(libs.immutable)
+            implementation(libs.tooling)
         }
 
         val androidMain by getting {

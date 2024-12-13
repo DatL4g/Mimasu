@@ -3,10 +3,12 @@ package dev.datlag.mimasu.core
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
+import android.util.Log
 import dev.datlag.mimasu.core.model.UpdateInfo
 import dev.datlag.mimasu.core.update.IUpdateCheckCallback
 import dev.datlag.mimasu.core.update.IUpdateInfo
 import dev.datlag.mimasu.core.update.IUpdateService
+import dev.datlag.tooling.scopeCatching
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,8 +48,8 @@ object MimasuConnection : ServiceConnection {
         private val _required = MutableStateFlow(false)
         override val required = _required.asStateFlow()
 
-        private val _playStore = MutableStateFlow<String?>(null)
-        override val playStore = _playStore.asStateFlow()
+        private val _storeURL = MutableStateFlow<String?>(null)
+        override val storeURL = _storeURL.asStateFlow()
 
         private val _directDownload = MutableStateFlow<String?>(null)
         override val directDownload = _directDownload.asStateFlow()
@@ -59,10 +61,20 @@ object MimasuConnection : ServiceConnection {
         override fun onConnected(service: IUpdateService) {
             service.hasUpdate(object : IUpdateCheckCallback.Stub() {
                 override fun onUpdateInfo(updateInfo: IUpdateInfo?) {
+                    _storeURL.update {
+                        scopeCatching {
+                            updateInfo?.storeURL()
+                        }.onFailure {
+                            Log.e("Connection", "StoreURL Failure", it)
+                        }.getOrNull()?.ifBlank { null }
+                    }
+                    _directDownload.update {
+                        Log.e("Mimasu-BurningSeries", "Updating DirectDownload URL: ${updateInfo?.directDownload()}")
+                        updateInfo?.directDownload()?.ifBlank { null }
+                    }
+
                     _available.update { updateInfo?.available() ?: false }
                     _required.update { updateInfo?.required() ?: false }
-                    _playStore.update { updateInfo?.playstore()?.ifBlank { null } }
-                    _directDownload.update { updateInfo?.directDownload()?.ifBlank { null } }
                 }
             })
         }
@@ -70,7 +82,7 @@ object MimasuConnection : ServiceConnection {
         override fun onDisconnected() {
             _available.update { false }
             _required.update { false }
-            _playStore.update { null }
+            _storeURL.update { null }
             _directDownload.update { null }
         }
     }

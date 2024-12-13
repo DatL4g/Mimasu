@@ -45,6 +45,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.other.AudioHelper
 import dev.datlag.mimasu.other.BrightnessHelper
@@ -150,17 +152,27 @@ fun VolumeBrightnessControl(
         }
 
         Row(
-            modifier = modifier
+            modifier = modifier.pointerInput(Unit) {
+                detectTapGestures {
+                    state.toggleControls()
+                }
+            }
         ) {
             var widthLeft by remember { mutableIntStateOf(0) }
             var widthRight by remember { mutableIntStateOf(0) }
             val canSeekBack by state.canSeekBack.collectAsStateWithLifecycle()
             val canSeekForward by state.canSeekForward.collectAsStateWithLifecycle()
+            val (start, end) = if (LocalLayoutDirection.current == LayoutDirection.Ltr) {
+                0.dp to 24.dp
+            } else {
+                24.dp to 0.dp
+            }
 
             Box(
                 modifier = Modifier
                     .weight(1F)
                     .fillMaxHeight()
+                    .padding(start = start, end = end)
                     .onSizeChanged {
                         widthLeft = it.width
                     }
@@ -198,6 +210,7 @@ fun VolumeBrightnessControl(
                 modifier = Modifier
                     .weight(1F)
                     .fillMaxHeight()
+                    .padding(start = end, end = start)
                     .onSizeChanged {
                         widthRight = it.width
                     }

@@ -57,6 +57,7 @@ import dev.datlag.mimasu.ui.navigation.screen.video.components.SubTitles
 import dev.datlag.mimasu.ui.navigation.screen.video.components.TopControls
 import dev.datlag.mimasu.ui.navigation.screen.video.components.VolumeBrightnessControl
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.emitAll
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
 import kotlin.math.max
@@ -82,7 +83,9 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
             castContext = Kast.castContext,
             cronetEngine = cronetEngine,
             cache = cache,
-            onFirstFrame = {
+            onFirstFrame = { ratio ->
+                component.updateAspectRatio(ratio)
+
                 windowController.isSystemBarsVisible = false
                 windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                 windowController.addWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -125,6 +128,14 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
         mutableFloatStateOf(1F)
     }
     val playerState = rememberVideoPlayerState(playerWrapper)
+
+    LaunchedEffect(playerState) {
+        component.togglePlayListener = {
+            playerState.togglePlayPause(it)
+        }
+
+        component.isPlaying.emitAll(playerState.isPlaying)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -207,6 +218,7 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
 
             CenterControls(
                 state = playerState,
+                shownInDialog = component.shownInDialog,
                 modifier = Modifier
                     .matchParentSize()
                     .handleDPadKeyEvents(playerState)
