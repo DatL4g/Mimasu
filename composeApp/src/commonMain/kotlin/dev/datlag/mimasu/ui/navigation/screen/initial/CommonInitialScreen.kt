@@ -1,7 +1,6 @@
 package dev.datlag.mimasu.ui.navigation.screen.initial
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Favorite
@@ -9,7 +8,9 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.unit.dp
+import dev.datlag.mimasu.other.ContentDetails
 import dev.datlag.mimasu.ui.custom.AdaptiveScaffold
 
 @Composable
@@ -58,7 +59,14 @@ fun CommonInitialScreen(
                 onClick = { }
             )
         }
-    ) {
+    ) { contentPadding ->
         content()
+
+        DisposableEffect(contentPadding) {
+            ContentDetails.setPadding(contentPadding)
+            onDispose {
+                ContentDetails.setPadding(PaddingValues(0.dp))
+            }
+        }
     }
 }

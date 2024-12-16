@@ -77,6 +77,7 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.util.lerp
 import dev.datlag.mimasu.common.isFullyExpandedOrTargeted
 import dev.datlag.mimasu.common.times
+import dev.datlag.mimasu.other.ContentDetails
 import dev.datlag.mimasu.ui.custom.WindowSize
 import dev.datlag.mimasu.ui.custom.calculateWindowWidthSize
 import dev.datlag.tooling.Platform
@@ -101,12 +102,26 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
     val density = LocalDensity.current
     val collapsedHeightPx = remember(collapsedHeight, density) { with(density) { collapsedHeight.toPx() } }
 
+    val contentPadding by ContentDetails.padding.collectAsStateWithLifecycle()
+    val bottomPadding = remember(contentPadding) { contentPadding.calculateBottomPadding() }
+    var isDragging by remember { mutableStateOf(false) }
+
     var offsetY by remember(isCompactScreen) { mutableStateOf(0F) }
     var fullHeightPx by remember { mutableStateOf(0f) }
+    val availableHeightPx = remember(fullHeightPx, contentPadding, density) {
+        max(fullHeightPx - with(density) { bottomPadding.toPx() }, 0F)
+    }
 
-    val progress by remember(fullHeightPx, offsetY, collapsedHeightPx) { derivedStateOf {
-        if (fullHeightPx > 0F) {
-            1F - (offsetY / (fullHeightPx - collapsedHeightPx))
+    LaunchedEffect(bottomPadding) {
+        if (!isDragging) {
+            val nearestAnchor = listOf(0F, availableHeightPx - collapsedHeightPx).minByOrNull { abs(it - offsetY) } ?: 0F
+            offsetY = nearestAnchor
+        }
+    }
+
+    val progress by remember(availableHeightPx, offsetY, collapsedHeightPx) { derivedStateOf {
+        if (availableHeightPx > 0F) {
+            1F - (offsetY / (availableHeightPx - collapsedHeightPx))
         } else {
             1F
         }
@@ -123,14 +138,14 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
     }
 
     val draggableState = rememberDraggableState { delta ->
-        offsetY = (offsetY + delta).coerceIn(0F, fullHeightPx - collapsedHeightPx)
+        offsetY = (offsetY + delta).coerceIn(0F, max(availableHeightPx - collapsedHeightPx, 0F))
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .onSizeChanged {
-                fullHeightPx = it.height.toFloat() - with(density) { 84.dp.toPx() }
+                fullHeightPx = it.height.toFloat()
             }
     ) {
 
@@ -187,12 +202,14 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                                 enabled = isCompactScreen,
                                 onDragStarted = {
                                     component.videoController.controlsAvailable = false
+                                    isDragging = true
                                 },
                                 onDragStopped = {
-                                    val nearestAnchor = listOf(0F, fullHeightPx - collapsedHeightPx).minByOrNull { abs(it - offsetY) } ?: 0F
+                                    val nearestAnchor = listOf(0F, availableHeightPx - collapsedHeightPx).minByOrNull { abs(it - offsetY) } ?: 0F
                                     offsetY = nearestAnchor
 
                                     component.videoController.controlsAvailable = !collapsed
+                                    isDragging = false
                                 }
                             )
                     ) {
@@ -211,7 +228,7 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                         }
                         AnimatedVisibility(
                             modifier = Modifier.weight(1F).fillMaxHeight(),
-                            visible = progress <= 0.05F && fullHeightPx > 0F,
+                            visible = progress <= 0.05F && availableHeightPx > 0F,
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
@@ -232,7 +249,7 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                         }
                         AnimatedVisibility(
                             modifier = Modifier.fillMaxHeight(),
-                            visible = collapsed && fullHeightPx > 0F,
+                            visible = collapsed && availableHeightPx > 0F,
                             enter = fadeIn() + slideInHorizontally { it / 2 },
                             exit = fadeOut() + slideOutHorizontally { it / 2 }
                         ) {

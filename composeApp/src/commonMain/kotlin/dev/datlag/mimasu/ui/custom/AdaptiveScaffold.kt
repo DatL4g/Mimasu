@@ -77,7 +77,7 @@ fun AdaptiveScaffold(
                 Box(
                     modifier = Modifier.fillMaxSize().ifTrue(consumePadding) { padding(paddingValues) }
                 ) {
-                    content(if (consumePadding) PaddingValues(0.dp) else paddingValues)
+                    content(paddingValues)
                 }
             }
         )
