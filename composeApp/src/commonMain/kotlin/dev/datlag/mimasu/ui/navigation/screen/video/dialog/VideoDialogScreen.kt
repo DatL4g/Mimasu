@@ -3,7 +3,9 @@ package dev.datlag.mimasu.ui.navigation.screen.video.dialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -24,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -65,6 +68,7 @@ import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -108,6 +112,16 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
         }
     } }
 
+    val collapsed by remember(progress) {
+        derivedStateOf {
+            progress <= 0.01F
+        }
+    }
+
+    LaunchedEffect(collapsed) {
+        component.videoController.controlsAvailable = !collapsed
+    }
+
     val draggableState = rememberDraggableState { delta ->
         offsetY = (offsetY + delta).coerceIn(0F, fullHeightPx - collapsedHeightPx)
     }
@@ -126,7 +140,7 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
             }
         }
 
-        val targetShape = Platform.shapes().small
+        val targetShape = Platform.shapes().medium
         val shape by remember(progress) {
             derivedStateOf {
                 val reversedProgress = abs(1F - progress)
@@ -164,26 +178,30 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                 CompositionLocalProvider(
                     LocalRippleConfiguration provides defaultRipple
                 ) {
-                    FlowRow(
+                    Row(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxSize()
                             .draggable(
                                 state = draggableState,
                                 orientation = Orientation.Vertical,
                                 enabled = isCompactScreen,
+                                onDragStarted = {
+                                    component.videoController.controlsAvailable = false
+                                },
                                 onDragStopped = {
                                     val nearestAnchor = listOf(0F, fullHeightPx - collapsedHeightPx).minByOrNull { abs(it - offsetY) } ?: 0F
                                     offsetY = nearestAnchor
+
+                                    component.videoController.controlsAvailable = !collapsed
                                 }
-                            ),
-                        verticalArrangement = Arrangement.Center
+                            )
                     ) {
                         val baseModifier = if (isCompactScreen) {
                             Modifier
                                 .fillMaxWidth(max(lerp(0.33F, progress * 2F, progress), 0.33F))
                                 .aspectRatio(16F/9F)
                         } else {
-                            Modifier.fillMaxSize()
+                            Modifier.fillMaxWidth().wrapContentHeight()
                         }
 
                         Box(
@@ -191,18 +209,32 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                         ) {
                             component.videoComponent.render()
                         }
-                        Text(
-                            modifier = Modifier.weight(1F),
-                            text = "Hello World",
-                            softWrap = true,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 2,
-                            color = Platform.colorScheme().onBackground
-                        )
                         AnimatedVisibility(
-                            modifier = Modifier.fillMaxRowHeight(),
-                            visible = progress <= 0.01F && fullHeightPx > 0F,
-                            enter = fadeIn() + slideInHorizontally { it / 2 }
+                            modifier = Modifier.weight(1F).fillMaxHeight(),
+                            visible = progress <= 0.05F && fullHeightPx > 0F,
+                            enter = fadeIn(),
+                            exit = fadeOut()
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically)
+                            ) {
+                                Text(
+                                    text = "Hello World",
+                                    softWrap = true,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 2,
+                                    color = Platform.colorScheme().onBackground,
+                                    style = Platform.typography().titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        AnimatedVisibility(
+                            modifier = Modifier.fillMaxHeight(),
+                            visible = collapsed && fullHeightPx > 0F,
+                            enter = fadeIn() + slideInHorizontally { it / 2 },
+                            exit = fadeOut() + slideOutHorizontally { it / 2 }
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.End,
@@ -210,10 +242,10 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                             ) {
                                 IconButton(
                                     onClick = {
-                                        component.videoComponent.togglePlayPause(false)
+                                        component.videoController.togglePlayPause(false)
                                     }
                                 ) {
-                                    val playing by component.videoComponent.isPlaying.collectAsStateWithLifecycle()
+                                    val playing by component.videoController.isPlaying.collectAsStateWithLifecycle()
 
                                     Icon(
                                         imageVector = if (playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,

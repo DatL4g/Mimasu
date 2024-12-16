@@ -70,6 +70,7 @@ fun VolumeBrightnessControl(
         val context = LocalContext.current
         val audioHelper = remember(context) { AudioHelper(context) }
         val brightnessHelper = remember(context) { BrightnessHelper(context) }
+        val visibility by state.controlsVisibility.collectAsStateWithLifecycle()
 
         var volumeVisible by remember { mutableStateOf(false) }
         var volumeProgress by remember { mutableFloatStateOf(audioHelper.volumeProgress) }
@@ -85,7 +86,7 @@ fun VolumeBrightnessControl(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             AnimatedVisibility(
-                visible = volumeVisible,
+                visible = volumeVisible && (visibility || state.controlsAvailable),
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -116,7 +117,7 @@ fun VolumeBrightnessControl(
             }
 
             AnimatedVisibility(
-                visible = brightnessVisible,
+                visible = brightnessVisible && (visibility || state.controlsAvailable),
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -185,18 +186,22 @@ fun VolumeBrightnessControl(
                                 brightnessVisible = false
                             }
                         ) { _, dragAmount ->
-                            brightnessProgress = (brightnessProgress + -dragAmount / 1000F).coerceIn(brightnessHelper.minBrightness - 0.01F, brightnessHelper.maxBrightness)
+                            state.controlsAvailable {
+                                brightnessProgress = (brightnessProgress + -dragAmount / 1000F).coerceIn(brightnessHelper.minBrightness - 0.01F, brightnessHelper.maxBrightness)
 
-                            brightnessHelper.brightness = brightnessProgress
+                                brightnessHelper.brightness = brightnessProgress
+                            }
                         }
                     }
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onDoubleTap = {
-                                val center = widthLeft.toFloat() / 2F
+                                state.controlsAvailable {
+                                    val center = widthLeft.toFloat() / 2F
 
-                                if (it.x < center && canSeekBack) {
-                                    state.seekBack()
+                                    if (it.x < center && canSeekBack) {
+                                        state.seekBack()
+                                    }
                                 }
                             },
                             onTap = {
@@ -223,18 +228,22 @@ fun VolumeBrightnessControl(
                                 volumeVisible = false
                             }
                         ) { _, dragAmount ->
-                            volumeProgress = (volumeProgress + -dragAmount / 1000F).coerceIn(0F, 1F)
+                            state.controlsAvailable {
+                                volumeProgress = (volumeProgress + -dragAmount / 1000F).coerceIn(0F, 1F)
 
-                            audioHelper.volumeProgress = volumeProgress
+                                audioHelper.volumeProgress = volumeProgress
+                            }
                         }
                     }
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onDoubleTap = {
-                                val center = widthRight.toFloat() / 2F
+                                state.controlsAvailable {
+                                    val center = widthRight.toFloat() / 2F
 
-                                if (it.x > center && canSeekForward) {
-                                    state.seekForward()
+                                    if (it.x > center && canSeekForward) {
+                                        state.seekForward()
+                                    }
                                 }
                             },
                             onTap = {

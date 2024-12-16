@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.module.PlatformModule
@@ -129,3 +130,14 @@ fun Modifier.handlePlayerShortcuts(
     rewind = state::seekBack,
     forward = state::seekForward
 )
+
+fun Player.calculateAspectRatio(): Float {
+    val height = videoSize.height
+    val width = videoSize.width
+
+    return if (height != 0 && width != 0) {
+        width.toFloat() / height.toFloat()
+    } else {
+        16F / 9F
+    }
+}

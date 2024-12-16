@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import dev.datlag.mimasu.ui.navigation.Component
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoComponent
+import dev.datlag.mimasu.ui.navigation.screen.video.VideoController
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoScreenComponent
 import org.kodein.di.DI
 
@@ -18,6 +19,8 @@ class VideoDialogScreenComponent(
         di = di,
         shownInDialog = true
     )
+
+    override val videoController: VideoController = videoComponent.controller
 
     @Composable
     override fun renderCommon() {

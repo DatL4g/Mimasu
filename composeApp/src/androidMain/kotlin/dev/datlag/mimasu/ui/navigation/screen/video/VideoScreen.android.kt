@@ -39,11 +39,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toRect
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.media3.cast.CastPlayer
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.exoplayer.text.TextOutput
 import dev.datlag.kast.Kast
+import dev.datlag.mimasu.common.calculateAspectRatio
 import dev.datlag.mimasu.common.detectPinchGestures
 import dev.datlag.mimasu.common.handleDPadKeyEvents
 import dev.datlag.mimasu.common.handlePlayerShortcuts
@@ -57,7 +60,9 @@ import dev.datlag.mimasu.ui.navigation.screen.video.components.SubTitles
 import dev.datlag.mimasu.ui.navigation.screen.video.components.TopControls
 import dev.datlag.mimasu.ui.navigation.screen.video.components.VolumeBrightnessControl
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flowOf
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
 import kotlin.math.max
@@ -72,41 +77,43 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
             .setUri("https://stream.mux.com/HDGj01zK01esWsWf9WJj5t5yuXQZJFF6bo.m3u8")
             .build()
     }
+
     val context = LocalContext.current
-    val cronetEngine = rememberCronetEngine()
-    val cache by rememberInstance<Cache>()
     val windowController = rememberWindowController()
 
-    val playerWrapper = remember(cronetEngine, cache) {
-        PlayerWrapper(
-            context = context,
-            castContext = Kast.castContext,
-            cronetEngine = cronetEngine,
-            cache = cache,
-            onFirstFrame = { ratio ->
-                component.updateAspectRatio(ratio)
+    val controller = remember(component.controller) { component.controller as VideoPlayerState }
+    val playerWrapper = remember(controller) { controller.getPlayer<PlayerWrapper>() }
+    val player = remember(playerWrapper, controller) { playerWrapper ?: controller.getPlayer<Player>()!! }
 
-                windowController.isSystemBarsVisible = false
-                windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                windowController.addWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-        )
+    LaunchedEffect(playerWrapper) {
+        playerWrapper?.onFirstFrame {
+            windowController.isSystemBarsVisible = false
+            windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            windowController.addWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
     }
 
-    LaunchedEffect(playerWrapper, mediaItem) {
-        playerWrapper.setMediaItem(mediaItem)
-        playerWrapper.prepare()
+    LaunchedEffect(player, mediaItem) {
+        player.setMediaItem(mediaItem)
+        player.prepare()
     }
 
-    DisposableEffect(playerWrapper) {
+    DisposableEffect(player) {
         onDispose {
-            playerWrapper.release()
+            player.release()
         }
     }
 
     val videoPlayerSecure by MimasuConnection.isVideoPlayerSecure.collectAsStateWithLifecycle()
-    val aspectRatio by playerWrapper.aspectRatio.collectAsStateWithLifecycle()
-    val isCasting by playerWrapper.usingCastPlayer.collectAsStateWithLifecycle()
+
+    val aspectRatio by remember(playerWrapper, player) {
+        playerWrapper?.aspectRatio ?: flowOf(player.calculateAspectRatio())
+    }.collectAsStateWithLifecycle(player.calculateAspectRatio())
+
+    val isCasting by remember(playerWrapper, player) {
+        playerWrapper?.usingCastPlayer ?: flowOf(player is CastPlayer)
+    }.collectAsStateWithLifecycle(player is CastPlayer)
+
     val pipHelper = remember(context) { PiPHelper(context) }
     val pipActive by PiPHelper.active.collectAsStateWithLifecycle()
     var videoViewBounds by remember {
@@ -127,27 +134,26 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
     var zoom by remember(isCasting) {
         mutableFloatStateOf(1F)
     }
-    val playerState = rememberVideoPlayerState(playerWrapper)
 
-    LaunchedEffect(playerState) {
-        component.togglePlayListener = {
-            playerState.togglePlayPause(it)
-        }
+    LaunchedEffect(controller) {
+        controller.poll()
+    }
 
-        component.isPlaying.emitAll(playerState.isPlaying)
+    LaunchedEffect(controller) {
+        controller.observe()
     }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopControls(
-                state = playerState,
+                state = controller,
                 pipActive = pipActive
             )
         },
         bottomBar = {
             BottomControls(
-                state = playerState,
+                state = controller,
                 pipActive = pipActive
             )
         }
@@ -189,20 +195,20 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
                 isSecure = videoPlayerSecure,
                 onInit = {
                     onSurface { surface, _, _ ->
-                        playerWrapper.setVideoSurface(surface)
+                        player.setVideoSurface(surface)
 
                         surface.onChanged { _, _ ->
-                            playerWrapper.setVideoSurface(surface)
+                            player.setVideoSurface(surface)
                         }
                         surface.onDestroyed {
-                            playerWrapper.clearVideoSurface()
+                            player.clearVideoSurface()
                         }
                     }
                 }
             )
 
             SubTitles(
-                state = playerState,
+                state = controller,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(contentPadding.merge(PaddingValues(bottom = 16.dp)))
@@ -211,18 +217,18 @@ actual fun VideoScreen(component: VideoComponent) = withDI(component.di) {
             )
 
             VolumeBrightnessControl(
-                state = playerState,
+                state = controller,
                 modifier = Modifier.matchParentSize(),
                 contentPadding = contentPadding.merge(PaddingValues(top = 16.dp)),
             )
 
             CenterControls(
-                state = playerState,
+                state = controller,
                 shownInDialog = component.shownInDialog,
                 modifier = Modifier
                     .matchParentSize()
-                    .handleDPadKeyEvents(playerState)
-                    .handlePlayerShortcuts(playerState)
+                    .handleDPadKeyEvents(controller)
+                    .handlePlayerShortcuts(controller)
                     .focusRequester(controlsFocus)
                     .focusable()
             )

@@ -40,6 +40,7 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cronet.CronetDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.extractor.DefaultExtractorsFactory
@@ -49,10 +50,13 @@ import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ENABLE_HD
 import androidx.media3.session.MediaSession
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
+import dev.datlag.kast.Kast
 import dev.datlag.mimasu.R
+import dev.datlag.mimasu.common.calculateAspectRatio
 import dev.datlag.nanoid.NanoIdUtils
 import dev.datlag.tooling.async.scopeCatching
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import org.chromium.net.CronetEngine
@@ -62,10 +66,9 @@ import kotlin.random.Random
 @UnstableApi
 class PlayerWrapper(
     private val context: Context,
-    private val castContext: CastContext?,
+    private val castContext: CastContext? = Kast.castContext,
     cronetEngine: CronetEngine?,
-    cache: Cache,
-    private val onFirstFrame: (Float) -> Unit = { }
+    cache: Cache
 ) : Player, SessionAvailabilityListener, Player.Listener {
 
     private val extractorFactory = DefaultExtractorsFactory().setTsExtractorFlags(
@@ -93,17 +96,22 @@ class PlayerWrapper(
         .setCache(cache)
         .setUpstreamDataSourceFactory(fallbackDataSourceFactory)
 
-    private val localPlayer = ExoPlayer.Builder(context).apply {
+    private val renderer = DefaultRenderersFactory(context)
+        .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
+        .setEnableDecoderFallback(true)
+
+    private val mediaProvider = DefaultMediaSourceFactory(
+        DefaultDataSource.Factory(context, cacheDataSourceFactory),
+        extractorFactory
+    )
+
+    private val localPlayer = ExoPlayer.Builder(context, renderer, mediaProvider).apply {
         setSeekBackIncrementMs(10000)
         setSeekForwardIncrementMs(10000)
         setVideoScalingMode(VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
-        setMediaSourceFactory(
-            DefaultMediaSourceFactory(
-                DefaultDataSource.Factory(context, cacheDataSourceFactory),
-                extractorFactory
-            )
-        )
     }.build()
+
+    private var firstFrameListener: FirstFrame? = null
 
     private val localPlayerListener = object : Player.Listener {
         override fun onRenderedFirstFrame() {
@@ -111,7 +119,8 @@ class PlayerWrapper(
 
             // Playing works, can switch to casting
             castSupported = true
-            onFirstFrame(aspectRatio.updateAndGet { calculateAspectRatio() })
+            firstFrameListener?.invoke()
+            _aspectRatio.update { calculateAspectRatio() }
         }
     }
 
@@ -196,7 +205,9 @@ class PlayerWrapper(
             localPlayer.videoScalingMode = value
         }
 
-    val aspectRatio = MutableStateFlow(calculateAspectRatio())
+    private val _aspectRatio = MutableStateFlow(calculateAspectRatio())
+    val aspectRatio = _aspectRatio.asStateFlow()
+
     val usingCastPlayer = MutableStateFlow(player is CastPlayer)
 
     init {
@@ -798,23 +809,16 @@ class PlayerWrapper(
         return player.setAudioAttributes(audioAttributes, handleAudioFocus)
     }
 
-    fun calculateAspectRatio(): Float {
-        val height = videoSize.height
-        val width = videoSize.width
-
-        return if (height != 0 && width != 0) {
-            width.toFloat() / height.toFloat()
-        } else {
-            16F / 9F
-        }
-    }
-
     fun togglePlay() {
         if (isPlaying && !isPlayingAd) {
             pause()
         } else {
             play()
         }
+    }
+
+    fun onFirstFrame(listener: FirstFrame) = apply {
+        firstFrameListener = listener
     }
 
     /**
@@ -826,6 +830,10 @@ class PlayerWrapper(
         } else {
             this
         }
+    }
+
+    fun interface FirstFrame {
+        operator fun invoke()
     }
 
     data object Session {

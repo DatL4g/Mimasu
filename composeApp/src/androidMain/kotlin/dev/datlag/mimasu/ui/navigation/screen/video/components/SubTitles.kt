@@ -61,7 +61,7 @@ fun SubTitles(
 
     AnimatedVisibility(
         modifier = modifier,
-        visible = cues.isNotEmpty(),
+        visible = cues.isNotEmpty() && state.controlsAvailable,
         enter = expandIn(expandFrom = Alignment.CenterStart),
         exit = shrinkOut(shrinkTowards = Alignment.CenterEnd)
     ) {

@@ -12,11 +12,14 @@ import androidx.media3.common.text.CueGroup
 import androidx.media3.common.util.UnstableApi
 import com.vanniktech.locale.Locale
 import com.vanniktech.locale.displayName
+import dev.datlag.mimasu.common.calculateAspectRatio
 import dev.datlag.mimasu.core.serializer.SerializableImmutableSet
 import dev.datlag.mimasu.other.CountryImage
 import dev.datlag.tooling.compose.withDefaultContext
 import dev.datlag.tooling.compose.withIOContext
 import dev.datlag.tooling.compose.withMainContext
+import dev.datlag.tooling.safeCast
+import dev.datlag.tooling.scopeCatching
 import io.github.aakira.napier.Napier
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
@@ -32,6 +35,7 @@ import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
@@ -51,7 +55,17 @@ import kotlin.time.Duration.Companion.seconds
 data class VideoPlayerState internal constructor(
     private val player: Player,
     private val hide: Duration = 2.seconds
-): Player.Listener {
+): Player.Listener, VideoController {
+
+    override var controlsAvailable: Boolean = true
+        set(value) {
+            field = value
+
+            if (!value) {
+                _controlsVisibility.update { false }
+            }
+        }
+
     private val _controlsVisibility = MutableStateFlow(true)
     val controlsVisibility = _controlsVisibility.asStateFlow()
 
@@ -79,7 +93,7 @@ data class VideoPlayerState internal constructor(
     val bufferedPosition = _bufferedPosition.asStateFlow()
 
     private val _isPlaying = MutableStateFlow(player.isPlaying)
-    val isPlaying = _isPlaying.asStateFlow()
+    override val isPlaying = _isPlaying.asStateFlow()
 
     val currentlyPlaying: Boolean
         get() = isPlaying.value
@@ -111,6 +125,9 @@ data class VideoPlayerState internal constructor(
     private val _subTitle = MutableStateFlow(SubTitle())
     val subTitle = _subTitle.asStateFlow()
 
+    private val _aspectRatio = MutableStateFlow(player.calculateAspectRatio())
+    override val aspectRatio: StateFlow<Float> = getPlayer<PlayerWrapper>()?.aspectRatio ?: _aspectRatio
+
     @Transient
     private val _cues = MutableStateFlow(getPlayerCues())
 
@@ -124,7 +141,7 @@ data class VideoPlayerState internal constructor(
     }
 
     fun showControls(duration: Duration = hide) {
-        _controlsVisibility.update { true }
+        _controlsVisibility.update { controlsAvailable }
         channel.sendSafely(duration.inWholeSeconds)
     }
 
@@ -232,12 +249,24 @@ data class VideoPlayerState internal constructor(
         }
     }
 
-    @JvmOverloads
-    fun togglePlayPause(showControls: Boolean = true) {
+    override fun togglePlayPause(showControls: Boolean) {
         if (currentlyPlaying) {
             pause(showControls)
         } else {
             play(showControls)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> getPlayer(): T? {
+        return scopeCatching {
+            player as? T
+        }.getOrNull()
+    }
+
+    fun controlsAvailable(block: () -> Unit) {
+        if (controlsAvailable) {
+            block()
         }
     }
 

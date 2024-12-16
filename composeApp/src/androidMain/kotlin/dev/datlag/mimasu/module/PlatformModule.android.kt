@@ -23,6 +23,9 @@ import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvide
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderAndroid
 import dev.datlag.mimasu.module.PlatformModule.Cronet.Available
 import dev.datlag.mimasu.other.PackageResolver
+import dev.datlag.mimasu.ui.navigation.screen.video.PlayerWrapper
+import dev.datlag.mimasu.ui.navigation.screen.video.VideoController
+import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.scopeCatching
 import io.ktor.client.HttpClient
@@ -33,6 +36,7 @@ import io.ktor.serialization.kotlinx.json.json
 import okio.FileSystem
 import org.chromium.net.CronetEngine
 import org.kodein.di.DI
+import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
@@ -106,6 +110,16 @@ actual data object PlatformModule {
         }
         bindSingleton<Boolean>("TELEVISION") {
             Platform.isTelevision(instance<Context>())
+        }
+        bindProvider {
+            PlayerWrapper(
+                context = instance(),
+                cronetEngine = cronetEngine(),
+                cache = instance()
+            )
+        }
+        bindProvider<VideoController> {
+            VideoPlayerState(player = instance())
         }
     }
 
