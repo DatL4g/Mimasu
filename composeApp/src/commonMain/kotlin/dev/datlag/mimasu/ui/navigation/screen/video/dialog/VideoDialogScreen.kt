@@ -155,7 +155,7 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
             }
         }
 
-        val targetShape = Platform.shapes().medium
+        val targetShape = Platform.shapes().small
         val shape by remember(progress) {
             derivedStateOf {
                 val reversedProgress = abs(1F - progress)
@@ -218,11 +218,12 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                                 .fillMaxWidth(max(lerp(0.33F, progress * 2F, progress), 0.33F))
                                 .aspectRatio(16F/9F)
                         } else {
-                            Modifier.fillMaxWidth().wrapContentHeight()
+                            Modifier.fillMaxSize()
                         }
 
                         Box(
-                            modifier = baseModifier
+                            modifier = baseModifier.background(Color.Black),
+                            contentAlignment = Alignment.Center
                         ) {
                             component.videoComponent.render()
                         }
@@ -233,8 +234,8 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                             exit = fadeOut()
                         ) {
                             Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically)
+                                modifier = Modifier.fillMaxSize().padding(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Text(
                                     text = "Hello World",

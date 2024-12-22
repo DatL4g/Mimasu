@@ -21,7 +21,6 @@ import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvide
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProviderAndroid
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderAndroid
-import dev.datlag.mimasu.module.PlatformModule.Cronet.Available
 import dev.datlag.mimasu.other.PackageResolver
 import dev.datlag.mimasu.ui.navigation.screen.video.PlayerWrapper
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoController
@@ -30,6 +29,7 @@ import dev.datlag.tooling.Platform
 import dev.datlag.tooling.scopeCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
@@ -54,7 +54,7 @@ actual data object PlatformModule {
                     .enableHttp2(true)
                     .enablePublicKeyPinningBypassForLocalTrustAnchors(true)
                     .build()
-            }.getOrNull()?.let(::Available) ?: Cronet.NonAvailable
+            }.getOrNull()?.let(Cronet::Available) ?: Cronet.NonAvailable
         }
         bindSingleton<HttpClient> {
             HttpClient(OkHttp) {
@@ -71,6 +71,7 @@ actual data object PlatformModule {
                     json(instance(), ContentType.Application.Json)
                     json(instance(), ContentType.Text.Plain)
                 }
+                install(HttpCache)
             }
         }
         bindSingleton<PackageResolver> {
