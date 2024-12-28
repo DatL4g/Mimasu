@@ -10,31 +10,50 @@ fun DeviceContent(
     jvm: @Composable () -> Unit = common,
     android: @Composable () -> Unit = jvm,
     tv: @Composable () -> Unit = android,
+    car: @Composable () -> Unit = android,
+    carDetectProjection: Boolean = true,
     desktop: @Composable () -> Unit = jvm,
     apple: @Composable () -> Unit = common,
     ios: @Composable () -> Unit = apple,
     mac: @Composable () -> Unit = apple,
-) = when {
-    Platform.isAndroid -> {
-        if (Platform.rememberIsTv()) {
-            tv()
-        } else {
-            android()
+) = CarContent(
+    detectProjection = carDetectProjection,
+    car = car,
+    content = {
+        when {
+            Platform.isAndroid -> {
+                if (Platform.rememberIsTv()) {
+                    tv()
+                } else {
+                    android()
+                }
+            }
+            Platform.isDesktopJvm -> desktop()
+            Platform.isIOS -> ios()
+            Platform.isMacOS -> mac()
+            else -> common()
         }
     }
-    Platform.isDesktopJvm -> desktop()
-    Platform.isIOS -> ios()
-    Platform.isMacOS -> mac()
-    else -> common()
-}
+)
 
 @Composable
 fun DeviceContent(
     tv: @Composable () -> Unit,
-    common: @Composable () -> Unit
+    common: @Composable () -> Unit,
+    car: @Composable () -> Unit,
+    carDetectProjection: Boolean = true,
 ) = DeviceContent(
     common = common,
     jvm = common,
     tv = tv,
     apple = common,
+    car = car,
+    carDetectProjection = carDetectProjection
+)
+
+@Composable
+expect fun CarContent(
+    detectProjection: Boolean = true,
+    car: @Composable () -> Unit,
+    content: @Composable () -> Unit
 )

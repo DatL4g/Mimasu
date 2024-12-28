@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
+import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.CollapsingToolbar
 import io.github.aakira.napier.Napier
 
@@ -36,8 +37,7 @@ fun MovieToolbar(
     scrollBehavior: TopAppBarScrollBehavior,
     title: String,
     subTitle: String?,
-    backdrop: String?,
-    fallbackBackdrop: String?,
+    backdrops: Collection<Any?>,
     modifier: Modifier = Modifier,
     onBack: () -> Unit
 ) {
@@ -50,17 +50,13 @@ fun MovieToolbar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .matchParentSize(),
-                model = backdrop,
+                model = backdrops.firstOrNull(),
+                error = rememberNestedImagePainter(
+                    models = backdrops.drop(1),
+                    contentScale = ContentScale.Crop
+                ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                placeholder = rememberAsyncImagePainter(
-                    model = fallbackBackdrop,
-                    contentScale = ContentScale.Crop
-                ),
-                error = rememberAsyncImagePainter(
-                    model = fallbackBackdrop,
-                    contentScale = ContentScale.Crop
-                ),
                 alpha = state.expandProgress
             )
         },

@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -32,10 +33,13 @@ import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationExceptio
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.changedToUp
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.max
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.hazeChild
@@ -228,7 +232,27 @@ fun SheetState.isFullyExpandedOrTargeted(forceFullExpand: Boolean = false): Bool
     return this.currentValue == checkState || this.targetValue == checkState
 }
 
-
 fun CornerSize.times(value: Float, density: Density, shapeSize: Size = Size.Unspecified): CornerSize {
     return CornerSize(this.toPx(shapeSize, density) * value)
+}
+
+@Composable
+fun rememberNestedImagePainter(
+    models: Collection<Any?>,
+    contentScale: ContentScale = ContentScale.Crop
+): AsyncImagePainter {
+    val data = remember(models) { models.filterNotNull() }
+
+    if (data.isEmpty()) {
+        return rememberAsyncImagePainter(
+            model = null,
+            contentScale = contentScale
+        )
+    }
+
+    return rememberAsyncImagePainter(
+        model = data.first(),
+        contentScale = contentScale,
+        error = rememberNestedImagePainter(data.drop(1), contentScale)
+    )
 }

@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.module
 
 import android.content.Context
+import androidx.car.app.connection.CarConnection
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.database.StandaloneDatabaseProvider
@@ -121,6 +122,9 @@ actual data object PlatformModule {
         }
         bindProvider<VideoController> {
             VideoPlayerState(player = instance())
+        }
+        bindSingleton<CarConnection> {
+            CarConnection(instance())
         }
     }
 

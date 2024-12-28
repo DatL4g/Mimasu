@@ -7,7 +7,9 @@ import android.os.Build
 import android.view.KeyEvent as AndroidKeyEvent
 import android.view.Window
 import androidx.annotation.OptIn
+import androidx.car.app.connection.CarConnection
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -18,13 +20,17 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.asFlow
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.module.PlatformModule
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
+import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.flowOf
 import org.chromium.net.CronetEngine
 import org.kodein.di.DIAware
 import org.kodein.di.DirectDI

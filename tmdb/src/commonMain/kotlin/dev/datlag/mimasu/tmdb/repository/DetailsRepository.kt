@@ -3,9 +3,11 @@ package dev.datlag.mimasu.tmdb.repository
 import com.mayakapps.kache.InMemoryKache
 import com.mayakapps.kache.KacheStrategy
 import dev.datlag.mimasu.tmdb.api.Details
+import dev.datlag.mimasu.tmdb.model.DetailState
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import io.ktor.client.call.body
+import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.days
 
 data class DetailsRepository(
@@ -23,7 +25,7 @@ data class DetailsRepository(
 
     suspend fun load(
         id: Int
-    ): Details.Movie? {
+    ): DetailState<Details.Movie> {
         val result = suspendCatching {
             movieKache.getOrPut(id) {
                 val response = details.movie(
@@ -37,6 +39,8 @@ data class DetailsRepository(
             }
         }
 
-        return result.getOrNull()
+        return result.getOrNull()?.let {
+            DetailState.Success(it)
+        } ?: DetailState.Error(result.exceptionOrNull())
     }
 }

@@ -21,10 +21,15 @@ import org.kodein.di.compose.withDI
 
 interface Component : DIAware, ComponentContext {
 
+    val detectCarProjection: Boolean
+        get() = true
+
     @Composable
     fun render() = DeviceContent(
         common = { renderCommon() },
-        tv = { renderTv() }
+        tv = { renderTv() },
+        car = { renderCar() },
+        carDetectProjection = detectCarProjection
     )
 
     @Composable
@@ -34,6 +39,9 @@ interface Component : DIAware, ComponentContext {
     @Composable
     @NonRestartableComposable
     fun renderTv() = renderCommon()
+
+    @Composable
+    fun renderCar() = renderCommon()
 
     fun launchIO(block: suspend CoroutineScope.() -> Unit) = ioScope().launchIO(block)
     fun launchMain(block: suspend CoroutineScope.() -> Unit) = mainScope().launchMain(block)
