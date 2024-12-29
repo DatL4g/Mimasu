@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="github"
+        android:enabled="true"
+        android:icon="@drawable/github"
+        android:shortcutShortLabel="@string/github_shortcut"
+        android:shortcutLongLabel="@string/github_repo_shortcut">
+        <intent
+            android:action="dev.datlag.mimasu.ACTION_OPEN_GITHUB"
+            android:targetPackage="dev.datlag.mimasu"
+            android:targetClass="dev.datlag.mimasu.MainActivity"
+            />
+    </shortcut>
+</shortcuts>

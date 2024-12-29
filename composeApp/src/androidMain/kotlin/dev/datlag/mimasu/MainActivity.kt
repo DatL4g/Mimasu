@@ -1,5 +1,6 @@
 package dev.datlag.mimasu
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,12 +15,16 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import dev.datlag.kast.Kast
+import dev.datlag.mimasu.common.clear
 import dev.datlag.mimasu.common.isActivityInPiPMode
+import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.core.MimasuConnection
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.other.PackageResolver
 import dev.datlag.mimasu.other.PiPHelper
+import dev.datlag.mimasu.other.Shortcuts
 import dev.datlag.mimasu.ui.navigation.RootComponent
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.safeCast
@@ -45,6 +50,8 @@ class MainActivity : ComponentActivity() {
         val lifecycleOwner = object : LifecycleOwner {
             override val lifecycle: Lifecycle = essentyLifecycle()
         }
+
+        handleShortcutIntent(intent)
 
         root = RootComponent(
             componentContext = DefaultComponentContext(
@@ -79,6 +86,29 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        handleShortcutIntent(intent)
+    }
+
+    private fun handleShortcutIntent(intent: Intent?) {
+        intent?.also {
+            val action = it.action?.ifBlank { null }
+            val data by lazy {
+                it.dataString?.ifBlank { null } ?: it.data?.toString()?.ifBlank { null }
+            }
+
+            when {
+                action.equals(Shortcuts.ACTION_GITHUB, ignoreCase = true) -> {
+                    it.clear()
+
+                    Platform.openInBrowser(Constants.GITHUB_URL, this)
+                }
+            }
+        }?.clear()
     }
 
     override fun onStart() {

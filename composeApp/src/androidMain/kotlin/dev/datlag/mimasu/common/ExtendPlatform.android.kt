@@ -3,6 +3,8 @@ package dev.datlag.mimasu.common
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
+import android.content.pm.ShortcutManager
 import android.os.Build
 import android.view.KeyEvent as AndroidKeyEvent
 import android.view.Window
@@ -146,4 +148,9 @@ fun Player.calculateAspectRatio(): Float {
     } else {
         16F / 9F
     }
+}
+
+fun Intent.clear() {
+    this.data = null
+    this.action = null
 }
