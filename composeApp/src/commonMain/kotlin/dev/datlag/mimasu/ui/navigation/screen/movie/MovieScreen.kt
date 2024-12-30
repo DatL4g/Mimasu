@@ -1,6 +1,9 @@
 package dev.datlag.mimasu.ui.navigation.screen.movie
 
 import VideoPlayer
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,8 +24,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AttachMoney
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,7 +36,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,8 +58,10 @@ import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.datlag.mimasu.LocalHaze
 import dev.datlag.mimasu.common.default
 import dev.datlag.mimasu.common.hazeChild
+import dev.datlag.mimasu.common.isScrollingUp
 import dev.datlag.mimasu.common.localized
 import dev.datlag.mimasu.common.youtubeTrailer
+import dev.datlag.mimasu.other.ContentDetails
 import dev.datlag.mimasu.tmdb.model.DetailState
 import dev.datlag.mimasu.ui.custom.component.IconText
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.DescriptionSection
@@ -62,6 +72,7 @@ import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformBorder
 import dev.datlag.tooling.compose.platform.PlatformClickableChipBorder
 import dev.datlag.tooling.compose.platform.PlatformClickableChipColors
+import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.PlatformSuggestionChip
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.colorScheme
@@ -71,6 +82,9 @@ import io.github.aakira.napier.Napier
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
+import mimasu.composeapp.generated.resources.Res
+import mimasu.composeapp.generated.resources.movie_play
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
@@ -127,6 +141,31 @@ fun MovieScreen(component: MovieComponent) = MovieTheme(
                 backdrops = movieBackdrops,
                 onBack = component::back
             )
+        },
+        floatingActionButton = {
+            val showingPlayer by ContentDetails.showingPlayer.collectAsStateWithLifecycle()
+
+            AnimatedVisibility(
+                visible = !showingPlayer,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        component.play()
+                    },
+                    expanded = listState.isScrollingUp(),
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Rounded.PlayArrow,
+                            contentDescription = null
+                        )
+                    },
+                    text = {
+                        Text(text = stringResource(Res.string.movie_play))
+                    }
+                )
+            }
         }
     ) { padding ->
         when (val current = movieState) {
@@ -158,6 +197,10 @@ fun MovieScreen(component: MovieComponent) = MovieTheme(
                     }
                 }
             }
+        }
+
+        SideEffect {
+            ContentDetails.setPadding(padding)
         }
     }
 }

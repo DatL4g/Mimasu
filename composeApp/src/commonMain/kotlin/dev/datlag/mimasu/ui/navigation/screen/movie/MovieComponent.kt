@@ -13,4 +13,5 @@ interface MovieComponent : Component {
     val movie: Flow<DetailState<Details.Movie>>
 
     fun back()
+    fun play()
 }

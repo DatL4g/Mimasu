@@ -9,6 +9,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.other.ContentDetails
 import dev.datlag.mimasu.ui.custom.AdaptiveScaffold
@@ -62,11 +64,8 @@ fun CommonInitialScreen(
     ) { contentPadding ->
         content()
 
-        DisposableEffect(contentPadding) {
+        SideEffect {
             ContentDetails.setPadding(contentPadding)
-            onDispose {
-                ContentDetails.setPadding(PaddingValues(0.dp))
-            }
         }
     }
 }

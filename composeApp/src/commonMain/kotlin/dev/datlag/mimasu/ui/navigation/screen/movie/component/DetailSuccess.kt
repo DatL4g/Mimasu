@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -46,6 +47,7 @@ import dev.datlag.tooling.compose.platform.PlatformClickableChipColors
 import dev.datlag.tooling.compose.platform.PlatformSuggestionChip
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.colorScheme
+import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
@@ -77,7 +79,12 @@ fun DetailSuccess(
                     modifier = Modifier
                         .width(140.dp)
                         .height(200.dp)
-                        .clip(MaterialTheme.shapes.medium),
+                        .clip(Platform.shapes().medium)
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = Platform.shapes().medium,
+                            spotColor = Platform.colorScheme().primary
+                        ),
                     model = movie.posterPicture,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,

@@ -30,6 +30,7 @@ import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceAll
 import dev.datlag.mimasu.common.isTv
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
+import dev.datlag.mimasu.other.ContentDetails
 import dev.datlag.mimasu.ui.navigation.screen.initial.InitialScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.login.LoginScreen
@@ -93,6 +94,9 @@ class RootComponent(
             trending = rootConfig.trending,
             onBack = {
                 navigation.pop()
+            },
+            onPlay = {
+                showVideo()
             }
         )
         is RootConfig.Video -> VideoScreenComponent(
@@ -108,7 +112,13 @@ class RootComponent(
         is RootDialogConfig.Video -> VideoDialogScreenComponent(
             componentContext = context,
             di = di,
-            onDismiss = dialogNavigation::dismiss
+            onDismiss = {
+                dialogNavigation.dismiss {
+                    if (it) {
+                        ContentDetails.setShowingPlayer(false)
+                    }
+                }
+            }
         )
     }
 
@@ -116,7 +126,9 @@ class RootComponent(
         if (isTv() || stack.active.configuration is RootConfig.Video) {
             navigation.bringToFront(RootConfig.Video)
         } else {
-            dialogNavigation.activate(RootDialogConfig.Video)
+            dialogNavigation.activate(RootDialogConfig.Video) {
+                ContentDetails.setShowingPlayer(true)
+            }
         }
     }
 

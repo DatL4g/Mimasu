@@ -18,7 +18,8 @@ class MovieScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
     override val trending: Trending.Response.Media.Movie,
-    private val onBack: () -> Unit
+    private val onBack: () -> Unit,
+    private val onPlay: () -> Unit
 ) : MovieComponent, ComponentContext by componentContext {
 
     private val tmdb by instance<TMDB>()
@@ -44,5 +45,9 @@ class MovieScreenComponent(
 
     override fun back() {
         onBack()
+    }
+
+    override fun play() {
+        onPlay()
     }
 }

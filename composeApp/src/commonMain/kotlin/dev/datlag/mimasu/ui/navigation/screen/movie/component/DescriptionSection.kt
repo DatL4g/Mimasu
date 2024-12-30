@@ -12,6 +12,9 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.typography
+import mimasu.composeapp.generated.resources.Res
+import mimasu.composeapp.generated.resources.movie_about
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun DescriptionSection(
@@ -31,9 +34,11 @@ fun DescriptionSection(
         ) {
             PlatformText(
                 modifier = Modifier.fillMaxWidth(),
-                text = tagline?.ifBlank { null } ?: "Description",
+                text = tagline?.ifBlank { null } ?: stringResource(Res.string.movie_about),
                 style = Platform.typography().headlineSmall,
-                maxLines = 2
+                maxLines = 2,
+                softWrap = true,
+                overflow = TextOverflow.Ellipsis
             )
             SelectionContainer {
                 PlatformText(

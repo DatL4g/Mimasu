@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.ui.navigation.screen.video.dialog
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -17,8 +18,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,6 +41,7 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.swipeable
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -63,11 +68,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -95,24 +102,27 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun VideoDialogScreen(component: VideoDialogComponent) {
+fun VideoDialogScreen(
+    component: VideoDialogComponent,
+    padding: PaddingValues = PaddingValues(16.dp)
+) {
     val isCompactScreen = calculateWindowWidthSize() is WindowSize.Compact
 
-    val collapsedHeight = remember { 76.dp }
+    val collapsedHeight = remember(padding) { 72.dp + padding.calculateBottomPadding() }
     val density = LocalDensity.current
     val collapsedHeightPx = remember(collapsedHeight, density) { with(density) { collapsedHeight.toPx() } }
 
     val contentPadding by ContentDetails.padding.collectAsStateWithLifecycle()
-    val bottomPadding = remember(contentPadding) { contentPadding.calculateBottomPadding() }
+    val contentBottomPadding = remember(contentPadding) { contentPadding.calculateBottomPadding() }
     var isDragging by remember { mutableStateOf(false) }
 
     var offsetY by remember(isCompactScreen) { mutableStateOf(0F) }
     var fullHeightPx by remember { mutableStateOf(0f) }
     val availableHeightPx = remember(fullHeightPx, contentPadding, density) {
-        max(fullHeightPx - with(density) { bottomPadding.toPx() }, 0F)
+        max(fullHeightPx - with(density) { contentBottomPadding.toPx() }, 0F)
     }
 
-    LaunchedEffect(bottomPadding) {
+    LaunchedEffect(contentBottomPadding) {
         if (!isDragging) {
             val nearestAnchor = listOf(0F, availableHeightPx - collapsedHeightPx).minByOrNull { abs(it - offsetY) } ?: 0F
             offsetY = nearestAnchor
@@ -148,10 +158,41 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                 fullHeightPx = it.height.toFloat()
             }
     ) {
-
-        val padding by remember(progress) {
+        val direction = LocalLayoutDirection.current
+        val topPadding by remember(progress) {
             derivedStateOf {
-                lerp(8.dp, 0.dp, progress)
+                lerp(padding.calculateTopPadding(), 0.dp, progress)
+            }
+        }
+        val bottomPadding by remember(progress) {
+            derivedStateOf {
+                lerp(padding.calculateBottomPadding(), 0.dp, progress)
+            }
+        }
+        val startPadding by remember(progress) {
+            derivedStateOf {
+                lerp(padding.calculateStartPadding(direction), 0.dp, progress)
+            }
+        }
+        val endPadding by remember(progress) {
+            derivedStateOf {
+                lerp(padding.calculateEndPadding(direction), 0.dp, progress)
+            }
+        }
+
+        val defaultBackground = Platform.colorScheme().background
+        val cardBackground = CardDefaults.elevatedCardColors().containerColor
+        val background by remember(progress) {
+            derivedStateOf {
+                lerp(cardBackground, defaultBackground, progress)
+            }
+        }
+
+        val defaultColor = Platform.colorScheme().onBackground
+        val cardColor = CardDefaults.elevatedCardColors().contentColor
+        val color by remember(progress) {
+            derivedStateOf {
+                lerp(cardColor, defaultColor, progress)
             }
         }
 
@@ -182,13 +223,21 @@ fun VideoDialogScreen(component: VideoDialogComponent) {
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = collapsedHeight)
                     .fillMaxHeight(progress)
-                    .padding(padding)
-                    .background(Platform.colorScheme().background),
+                    .padding(PaddingValues(
+                        start = startPadding,
+                        top = topPadding,
+                        end = endPadding,
+                        bottom = bottomPadding
+                    )),
                 shape = shape,
                 enabled = progress <= 0.01F,
                 onClick = {
                     offsetY = 0F
-                }
+                },
+                colors = CardDefaults.elevatedCardColors(
+                    containerColor = background,
+                    contentColor = color
+                )
             ) {
                 CompositionLocalProvider(
                     LocalRippleConfiguration provides defaultRipple

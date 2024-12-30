@@ -26,20 +26,24 @@ data class DetailsRepository(
     suspend fun load(
         id: Int
     ): DetailState<Details.Movie> {
+        suspend fun response() = suspendCatching {
+            val response = details.movie(
+                apiKey = apiKey,
+                id = id,
+                language = language,
+                appendToResponse = "videos"
+            )
+
+            response.body<Details.Movie>()
+        }
+
         val result = suspendCatching {
             movieKache.getOrPut(id) {
-                val response = details.movie(
-                    apiKey = apiKey,
-                    id = id,
-                    language = language,
-                    appendToResponse = "videos"
-                )
-
-                response.body<Details.Movie>()
+                response().getOrThrow()
             }
         }
 
-        return result.getOrNull()?.let {
+        return (result.getOrNull() ?: response().getOrNull())?.let {
             DetailState.Success(it)
         } ?: DetailState.Error(result.exceptionOrNull())
     }
