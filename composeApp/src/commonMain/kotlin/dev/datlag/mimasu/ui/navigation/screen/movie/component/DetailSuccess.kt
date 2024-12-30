@@ -115,34 +115,17 @@ fun DetailSuccess(
             }
         }
         item {
-            val genres = remember(movie) {
-                movie.genres.toImmutableList()
-            }
-
-            if (genres.isNotEmpty()) {
-                LazyRow(
-                    modifier = Modifier.fillParentMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    items(genres, key = { g -> g.id }) { genre ->
-                        PlatformSuggestionChip(
-                            onClick = { },
-                            colors = PlatformClickableChipColors.suggestion(
-                                contentColor = Platform.colorScheme().onPrimaryContainer,
-                                containerColor = Platform.colorScheme().primaryContainer
-                            ),
-                            border = PlatformClickableChipBorder.suggestion(
-                                border = PlatformBorder.None
-                            ),
-                            label = {
-                                PlatformText(text = genre.name)
-                            }
-                        )
-                    }
-                }
-            }
+            RatingSection(
+                count = movie.count,
+                score = movie.averageScore,
+                modifier = Modifier.fillParentMaxWidth()
+            )
+        }
+        item {
+            GenreSection(
+                genres = movie.genres,
+                modifier = Modifier.fillParentMaxWidth()
+            )
         }
         item {
             DescriptionSection(

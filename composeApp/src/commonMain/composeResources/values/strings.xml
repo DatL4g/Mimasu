@@ -3,4 +3,7 @@
     <string name="description">Description</string>
     <string name="movie_about">About</string>
     <string name="movie_play">Play</string>
+    <string name="movie_score">Score</string>
+    <string name="movie_votes">Votes</string>
+    <string name="movie_score_placeholder">%1$d%</string>
 </resources>

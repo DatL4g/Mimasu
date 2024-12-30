@@ -13,6 +13,7 @@ import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlin.math.roundToInt
 
 interface Details {
 
@@ -42,13 +43,17 @@ interface Details {
         @SerialName("runtime") val runtime: Int = 0,
         @SerialName("tagline") private val _tagline: String? = null,
         @SerialName("videos") private val videos: VideoResult? = null,
-
+        @SerialName("status") val status: String? = null,
         @SerialName("popularity") val popularity: Float = 0F,
         @SerialName("revenue") val revenue: Long? = null,
-        @SerialName("vote_average") val average: Float = 0F
+        @SerialName("vote_average") val average: Float = 0F,
+        @SerialName("vote_count") val count: Int = 0
     ) {
         @Transient
         val tagline: String? = _tagline?.ifBlank { null }
+
+        @Transient
+        val averageScore: Int = (average * 10F).roundToInt()
 
         @Transient
         val backdropPicture: String? = backdropPath?.ifBlank {

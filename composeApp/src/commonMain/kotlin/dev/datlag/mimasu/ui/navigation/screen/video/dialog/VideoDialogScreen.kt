@@ -91,6 +91,7 @@ import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.ifTrue
 import dev.datlag.tooling.compose.platform.colorScheme
+import dev.datlag.tooling.compose.platform.rememberIsTv
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
@@ -248,7 +249,7 @@ fun VideoDialogScreen(
                             .draggable(
                                 state = draggableState,
                                 orientation = Orientation.Vertical,
-                                enabled = isCompactScreen,
+                                enabled = isCompactScreen && !Platform.rememberIsTv(),
                                 onDragStarted = {
                                     component.videoController.controlsAvailable = false
                                     isDragging = true
@@ -262,7 +263,7 @@ fun VideoDialogScreen(
                                 }
                             )
                     ) {
-                        val baseModifier = if (isCompactScreen) {
+                        val baseModifier = if (isCompactScreen && !Platform.rememberIsTv()) {
                             Modifier
                                 .fillMaxWidth(max(lerp(0.33F, progress * 2F, progress), 0.33F))
                                 .aspectRatio(16F/9F)
