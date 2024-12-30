@@ -15,6 +15,7 @@ import dev.datlag.tooling.compose.platform.typography
 
 @Composable
 fun DescriptionSection(
+    tagline: String?,
     value: String?,
     modifier: Modifier = Modifier,
     fallbackValue: String? = null,
@@ -30,8 +31,9 @@ fun DescriptionSection(
         ) {
             PlatformText(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Description",
-                style = Platform.typography().headlineSmall
+                text = tagline?.ifBlank { null } ?: "Description",
+                style = Platform.typography().headlineSmall,
+                maxLines = 2
             )
             SelectionContainer {
                 PlatformText(

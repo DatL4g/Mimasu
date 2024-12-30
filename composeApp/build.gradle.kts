@@ -82,6 +82,7 @@ kotlin {
             implementation(libs.locale)
             implementation(libs.napier)
             implementation(libs.connectivity)
+            implementation(libs.kache)
 
             implementation(libs.windowsize)
             implementation(libs.ktor)

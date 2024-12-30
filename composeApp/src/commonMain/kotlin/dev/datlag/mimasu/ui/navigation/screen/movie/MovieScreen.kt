@@ -57,6 +57,7 @@ import dev.datlag.mimasu.ui.custom.component.IconText
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.DescriptionSection
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.DetailSuccess
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.MovieToolbar
+import dev.datlag.mimasu.ui.theme.MovieTheme
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformBorder
 import dev.datlag.tooling.compose.platform.PlatformClickableChipBorder
@@ -73,7 +74,9 @@ import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
-fun MovieScreen(component: MovieComponent) {
+fun MovieScreen(component: MovieComponent) = MovieTheme(
+    key = component.trending.id
+) { colorState ->
     val appBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         state = appBarState
@@ -141,7 +144,8 @@ fun MovieScreen(component: MovieComponent) {
                 current.data,
                 component.trending,
                 padding,
-                listState
+                listState,
+                colorState
             )
             is DetailState.Error -> {
                 Box(

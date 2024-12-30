@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -37,6 +38,7 @@ import dev.datlag.mimasu.common.youtubeTrailer
 import dev.datlag.mimasu.tmdb.api.Details
 import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.mimasu.ui.custom.component.IconText
+import dev.datlag.mimasu.ui.theme.SchemeTheme
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformBorder
 import dev.datlag.tooling.compose.platform.PlatformClickableChipBorder
@@ -53,7 +55,8 @@ fun DetailSuccess(
     movie: Details.Movie,
     trending: Trending.Response.Media.Movie?,
     padding: PaddingValues,
-    state: LazyListState
+    listState: LazyListState,
+    colorState: SchemeTheme.Updater<Painter>?
 ) {
     val trailer = remember(movie) { movie.youtubeTrailer() }
 
@@ -62,7 +65,7 @@ fun DetailSuccess(
             .fillMaxSize()
             .haze(state = LocalHaze.current),
         contentPadding = padding,
-        state = state
+        state = listState
     ) {
         item {
             Row(
@@ -80,8 +83,14 @@ fun DetailSuccess(
                     contentScale = ContentScale.Crop,
                     error = rememberNestedImagePainter(
                         models = persistentSetOf(trending?.posterPicture, movie.posterPictureW500, trending?.posterPictureW500),
-                        contentScale = ContentScale.Crop
-                    )
+                        contentScale = ContentScale.Crop,
+                        onSuccess = {
+                            colorState?.updateFrom(it.painter)
+                        }
+                    ),
+                    onSuccess = {
+                        colorState?.updateFrom(it.painter)
+                    }
                 )
                 Column(
                     modifier = Modifier.weight(1F).fillMaxHeight(),
@@ -131,6 +140,7 @@ fun DetailSuccess(
         item {
             DescriptionSection(
                 modifier = Modifier.padding(16.dp),
+                tagline = movie.tagline,
                 value = movie.overview,
                 fallbackValue = trending?.overview
             )

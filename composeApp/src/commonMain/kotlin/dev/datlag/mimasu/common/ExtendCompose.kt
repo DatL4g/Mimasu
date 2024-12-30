@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.max
 import coil3.compose.AsyncImagePainter
+import coil3.compose.AsyncImagePainter.State
 import coil3.compose.rememberAsyncImagePainter
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
@@ -239,7 +240,10 @@ fun CornerSize.times(value: Float, density: Density, shapeSize: Size = Size.Unsp
 @Composable
 fun rememberNestedImagePainter(
     models: Collection<Any?>,
-    contentScale: ContentScale = ContentScale.Crop
+    contentScale: ContentScale = ContentScale.Crop,
+    onLoading: ((State.Loading) -> Unit)? = null,
+    onSuccess: ((State.Success) -> Unit)? = null,
+    onError: ((State.Error) -> Unit)? = null,
 ): AsyncImagePainter {
     val data = remember(models) { models.filterNotNull() }
 
@@ -253,6 +257,13 @@ fun rememberNestedImagePainter(
     return rememberAsyncImagePainter(
         model = data.first(),
         contentScale = contentScale,
-        error = rememberNestedImagePainter(data.drop(1), contentScale)
+        error = rememberNestedImagePainter(data.drop(1), contentScale),
+        onLoading = onLoading,
+        onSuccess = onSuccess,
+        onError = {
+            if (data.size <= 1) {
+                onError?.invoke(it)
+            }
+        }
     )
 }

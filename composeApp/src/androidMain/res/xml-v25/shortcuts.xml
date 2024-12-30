@@ -3,7 +3,7 @@
     <shortcut
         android:shortcutId="github"
         android:enabled="true"
-        android:icon="@drawable/github"
+        android:icon="@drawable/github_small"
         android:shortcutShortLabel="@string/github_shortcut"
         android:shortcutLongLabel="@string/github_repo_shortcut">
         <intent

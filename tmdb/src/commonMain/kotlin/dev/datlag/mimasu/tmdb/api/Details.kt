@@ -40,9 +40,16 @@ interface Details {
         @SerialName("poster_path") private val posterPath: String? = null,
         @SerialName("imdb_id") val imdbId: String? = null,
         @SerialName("runtime") val runtime: Int = 0,
-        @SerialName("tagline") val tagline: String? = null,
-        @SerialName("videos") private val videos: VideoResult? = null
+        @SerialName("tagline") private val _tagline: String? = null,
+        @SerialName("videos") private val videos: VideoResult? = null,
+
+        @SerialName("popularity") val popularity: Float = 0F,
+        @SerialName("revenue") val revenue: Long? = null,
+        @SerialName("vote_average") val average: Float = 0F
     ) {
+        @Transient
+        val tagline: String? = _tagline?.ifBlank { null }
+
         @Transient
         val backdropPicture: String? = backdropPath?.ifBlank {
             null
