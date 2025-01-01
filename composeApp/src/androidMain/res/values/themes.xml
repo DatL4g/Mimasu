@@ -6,12 +6,13 @@
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
-        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/ic_launcher_background</item>
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/splash_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/ic_launcher_background</item>
-        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">@color/ic_launcher_background</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/splash_background</item>
+        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">@color/splash_background</item>
+        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">@drawable/tmdb</item>
         <item name="windowSplashScreenAnimationDuration">800</item>
         <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">800</item>
         <item name="postSplashScreenTheme">@style/AppTheme</item>
