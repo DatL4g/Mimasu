@@ -47,7 +47,8 @@ interface Details {
         @SerialName("popularity") val popularity: Float = 0F,
         @SerialName("revenue") val revenue: Long? = null,
         @SerialName("vote_average") val average: Float = 0F,
-        @SerialName("vote_count") val count: Int = 0
+        @SerialName("vote_count") val count: Int = 0,
+        @SerialName("credits") val credits: Credits? = null
     ) {
         @Transient
         val tagline: String? = _tagline?.ifBlank { null }
@@ -144,6 +145,46 @@ interface Details {
                 @SerialName("iso_639_1") val language: String? = null,
                 @SerialName("iso_3166_1") val country: String? = null
             )
+        }
+
+        @Serializable
+        data class Credits(
+            @SerialName("cast") val cast: SerializableImmutableSet<Cast> = persistentSetOf(),
+            @SerialName("crew") val crew: SerializableImmutableSet<Crew> = persistentSetOf()
+        ) {
+
+            @Serializable
+            data class Cast(
+                @SerialName("adult") val adult: Boolean = true,
+                @SerialName("gender") val gender: Int = 0,
+                @SerialName("id") val id: Int = 0,
+                @SerialName("name") val name: String? = null,
+                @SerialName("original_name") val originalName: String? = null,
+                @SerialName("character") val character: String? = null,
+                @SerialName("profile_path") private val picture: String? = null
+            ) {
+                @Transient
+                val profilePicture: String? = picture?.ifBlank { null }?.let { "$ORIGINAL_IMAGE$it" }
+
+                @Transient
+                val profilePictureW500: String? = picture?.ifBlank { null }?.let { "$W500_IMAGE$it" }
+            }
+
+            @Serializable
+            data class Crew(
+                @SerialName("adult") val adult: Boolean = true,
+                @SerialName("gender") val gender: Int = 0,
+                @SerialName("id") val id: Int = 0,
+                @SerialName("name") val name: String? = null,
+                @SerialName("original_name") val originalName: String? = null,
+                @SerialName("profile_path") private val picture: String? = null
+            ) {
+                @Transient
+                val profilePicture: String? = picture?.ifBlank { null }?.let { "$ORIGINAL_IMAGE$it" }
+
+                @Transient
+                val profilePictureW500: String? = picture?.ifBlank { null }?.let { "$W500_IMAGE$it" }
+            }
         }
     }
 }

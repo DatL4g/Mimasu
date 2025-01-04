@@ -135,6 +135,12 @@ fun DetailSuccess(
                 fallbackValue = trending?.overview
             )
         }
+        item {
+            CharacterSection(
+                modifier = Modifier.fillParentMaxWidth(),
+                characters = movie.credits?.cast
+            )
+        }
         if (trailer != null) {
             item {
                 Text(

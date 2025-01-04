@@ -31,7 +31,7 @@ data class DetailsRepository(
                 apiKey = apiKey,
                 id = id,
                 language = language,
-                appendToResponse = "videos"
+                appendToResponse = "videos,credits"
             )
 
             response.body<Details.Movie>()

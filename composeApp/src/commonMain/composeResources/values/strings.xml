@@ -6,4 +6,5 @@
     <string name="movie_score">Score</string>
     <string name="movie_votes">Votes</string>
     <string name="movie_score_placeholder">%1$d%</string>
+    <string name="movie_characters">Characters</string>
 </resources>
