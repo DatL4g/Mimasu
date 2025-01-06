@@ -70,3 +70,5 @@ fun LocalDateTime.toEpochMilliseconds(timeZone: TimeZone = TimeZone.currentSyste
  * @return The LocalDateTime corresponding to the given number of milliseconds since the epoch.
  */
 fun Long.fromEpochMilliseconds(timeZone: TimeZone = TimeZone.currentSystemDefault()) = Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone)
+
+expect fun Any.convertToInstant(): Instant
