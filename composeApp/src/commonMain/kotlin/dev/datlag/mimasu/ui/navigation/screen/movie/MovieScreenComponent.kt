@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.ui.navigation.screen.movie
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.CompositionLocalProvider
@@ -18,6 +20,7 @@ class MovieScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
     override val trending: Trending.Response.Media.Movie,
+    override val visible: Boolean,
     private val onBack: () -> Unit,
     private val onPlay: () -> Unit
 ) : MovieComponent, ComponentContext by componentContext {
@@ -32,13 +35,16 @@ class MovieScreenComponent(
         Napier.e { "Movie ID: ${trending.id}" }
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderCommon() {
+    override fun renderCommon(scope: SharedTransitionScope) {
         onRender {
             CompositionLocalProvider(
                 LocalHaze provides remember { HazeState() }
             ) {
-                MovieScreen(this)
+                with(scope) {
+                    MovieScreen(this@MovieScreenComponent)
+                }
             }
         }
     }

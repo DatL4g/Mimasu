@@ -44,12 +44,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.util.TypedValueCompat
 import androidx.media3.common.text.Cue
+import dev.datlag.mimasu.other.I18N
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import mimasu.composeapp.generated.resources.Res
 import mimasu.composeapp.generated.resources.no_subtitle
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
@@ -120,7 +120,7 @@ fun SubTitleSelector(
                         )
                     },
                     text = {
-                        Text(text = stringResource(Res.string.no_subtitle))
+                        Text(text = I18N.stringResource(Res.string.no_subtitle))
                     },
                     trailingIcon = if (subTitle.selected == null) {
                         {

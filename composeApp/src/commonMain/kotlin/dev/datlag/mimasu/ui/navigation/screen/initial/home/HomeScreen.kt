@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.ui.navigation.screen.initial.home
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,9 +40,9 @@ import mimasu.composeapp.generated.resources.Res
 import mimasu.composeapp.generated.resources.movie_characters
 import mimasu.composeapp.generated.resources.movie_play
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun HomeScreen(component: HomeComponent) {
+fun SharedTransitionScope.HomeScreen(component: HomeComponent) {
     val trendingMovies = component.trendingMovies.collectAsLazyPagingItems()
     val trendingPeople = component.trendingPeople.collectAsLazyPagingItems()
 
@@ -57,22 +59,24 @@ fun HomeScreen(component: HomeComponent) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 items(trendingMovies.itemCount) { index ->
+                    val movie = trendingMovies[index]
+
                     PlatformCard(
                         modifier = Modifier
                             .width(140.dp)
                             .height(200.dp),
                         onClick = {
                             Napier.e { "Clicked $index" }
-                            component.viewMovie(trendingMovies[index]!!)
+                            component.viewMovie(movie!!)
                         }
                     ) {
                         AsyncImage(
                             modifier = Modifier.fillMaxSize(),
-                            model = trendingMovies[index]!!.posterPicture,
-                            contentDescription = trendingMovies[index]?.title,
+                            model = movie?.posterPicture,
+                            contentDescription = movie?.title,
                             contentScale = ContentScale.Crop,
                             error = rememberAsyncImagePainter(
-                                model = trendingMovies[index]!!.posterPictureW500,
+                                model = movie?.posterPictureW500,
                                 contentScale = ContentScale.Crop
                             )
                         )
@@ -88,11 +92,6 @@ fun HomeScreen(component: HomeComponent) {
             ) {
                 Text(text = "Watch movie")
             }
-        }
-        item {
-            Text(
-                text = I18N.stringResource(Res.string.movie_play)
-            )
         }
     }
 }

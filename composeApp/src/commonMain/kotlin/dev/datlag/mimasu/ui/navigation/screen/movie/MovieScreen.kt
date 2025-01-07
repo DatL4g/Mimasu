@@ -2,6 +2,8 @@ package dev.datlag.mimasu.ui.navigation.screen.movie
 
 import VideoPlayer
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
@@ -86,9 +88,9 @@ import kotlinx.collections.immutable.toImmutableList
 import mimasu.composeapp.generated.resources.Res
 import mimasu.composeapp.generated.resources.movie_play
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun MovieScreen(component: MovieComponent) = MovieTheme(
+fun SharedTransitionScope.MovieScreen(component: MovieComponent) = MovieTheme(
     key = component.trending.id
 ) { colorState ->
     val appBarState = rememberTopAppBarState()
@@ -180,6 +182,7 @@ fun MovieScreen(component: MovieComponent) = MovieTheme(
                 }
             }
             is DetailState.Success -> DetailSuccess(
+                component.visible,
                 current.data,
                 component.trending,
                 padding,

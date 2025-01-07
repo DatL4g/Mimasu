@@ -86,7 +86,7 @@ fun CharacterSection(
                             softWrap = true,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.weight(1F).fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)
+                            modifier = Modifier.weight(1F).fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp)
                         )
                     }
                 }

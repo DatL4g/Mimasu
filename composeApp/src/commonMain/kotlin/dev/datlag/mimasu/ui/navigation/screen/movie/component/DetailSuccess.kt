@@ -1,6 +1,8 @@
 package dev.datlag.mimasu.ui.navigation.screen.movie.component
 
 import VideoPlayer
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,8 +54,10 @@ import dev.datlag.tooling.compose.platform.typography
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun DetailSuccess(
+fun SharedTransitionScope.DetailSuccess(
+    visible: Boolean,
     movie: Details.Movie,
     trending: Trending.Response.Media.Movie?,
     padding: PaddingValues,

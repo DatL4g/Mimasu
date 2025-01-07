@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.ui.navigation
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.NonRestartableComposable
@@ -24,24 +26,31 @@ interface Component : DIAware, ComponentContext {
     val detectCarProjection: Boolean
         get() = true
 
+    val visible: Boolean
+        get() = false
+
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    fun render() = DeviceContent(
-        common = { renderCommon() },
-        tv = { renderTv() },
-        car = { renderCar() },
+    fun render(scope: SharedTransitionScope) = DeviceContent(
+        common = { renderCommon(scope) },
+        tv = { renderTv(scope) },
+        car = { renderCar(scope) },
         carDetectProjection = detectCarProjection
     )
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
     @NonRestartableComposable
-    fun renderCommon()
+    fun renderCommon(scope: SharedTransitionScope)
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
     @NonRestartableComposable
-    fun renderTv() = renderCommon()
+    fun renderTv(scope: SharedTransitionScope) = renderCommon(scope)
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    fun renderCar() = renderCommon()
+    fun renderCar(scope: SharedTransitionScope) = renderCommon(scope)
 
     fun launchIO(block: suspend CoroutineScope.() -> Unit) = ioScope().launchIO(block)
     fun launchMain(block: suspend CoroutineScope.() -> Unit) = mainScope().launchMain(block)

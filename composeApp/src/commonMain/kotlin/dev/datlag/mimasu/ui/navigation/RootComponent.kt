@@ -1,6 +1,9 @@
 package dev.datlag.mimasu.ui.navigation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideOutHorizontally
@@ -31,10 +34,12 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import dev.datlag.mimasu.common.isTv
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.other.ContentDetails
+import dev.datlag.mimasu.ui.navigation.screen.initial.InitialComponent
 import dev.datlag.mimasu.ui.navigation.screen.initial.InitialScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.login.LoginScreen
 import dev.datlag.mimasu.ui.navigation.screen.login.LoginScreenComponent
+import dev.datlag.mimasu.ui.navigation.screen.movie.MovieComponent
 import dev.datlag.mimasu.ui.navigation.screen.movie.MovieScreen
 import dev.datlag.mimasu.ui.navigation.screen.movie.MovieScreenComponent
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoScreenComponent
@@ -76,6 +81,7 @@ class RootComponent(
         is RootConfig.Initial -> InitialScreenComponent(
             componentContext = componentContext,
             di = di,
+            visible = stack.active.instance is InitialComponent,
             onMovie = {
                 navigation.pushToFront(it)
             },
@@ -92,6 +98,7 @@ class RootComponent(
             componentContext = componentContext,
             di = di,
             trending = rootConfig.trending,
+            visible = stack.active.instance is MovieComponent,
             onBack = {
                 navigation.pop()
             },
@@ -132,10 +139,10 @@ class RootComponent(
         }
     }
 
-    @OptIn(ExperimentalDecomposeApi::class)
+    @OptIn(ExperimentalDecomposeApi::class, ExperimentalSharedTransitionApi::class)
     @Composable
     @NonRestartableComposable
-    override fun renderCommon() {
+    override fun renderCommon(scope: SharedTransitionScope) {
         onRender {
             Box(
                 modifier = Modifier.fillMaxSize()
@@ -152,10 +159,10 @@ class RootComponent(
                         }
                     )
                 ) {
-                    it.instance.render()
+                    it.instance.render(scope)
                 }
 
-                dialogState.child?.instance?.render()
+                dialogState.child?.instance?.render(scope)
             }
         }
     }

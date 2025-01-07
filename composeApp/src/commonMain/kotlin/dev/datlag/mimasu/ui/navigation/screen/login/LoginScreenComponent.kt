@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.ui.navigation.screen.login
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
@@ -51,8 +53,9 @@ class LoginScreenComponent(
     private val _sendClickable = MutableStateFlow(false)
     override val sendClickable: StateFlow<Boolean> = _sendClickable
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderCommon() {
+    override fun renderCommon(scope: SharedTransitionScope) {
         onRender {
             LoginScreen(this)
         }

@@ -15,6 +15,9 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.readRawBytes
 import io.ktor.http.isSuccess
+import kotlinx.collections.immutable.immutableMapOf
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.io.Buffer
@@ -42,10 +45,12 @@ data object I18N {
         locale.territory?.code?.ifBlank { null } ?: locale.territory?.code3?.ifBlank { null }
     }
 
-    private var translationCache = mapOf<String, String>()
-    private val fallbackJson = Json {
-        isLenient = true
-        ignoreUnknownKeys = true
+    private var translationCache = persistentMapOf<String, String>()
+    private val fallbackJson by lazy {
+        Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+        }
     }
     private val mutex = Mutex()
 
@@ -92,7 +97,7 @@ data object I18N {
             suspendCatching {
                 fetchTranslation(client, json)
             }.getOrNull()?.let {
-                translationCache = it
+                translationCache = it.toPersistentMap()
             }
 
             get(key)
@@ -102,6 +107,7 @@ data object I18N {
     }
 
     operator fun get(key: String): String? = translationCache[key]
+    operator fun get(key: StringResource): String? = get(key.key)
 
     @Composable
     fun stringResource(res: StringResource): String {
@@ -109,13 +115,13 @@ data object I18N {
         val json by localDI().instanceOrNull<Json>()
 
         val data by produceState(
-            org.jetbrains.compose.resources.stringResource(res)
+            get(res) ?: org.jetbrains.compose.resources.stringResource(res)
         ) {
             value = client?.let {
                 withIOContext {
                     translation(res.key, it, json)
                 }
-            } ?: get(res.key) ?: value
+            } ?: get(res) ?: value
         }
         return data
     }
@@ -126,13 +132,13 @@ data object I18N {
         val json by localDI().instanceOrNull<Json>()
 
         val data by produceState(
-            org.jetbrains.compose.resources.stringResource(res, *formatArgs)
+            get(res)?.sprintf(*formatArgs) ?: org.jetbrains.compose.resources.stringResource(res, *formatArgs)
         ) {
             value = client?.let {
                 withIOContext {
                     translation(res.key, it, json)?.sprintf(*formatArgs)
                 }
-            } ?: get(res.key)?.sprintf(*formatArgs) ?: value
+            } ?: get(res)?.sprintf(*formatArgs) ?: value
         }
         return data
     }

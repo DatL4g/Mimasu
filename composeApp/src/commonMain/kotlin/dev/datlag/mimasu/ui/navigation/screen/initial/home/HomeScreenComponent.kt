@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.ui.navigation.screen.initial.home
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
 import app.cash.paging.Pager
@@ -30,6 +32,7 @@ class HomeScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
     private val packageResolver: PackageResolver = di.packageResolver(),
+    override val visible: Boolean,
     private val onMovie: (RootConfig.Movie) -> Unit,
     private val watchVideo: () -> Unit
 ): HomeComponent, ComponentContext by componentContext, PackageAware by packageResolver {
@@ -100,17 +103,19 @@ class HomeScreenComponent(
         tmdb.trending.PeoplePaging()
     }.flow.cachedIn(ioScope())
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
     @NonRestartableComposable
-    override fun renderCommon() {
+    override fun renderCommon(scope: SharedTransitionScope) = with(scope) {
         onRender {
-            HomeScreen(this)
+            HomeScreen(this@HomeScreenComponent)
         }
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
     @NonRestartableComposable
-    override fun renderTv() {
+    override fun renderTv(scope: SharedTransitionScope) {
         onRender {
             TvHomeScreen(this)
         }

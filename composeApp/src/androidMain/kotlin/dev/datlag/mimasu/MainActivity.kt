@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -35,6 +37,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var root: RootComponent
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
@@ -82,7 +85,9 @@ class MainActivity : ComponentActivity() {
                         PlatformText(text = "App currently under maintenance, please come back later")
                     }
                 ) {
-                    root.render()
+                    SharedTransitionLayout {
+                        root.render(this)
+                    }
                 }
             }
         }

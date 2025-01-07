@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.ui.navigation.screen.video
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import org.kodein.di.DI
@@ -13,8 +15,9 @@ class VideoScreenComponent(
 
     override val controller: VideoController by instance()
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderCommon() {
+    override fun renderCommon(scope: SharedTransitionScope) {
         onRender {
             VideoScreen(this)
         }

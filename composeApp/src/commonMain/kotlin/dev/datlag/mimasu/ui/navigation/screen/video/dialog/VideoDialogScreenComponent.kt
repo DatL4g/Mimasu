@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.ui.navigation.screen.video.dialog
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
 import dev.datlag.mimasu.ui.navigation.Component
@@ -22,10 +24,11 @@ class VideoDialogScreenComponent(
 
     override val videoController: VideoController = videoComponent.controller
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderCommon() {
+    override fun renderCommon(scope: SharedTransitionScope) = with(scope) {
         onRender {
-            VideoDialogScreen(this)
+            VideoDialogScreen(this@VideoDialogScreenComponent)
         }
     }
 

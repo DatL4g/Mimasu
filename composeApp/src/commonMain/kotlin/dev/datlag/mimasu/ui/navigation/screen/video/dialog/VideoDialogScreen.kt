@@ -1,6 +1,8 @@
 package dev.datlag.mimasu.ui.navigation.screen.video.dialog
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
@@ -101,9 +103,9 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun VideoDialogScreen(
+fun SharedTransitionScope.VideoDialogScreen(
     component: VideoDialogComponent,
     padding: PaddingValues = PaddingValues(16.dp)
 ) {
@@ -275,7 +277,7 @@ fun VideoDialogScreen(
                             modifier = baseModifier.background(Color.Black),
                             contentAlignment = Alignment.Center
                         ) {
-                            component.videoComponent.render()
+                            component.videoComponent.render(this@VideoDialogScreen)
                         }
                         AnimatedVisibility(
                             modifier = Modifier.weight(1F).fillMaxHeight(),

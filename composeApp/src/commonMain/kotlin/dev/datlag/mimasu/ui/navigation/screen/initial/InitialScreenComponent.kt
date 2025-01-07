@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.ui.navigation.screen.initial
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Favorite
@@ -19,6 +21,7 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.router.stack.childStack
 import dev.datlag.mimasu.common.updateInfo
 import dev.datlag.mimasu.core.model.UpdateInfo
@@ -27,6 +30,7 @@ import dev.datlag.mimasu.tv.TvInitialNavigation
 import dev.datlag.mimasu.tv.TvInitialSearch
 import dev.datlag.mimasu.ui.navigation.Component
 import dev.datlag.mimasu.ui.navigation.RootConfig
+import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeComponent
 import dev.datlag.mimasu.ui.navigation.screen.initial.home.HomeScreenComponent
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import io.github.aakira.napier.Napier
@@ -35,6 +39,7 @@ import org.kodein.di.DI
 class InitialScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
+    override val visible: Boolean,
     private val onMovie: (RootConfig.Movie) -> Unit,
     private val watchVideo: () -> Unit
 ) : InitialComponent, ComponentContext by componentContext, UpdateInfo by di.updateInfo() {
@@ -55,22 +60,25 @@ class InitialScreenComponent(
         is InitialConfig.Home -> HomeScreenComponent(
             componentContext = componentContext,
             di = di,
+            visible = visible && stack.active.instance is HomeComponent,
             onMovie = onMovie,
             watchVideo = watchVideo
         )
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderCommon() {
+    override fun renderCommon(scope: SharedTransitionScope) {
         onRender {
             CommonInitialScreen {
-                content()
+                content(scope)
             }
         }
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderTv() {
+    override fun renderTv(scope: SharedTransitionScope) {
         onRender {
             var searchQuery by remember { mutableStateOf("") }
 
@@ -98,13 +106,14 @@ class InitialScreenComponent(
                     onQueryChange = { searchQuery = it }
                 )
             ) {
-                content()
+                content(scope)
             }
         }
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    private fun content() {
+    private fun content(scope: SharedTransitionScope) {
         Children(
             stack = stack,
             animation = stackAnimation(fade()),
@@ -147,7 +156,7 @@ class InitialScreenComponent(
                 )
             }
 
-            it.instance.render()
+            it.instance.render(scope)
         }
     }
 }
