@@ -19,6 +19,7 @@ import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.other.Connection
+import dev.datlag.mimasu.other.I18N
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.sekret.Secret
@@ -123,13 +124,11 @@ data object NetworkModule {
                 .build()
         }
         bindSingleton<TMDB> {
-            val locale = Locale.default()
-
             TMDB.create(
                 apiKey = config.value.getOrThrow().tmdb,
                 client = instance(),
-                language = locale.localized(),
-                region = locale.territory?.code?.ifBlank { null } ?: locale.territory?.code3?.ifBlank { null }
+                language = I18N.language,
+                region = I18N.region
             )
         }
         bindSingleton<FirebaseEmailAuthProvider> {

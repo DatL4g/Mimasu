@@ -62,6 +62,7 @@ import dev.datlag.mimasu.common.isScrollingUp
 import dev.datlag.mimasu.common.localized
 import dev.datlag.mimasu.common.youtubeTrailer
 import dev.datlag.mimasu.other.ContentDetails
+import dev.datlag.mimasu.other.I18N
 import dev.datlag.mimasu.tmdb.model.DetailState
 import dev.datlag.mimasu.ui.custom.component.IconText
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.DescriptionSection
@@ -84,7 +85,6 @@ import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import mimasu.composeapp.generated.resources.Res
 import mimasu.composeapp.generated.resources.movie_play
-import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
@@ -162,7 +162,7 @@ fun MovieScreen(component: MovieComponent) = MovieTheme(
                         )
                     },
                     text = {
-                        Text(text = stringResource(Res.string.movie_play))
+                        Text(text = I18N.stringResource(Res.string.movie_play))
                     }
                 )
             }

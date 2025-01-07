@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
+import dev.datlag.mimasu.other.I18N
 import dev.datlag.mimasu.tmdb.api.Details
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformCard
@@ -33,7 +34,6 @@ import kotlinx.collections.immutable.toImmutableList
 import mimasu.composeapp.generated.resources.Res
 import mimasu.composeapp.generated.resources.movie_about
 import mimasu.composeapp.generated.resources.movie_characters
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CharacterSection(
@@ -47,7 +47,7 @@ fun CharacterSection(
         ) {
             PlatformText(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                text = stringResource(Res.string.movie_characters),
+                text = I18N.stringResource(Res.string.movie_characters),
                 style = Platform.typography().headlineSmall,
                 maxLines = 2,
                 softWrap = true,

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_subtitle">Keinen</string>
+    <string name="description">Beschreibung</string>
+    <string name="movie_about">Über</string>
+    <string name="movie_play">Abspielen</string>
+    <string name="movie_score">Bewertung</string>
+    <string name="movie_votes">Abstimmungen</string>
+    <string name="movie_score_placeholder">%1$d%</string>
+    <string name="movie_characters">Charaktere</string>
+</resources>

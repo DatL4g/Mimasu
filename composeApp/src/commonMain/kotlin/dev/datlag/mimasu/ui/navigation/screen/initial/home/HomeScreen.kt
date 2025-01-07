@@ -27,12 +27,16 @@ import coil3.compose.rememberAsyncImagePainter
 import dev.datlag.mimasu.common.githubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.firebase.common.githubHandle
+import dev.datlag.mimasu.other.I18N
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.async.suspendCatching
 import dev.datlag.tooling.compose.platform.PlatformCard
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
+import mimasu.composeapp.generated.resources.Res
+import mimasu.composeapp.generated.resources.movie_characters
+import mimasu.composeapp.generated.resources.movie_play
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -82,8 +86,13 @@ fun HomeScreen(component: HomeComponent) {
                     component.watchVideo()
                 }
             ) {
-                Text(text = "Watch Video")
+                Text(text = "Watch movie")
             }
+        }
+        item {
+            Text(
+                text = I18N.stringResource(Res.string.movie_play)
+            )
         }
     }
 }
