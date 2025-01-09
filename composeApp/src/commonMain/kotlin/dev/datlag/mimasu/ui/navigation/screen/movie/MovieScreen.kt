@@ -90,7 +90,7 @@ import mimasu.composeapp.generated.resources.movie_play
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.MovieScreen(component: MovieComponent) = MovieTheme(
+fun MovieScreen(component: MovieComponent) = MovieTheme(
     key = component.trending.id
 ) { colorState ->
     val appBarState = rememberTopAppBarState()
@@ -182,9 +182,8 @@ fun SharedTransitionScope.MovieScreen(component: MovieComponent) = MovieTheme(
                 }
             }
             is DetailState.Success -> DetailSuccess(
-                component.visible,
                 current.data,
-                component.trending,
+                component,
                 padding,
                 listState,
                 colorState

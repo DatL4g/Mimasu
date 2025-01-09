@@ -41,6 +41,7 @@ import dev.datlag.mimasu.common.youtubeTrailer
 import dev.datlag.mimasu.tmdb.api.Details
 import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.mimasu.ui.custom.component.IconText
+import dev.datlag.mimasu.ui.navigation.screen.movie.MovieComponent
 import dev.datlag.mimasu.ui.theme.SchemeTheme
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformBorder
@@ -56,10 +57,9 @@ import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.DetailSuccess(
-    visible: Boolean,
+fun DetailSuccess(
     movie: Details.Movie,
-    trending: Trending.Response.Media.Movie?,
+    component: MovieComponent,
     padding: PaddingValues,
     listState: LazyListState,
     colorState: SchemeTheme.Updater<Painter>?
@@ -93,7 +93,7 @@ fun SharedTransitionScope.DetailSuccess(
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     error = rememberNestedImagePainter(
-                        models = persistentSetOf(trending?.posterPicture, movie.posterPictureW500, trending?.posterPictureW500),
+                        models = persistentSetOf(component.trending.posterPicture, movie.posterPictureW500, component.trending.posterPictureW500),
                         contentScale = ContentScale.Crop,
                         onSuccess = {
                             colorState?.updateFrom(it.painter)
@@ -136,13 +136,14 @@ fun SharedTransitionScope.DetailSuccess(
                 modifier = Modifier.padding(16.dp),
                 tagline = movie.tagline,
                 value = movie.overview,
-                fallbackValue = trending?.overview
+                fallbackValue = component.trending.overview
             )
         }
         item {
             CharacterSection(
                 modifier = Modifier.fillParentMaxWidth(),
-                characters = movie.credits?.cast
+                characters = movie.credits?.cast,
+                onCast = component::cast
             )
         }
         if (trailer != null) {

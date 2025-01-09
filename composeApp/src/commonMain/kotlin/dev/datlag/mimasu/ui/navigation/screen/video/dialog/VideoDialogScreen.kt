@@ -105,7 +105,7 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.VideoDialogScreen(
+fun VideoDialogScreen(
     component: VideoDialogComponent,
     padding: PaddingValues = PaddingValues(16.dp)
 ) {
@@ -277,7 +277,7 @@ fun SharedTransitionScope.VideoDialogScreen(
                             modifier = baseModifier.background(Color.Black),
                             contentAlignment = Alignment.Center
                         ) {
-                            component.videoComponent.render(this@VideoDialogScreen)
+                            component.videoComponent.render()
                         }
                         AnimatedVisibility(
                             modifier = Modifier.weight(1F).fillMaxHeight(),

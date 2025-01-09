@@ -53,9 +53,8 @@ class LoginScreenComponent(
     private val _sendClickable = MutableStateFlow(false)
     override val sendClickable: StateFlow<Boolean> = _sendClickable
 
-    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderCommon(scope: SharedTransitionScope) {
+    override fun renderCommon() {
         onRender {
             LoginScreen(this)
         }

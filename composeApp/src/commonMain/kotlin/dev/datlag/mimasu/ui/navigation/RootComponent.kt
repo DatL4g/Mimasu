@@ -10,13 +10,20 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.Children
-import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -31,6 +38,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceAll
+import dev.datlag.mimasu.LocalAnimatedVisibilityScope
 import dev.datlag.mimasu.common.isTv
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.other.ContentDetails
@@ -81,7 +89,6 @@ class RootComponent(
         is RootConfig.Initial -> InitialScreenComponent(
             componentContext = componentContext,
             di = di,
-            visible = stack.active.instance is InitialComponent,
             onMovie = {
                 navigation.pushToFront(it)
             },
@@ -98,7 +105,6 @@ class RootComponent(
             componentContext = componentContext,
             di = di,
             trending = rootConfig.trending,
-            visible = stack.active.instance is MovieComponent,
             onBack = {
                 navigation.pop()
             },
@@ -139,30 +145,39 @@ class RootComponent(
         }
     }
 
-    @OptIn(ExperimentalDecomposeApi::class, ExperimentalSharedTransitionApi::class)
+    @OptIn(ExperimentalDecomposeApi::class)
     @Composable
     @NonRestartableComposable
-    override fun renderCommon(scope: SharedTransitionScope) {
+    override fun renderCommon() {
         onRender {
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
                 val dialogState by dialog.subscribeAsState()
 
-                Children(
+                ChildStack(
                     stack = stack,
-                    animation = predictiveBackAnimation(
-                        backHandler = this@RootComponent.backHandler,
-                        fallbackAnimation = stackAnimation(fade()),
-                        onBack = {
-                            navigation.pop()
+                    animation = stackAnimation(
+                        animator = fade(),
+                        predictiveBackParams = {
+                            PredictiveBackParams(
+                                backHandler = this@RootComponent.backHandler,
+                                animatable = ::materialPredictiveBackAnimatable,
+                                onBack = {
+                                    navigation.pop()
+                                }
+                            )
                         }
                     )
                 ) {
-                    it.instance.render(scope)
+                    CompositionLocalProvider(
+                        LocalAnimatedVisibilityScope provides this
+                    ) {
+                        it.instance.render()
+                    }
                 }
 
-                dialogState.child?.instance?.render(scope)
+                dialogState.child?.instance?.render()
             }
         }
     }

@@ -42,7 +42,7 @@ import mimasu.composeapp.generated.resources.movie_play
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.HomeScreen(component: HomeComponent) {
+fun HomeScreen(component: HomeComponent) {
     val trendingMovies = component.trendingMovies.collectAsLazyPagingItems()
     val trendingPeople = component.trendingPeople.collectAsLazyPagingItems()
 

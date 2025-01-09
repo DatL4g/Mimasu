@@ -1,5 +1,8 @@
 package dev.datlag.mimasu
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -26,6 +29,9 @@ import org.kodein.di.compose.withDI
 val LocalDarkMode = compositionLocalOf<Boolean> { error("No dark mode state provided") }
 val LocalEdgeToEdge = staticCompositionLocalOf<Boolean> { false }
 val LocalHaze = compositionLocalOf<HazeState> { error("No Haze state provided") }
+@OptIn(ExperimentalSharedTransitionApi::class)
+val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }
+val LocalAnimatedVisibilityScope = compositionLocalOf<AnimatedVisibilityScope?> { null }
 
 @NonRestartableComposable
 @Composable

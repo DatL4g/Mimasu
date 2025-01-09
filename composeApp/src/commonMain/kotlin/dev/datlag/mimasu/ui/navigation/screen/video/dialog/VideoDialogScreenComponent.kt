@@ -24,9 +24,8 @@ class VideoDialogScreenComponent(
 
     override val videoController: VideoController = videoComponent.controller
 
-    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderCommon(scope: SharedTransitionScope) = with(scope) {
+    override fun renderCommon() {
         onRender {
             VideoDialogScreen(this@VideoDialogScreenComponent)
         }

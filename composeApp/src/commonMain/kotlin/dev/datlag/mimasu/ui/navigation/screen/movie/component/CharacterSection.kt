@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.ui.navigation.screen.movie.component
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,7 +39,8 @@ import mimasu.composeapp.generated.resources.movie_characters
 @Composable
 fun CharacterSection(
     characters: Collection<Details.Movie.Credits.Cast>?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCast: (Details.Movie.Credits.Cast) -> Unit
 ) {
     if (!characters.isNullOrEmpty()) {
         Column(
@@ -64,7 +66,7 @@ fun CharacterSection(
                     PlatformCard(
                         modifier = Modifier.width(96.dp).height(192.dp),
                         onClick = {
-
+                            onCast(char)
                         }
                     ) {
                         AsyncImage(

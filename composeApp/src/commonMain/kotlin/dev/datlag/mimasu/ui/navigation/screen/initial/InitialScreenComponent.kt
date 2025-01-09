@@ -39,7 +39,6 @@ import org.kodein.di.DI
 class InitialScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
-    override val visible: Boolean,
     private val onMovie: (RootConfig.Movie) -> Unit,
     private val watchVideo: () -> Unit
 ) : InitialComponent, ComponentContext by componentContext, UpdateInfo by di.updateInfo() {
@@ -60,25 +59,22 @@ class InitialScreenComponent(
         is InitialConfig.Home -> HomeScreenComponent(
             componentContext = componentContext,
             di = di,
-            visible = visible && stack.active.instance is HomeComponent,
             onMovie = onMovie,
             watchVideo = watchVideo
         )
     }
 
-    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderCommon(scope: SharedTransitionScope) {
+    override fun renderCommon() {
         onRender {
             CommonInitialScreen {
-                content(scope)
+                content()
             }
         }
     }
 
-    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    override fun renderTv(scope: SharedTransitionScope) {
+    override fun renderTv() {
         onRender {
             var searchQuery by remember { mutableStateOf("") }
 
@@ -106,14 +102,13 @@ class InitialScreenComponent(
                     onQueryChange = { searchQuery = it }
                 )
             ) {
-                content(scope)
+                content()
             }
         }
     }
 
-    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    private fun content(scope: SharedTransitionScope) {
+    private fun content() {
         Children(
             stack = stack,
             animation = stackAnimation(fade()),
@@ -156,7 +151,7 @@ class InitialScreenComponent(
                 )
             }
 
-            it.instance.render(scope)
+            it.instance.render()
         }
     }
 }

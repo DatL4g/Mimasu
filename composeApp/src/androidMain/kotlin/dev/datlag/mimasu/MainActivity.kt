@@ -86,7 +86,11 @@ class MainActivity : ComponentActivity() {
                     }
                 ) {
                     SharedTransitionLayout {
-                        root.render(this)
+                        CompositionLocalProvider(
+                            LocalSharedTransitionScope provides this
+                        ) {
+                            root.render()
+                        }
                     }
                 }
             }

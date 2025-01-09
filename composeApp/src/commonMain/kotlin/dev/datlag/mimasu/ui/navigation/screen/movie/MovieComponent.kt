@@ -14,4 +14,5 @@ interface MovieComponent : Component {
 
     fun back()
     fun play()
+    fun cast(value: Details.Movie.Credits.Cast)
 }

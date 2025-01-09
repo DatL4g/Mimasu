@@ -32,7 +32,6 @@ class HomeScreenComponent(
     componentContext: ComponentContext,
     override val di: DI,
     private val packageResolver: PackageResolver = di.packageResolver(),
-    override val visible: Boolean,
     private val onMovie: (RootConfig.Movie) -> Unit,
     private val watchVideo: () -> Unit
 ): HomeComponent, ComponentContext by componentContext, PackageAware by packageResolver {
@@ -103,19 +102,17 @@ class HomeScreenComponent(
         tmdb.trending.PeoplePaging()
     }.flow.cachedIn(ioScope())
 
-    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
     @NonRestartableComposable
-    override fun renderCommon(scope: SharedTransitionScope) = with(scope) {
+    override fun renderCommon() {
         onRender {
             HomeScreen(this@HomeScreenComponent)
         }
     }
 
-    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
     @NonRestartableComposable
-    override fun renderTv(scope: SharedTransitionScope) {
+    override fun renderTv() {
         onRender {
             TvHomeScreen(this)
         }
