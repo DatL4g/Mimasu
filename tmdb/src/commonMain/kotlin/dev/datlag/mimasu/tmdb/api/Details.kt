@@ -158,16 +158,29 @@ interface Details {
                 @SerialName("adult") val adult: Boolean = true,
                 @SerialName("gender") val gender: Int = 0,
                 @SerialName("id") val id: Int = 0,
-                @SerialName("name") val name: String? = null,
-                @SerialName("original_name") val originalName: String? = null,
-                @SerialName("character") val character: String? = null,
-                @SerialName("profile_path") private val picture: String? = null
+                @SerialName("name") private val _name: String? = null,
+                @SerialName("original_name") private val _originalName: String? = null,
+                @SerialName("character") private val _character: String? = null,
+                @SerialName("profile_path") private val picture: String? = null,
+                @SerialName("known_for_department") private val _knownForDepartment: String? = null
             ) {
+                @Transient
+                val name: String? = _name?.ifBlank { null }
+
+                @Transient
+                val originalName: String? = _originalName?.ifBlank { null }
+
+                @Transient
+                val character: String? = _character?.ifBlank { null }
+
                 @Transient
                 val profilePicture: String? = picture?.ifBlank { null }?.let { "$ORIGINAL_IMAGE$it" }
 
                 @Transient
                 val profilePictureW500: String? = picture?.ifBlank { null }?.let { "$W500_IMAGE$it" }
+
+                @Transient
+                val knownForDepartment: String? = _knownForDepartment?.ifBlank { null }
             }
 
             @Serializable

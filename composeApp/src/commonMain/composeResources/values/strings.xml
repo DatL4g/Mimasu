@@ -7,4 +7,15 @@
     <string name="movie_votes">Votes</string>
     <string name="movie_score_placeholder">%1$d%</string>
     <string name="movie_characters">Characters</string>
+    <string name="close">Close</string>
+    <string name="movie_character_unknown">Unknown</string>
+    <string name="movie_character_gender">Gender</string>
+    <string name="movie_character_female">Female</string>
+    <string name="movie_character_male">Male</string>
+    <string name="movie_character_non_binary">Non-binary</string>
+    <string name="movie_character_unspecified">Not specified</string>
+    <string name="movie_character_adult_content">Adult Content</string>
+    <string name="movie_character_department">Department</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

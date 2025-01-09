@@ -16,10 +16,7 @@ data object MaterialSymbols {
 
     val GoogleGLogo: ImageVector
         get() {
-            if (_GoogleGLogo != null) {
-                return _GoogleGLogo!!
-            }
-            return ImageVector.Builder(
+            return _GoogleGLogo ?: ImageVector.Builder(
                 name = "GoogleLogo",
                 defaultWidth = 24.dp,
                 defaultHeight = 24.dp,
@@ -135,10 +132,7 @@ data object MaterialSymbols {
 
     public val Github: ImageVector
         get() {
-            if (_Github != null) {
-                return _Github!!
-            }
-            return ImageVector.Builder(
+            return _Github ?: ImageVector.Builder(
                 name = "Github",
                 defaultWidth = 300.dp,
                 defaultHeight = 300.dp,
@@ -189,6 +183,91 @@ data object MaterialSymbols {
             }
         }
 
+    public val Rating18Up: ImageVector
+        get() {
+            return _Rating18Up ?: ImageVector.Builder(
+                name = "Icon18_up_rating",
+                defaultWidth = 24.dp,
+                defaultHeight = 24.dp,
+                viewportWidth = 960f,
+                viewportHeight = 960f
+            ).apply {
+                path(
+                    fill = SolidColor(Color.Black),
+                    fillAlpha = 1.0f,
+                    stroke = null,
+                    strokeAlpha = 1.0f,
+                    strokeLineWidth = 1.0f,
+                    strokeLineCap = StrokeCap.Butt,
+                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineMiter = 1.0f,
+                    pathFillType = PathFillType.NonZero
+                ) {
+                    moveTo(340f, 420f)
+                    verticalLineToRelative(150f)
+                    quadToRelative(0f, 13f, 8.5f, 21.5f)
+                    reflectiveQuadTo(370f, 600f)
+                    reflectiveQuadToRelative(21.5f, -8.5f)
+                    reflectiveQuadTo(400f, 570f)
+                    verticalLineToRelative(-180f)
+                    quadToRelative(0f, -13f, -8.5f, -21.5f)
+                    reflectiveQuadTo(370f, 360f)
+                    horizontalLineToRelative(-60f)
+                    quadToRelative(-13f, 0f, -21.5f, 8.5f)
+                    reflectiveQuadTo(280f, 390f)
+                    reflectiveQuadToRelative(8.5f, 21.5f)
+                    reflectiveQuadTo(310f, 420f)
+                    close()
+                    moveToRelative(160f, 180f)
+                    horizontalLineToRelative(100f)
+                    quadToRelative(17f, 0f, 28.5f, -11.5f)
+                    reflectiveQuadTo(640f, 560f)
+                    verticalLineToRelative(-160f)
+                    quadToRelative(0f, -17f, -11.5f, -28.5f)
+                    reflectiveQuadTo(600f, 360f)
+                    horizontalLineTo(500f)
+                    quadToRelative(-17f, 0f, -28.5f, 11.5f)
+                    reflectiveQuadTo(460f, 400f)
+                    verticalLineToRelative(160f)
+                    quadToRelative(0f, 17f, 11.5f, 28.5f)
+                    reflectiveQuadTo(500f, 600f)
+                    moveToRelative(20f, -40f)
+                    verticalLineToRelative(-60f)
+                    horizontalLineToRelative(60f)
+                    verticalLineToRelative(60f)
+                    close()
+                    moveToRelative(0f, -100f)
+                    verticalLineToRelative(-60f)
+                    horizontalLineToRelative(60f)
+                    verticalLineToRelative(60f)
+                    close()
+                    moveTo(200f, 840f)
+                    quadToRelative(-33f, 0f, -56.5f, -23.5f)
+                    reflectiveQuadTo(120f, 760f)
+                    verticalLineToRelative(-560f)
+                    quadToRelative(0f, -33f, 23.5f, -56.5f)
+                    reflectiveQuadTo(200f, 120f)
+                    horizontalLineToRelative(560f)
+                    quadToRelative(33f, 0f, 56.5f, 23.5f)
+                    reflectiveQuadTo(840f, 200f)
+                    verticalLineToRelative(560f)
+                    quadToRelative(0f, 33f, -23.5f, 56.5f)
+                    reflectiveQuadTo(760f, 840f)
+                    close()
+                    moveToRelative(0f, -80f)
+                    horizontalLineToRelative(560f)
+                    verticalLineToRelative(-560f)
+                    horizontalLineTo(200f)
+                    close()
+                    moveToRelative(0f, -560f)
+                    verticalLineToRelative(560f)
+                    close()
+                }
+            }.build().also {
+                _Rating18Up = it
+            }
+        }
 
+    private var _Rating18Up: ImageVector? = null
 
 }

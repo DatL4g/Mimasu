@@ -28,21 +28,6 @@ fun RatingSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally)
         ) {
-            if (count > 0F) {
-                Column(
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    PlatformText(
-                        text = I18N.stringResource(Res.string.movie_votes),
-                        style = Platform.typography().labelSmall
-                    )
-                    PlatformText(
-                        text = "$count",
-                        style = Platform.typography().displaySmall
-                    )
-                }
-            }
             if (score > 0) {
                 Column(
                     verticalArrangement = Arrangement.SpaceEvenly,
@@ -54,6 +39,21 @@ fun RatingSection(
                     )
                     PlatformText(
                         text = I18N.stringResource(Res.string.movie_score_placeholder, score),
+                        style = Platform.typography().displaySmall
+                    )
+                }
+            }
+            if (count > 0F) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    PlatformText(
+                        text = I18N.stringResource(Res.string.movie_votes),
+                        style = Platform.typography().labelSmall
+                    )
+                    PlatformText(
+                        text = "$count",
                         style = Platform.typography().displaySmall
                     )
                 }
