@@ -64,17 +64,24 @@ object MimasuConnection : ServiceConnection {
                     _storeURL.update {
                         scopeCatching {
                             updateInfo?.storeURL()
-                        }.onFailure {
-                            Log.e("Connection", "StoreURL Failure", it)
                         }.getOrNull()?.ifBlank { null }
                     }
                     _directDownload.update {
-                        Log.e("Mimasu-BurningSeries", "Updating DirectDownload URL: ${updateInfo?.directDownload()}")
-                        updateInfo?.directDownload()?.ifBlank { null }
+                        scopeCatching {
+                            updateInfo?.directDownload()
+                        }.getOrNull()?.ifBlank { null }
                     }
 
-                    _available.update { updateInfo?.available() ?: false }
-                    _required.update { updateInfo?.required() ?: false }
+                    _available.update {
+                        scopeCatching {
+                            updateInfo?.available()
+                        }.getOrNull() ?: false
+                    }
+                    _required.update {
+                        scopeCatching {
+                            updateInfo?.required()
+                        }.getOrNull() ?: false
+                    }
                 }
             })
         }

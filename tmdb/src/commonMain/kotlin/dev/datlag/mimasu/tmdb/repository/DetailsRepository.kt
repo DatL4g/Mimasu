@@ -13,6 +13,7 @@ import kotlin.time.Duration.Companion.days
 data class DetailsRepository(
     @Secret private val apiKey: String,
     private val details: Details,
+    private val fallbackDetails: Details?,
     private val language: String
 ) {
 
@@ -26,24 +27,33 @@ data class DetailsRepository(
     suspend fun load(
         id: Int
     ): DetailState<Details.Movie> {
-        suspend fun response() = suspendCatching {
-            val response = details.movie(
+        suspend fun response(requester: Details?) = suspendCatching {
+            val response = requester?.movie(
                 apiKey = apiKey,
                 id = id,
                 language = language,
                 appendToResponse = "videos,credits"
             )
 
-            response.body<Details.Movie>()
+            response?.body<Details.Movie>()
         }
 
         val result = suspendCatching {
             movieKache.getOrPut(id) {
-                response().getOrThrow()
+                response(details).getOrThrow()
             }
         }
+        val fallbackResult = if (result.isFailure) {
+            suspendCatching {
+                movieKache.getOrPut(id) {
+                    response(fallbackDetails).getOrThrow()
+                }
+            }.getOrNull()
+        } else {
+            null
+        }
 
-        return (result.getOrNull() ?: response().getOrNull())?.let {
+        return (result.getOrNull() ?: fallbackResult ?: response(details).getOrNull())?.let {
             DetailState.Success(it)
         } ?: DetailState.Error(result.exceptionOrNull())
     }

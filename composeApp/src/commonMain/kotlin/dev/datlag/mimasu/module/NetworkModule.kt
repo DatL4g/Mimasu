@@ -41,6 +41,7 @@ import okio.FileSystem
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
+import org.kodein.di.instanceOrNull
 
 data object NetworkModule {
 
@@ -78,6 +79,8 @@ data object NetworkModule {
                 false
             }
         }
+
+    const val HTTP_FALLBACK_CLIENT = "HTTP_FALLBACK_CLIENT"
 
     @OptIn(ExperimentalCoilApi::class)
     val di: DI.Module = DI.Module(NAME) {
@@ -127,8 +130,9 @@ data object NetworkModule {
             TMDB.create(
                 apiKey = config.value.getOrThrow().tmdb,
                 client = instance(),
+                fallbackClient = instanceOrNull(HTTP_FALLBACK_CLIENT),
                 language = I18N.language,
-                region = I18N.region
+                region = I18N.region,
             )
         }
         bindSingleton<FirebaseEmailAuthProvider> {

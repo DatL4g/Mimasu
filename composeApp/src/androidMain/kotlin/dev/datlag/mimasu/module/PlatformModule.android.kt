@@ -22,6 +22,7 @@ import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvide
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProviderAndroid
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderAndroid
+import dev.datlag.mimasu.module.NetworkModule.HTTP_FALLBACK_CLIENT
 import dev.datlag.mimasu.other.PackageResolver
 import dev.datlag.mimasu.ui.navigation.screen.video.PlayerWrapper
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoController
@@ -34,17 +35,26 @@ import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
+import okhttp3.Dns
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.dnsoverhttps.DnsOverHttps
 import okio.FileSystem
 import org.chromium.net.CronetEngine
 import org.kodein.di.DI
 import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
+import java.net.InetAddress
 
 @UnstableApi
 actual data object PlatformModule {
 
     private const val NAME = "AndroidPlatformModule"
+    private const val DNS_BASE_CLIENT = "DNS_BASE_CLIENT"
+    private const val DNS_URL = "https://dns.google/dns-query"
+    private const val DNS_HOST_1 = "8.8.8.8"
+    private const val DNS_HOST_2 = "8.8.4.4"
 
     actual val di: DI.Module = DI.Module(NAME) {
         bindSingleton<Cronet> {
@@ -66,6 +76,37 @@ actual data object PlatformModule {
                         addInterceptor(
                             CronetInterceptor.newBuilder(it).build()
                         )
+                    }
+                }
+                install(ContentNegotiation) {
+                    json(instance(), ContentType.Application.Json)
+                    json(instance(), ContentType.Text.Plain)
+                }
+                install(HttpCache)
+            }
+        }
+        bindSingleton<OkHttpClient>(DNS_BASE_CLIENT) {
+            OkHttpClient.Builder()
+                .followRedirects(true)
+                .followSslRedirects(true)
+                .build()
+        }
+        bindSingleton<Dns> {
+            DnsOverHttps.Builder()
+                .client(instance(DNS_BASE_CLIENT))
+                .url(DNS_URL.toHttpUrl())
+                .bootstrapDnsHosts(
+                    InetAddress.getByName(DNS_HOST_1),
+                    InetAddress.getByName(DNS_HOST_2)
+                )
+                .build()
+        }
+        bindSingleton<HttpClient>(HTTP_FALLBACK_CLIENT) {
+            HttpClient(OkHttp) {
+                followRedirects = true
+                engine {
+                    config {
+                        dns(instance())
                     }
                 }
                 install(ContentNegotiation) {

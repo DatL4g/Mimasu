@@ -129,6 +129,7 @@ kotlin {
                 implementation(libs.connectivity.device)
                 implementation(libs.cronet)
                 implementation(libs.cronet.okhttp)
+                implementation(libs.okhttp.doh)
 
                 implementation(libs.splashscreen)
                 implementation(libs.bundles.android.media)

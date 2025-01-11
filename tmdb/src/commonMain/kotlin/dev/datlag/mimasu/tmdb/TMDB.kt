@@ -53,6 +53,7 @@ data class TMDB internal constructor(
         fun create(
             apiKey: String,
             client: HttpClient,
+            fallbackClient: HttpClient?,
             language: String,
             region: String?,
             baseUrl: String = BASE_URL
@@ -60,6 +61,12 @@ data class TMDB internal constructor(
             val ktorfit = ktorfit {
                 baseUrl(baseUrl)
                 httpClient(client)
+            }
+            val fallbackKtorfit = fallbackClient?.let {
+                ktorfit {
+                    baseUrl(baseUrl)
+                    httpClient(it)
+                }
             }
 
             return TMDB(
@@ -87,6 +94,7 @@ data class TMDB internal constructor(
                 details = DetailsRepository(
                     apiKey = apiKey,
                     details = ktorfit.createDetails(),
+                    fallbackDetails = fallbackKtorfit?.createDetails(),
                     language = language
                 )
             )
