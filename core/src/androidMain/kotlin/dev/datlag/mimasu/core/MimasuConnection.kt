@@ -1,6 +1,8 @@
 package dev.datlag.mimasu.core
 
 import android.content.ComponentName
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
@@ -9,6 +11,7 @@ import dev.datlag.mimasu.core.update.IUpdateCheckCallback
 import dev.datlag.mimasu.core.update.IUpdateInfo
 import dev.datlag.mimasu.core.update.IUpdateService
 import dev.datlag.tooling.scopeCatching
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,7 +42,7 @@ object MimasuConnection : ServiceConnection {
         _isVideoPlayerSecure.update { true }
     }
 
-    object Update : AIDLService<IUpdateService>(), UpdateInfo {
+    class Update internal constructor(context: Context) : AIDLService<IUpdateService>(context), UpdateInfo {
         override val connectionAction: String = "dev.datlag.mimasu.core.update.IUpdateService"
 
         private val _available = MutableStateFlow(false)
@@ -91,6 +94,35 @@ object MimasuConnection : ServiceConnection {
             _required.update { false }
             _storeURL.update { null }
             _directDownload.update { null }
+
+            instances.remove(this)
+        }
+
+        companion object {
+            private val instances = mutableListOf<Update>()
+
+            val bound: Update
+                get() = instances.first()
+
+            fun unbind(wrapper: ContextWrapper, instance: Update?) {
+                scopeCatching {
+                    if (instance != null) {
+                        wrapper.unbindService(instance)
+                    }
+                }.onSuccess {
+                    instances.remove(instance)
+                }
+            }
+
+            fun unbindAll(wrapper: ContextWrapper) {
+                instances.forEach {
+                    unbind(wrapper, it)
+                }
+            }
+
+            fun bind(context: Context): Update {
+                return instances.firstOrNull() ?: Update(context).also { instances.add(it) }
+            }
         }
     }
 }

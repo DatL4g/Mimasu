@@ -89,6 +89,7 @@ kotlin {
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.serialization.json)
             implementation(libs.datetime)
+            implementation(libs.tolgee)
 
             implementation(libs.kmpalette)
             implementation(libs.kolor)

@@ -29,7 +29,6 @@ import coil3.compose.rememberAsyncImagePainter
 import dev.datlag.mimasu.common.githubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.firebase.common.githubHandle
-import dev.datlag.mimasu.other.I18N
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.async.suspendCatching
 import dev.datlag.tooling.compose.platform.PlatformCard

@@ -149,9 +149,7 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        scopeCatching {
-            unbindService(MimasuConnection.Update)
-        }.getOrNull()
+        MimasuConnection.Update.unbindAll(this)
         PiPHelper.setActive(this.isActivityInPiPMode())
     }
 

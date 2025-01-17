@@ -281,7 +281,7 @@ actual class PackageResolver(
         }
 
         fun bindUpdate(context: Context): Boolean {
-            return bind(context, MimasuConnection.Update)
+            return bind(context, MimasuConnection.Update.bind(context))
         }
     }
 

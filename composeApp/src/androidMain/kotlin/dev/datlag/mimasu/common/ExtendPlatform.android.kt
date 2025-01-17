@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.ShortcutManager
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.KeyEvent as AndroidKeyEvent
 import android.view.Window
@@ -25,6 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.asFlow
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import coil3.asImage
+import dev.datlag.mimasu.core.model.AppInfo
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.module.PlatformModule
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState

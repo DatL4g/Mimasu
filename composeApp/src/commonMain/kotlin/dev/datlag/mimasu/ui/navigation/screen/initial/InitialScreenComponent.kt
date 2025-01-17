@@ -4,18 +4,22 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.window.DialogProperties
+import coil3.compose.AsyncImage
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
@@ -117,6 +121,7 @@ class InitialScreenComponent(
             val updateRequired by required.collectAsStateWithLifecycle()
             val updatePlayStore by storeURL.collectAsStateWithLifecycle()
             val updateDirectDownload by directDownload.collectAsStateWithLifecycle()
+            val updateAppInfo by appInfo.collectAsStateWithLifecycle()
             var showUpdateDialog by remember(updateAvailable) { mutableStateOf(updateAvailable) }
 
             // Popping backstack doesn't work because dialog cancels and catches back gesture
@@ -127,8 +132,14 @@ class InitialScreenComponent(
                             showUpdateDialog = false
                         }
                     },
+                    icon = {
+                        AsyncImage(
+                            model = updateAppInfo?.logo,
+                            contentDescription = null
+                        )
+                    },
                     title = {
-                        Text(text = "Update Available")
+                        Text(text = updateAppInfo?.name ?: "Update Available")
                     },
                     text = {
                         Text(

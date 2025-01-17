@@ -19,10 +19,10 @@ import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.other.Connection
-import dev.datlag.mimasu.other.I18N
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.sekret.Secret
+import dev.datlag.tolgee.I18N
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.Deferred
@@ -126,13 +126,26 @@ data object NetworkModule {
                 .extendImageLoader()
                 .build()
         }
+        bindSingleton<I18N> {
+            I18N {
+                contentDelivery {
+                    id(Sekret.tolgeeContentDelivery(BuildKonfig.packageName)!!)
+                }
+                client(instance<HttpClient>())
+            }
+        }
         bindSingleton<TMDB> {
+            val locale = instance<I18N>().locale
+            val fallback by lazy {
+                Locale.default()
+            }
+
             TMDB.create(
                 apiKey = config.value.getOrThrow().tmdb,
                 client = instance(),
                 fallbackClient = instanceOrNull(HTTP_FALLBACK_CLIENT),
-                language = I18N.language,
-                region = I18N.region,
+                language = locale?.localization ?: fallback.localized(),
+                region = locale?.regionCode ?: fallback.territory?.code?.ifBlank { null } ?: fallback.territory?.code3?.ifBlank { null },
             )
         }
         bindSingleton<FirebaseEmailAuthProvider> {

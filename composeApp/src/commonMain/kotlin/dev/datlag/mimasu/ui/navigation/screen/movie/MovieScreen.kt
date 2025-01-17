@@ -64,13 +64,13 @@ import dev.datlag.mimasu.common.isScrollingUp
 import dev.datlag.mimasu.common.localized
 import dev.datlag.mimasu.common.youtubeTrailer
 import dev.datlag.mimasu.other.ContentDetails
-import dev.datlag.mimasu.other.I18N
 import dev.datlag.mimasu.tmdb.model.DetailState
 import dev.datlag.mimasu.ui.custom.component.IconText
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.DescriptionSection
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.DetailSuccess
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.MovieToolbar
 import dev.datlag.mimasu.ui.theme.MovieTheme
+import dev.datlag.tolgee.I18N
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformBorder
 import dev.datlag.tooling.compose.platform.PlatformClickableChipBorder
@@ -87,6 +87,8 @@ import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import mimasu.composeapp.generated.resources.Res
 import mimasu.composeapp.generated.resources.movie_play
+import org.kodein.di.compose.localDI
+import org.kodein.di.instance
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
@@ -146,6 +148,7 @@ fun MovieScreen(component: MovieComponent) = MovieTheme(
         },
         floatingActionButton = {
             val showingPlayer by ContentDetails.showingPlayer.collectAsStateWithLifecycle()
+            val i18n by localDI().instance<I18N>()
 
             AnimatedVisibility(
                 visible = !showingPlayer,
@@ -164,7 +167,7 @@ fun MovieScreen(component: MovieComponent) = MovieTheme(
                         )
                     },
                     text = {
-                        Text(text = I18N.stringResource(Res.string.movie_play))
+                        Text(text = i18n.stringResource(Res.string.movie_play))
                     }
                 )
             }

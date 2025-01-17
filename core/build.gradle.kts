@@ -40,6 +40,10 @@ kotlin {
 
         val androidMain by getting {
             // apply(plugin = libs.plugins.stacktrace.decoroutinator.get().pluginId)
+
+            dependencies {
+                implementation(libs.napier)
+            }
         }
 
         val jvmMain by getting {

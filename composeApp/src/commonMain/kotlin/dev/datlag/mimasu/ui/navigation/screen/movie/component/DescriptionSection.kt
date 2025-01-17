@@ -9,12 +9,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.other.I18N
+import dev.datlag.tolgee.I18N
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.typography
 import mimasu.composeapp.generated.resources.Res
 import mimasu.composeapp.generated.resources.movie_about
+import org.kodein.di.compose.localDI
+import org.kodein.di.instance
 
 @Composable
 fun DescriptionSection(
@@ -23,6 +25,7 @@ fun DescriptionSection(
     modifier: Modifier = Modifier,
     fallbackValue: String? = null,
 ) {
+    val i18n by localDI().instance<I18N>()
     val description = remember(value, fallbackValue) {
         value?.ifBlank { null } ?: fallbackValue?.ifBlank { null }
     }
@@ -34,7 +37,7 @@ fun DescriptionSection(
         ) {
             PlatformText(
                 modifier = Modifier.fillMaxWidth(),
-                text = tagline?.ifBlank { null } ?: I18N.stringResource(Res.string.movie_about),
+                text = tagline?.ifBlank { null } ?: i18n.stringResource(Res.string.movie_about),
                 style = Platform.typography().headlineSmall,
                 maxLines = 2,
                 softWrap = true,

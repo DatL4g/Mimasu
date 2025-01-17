@@ -149,7 +149,7 @@ actual data object PlatformModule {
             )
         }
         bindSingleton<UpdateInfo> {
-            MimasuConnection.Update
+            MimasuConnection.Update.bound
         }
         bindSingleton<Boolean>("TELEVISION") {
             Platform.isTelevision(instance<Context>())
