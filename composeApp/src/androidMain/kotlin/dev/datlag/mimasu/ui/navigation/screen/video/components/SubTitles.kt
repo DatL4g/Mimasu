@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.util.TypedValueCompat
 import androidx.media3.common.text.Cue
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
-import dev.datlag.tolgee.I18N
+import dev.datlag.tolgee.kodeinStringResource
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
 import mimasu.composeapp.generated.resources.Res
 import mimasu.composeapp.generated.resources.no_subtitle
@@ -122,9 +122,7 @@ fun SubTitleSelector(
                         )
                     },
                     text = {
-                        val i18n by localDI().instance<I18N>()
-
-                        Text(text = i18n.stringResource(Res.string.no_subtitle))
+                        Text(text = kodeinStringResource(Res.string.no_subtitle))
                     },
                     trailingIcon = if (subTitle.selected == null) {
                         {

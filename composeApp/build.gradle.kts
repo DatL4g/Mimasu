@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktorfit)
     alias(libs.plugins.osdetector)
+    alias(libs.plugins.tolgee)
     alias(libs.plugins.sekret)
     alias(libs.plugins.serialization)
     alias(libs.plugins.stacktrace.decoroutinator) apply false
@@ -28,6 +29,10 @@ buildkonfig {
     defaultConfigs {
         buildConfigField(FieldSpec.Type.STRING, "packageName", artifact)
     }
+}
+
+tolgee {
+    projectId.set("12854")
 }
 
 sekret {

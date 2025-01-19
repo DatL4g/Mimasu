@@ -70,7 +70,7 @@ import dev.datlag.mimasu.ui.navigation.screen.movie.component.DescriptionSection
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.DetailSuccess
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.MovieToolbar
 import dev.datlag.mimasu.ui.theme.MovieTheme
-import dev.datlag.tolgee.I18N
+import dev.datlag.tolgee.kodeinStringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformBorder
 import dev.datlag.tooling.compose.platform.PlatformClickableChipBorder
@@ -148,7 +148,6 @@ fun MovieScreen(component: MovieComponent) = MovieTheme(
         },
         floatingActionButton = {
             val showingPlayer by ContentDetails.showingPlayer.collectAsStateWithLifecycle()
-            val i18n by localDI().instance<I18N>()
 
             AnimatedVisibility(
                 visible = !showingPlayer,
@@ -167,7 +166,7 @@ fun MovieScreen(component: MovieComponent) = MovieTheme(
                         )
                     },
                     text = {
-                        Text(text = i18n.stringResource(Res.string.movie_play))
+                        Text(text = kodeinStringResource(Res.string.movie_play))
                     }
                 )
             }

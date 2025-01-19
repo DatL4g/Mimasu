@@ -1,11 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="no_subtitle">Keinen</string>
-    <string name="description">Beschreibung</string>
-    <string name="movie_about">Über</string>
-    <string name="movie_play">Abspielen</string>
-    <string name="movie_score">Bewertung</string>
-    <string name="movie_votes">Abstimmungen</string>
-    <string name="movie_score_placeholder">%1$d%</string>
-    <string name="movie_characters">Charaktere</string>
+  <string name="close">Schließen</string>
+  <string name="description">Beschreibung</string>
+  <string name="movie_about">Über</string>
+  <string name="movie_character_adult_content">Erwachseneninhalt</string>
+  <string name="movie_character_department">Abteilung</string>
+  <string name="movie_character_female">Frau</string>
+  <string name="movie_character_gender">Geschlecht</string>
+  <string name="movie_character_male">Mann</string>
+  <string name="movie_character_non_binary">Non-binär</string>
+  <string name="movie_characters">Charaktere</string>
+  <string name="movie_character_unknown">Unbekannt</string>
+  <string name="movie_character_unspecified">Unbekannt</string>
+  <string name="movie_play">Abspielen</string>
+  <string name="movie_score">Bewertung</string>
+  <string name="movie_score_placeholder">%1$d%%</string>
+  <string name="movie_votes">Abstimmungen</string>
+  <string name="no">Nein</string>
+  <string name="no_subtitle">Keinen</string>
+  <string name="yes">Ja</string>
 </resources>

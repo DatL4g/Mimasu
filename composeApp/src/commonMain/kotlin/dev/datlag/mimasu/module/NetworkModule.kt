@@ -131,7 +131,9 @@ data object NetworkModule {
                 contentDelivery {
                     id(Sekret.tolgeeContentDelivery(BuildKonfig.packageName)!!)
                 }
-                client(instance<HttpClient>())
+                config {
+                    client(instance<HttpClient>())
+                }
             }
         }
         bindSingleton<TMDB> {

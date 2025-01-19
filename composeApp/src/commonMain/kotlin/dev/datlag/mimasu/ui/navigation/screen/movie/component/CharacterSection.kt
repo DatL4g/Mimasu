@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import dev.datlag.mimasu.tmdb.api.Details
-import dev.datlag.tolgee.I18N
+import dev.datlag.tolgee.kodeinStringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformCard
 import dev.datlag.tooling.compose.platform.PlatformText
@@ -45,7 +45,6 @@ fun CharacterSection(
     modifier: Modifier = Modifier,
     onCast: (Details.Movie.Credits.Cast) -> Unit
 ) {
-    val i18n by localDI().instance<I18N>()
 
     if (!characters.isNullOrEmpty()) {
         Column(
@@ -54,7 +53,7 @@ fun CharacterSection(
         ) {
             PlatformText(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                text = i18n.stringResource(Res.string.movie_characters),
+                text = kodeinStringResource(Res.string.movie_characters),
                 style = Platform.typography().headlineSmall,
                 maxLines = 2,
                 softWrap = true,

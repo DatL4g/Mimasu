@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.datlag.tolgee.I18N
+import dev.datlag.tolgee.kodeinStringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.typography
@@ -24,8 +24,6 @@ fun RatingSection(
     score: Int,
     modifier: Modifier = Modifier
 ) {
-    val i18n by localDI().instance<I18N>()
-
     if (count > 0 || score > 0) {
         Row(
             modifier = modifier,
@@ -38,11 +36,11 @@ fun RatingSection(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PlatformText(
-                        text = i18n.stringResource(Res.string.movie_score),
+                        text = kodeinStringResource(Res.string.movie_score),
                         style = Platform.typography().labelSmall
                     )
                     PlatformText(
-                        text = i18n.stringResource(Res.string.movie_score_placeholder, score),
+                        text = kodeinStringResource(Res.string.movie_score_placeholder, score),
                         style = Platform.typography().displaySmall
                     )
                 }
@@ -53,7 +51,7 @@ fun RatingSection(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PlatformText(
-                        text = i18n.stringResource(Res.string.movie_votes),
+                        text = kodeinStringResource(Res.string.movie_votes),
                         style = Platform.typography().labelSmall
                     )
                     PlatformText(

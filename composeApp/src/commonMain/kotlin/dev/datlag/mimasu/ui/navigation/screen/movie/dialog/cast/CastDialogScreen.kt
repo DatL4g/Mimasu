@@ -40,7 +40,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import dev.datlag.mimasu.common.isFullyExpandedOrTargeted
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.tolgee.I18N
+import dev.datlag.tolgee.kodeinStringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.PlatformIconButton
@@ -65,7 +65,6 @@ import org.kodein.di.instance
 @Composable
 fun CastDialogScreen(component: CastDialogComponent) {
     val state = rememberModalBottomSheetState()
-    val i18n by localDI().instance<I18N>()
 
     ModalBottomSheet(
         onDismissRequest = component::dismiss,
@@ -87,7 +86,7 @@ fun CastDialogScreen(component: CastDialogComponent) {
                     ) {
                         PlatformIcon(
                             imageVector = Icons.Rounded.ArrowBackIosNew,
-                            contentDescription = i18n.stringResource(Res.string.close)
+                            contentDescription = kodeinStringResource(Res.string.close)
                         )
                     }
                 }
@@ -152,11 +151,11 @@ fun CastDialogScreen(component: CastDialogComponent) {
                         contentDescription = null
                     )
                     PlatformText(
-                        text = i18n.stringResource(Res.string.movie_character_adult_content),
+                        text = kodeinStringResource(Res.string.movie_character_adult_content),
                         style = Platform.typography().labelSmall
                     )
                     PlatformText(
-                        text = i18n.stringResource(if (component.cast.adult) Res.string.yes else Res.string.no),
+                        text = kodeinStringResource(if (component.cast.adult) Res.string.yes else Res.string.no),
                         style = Platform.typography().titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -179,11 +178,11 @@ fun CastDialogScreen(component: CastDialogComponent) {
                         contentDescription = null
                     )
                     PlatformText(
-                        text = i18n.stringResource(Res.string.movie_character_gender),
+                        text = kodeinStringResource(Res.string.movie_character_gender),
                         style = Platform.typography().labelSmall
                     )
                     PlatformText(
-                        text = i18n.stringResource(genderRes),
+                        text = kodeinStringResource(genderRes),
                         style = Platform.typography().titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -198,7 +197,7 @@ fun CastDialogScreen(component: CastDialogComponent) {
                             contentDescription = null
                         )
                         PlatformText(
-                            text = i18n.stringResource(Res.string.movie_character_department),
+                            text = kodeinStringResource(Res.string.movie_character_department),
                             style = Platform.typography().labelSmall
                         )
                         PlatformText(
