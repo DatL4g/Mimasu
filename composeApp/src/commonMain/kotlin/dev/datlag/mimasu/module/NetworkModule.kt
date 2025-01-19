@@ -129,7 +129,7 @@ data object NetworkModule {
         bindSingleton<I18N> {
             I18N {
                 contentDelivery {
-                    id(Sekret.tolgeeContentDelivery(BuildKonfig.packageName)!!)
+                    id(Sekret.tolgeeContentDelivery(BuildKonfig.packageName))
                 }
                 config {
                     client(instance<HttpClient>())
