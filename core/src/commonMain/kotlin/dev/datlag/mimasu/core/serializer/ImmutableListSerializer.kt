@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Serializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.serialDescriptor
+import kotlinx.serialization.descriptors.listSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
@@ -16,12 +16,9 @@ typealias SerializableImmutableList<T> = @Serializable(ImmutableListSerializer::
 
 @Serializer(forClass = ImmutableList::class)
 class ImmutableListSerializer<T>(private val dataSerializer: KSerializer<T>) : KSerializer<ImmutableList<T>> {
-    private class PersistentListDescriptor : SerialDescriptor by serialDescriptor<List<String>>() {
-        @ExperimentalSerializationApi
-        override val serialName: String = "kotlinx.serialization.immutable.ImmutableList"
-    }
 
-    override val descriptor: SerialDescriptor = PersistentListDescriptor()
+    @OptIn(ExperimentalSerializationApi::class)
+    override val descriptor: SerialDescriptor = listSerialDescriptor(dataSerializer.descriptor)
     override fun serialize(encoder: Encoder, value: ImmutableList<T>) {
         return ListSerializer(dataSerializer).serialize(encoder, value)
     }

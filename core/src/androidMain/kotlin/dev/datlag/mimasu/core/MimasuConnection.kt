@@ -101,8 +101,8 @@ object MimasuConnection : ServiceConnection {
         companion object {
             private val instances = mutableListOf<Update>()
 
-            val bound: Update
-                get() = instances.first()
+            val bound: Update?
+                get() = instances.firstOrNull()
 
             fun unbind(wrapper: ContextWrapper, instance: Update?) {
                 scopeCatching {
