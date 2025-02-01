@@ -39,10 +39,6 @@ sekret {
     properties {
         enabled.set(true)
         packageName.set(artifact)
-
-        nativeCopy {
-            androidJNIFolder.set(project.layout.projectDirectory.dir("src/androidMain/jniLibs"))
-        }
     }
 }
 
