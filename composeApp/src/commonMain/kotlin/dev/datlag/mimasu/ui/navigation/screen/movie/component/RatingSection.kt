@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.datlag.tolgee.kodeinStringResource
+import dev.datlag.tolgee.stringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.typography
@@ -36,11 +36,11 @@ fun RatingSection(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PlatformText(
-                        text = kodeinStringResource(Res.string.movie_score),
+                        text = stringResource(Res.string.movie_score),
                         style = Platform.typography().labelSmall
                     )
                     PlatformText(
-                        text = kodeinStringResource(Res.string.movie_score_placeholder, score),
+                        text = stringResource(Res.string.movie_score_placeholder, score),
                         style = Platform.typography().displaySmall
                     )
                 }
@@ -51,7 +51,7 @@ fun RatingSection(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PlatformText(
-                        text = kodeinStringResource(Res.string.movie_votes),
+                        text = stringResource(Res.string.movie_votes),
                         style = Platform.typography().labelSmall
                     )
                     PlatformText(

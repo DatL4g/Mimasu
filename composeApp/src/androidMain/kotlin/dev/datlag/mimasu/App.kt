@@ -11,6 +11,7 @@ import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.firebase.initializeFirebase
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.sekret.NativeLoader
+import dev.datlag.tolgee.Tolgee
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.scopeCatching
@@ -55,7 +56,7 @@ class App : MultiDexApplication(), DIAware {
         val imageLoader by di.instance<ImageLoader>()
         SingletonImageLoader.setUnsafe(imageLoader)
 
-        if (NativeLoader.loadLibrary("sekret")) {
+        if (NativeLoader.loadLibrary(this, "sekret")) {
             val appId = Sekret.firebaseAndroidApplication(BuildKonfig.packageName)
             val apiKey = Sekret.firebaseAndroidApiKey(BuildKonfig.packageName)
 
@@ -75,6 +76,7 @@ class App : MultiDexApplication(), DIAware {
         }
 
         val config by di.instance<FirebaseRemoteConfigService>()
+        val tolgee by di.instance<Tolgee>()
 
         applicationScope.launchIO {
             NetworkModule.fetchConfig(config)

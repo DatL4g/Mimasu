@@ -139,6 +139,9 @@ kotlin {
                 implementation(libs.car)
                 implementation(libs.livedata)
                 implementation(libs.telephoto)
+
+                implementation(libs.rive.android)
+                implementation(libs.android.startup)
             }
         }
 

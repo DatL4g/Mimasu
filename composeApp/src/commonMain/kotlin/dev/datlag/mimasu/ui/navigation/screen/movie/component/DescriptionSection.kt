@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.datlag.tolgee.kodeinStringResource
+import dev.datlag.tolgee.stringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.typography
@@ -36,7 +36,7 @@ fun DescriptionSection(
         ) {
             PlatformText(
                 modifier = Modifier.fillMaxWidth(),
-                text = tagline?.ifBlank { null } ?: kodeinStringResource(Res.string.movie_about),
+                text = tagline?.ifBlank { null } ?: stringResource(Res.string.movie_about),
                 style = Platform.typography().headlineSmall,
                 maxLines = 2,
                 softWrap = true,

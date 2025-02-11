@@ -26,14 +26,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.asFlow
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import app.rive.runtime.kotlin.core.RendererType
+import app.rive.runtime.kotlin.core.Rive
 import coil3.asImage
 import dev.datlag.mimasu.core.model.AppInfo
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.module.PlatformModule
 import dev.datlag.mimasu.ui.navigation.screen.video.VideoPlayerState
+import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.decompose.lifecycle.LocalLifecycleOwner
 import dev.datlag.tooling.decompose.lifecycle.collectAsStateWithLifecycle
+import dev.datlag.tooling.scopeCatching
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.flowOf
 import org.chromium.net.CronetEngine
@@ -156,4 +160,30 @@ fun Player.calculateAspectRatio(): Float {
 fun Intent.clear() {
     this.data = null
     this.action = null
+}
+
+fun Rive.initSafely(
+    context: Context,
+    defaultRenderer: RendererType = defaultRendererType
+) {
+    val libName = scopeCatching {
+        val clazz = Class.forName("app.rive.runtime.kotlin.core.Rive")
+        val field = clazz.getDeclaredField("RIVE_ANDROID")
+        field.isAccessible = true
+        field.get(null) as? String
+    }.getOrNull()?.trim()?.ifBlank { null } ?: "rive-android"
+
+    val libLoaded = NativeLoader.loadLibrary(context, libName)
+    val rendererSet = this.defaultRendererType == defaultRenderer || scopeCatching {
+        val clazz = Class.forName("app.rive.runtime.kotlin.core.Rive")
+        val field = clazz.getDeclaredField("defaultRendererType")
+        field.isAccessible = true
+        field.set(clazz, defaultRenderer)
+    }.isSuccess
+
+    if (libLoaded && rendererSet) {
+        initializeCppEnvironment()
+    } else {
+        init(context, defaultRenderer)
+    }
 }

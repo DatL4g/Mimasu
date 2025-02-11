@@ -22,7 +22,7 @@ import dev.datlag.mimasu.other.Connection
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.sekret.Secret
-import dev.datlag.tolgee.I18N
+import dev.datlag.tolgee.Tolgee
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.Deferred
@@ -39,6 +39,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import okio.FileSystem
 import org.kodein.di.DI
+import org.kodein.di.bindEagerSingleton
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import org.kodein.di.instanceOrNull
@@ -126,28 +127,23 @@ data object NetworkModule {
                 .extendImageLoader()
                 .build()
         }
-        bindSingleton<I18N> {
-            I18N {
-                contentDelivery {
-                    id(Sekret.tolgeeContentDelivery(BuildKonfig.packageName))
-                }
-                config {
+        bindSingleton<Tolgee> {
+            Tolgee.instanceOrInit {
+                network {
                     client(instance<HttpClient>())
                 }
+                apiKey(Sekret.tolgeeApiKey(BuildKonfig.packageName)!!)
             }
         }
         bindSingleton<TMDB> {
-            val locale = instance<I18N>().locale
-            val fallback by lazy {
-                Locale.default()
-            }
+            val locale = Locale.default()
 
             TMDB.create(
                 apiKey = config.value.getOrThrow().tmdb,
                 client = instance(),
                 fallbackClient = instanceOrNull(HTTP_FALLBACK_CLIENT),
-                language = locale?.localization ?: fallback.localized(),
-                region = locale?.regionCode ?: fallback.territory?.code?.ifBlank { null } ?: fallback.territory?.code3?.ifBlank { null },
+                language = locale.localized(),
+                region = locale.territory?.code?.ifBlank { null } ?: locale.territory?.code3?.ifBlank { null },
             )
         }
         bindSingleton<FirebaseEmailAuthProvider> {

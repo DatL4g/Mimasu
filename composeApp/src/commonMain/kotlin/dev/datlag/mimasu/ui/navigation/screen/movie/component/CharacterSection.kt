@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import dev.datlag.mimasu.tmdb.api.Details
-import dev.datlag.tolgee.kodeinStringResource
+import dev.datlag.tolgee.stringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformCard
 import dev.datlag.tooling.compose.platform.PlatformText
@@ -53,7 +53,7 @@ fun CharacterSection(
         ) {
             PlatformText(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                text = kodeinStringResource(Res.string.movie_characters),
+                text = stringResource(Res.string.movie_characters),
                 style = Platform.typography().headlineSmall,
                 maxLines = 2,
                 softWrap = true,

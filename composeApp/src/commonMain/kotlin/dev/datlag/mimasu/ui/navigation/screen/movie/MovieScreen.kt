@@ -70,7 +70,7 @@ import dev.datlag.mimasu.ui.navigation.screen.movie.component.DescriptionSection
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.DetailSuccess
 import dev.datlag.mimasu.ui.navigation.screen.movie.component.MovieToolbar
 import dev.datlag.mimasu.ui.theme.MovieTheme
-import dev.datlag.tolgee.kodeinStringResource
+import dev.datlag.tolgee.stringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformBorder
 import dev.datlag.tooling.compose.platform.PlatformClickableChipBorder
@@ -166,7 +166,7 @@ fun MovieScreen(component: MovieComponent) = MovieTheme(
                         )
                     },
                     text = {
-                        Text(text = kodeinStringResource(Res.string.movie_play))
+                        Text(text = stringResource(Res.string.movie_play))
                     }
                 )
             }
