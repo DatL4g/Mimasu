@@ -162,12 +162,16 @@ fun Intent.clear() {
     this.action = null
 }
 
+/**
+ * Init myself since [Rive.init] uses ReLinker which makes problems on newer devices.
+ */
 fun Rive.initSafely(
     context: Context,
     defaultRenderer: RendererType = defaultRendererType
 ) {
+    val riveClass = "app.rive.runtime.kotlin.core.Rive"
     val libName = scopeCatching {
-        val clazz = Class.forName("app.rive.runtime.kotlin.core.Rive")
+        val clazz = Class.forName(riveClass)
         val field = clazz.getDeclaredField("RIVE_ANDROID")
         field.isAccessible = true
         field.get(null) as? String
@@ -175,7 +179,7 @@ fun Rive.initSafely(
 
     val libLoaded = NativeLoader.loadLibrary(context, libName)
     val rendererSet = this.defaultRendererType == defaultRenderer || scopeCatching {
-        val clazz = Class.forName("app.rive.runtime.kotlin.core.Rive")
+        val clazz = Class.forName(riveClass)
         val field = clazz.getDeclaredField("defaultRendererType")
         field.isAccessible = true
         field.set(clazz, defaultRenderer)

@@ -76,7 +76,6 @@ class App : MultiDexApplication(), DIAware {
         }
 
         val config by di.instance<FirebaseRemoteConfigService>()
-        val tolgee by di.instance<Tolgee>()
 
         applicationScope.launchIO {
             NetworkModule.fetchConfig(config)

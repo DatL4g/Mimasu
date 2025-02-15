@@ -59,6 +59,11 @@ data object NetworkModule {
     private const val MAINTENANCE_KEY = "maintenance"
 
     /**
+     * Remote config key for Tolgee API
+     */
+    private const val TOLGEE_KEY = "tolgee_api_key"
+
+    /**
      * Dynamic state of the current fetching status.
      */
     private val _config = MutableStateFlow<Config>(Config.Fetching)
@@ -127,14 +132,6 @@ data object NetworkModule {
                 .extendImageLoader()
                 .build()
         }
-        bindSingleton<Tolgee> {
-            Tolgee.instanceOrInit {
-                network {
-                    client(instance<HttpClient>())
-                }
-                apiKey(Sekret.tolgeeApiKey(BuildKonfig.packageName)!!)
-            }
-        }
         bindSingleton<TMDB> {
             val locale = Locale.default()
 
@@ -165,7 +162,12 @@ data object NetworkModule {
         val maintenance = remoteService.getBoolean(MAINTENANCE_KEY, false)
         if (maintenance) {
             startedFetching = 0L
-            _config.update { Config.Maintenance }
+            val tolgee = remoteService.getString(TOLGEE_KEY, "").ifBlank { null }
+            _config.update {
+                Config.Maintenance(
+                    tolgee = tolgee
+                )
+            }
             return
         }
 
@@ -176,8 +178,10 @@ data object NetworkModule {
             if (tmdb.isNullOrBlank()) {
                 Config.Failure.Fetching
             } else {
+                val tolgee = remoteService.getString(TOLGEE_KEY, "").ifBlank { null }
                 Config.Success(
-                    tmdb = tmdb
+                    tmdb = tmdb,
+                    tolgee = tolgee
                 )
             }
         }
@@ -198,6 +202,14 @@ data object NetworkModule {
             }
         }
 
+        fun getTolgeeApiKey(): String? {
+            return when (this) {
+                is Maintenance -> tolgee
+                is Success -> tolgee
+                else -> null
+            }
+        }
+
         @Serializable
         data object Fetching : Config
 
@@ -212,11 +224,14 @@ data object NetworkModule {
         }
 
         @Serializable
-        data object Maintenance : Config
+        data class Maintenance(
+            @Secret val tolgee: String?
+        ) : Config
 
         @Serializable
         data class Success(
-            @Secret val tmdb: String
+            @Secret val tmdb: String,
+            @Secret val tolgee: String?
         ) : Config
 
         class AccessException(state: Config) : Exception("Tried to access config data while in $state state.")

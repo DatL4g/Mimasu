@@ -13,10 +13,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import dev.chrisbanes.haze.HazeState
+import dev.datlag.mimasu.common.init
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.mimasu.ui.theme.dynamicDark
 import dev.datlag.mimasu.ui.theme.dynamicLight
+import dev.datlag.tolgee.Tolgee
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.CombinedPlatformMaterialTheme
 import dev.datlag.tooling.compose.platform.PlatformSurface
@@ -59,8 +61,14 @@ fun App(
                 when (val current = config) {
                     is NetworkModule.Config.Fetching -> fetchingContent()
                     is NetworkModule.Config.Failure -> failureContent(current)
-                    is NetworkModule.Config.Maintenance -> maintenanceContent()
-                    is NetworkModule.Config.Success -> content()
+                    is NetworkModule.Config.Maintenance -> {
+                        Tolgee.init(di, current)
+                        maintenanceContent()
+                    }
+                    is NetworkModule.Config.Success -> {
+                        Tolgee.init(di, current)
+                        content()
+                    }
                 }
             }
         }
