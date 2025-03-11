@@ -29,6 +29,17 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.paging.compose)
         }
+
+        val pagingCommonMain by creating {
+            dependsOn(commonMain.get())
+
+            jvmMain.orNull?.dependsOn(this)
+            nativeMain.orNull?.dependsOn(this)
+
+            dependencies {
+                implementation(libs.paging.compose.common)
+            }
+        }
     }
 }
 
