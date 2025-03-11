@@ -1,5 +1,3 @@
-rootProject.name = "Mimasu"
-
 pluginManagement {
     repositories {
         google()
@@ -13,8 +11,11 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
-}
 
-include(":composeApp")
-include(":tmdb")
-include(":ui")
+    // Reuse the version catalog from the main build.
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
+}
