@@ -7,8 +7,8 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.buildConfig)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.konfig)
 }
 
 kotlin {
@@ -50,35 +50,22 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.coroutines)
             implementation(libs.ktor)
-            implementation(libs.ktor.serialization)
-            implementation(libs.ktor.logging)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.androidx.navigation.composee)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.coil)
-            implementation(libs.coil.network.ktor)
-            implementation(libs.kotlinx.datetime)
         }
 
         commonTest.dependencies {
             implementation(kotlin("test"))
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
-            implementation(libs.coroutines.test)
         }
 
         androidMain.dependencies {
             implementation(compose.uiTooling)
-            implementation(libs.androidx.activityCompose)
             implementation(libs.coroutines.android)
-            implementation(libs.ktor.okhttp)
         }
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.coroutines.swing)
-            implementation(libs.ktor.okhttp)
         }
 
         jsMain.dependencies {
@@ -110,10 +97,10 @@ android {
 }
 
 //https://developer.android.com/develop/ui/compose/testing#setup
-dependencies {
+/*dependencies {
     androidTestImplementation(libs.androidx.uitest.junit4)
     debugImplementation(libs.androidx.uitest.testManifest)
-}
+}*/
 
 compose.desktop {
     application {

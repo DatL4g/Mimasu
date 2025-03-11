@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":tmdb")
