@@ -1,5 +1,9 @@
 package dev.datlag.mimasu.tmdb
 
+import de.jensklingenberg.ktorfit.ktorfit
+import dev.datlag.mimasu.tmdb.api.createTrending
+import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
+import dev.datlag.mimasu.tmdb.repository.TrendingRepository
 import dev.datlag.sekret.Secret
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -12,9 +16,8 @@ import kotlin.coroutines.CoroutineContext
 
 @ConsistentCopyVisibility
 data class TMDB internal constructor(
-    @Secret private val apiKey: String,
-    val apiUrl: String,
-    val network: Network
+    val network: Network,
+    val trending: TrendingRepository
 ) {
 
     class Builder {
@@ -27,6 +30,9 @@ data class TMDB internal constructor(
             }
 
         lateinit var network: Network
+
+        lateinit var language: String
+        var region: String? = null
 
         fun apiKey(key: String) = apply {
             this.apiKey = key
@@ -44,11 +50,30 @@ data class TMDB internal constructor(
             this.network = Network.Builder().apply(builder).build()
         }
 
-        fun build(): TMDB = TMDB(
-            apiKey = apiKey,
-            apiUrl = apiUrl,
-            network = network
-        )
+        fun language(locale: String) = apply {
+            this.language = locale
+        }
+
+        fun region(locale: String) = apply {
+            this.region = locale
+        }
+
+        fun build(): TMDB {
+            val ktorfit = ktorfit {
+                baseUrl(apiUrl)
+                httpClient(network.client)
+                converterFactories(TimeWindow.Converter)
+            }
+
+            return TMDB(
+                network = network,
+                trending = TrendingRepository(
+                    apiKey = apiKey,
+                    trending = ktorfit.createTrending(),
+                    language = language
+                )
+            )
+        }
 
     }
 
@@ -117,8 +142,12 @@ data class TMDB internal constructor(
     }
 
     companion object {
-        private const val BASE_URL = "https://api.themoviedb.org/3/"
+        internal const val BASE_URL = "https://api.themoviedb.org/3/"
         internal const val ORIGINAL_IMAGE = "https://image.tmdb.org/t/p/original/"
         internal const val W500_IMAGE = "https://image.tmdb.org/t/p/w500/"
+
+        fun init(builder: Builder.() -> Unit): TMDB {
+            return TMDB.Builder().apply(builder).build()
+        }
     }
 }

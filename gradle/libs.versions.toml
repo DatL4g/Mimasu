@@ -7,6 +7,7 @@ android-autofill = "1.3.0-rc01"
 android-core = "1.15.0"
 android-credentials = "1.3.0"
 android-startup = "1.2.0"
+assertk = "0.28.1"
 car = "1.4.0"
 coil = "3.0.4"
 compose = "1.7.3"
@@ -37,6 +38,7 @@ ktorfit = "2.4.0"
 livedata = "2.8.7"
 locale = "0.8.0"
 media3 = "1.5.1"
+mockk = "1.13.17"
 multidex = "2.0.1"
 nanoid = "1.0.1"
 napier = "2.7.1"
@@ -67,6 +69,8 @@ android-startup = { group = "androidx.startup", name = "startup-runtime", versio
 ackpine = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "ackpine" }
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
+assertk-coroutines = { group = "com.willowtreeapps.assertk", name = "assertk-coroutines", version.ref = "assertk" }
 car = { group = "androidx.car.app", name = "app", version.ref = "car" }
 coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
@@ -78,6 +82,7 @@ constraint-layout = { group = "tech.annexflow.compose", name = "constraintlayout
 coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "coroutines" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 cronet = { group = "com.google.android.gms", name = "play-services-cronet", version.ref = "cronet" }
 cronet-okhttp = { group = "com.google.net.cronet", name = "cronet-okhttp", version.ref = "cronet-okhttp" }
 datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
@@ -108,6 +113,7 @@ ktor-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
 ktor-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-test = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 ktorfit = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-lib", version.ref = "ktorfit" }
 ktorfit-ksp = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-ksp", version.ref = "ktorfit" }
 livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "livedata" }
@@ -121,11 +127,13 @@ media3-smooth = { group = "androidx.media3", name = "media3-exoplayer-smoothstre
 media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
 media3-cast = { group = "androidx.media3", name = "media3-cast", version.ref = "media3" }
 media3-cronet = { group = "androidx.media3", name = "media3-datasource-cronet", version.ref = "media3" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 nanoid = { group = "dev.datlag.nanoid", name = "nanoid", version.ref = "nanoid" }
 napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 okhttp-doh = { group = "com.squareup.okhttp3", name = "okhttp-dnsoverhttps", version.ref = "okhttp" }
 paging = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
+paging-test = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
 paging-compose = { group = "app.cash.paging", name = "paging-compose-common", version.ref = "paging" }
 rive-android = { group = "app.rive", name = "rive-android", version.ref = "rive" }
 sekret = { group = "dev.datlag.sekret", name = "sekret", version.ref = "sekret" }
@@ -134,6 +142,7 @@ serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serializ
 serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "serialization" }
 splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 telephoto = { group = "me.saket.telephoto", name = "zoomable", version.ref = "telephoto" }
+test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 tolgee = { group = "dev.datlag.tolgee", name = "compose", version.ref = "tolgee" }
 tooling = { group = "dev.datlag.tooling", name = "tooling-async", version.ref = "tooling" }
 tooling-country = { group = "dev.datlag.tooling", name = "tooling-country", version.ref = "tooling" }

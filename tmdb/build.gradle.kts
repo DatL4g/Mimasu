@@ -38,9 +38,25 @@ kotlin {
             implementation(libs.kache)
             implementation(libs.ktor)
             implementation(libs.serialization)
+            implementation(libs.ktorfit)
 
             api(libs.immutable)
             api(libs.paging)
+        }
+
+        commonTest.dependencies {
+            implementation(libs.test)
+            implementation(libs.coroutines.test)
+            implementation(libs.ktor.test)
+
+            implementation(libs.paging.test)
+
+            implementation(libs.assertk)
+            implementation(libs.assertk.coroutines)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.mockk)
         }
     }
 }
