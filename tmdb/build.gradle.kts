@@ -39,6 +39,7 @@ kotlin {
             implementation(libs.ktor)
             implementation(libs.serialization)
             implementation(libs.ktorfit)
+            implementation(project(":core"))
 
             api(libs.immutable)
             api(libs.paging)

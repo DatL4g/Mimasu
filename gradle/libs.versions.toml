@@ -137,6 +137,7 @@ paging = { group = "androidx.paging", name = "paging-common", version.ref = "pag
 paging-test = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
 paging-compose-common = { group = "app.cash.paging", name = "paging-compose-common", version.ref = "paging-common" }
+reflection = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 rive-android = { group = "app.rive", name = "rive-android", version.ref = "rive" }
 sekret = { group = "dev.datlag.sekret", name = "sekret", version.ref = "sekret" }
 serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "serialization" }

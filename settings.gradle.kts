@@ -18,3 +18,4 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":tmdb")
 include(":ui")
+include(":core")
