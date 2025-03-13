@@ -9,10 +9,12 @@ import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.mimasu.tmdb.model.PagedResponse
 import dev.datlag.mimasu.tmdb.model.trending.Movie
 import dev.datlag.mimasu.tmdb.model.trending.People
+import dev.datlag.mimasu.tmdb.model.trending.Response
 import dev.datlag.mimasu.tmdb.model.trending.TV
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
+import dev.datlag.tooling.safeCast
 import io.ktor.client.call.body
 import kotlin.reflect.safeCast
 import kotlin.time.Duration.Companion.days
@@ -81,7 +83,7 @@ data class TrendingRepository internal constructor(
         is TimeWindow.Week -> peopleWeekKache
     }
 
-    private suspend inline fun <reified T : Any> pagedRequest(
+    private suspend inline fun <reified T : Response> pagedRequest(
         page: Int,
         window: TimeWindow
     ): Result<PagedResponse<T>?> = when {
@@ -124,7 +126,7 @@ data class TrendingRepository internal constructor(
 
         else -> throw IllegalArgumentException("Unsupported type: ${T::class}")
     }.mapCatching { result ->
-        result?.results?.filterIsInstance<T>()?.ifEmpty { null }?.let {
+        result.safeCast() ?: result?.results?.filterIsInstance<T>()?.ifEmpty { null }?.let {
             PagedResponse(
                 page = result.page,
                 results = it,

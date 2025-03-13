@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.multiplatform)
-
     alias(libs.plugins.android.library)
+    alias(libs.plugins.serialization)
 }
 
 kotlin {
@@ -23,6 +23,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(libs.coroutines)
+            implementation(libs.serialization)
             api(libs.paging)
         }
 
@@ -35,10 +36,6 @@ kotlin {
 
             jvmMain.orNull?.dependsOn(this)
             nativeMain.orNull?.dependsOn(this)
-
-            dependencies {
-                implementation(libs.paging.compose.common)
-            }
         }
     }
 }

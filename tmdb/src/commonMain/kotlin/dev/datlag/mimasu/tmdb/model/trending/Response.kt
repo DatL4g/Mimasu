@@ -1,9 +1,10 @@
 package dev.datlag.mimasu.tmdb.model.trending
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 internal sealed interface Response {
-    val id: Int
-    val mediaType: String?
+    @SerialName("id") val id: Int
+    @SerialName("media_type") val mediaType: String?
 }
