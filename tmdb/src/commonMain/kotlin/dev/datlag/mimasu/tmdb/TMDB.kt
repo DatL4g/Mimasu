@@ -1,8 +1,11 @@
 package dev.datlag.mimasu.tmdb
 
 import de.jensklingenberg.ktorfit.ktorfit
+import dev.datlag.mimasu.tmdb.api.createSearch
 import dev.datlag.mimasu.tmdb.api.createTrending
+import dev.datlag.mimasu.tmdb.converter.BoolStringConverter
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
+import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import dev.datlag.mimasu.tmdb.repository.TrendingRepository
 import dev.datlag.sekret.Secret
 import io.ktor.client.HttpClient
@@ -17,7 +20,8 @@ import kotlin.coroutines.CoroutineContext
 @ConsistentCopyVisibility
 data class TMDB internal constructor(
     val network: Network,
-    val trending: TrendingRepository
+    val trending: TrendingRepository,
+    val search: SearchRepository
 ) {
 
     class Builder {
@@ -62,7 +66,7 @@ data class TMDB internal constructor(
             val ktorfit = ktorfit {
                 baseUrl(apiUrl)
                 httpClient(network.client)
-                converterFactories(TimeWindow.Converter)
+                converterFactories(TimeWindow.Converter, BoolStringConverter)
             }
 
             return TMDB(
@@ -70,6 +74,11 @@ data class TMDB internal constructor(
                 trending = TrendingRepository(
                     apiKey = apiKey,
                     trending = ktorfit.createTrending(),
+                    language = language
+                ),
+                search = SearchRepository(
+                    apiKey = apiKey,
+                    search = ktorfit.createSearch(),
                     language = language
                 )
             )
