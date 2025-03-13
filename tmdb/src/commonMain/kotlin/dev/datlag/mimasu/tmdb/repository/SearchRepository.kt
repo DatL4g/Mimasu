@@ -32,6 +32,10 @@ class SearchRepository(
         }
 
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Multi> {
+            if (query.isBlank()) {
+                return LoadResult.Invalid()
+            }
+
             val key = params.key ?: 1
             val result = withNonEmptyContext(context) {
                 suspendCatching {

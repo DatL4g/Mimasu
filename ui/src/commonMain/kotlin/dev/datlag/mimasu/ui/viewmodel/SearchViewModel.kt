@@ -25,7 +25,7 @@ data class SearchViewModel(
     val includeAdult = _includeAdult.asStateFlow()
 
     private val searchInfo = combine(query, includeAdult) { q, a ->
-        SearchInfo(q?.trim() ?: "", a)
+        SearchInfo(q?.trim()?.takeIf { it.length >= 2 } ?: "", a)
     }.distinctUntilChanged()
 
     @OptIn(ExperimentalCoroutinesApi::class)
