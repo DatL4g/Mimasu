@@ -7,16 +7,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.tmdb.repository.TrendingRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.updateAndGet
 
-class TrendingViewModel(
+data class TrendingViewModel(
     val trendingRepository: TrendingRepository
 ) : ViewModel() {
 
@@ -27,13 +24,13 @@ class TrendingViewModel(
         config = PagingConfig(pageSize = 1)
     ) {
         trendingRepository.MoviesPaging(TimeWindow.Day)
-    }.flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
+    }.flow.cachedIn(viewModelScope)
 
     val weekMovies = Pager(
         config = PagingConfig(pageSize = 1)
     ) {
         trendingRepository.MoviesPaging(TimeWindow.Week)
-    }.flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
+    }.flow.cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val movies = timeWindow.flatMapLatest { window ->
@@ -47,13 +44,13 @@ class TrendingViewModel(
         config = PagingConfig(pageSize = 1)
     ) {
         trendingRepository.TVPaging(TimeWindow.Day)
-    }.flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
+    }.flow.cachedIn(viewModelScope)
 
     val weekTV = Pager(
         config = PagingConfig(pageSize = 1)
     ) {
         trendingRepository.TVPaging(TimeWindow.Week)
-    }.flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
+    }.flow.cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val tv = timeWindow.flatMapLatest { window ->
@@ -67,13 +64,13 @@ class TrendingViewModel(
         config = PagingConfig(pageSize = 1)
     ) {
         trendingRepository.PeoplePaging(TimeWindow.Day)
-    }.flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
+    }.flow.cachedIn(viewModelScope)
 
     val weekPeople = Pager(
         config = PagingConfig(pageSize = 1)
     ) {
         trendingRepository.PeoplePaging(TimeWindow.Week)
-    }.flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
+    }.flow.cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val people = timeWindow.flatMapLatest { window ->

@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.mayakapps.kache.InMemoryKache
 import com.mayakapps.kache.KacheStrategy
 import dev.datlag.mimasu.core.typeOf
+import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.mimasu.tmdb.model.PagedResponse
 import dev.datlag.mimasu.tmdb.model.trending.Movie
@@ -16,6 +17,7 @@ import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import dev.datlag.tooling.safeCast
 import io.ktor.client.call.body
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.safeCast
 import kotlin.time.Duration.Companion.days
 
@@ -23,7 +25,8 @@ import kotlin.time.Duration.Companion.days
 data class TrendingRepository internal constructor(
     @Secret private val apiKey: String,
     private val trending: Trending,
-    private val language: String
+    private val language: String,
+    private val context: CoroutineContext
 ) {
 
     private val movieDayKache = InMemoryKache<Int, PagedResponse<Movie>>(
@@ -149,7 +152,9 @@ data class TrendingRepository internal constructor(
 
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
             val key = params.key ?: 1
-            val result = pagedRequest<Movie>(key, window)
+            val result = withNonEmptyContext(context) {
+                pagedRequest<Movie>(key, window)
+            }
 
             val data = result.getOrNull()
 
@@ -188,7 +193,9 @@ data class TrendingRepository internal constructor(
 
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TV> {
             val key = params.key ?: 1
-            val result = pagedRequest<TV>(key, window)
+            val result = withNonEmptyContext(context) {
+                pagedRequest<TV>(key, window)
+            }
 
             val data = result.getOrNull()
 
@@ -227,7 +234,9 @@ data class TrendingRepository internal constructor(
 
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, People> {
             val key = params.key ?: 1
-            val result = pagedRequest<People>(key, window)
+            val result = withNonEmptyContext(context) {
+                pagedRequest<People>(key, window)
+            }
 
             val data = result.getOrNull()
 

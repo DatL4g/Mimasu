@@ -74,12 +74,14 @@ data class TMDB internal constructor(
                 trending = TrendingRepository(
                     apiKey = apiKey,
                     trending = ktorfit.createTrending(),
-                    language = language
+                    language = language,
+                    context = network.context
                 ),
                 search = SearchRepository(
                     apiKey = apiKey,
                     search = ktorfit.createSearch(),
-                    language = language
+                    language = language,
+                    context = network.context
                 )
             )
         }
