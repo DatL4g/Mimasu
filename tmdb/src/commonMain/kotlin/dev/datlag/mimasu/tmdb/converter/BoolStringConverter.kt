@@ -33,7 +33,7 @@ data object BoolStringConverter : Converter.Factory {
         parameterType: KClass<*>,
         requestType: KClass<*>
     ): Converter.RequestParameterConverter? {
-        val toBoolean = parameterType.typeOf(String::class) && requestType.typeOf(Boolean::class)
+        val toBoolean = parameterType typeOf String::class && requestType typeOf Boolean::class
 
         return object : Converter.RequestParameterConverter {
             override fun convert(data: Any): Any {

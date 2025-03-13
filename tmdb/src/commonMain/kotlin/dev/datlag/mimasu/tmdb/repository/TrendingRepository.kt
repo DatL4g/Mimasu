@@ -87,7 +87,7 @@ data class TrendingRepository internal constructor(
         page: Int,
         window: TimeWindow
     ): Result<PagedResponse<T>?> = when {
-        T::class.typeOf(Movie::class) -> suspendCatching {
+        T::class typeOf Movie::class -> suspendCatching {
             movieCache(window).getOrPut(page) {
                 val response = trending.movies(
                     apiKey = apiKey,
@@ -99,7 +99,7 @@ data class TrendingRepository internal constructor(
                 response.body<PagedResponse<Movie>>()
             }
         }
-        T::class.typeOf(TV::class) -> suspendCatching {
+        T::class typeOf TV::class -> suspendCatching {
             tvCache(window).getOrPut(page) {
                 val response = trending.tv(
                     apiKey = apiKey,
@@ -111,7 +111,7 @@ data class TrendingRepository internal constructor(
                 response.body<PagedResponse<TV>>()
             }
         }
-        T::class.typeOf(People::class) -> suspendCatching {
+        T::class typeOf People::class -> suspendCatching {
             peopleCache(window).getOrPut(page) {
                 val response = trending.people(
                     apiKey = apiKey,

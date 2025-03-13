@@ -24,8 +24,11 @@ kotlin {
             implementation(compose.runtime)
             implementation(libs.coroutines)
             implementation(libs.serialization)
+            implementation(libs.tooling)
+            implementation(project(":core"))
 
             api(project(":tmdb"))
+            api(libs.kodein)
             api(libs.viewmodel)
             api(libs.paging)
         }
