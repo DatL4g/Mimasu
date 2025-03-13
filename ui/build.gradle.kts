@@ -24,6 +24,9 @@ kotlin {
             implementation(compose.runtime)
             implementation(libs.coroutines)
             implementation(libs.serialization)
+
+            api(project(":tmdb"))
+            api(libs.viewmodel)
             api(libs.paging)
         }
 

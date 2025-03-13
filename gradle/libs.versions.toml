@@ -35,6 +35,7 @@ kotlin = "2.1.10"
 ksp = "2.1.10-1.0.29"
 ktor = "3.1.1"
 ktorfit = "2.4.0"
+lifecycle = "2.8.4"
 livedata = "2.8.7"
 locale = "0.8.0"
 media3 = "1.5.1"
@@ -117,6 +118,7 @@ ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlin
 ktor-test = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 ktorfit = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-lib", version.ref = "ktorfit" }
 ktorfit-ksp = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-ksp", version.ref = "ktorfit" }
+lifecycle = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "livedata" }
 locale = { group = "com.vanniktech", name = "multiplatform-locale", version.ref = "locale" }
 media3 = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
@@ -152,6 +154,7 @@ tooling-decompose = { group = "dev.datlag.tooling", name = "tooling-decompose", 
 tv-foundation = { group = "androidx.tv", name = "tv-foundation", version.ref = "tv-foundation" }
 tv-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "tv-lifecycle" }
 tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tv-material" }
+viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 wavy-slider = { group = "ir.mahozad.multiplatform", name = "wavy-slider", version.ref = "wavy-slider" }
 windowsize = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version.ref = "windowsize" }
 youtube-player = { group = "io.github.khubaibkhan4", name = "mediaplayer-kmp", version.ref = "youtube-player" }
