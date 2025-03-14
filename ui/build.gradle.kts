@@ -14,8 +14,8 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    macosX64()
-    macosArm64()
+    // macosX64() // not supported by kodein compose
+    // macosArm64() // not supported by kodein compose
 
     applyDefaultHierarchyTemplate()
 
@@ -29,6 +29,7 @@ kotlin {
 
             api(project(":tmdb"))
             api(libs.kodein)
+            api(libs.kodein.compose)
             api(libs.viewmodel)
             api(libs.paging)
         }

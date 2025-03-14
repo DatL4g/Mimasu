@@ -8,17 +8,16 @@ import dev.datlag.mimasu.core.typeOf
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Trending
 import dev.datlag.mimasu.tmdb.model.PagedResponse
-import dev.datlag.mimasu.tmdb.model.trending.Movie
-import dev.datlag.mimasu.tmdb.model.trending.People
-import dev.datlag.mimasu.tmdb.model.trending.Response
-import dev.datlag.mimasu.tmdb.model.trending.TV
+import dev.datlag.mimasu.tmdb.model.Movie
+import dev.datlag.mimasu.tmdb.model.People
+import dev.datlag.mimasu.tmdb.model.Response
+import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import dev.datlag.tooling.safeCast
 import io.ktor.client.call.body
 import kotlin.coroutines.CoroutineContext
-import kotlin.reflect.safeCast
 import kotlin.time.Duration.Companion.days
 
 @ConsistentCopyVisibility

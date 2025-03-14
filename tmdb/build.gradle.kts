@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.kache)
             implementation(libs.ktor)
             implementation(libs.serialization)
+            implementation(libs.serialization.json)
             implementation(libs.ktorfit)
             implementation(project(":core"))
 

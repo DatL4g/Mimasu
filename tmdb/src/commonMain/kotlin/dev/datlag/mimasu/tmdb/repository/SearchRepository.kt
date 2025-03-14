@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Search
 import dev.datlag.mimasu.tmdb.model.PagedResponse
-import dev.datlag.mimasu.tmdb.model.search.Multi
+import dev.datlag.mimasu.tmdb.model.Response
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import io.ktor.client.call.body
@@ -21,9 +21,9 @@ class SearchRepository(
     inner class MultiPaging(
         private val query: String,
         private val includeAdult: Boolean
-    ) : PagingSource<Int, Multi>() {
+    ) : PagingSource<Int, Response>() {
 
-        override fun getRefreshKey(state: PagingState<Int, Multi>): Int? {
+        override fun getRefreshKey(state: PagingState<Int, Response>): Int? {
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -31,7 +31,7 @@ class SearchRepository(
             }
         }
 
-        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Multi> {
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Response> {
             if (query.isBlank()) {
                 return LoadResult.Invalid()
             }
@@ -47,7 +47,7 @@ class SearchRepository(
                         page = key
                     )
 
-                    response.body<PagedResponse<Multi>>()
+                    response.body<PagedResponse<Response>>()
                 }
             }
 
