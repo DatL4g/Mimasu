@@ -6,8 +6,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@ConsistentCopyVisibility
 @OptIn(ExperimentalSerializationApi::class)
-data class Movie constructor(
+data class Movie internal constructor(
     @SerialName("adult") val adult: Boolean = true,
     @SerialName("backdrop_path") override val backdropSource: String? = null,
     @SerialName("id") override val id: Int,

@@ -18,9 +18,9 @@ data class People internal constructor(
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("gender") val gender: Int = 0,
     @SerialName("known_for_department") val knownForDepartment: String? = null,
-    @SerialName("profile_path") override val profileSource: String? = null,
+    @SerialName("profile_path") override val logoSource: String? = null,
     @SerialName("known_for") private val knownFor: Set<Response> = emptySet(),
-): Response, HasProfilePicture {
+): Response, HasLogo {
 
     @Transient
     val knownForMovie = knownFor.filterIsInstance<Movie>()

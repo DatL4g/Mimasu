@@ -1,5 +1,6 @@
+import dev.datlag.tolgee.common.set
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
@@ -9,10 +10,19 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.serialization)
     alias(libs.plugins.konfig)
+    alias(libs.plugins.sekret)
+}
+
+composeCompiler {
+    featureFlags.set(
+        ComposeFeatureFlag.StrongSkipping,
+        ComposeFeatureFlag.IntrinsicRemember,
+        ComposeFeatureFlag.OptimizeNonSkippingGroups
+    )
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(21)
     androidTarget {
         //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
@@ -20,7 +30,7 @@ kotlin {
 
     jvm()
 
-    js {
+    /*js {
         browser()
         binaries.executable()
     }
@@ -28,7 +38,7 @@ kotlin {
     wasmJs {
         browser()
         binaries.executable()
-    }
+    }*/
 
     listOf(
         iosX64(),
@@ -50,6 +60,16 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.coroutines)
             implementation(libs.ktor)
+            implementation(libs.ktor.content.negotiation)
+            implementation(libs.ktor.serialization.json)
+            implementation(libs.tooling.compose)
+            implementation(libs.coil)
+            implementation(libs.coil.network)
+            implementation(libs.coil.svg)
+            implementation(libs.coil.compose)
+            implementation(libs.kermit)
+
+            implementation(project(":ui"))
         }
 
         commonTest.dependencies {
@@ -61,6 +81,13 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.uiTooling)
             implementation(libs.coroutines.android)
+            implementation(libs.android)
+            implementation(libs.activity)
+            implementation(libs.activity.compose)
+            implementation(libs.multidex)
+            implementation(libs.ktor.jvm)
+            implementation(libs.cronet)
+            implementation(libs.cronet.okhttp)
         }
 
         jvmMain.dependencies {
@@ -81,6 +108,10 @@ kotlin {
 }
 
 android {
+    sourceSets["main"].setRoot("src/androidMain/")
+    sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
+    sourceSets["main"].assets.srcDirs("src/androidMain/assets", "src/commonMain/assets")
+
     namespace = "dev.datlag.mimasu"
     compileSdk = 35
 
@@ -89,10 +120,19 @@ android {
         targetSdk = 35
 
         applicationId = "dev.datlag.mimasu.androidApp"
-        versionCode = 1
+        versionCode = 100
         versionName = "1.0.0"
 
+        multiDexEnabled = true
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
@@ -105,23 +145,6 @@ android {
 compose.desktop {
     application {
         mainClass = "MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Mimasu"
-            packageVersion = "1.0.0"
-
-            linux {
-                iconFile.set(project.file("desktopAppIcons/LinuxIcon.png"))
-            }
-            windows {
-                iconFile.set(project.file("desktopAppIcons/WindowsIcon.ico"))
-            }
-            macOS {
-                iconFile.set(project.file("desktopAppIcons/MacosIcon.icns"))
-                bundleID = "dev.datlag.mimasu.desktopApp"
-            }
-        }
     }
 }
 

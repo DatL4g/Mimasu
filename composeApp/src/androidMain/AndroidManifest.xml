@@ -1,21 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="Mimasu"
-        android:theme="@android:style/Theme.Material.NoActionBar">
-        <activity
-            android:name=".AppActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+        android:supportsRtl="true"
+        android:appCategory="video"
+        android:allowAudioPlaybackCapture="false"
+        android:enableOnBackInvokedCallback="true"
+        android:name=".App"
+        android:resizeableActivity="true"
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+
+        <activity android:name=".MainActivity"
+            android:visibleToInstantApps="true"
             android:launchMode="singleInstance"
-            android:windowSoftInputMode="adjustPan"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:supportsPictureInPicture="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <meta-data
+            android:name="instantapps.clients.allowed"
+            android:value="true" />
+
+        <meta-data
+            android:name="open_source"
+            android:value="true" />
+
+        <meta-data
+            android:name="open_source_license"
+            android:value="GNU GENERAL PUBLIC LICENSE Version 3" />
+    </application>
 </manifest>

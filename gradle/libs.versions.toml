@@ -2,14 +2,14 @@
 app = "1.0.0"
 ackpine = "0.9.4"
 activity = "1.10.1"
-android = "8.8.2"
+android = "8.9.0"
 android-autofill = "1.3.0-rc01"
 android-core = "1.15.0"
 android-credentials = "1.3.0"
 android-startup = "1.2.0"
 assertk = "0.28.1"
 car = "1.4.0"
-coil = "3.0.4"
+coil = "3.1.0"
 compose = "1.7.3"
 compose-report = "1.4.1"
 connectivity = "1.1.3"
@@ -27,6 +27,7 @@ immutable = "0.3.8"
 kache = "2.1.0"
 kase-change = "1.4.1"
 kast = "0.2.1"
+kermit = "2.0.5"
 kmpalette = "3.1.0"
 kodein = "7.25.0"
 kolor = "2.0.0"
@@ -105,6 +106,7 @@ immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immut
 kache = { group = "com.mayakapps.kache", name = "kache", version.ref = "kache" }
 kase-change = { group = "net.pearx.kasechange", name = "kasechange", version.ref = "kase-change" }
 kast = { group = "dev.datlag.kast", name = "kast", version.ref = "kast" }
+kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 kmpalette = { group = "com.kmpalette", name = "kmpalette-core", version.ref = "kmpalette" }
 kodein = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
 kodein-compose = { group = "org.kodein.di", name = "kodein-di-framework-compose", version.ref = "kodein" }
@@ -133,7 +135,6 @@ media3-cronet = { group = "androidx.media3", name = "media3-datasource-cronet", 
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 nanoid = { group = "dev.datlag.nanoid", name = "nanoid", version.ref = "nanoid" }
-napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 okhttp-doh = { group = "com.squareup.okhttp3", name = "okhttp-dnsoverhttps", version.ref = "okhttp" }
 paging = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
 paging-test = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
@@ -150,6 +151,7 @@ test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "ko
 tolgee = { group = "dev.datlag.tolgee", name = "compose", version.ref = "tolgee" }
 tooling = { group = "dev.datlag.tooling", name = "tooling-async", version.ref = "tooling" }
 tooling-country = { group = "dev.datlag.tooling", name = "tooling-country", version.ref = "tooling" }
+tooling-compose = { group = "dev.datlag.tooling", name = "tooling-compose", version.ref = "tooling" }
 tooling-decompose = { group = "dev.datlag.tooling", name = "tooling-decompose", version.ref = "tooling" }
 tv-foundation = { group = "androidx.tv", name = "tv-foundation", version.ref = "tv-foundation" }
 tv-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "tv-lifecycle" }
