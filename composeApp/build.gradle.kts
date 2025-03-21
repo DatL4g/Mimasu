@@ -58,6 +58,13 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            implementation(libs.lifecycle)
+            implementation(libs.navigation)
+            implementation(libs.adaptive)
+            implementation(libs.adaptive.layout)
+            implementation(libs.adaptive.navigation)
+
             implementation(libs.coroutines)
             implementation(libs.ktor)
             implementation(libs.ktor.content.negotiation)
@@ -93,6 +100,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.coroutines.swing)
+            implementation(libs.ktor.jvm)
         }
 
         jsMain.dependencies {
@@ -144,7 +152,7 @@ android {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "dev.datlag.mimasu.MainKt"
     }
 }
 

@@ -2,10 +2,11 @@
 app = "1.0.0"
 ackpine = "0.9.4"
 activity = "1.10.1"
+adaptive = "1.0.1"
 android = "8.9.0"
 android-autofill = "1.3.0-rc01"
 android-core = "1.15.0"
-android-credentials = "1.3.0"
+android-credentials = "1.5.0"
 android-startup = "1.2.0"
 assertk = "0.28.1"
 car = "1.4.0"
@@ -35,7 +36,7 @@ konfig = "5.4.0"
 kotlin = "2.1.10"
 ksp = "2.1.10-1.0.29"
 ktor = "3.1.1"
-ktorfit = "2.4.0"
+ktorfit = "2.4.1"
 lifecycle = "2.8.4"
 livedata = "2.8.7"
 locale = "0.8.0"
@@ -44,6 +45,7 @@ mockk = "1.13.17"
 multidex = "2.0.1"
 nanoid = "1.0.1"
 napier = "2.7.1"
+navigation = "2.8.0-alpha11"
 okhttp = "4.12.0"
 osdetector = "1.7.3"
 paging = "3.3.6"
@@ -66,6 +68,9 @@ windowsize = "0.5.0"
 youtube-player = "2.0.5"
 
 [libraries]
+adaptive = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive", version.ref = "adaptive" }
+adaptive-layout = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-layout", version.ref = "adaptive" }
+adaptive-navigation = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "adaptive" }
 android = { group = "androidx.core", name = "core-ktx", version.ref = "android-core" }
 android-autofill = { group = "androidx.autofill", name = "autofill", version.ref = "android-autofill" }
 android-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "android-startup" }
@@ -135,6 +140,7 @@ media3-cronet = { group = "androidx.media3", name = "media3-datasource-cronet", 
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 nanoid = { group = "dev.datlag.nanoid", name = "nanoid", version.ref = "nanoid" }
+navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 okhttp-doh = { group = "com.squareup.okhttp3", name = "okhttp-dnsoverhttps", version.ref = "okhttp" }
 paging = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
 paging-test = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
