@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 
 object Navigation {
@@ -15,7 +16,7 @@ object Navigation {
     data object Home
 
     @Serializable
-    data object Detail
+    data class Detail(val param: String)
 }
 
 @Composable
@@ -31,7 +32,7 @@ fun Navigation() {
                 Text(text = "Home")
                 Button(
                     onClick = {
-                        controller.navigate(Navigation.Detail)
+                        controller.navigate(Navigation.Detail(": Passed Parameter"))
                     }
                 ) {
                     Text(text = "Details")
@@ -39,7 +40,8 @@ fun Navigation() {
             }
         }
         composable<Navigation.Detail> {
-            Text(text = "Detail Screen")
+            val route = it.toRoute<Navigation.Detail>()
+            Text(text = "Detail Screen${route.param}")
         }
     }
 }
