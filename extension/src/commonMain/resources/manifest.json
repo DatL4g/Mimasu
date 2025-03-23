@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+
+  "name": "Mimasu",
+  "description": "Integration for Mimasu and a bunch of Video utilities",
+  "version": "1.0.0",
+
+  "permissions": [
+    "contextMenus"
+  ],
+
+  "background": {
+    "service_worker": "extension.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "browser-polyfill.min.js"
+      ]
+    }
+  ]
+}

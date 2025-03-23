@@ -152,6 +152,7 @@ serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "serialization" }
 splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 telephoto = { group = "me.saket.telephoto", name = "zoomable", version.ref = "telephoto" }
 test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 tolgee = { group = "dev.datlag.tolgee", name = "compose", version.ref = "tolgee" }
