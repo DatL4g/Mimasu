@@ -1,12 +1,15 @@
 package dev.datlag.mimasu
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.Modifier
 import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformMaterialTheme
+import dev.datlag.tooling.compose.platform.PlatformSurface
 import dev.datlag.tooling.compose.platform.rememberIsTv
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI
@@ -25,7 +28,11 @@ fun App(
         PlatformMaterialTheme(
             colorScheme = if (systemDarkTheme) Colors.getDarkScheme() else Colors.getLightScheme()
         ) {
-            content()
+            PlatformSurface(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                content()
+            }
         }
     }
 }
