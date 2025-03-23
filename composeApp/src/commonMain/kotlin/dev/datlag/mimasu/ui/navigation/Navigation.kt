@@ -1,10 +1,8 @@
 package dev.datlag.mimasu.ui.navigation
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -37,7 +35,10 @@ fun Navigation() {
             item(
                 selected = controller.currentDestination?.hasRoute<Navigation.Home>() ?: false,
                 onClick = {
-                    controller.navigate(Navigation.Home)
+                    controller.navigate(Navigation.Home) {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 icon = {
                     Icon(

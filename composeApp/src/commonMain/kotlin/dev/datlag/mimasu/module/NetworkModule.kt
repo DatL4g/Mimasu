@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.module
 
+import androidx.compose.ui.text.intl.Locale
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.disk.DiskCache
@@ -60,7 +61,8 @@ data object NetworkModule {
                     client(instance<HttpClient>())
                 }
                 // apiKey
-                // language
+                language(Locale.current.language)
+                region(Locale.current.region)
             }
         }
         bindSingleton<KodeinViewModelFactory> {
