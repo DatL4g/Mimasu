@@ -10,6 +10,7 @@ import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformMaterialTheme
 import dev.datlag.tooling.compose.platform.PlatformSurface
+import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.rememberIsTv
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI
@@ -29,7 +30,9 @@ fun App(
             colorScheme = if (systemDarkTheme) Colors.getDarkScheme() else Colors.getLightScheme()
         ) {
             PlatformSurface(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                containerColor = Platform.colorScheme().background,
+                contentColor = Platform.colorScheme().onBackground
             ) {
                 content()
             }

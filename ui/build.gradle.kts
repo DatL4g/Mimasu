@@ -35,7 +35,7 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(libs.paging.compose)
+            api(libs.paging.compose)
         }
 
         val pagingCommonMain by creating {

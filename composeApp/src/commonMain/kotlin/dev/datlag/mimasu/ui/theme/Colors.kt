@@ -48,11 +48,11 @@ data object Colors {
     private const val THEME_DARK_ERROR_CONTAINER = 0xff93000a
     private const val THEME_DARK_ON_ERROR_CONTAINER = 0xffffdad6
 
-    private const val THEME_LIGHT_BACKGROUND = 0xfffff7fb
-    private const val THEME_LIGHT_ON_BACKGROUND = 0xff1f1a1f
+    private const val THEME_LIGHT_BACKGROUND = 0xffffffff
+    private const val THEME_LIGHT_ON_BACKGROUND = 0xff000000
 
-    private const val THEME_DARK_BACKGROUND = 0xff161217
-    private const val THEME_DARK_ON_BACKGROUND = 0xffeae0e7
+    private const val THEME_DARK_BACKGROUND = 0xff000000
+    private const val THEME_DARK_ON_BACKGROUND = 0xffffffff
 
     private const val THEME_LIGHT_SURFACE = 0xfff9f9f9
     private const val THEME_LIGHT_ON_SURFACE = 0xff1b1b1b

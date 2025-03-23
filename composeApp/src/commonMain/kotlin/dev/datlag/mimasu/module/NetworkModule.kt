@@ -8,6 +8,8 @@ import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.serviceLoaderEnabled
 import coil3.svg.SvgDecoder
+import dev.datlag.mimasu.tmdb.TMDB
+import dev.datlag.mimasu.ui.viewmodel.KodeinViewModelFactory
 import io.ktor.client.HttpClient
 import kotlinx.serialization.json.Json
 import okio.FileSystem
@@ -51,6 +53,18 @@ data object NetworkModule {
                 }
                 .crossfade(true)
                 .build()
+        }
+        bindSingleton<TMDB> {
+            TMDB.init {
+                network {
+                    client(instance<HttpClient>())
+                }
+                // apiKey
+                // language
+            }
+        }
+        bindSingleton<KodeinViewModelFactory> {
+            KodeinViewModelFactory(this)
         }
     }
 }
