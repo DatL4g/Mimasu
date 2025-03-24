@@ -59,6 +59,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.material3AdaptiveNavigationSuite)
+            implementation(compose.materialIconsExtended)
 
             implementation(libs.lifecycle)
             implementation(libs.navigation)
@@ -76,6 +77,7 @@ kotlin {
             implementation(libs.coil.svg)
             implementation(libs.coil.compose)
             implementation(libs.kermit)
+            implementation(libs.placeholder)
 
             implementation(project(":ui"))
         }
@@ -128,7 +130,7 @@ android {
         minSdk = 21
         targetSdk = 35
 
-        applicationId = "dev.datlag.mimasu.androidApp"
+        applicationId = "dev.datlag.mimasu"
         versionCode = 100
         versionName = "1.0.0"
 

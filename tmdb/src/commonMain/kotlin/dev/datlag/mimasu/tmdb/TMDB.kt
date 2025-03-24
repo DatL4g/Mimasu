@@ -156,6 +156,9 @@ data class TMDB internal constructor(
         internal const val BASE_URL = "https://api.themoviedb.org/3/"
         internal const val ORIGINAL_IMAGE = "https://image.tmdb.org/t/p/original/"
         internal const val W500_IMAGE = "https://image.tmdb.org/t/p/w500/"
+        internal const val W400_IMAGE = "https://image.tmdb.org/t/p/w400/"
+        internal const val W300_IMAGE = "https://image.tmdb.org/t/p/w300/"
+        internal const val W200_IMAGE = "https://image.tmdb.org/t/p/w200/"
 
         fun init(builder: Builder.() -> Unit): TMDB {
             return TMDB.Builder().apply(builder).build()
