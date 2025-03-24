@@ -1,13 +1,6 @@
 package dev.datlag.mimasu.ui.navigation
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.rounded.Movie
-import androidx.compose.material.icons.rounded.PersonPin
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -30,6 +23,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.common.MaterialIcon
+import dev.datlag.mimasu.common.rememberMaterialSymbolsFont
 import dev.datlag.mimasu.ui.navigation.home.Home
 import kotlinx.serialization.Serializable
 import mimasu.composeapp.generated.resources.Res
@@ -69,8 +64,14 @@ fun Navigation() {
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
+            val isProfile = backStack?.destination?.hasRoute<Navigation.Profile>() ?: false
+            val isMovies = backStack?.destination?.hasRoute<Navigation.Movies>() ?: false
+            val isHome = backStack?.destination?.hasRoute<Navigation.Home>() ?: false
+            val isSeries = backStack?.destination?.hasRoute<Navigation.Series>() ?: false
+            val isSearch = backStack?.destination?.hasRoute<Navigation.Search>() ?: false
+
             item(
-                selected = backStack?.destination?.hasRoute<Navigation.Profile>() ?: false,
+                selected = isProfile,
                 onClick = {
                     controller.navigate(Navigation.Profile) {
                         launchSingleTop = true
@@ -78,9 +79,10 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    Icon(
-                        imageVector = Icons.Rounded.PersonPin,
-                        contentDescription = null
+                    MaterialIcon(
+                        name = "person_pin_circle",
+                        contentDescription = null,
+                        filled = isProfile
                     )
                 },
                 label = {
@@ -88,7 +90,7 @@ fun Navigation() {
                 }
             )
             item(
-                selected = backStack?.destination?.hasRoute<Navigation.Movies>() ?: false,
+                selected = isMovies,
                 onClick = {
                     controller.navigate(Navigation.Movies) {
                         launchSingleTop = true
@@ -96,9 +98,10 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Movie,
-                        contentDescription = null
+                    MaterialIcon(
+                        name = "movie",
+                        contentDescription = null,
+                        filled = isMovies
                     )
                 },
                 label = {
@@ -106,7 +109,7 @@ fun Navigation() {
                 }
             )
             item(
-                selected = backStack?.destination?.hasRoute<Navigation.Home>() ?: false,
+                selected = isHome,
                 onClick = {
                     controller.navigate(Navigation.Home) {
                         launchSingleTop = true
@@ -114,9 +117,10 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = null
+                    MaterialIcon(
+                        name = "home",
+                        contentDescription = null,
+                        filled = isHome
                     )
                 },
                 label = {
@@ -124,7 +128,7 @@ fun Navigation() {
                 }
             )
             item(
-                selected = backStack?.destination?.hasRoute<Navigation.Series>() ?: false,
+                selected = isSeries,
                 onClick = {
                     controller.navigate(Navigation.Series) {
                         launchSingleTop = true
@@ -132,9 +136,10 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Tv,
-                        contentDescription = null
+                    MaterialIcon(
+                        name = "tv",
+                        contentDescription = null,
+                        filled = isSeries
                     )
                 },
                 label = {
@@ -142,7 +147,7 @@ fun Navigation() {
                 }
             )
             item(
-                selected = backStack?.destination?.hasRoute<Navigation.Search>() ?: false,
+                selected = isSearch,
                 onClick = {
                     controller.navigate(Navigation.Search) {
                         launchSingleTop = true
@@ -150,9 +155,10 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Search,
-                        contentDescription = null
+                    MaterialIcon(
+                        name = "search",
+                        contentDescription = null,
+                        filled = isSearch
                     )
                 },
                 label = {

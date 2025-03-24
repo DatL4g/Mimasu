@@ -59,7 +59,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.material3AdaptiveNavigationSuite)
-            implementation(compose.materialIconsExtended)
 
             implementation(libs.lifecycle)
             implementation(libs.navigation)
@@ -78,6 +77,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.kermit)
             implementation(libs.placeholder)
+            implementation(libs.fonticons)
 
             implementation(project(":ui"))
         }

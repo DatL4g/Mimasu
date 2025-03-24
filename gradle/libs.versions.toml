@@ -22,6 +22,7 @@ datetime = "0.6.2"
 decompose = "3.2.2"
 desugar = "2.1.5"
 firebase = "2.1.0"
+fonticons = "2.0.0"
 google-identity = "1.1.1"
 haze = "1.0.2"
 immutable = "0.3.8"
@@ -102,6 +103,7 @@ firebase = { group = "dev.gitlive", name = "firebase-app", version.ref = "fireba
 firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "firebase" }
 firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "firebase" }
 firebase-config = { group = "dev.gitlive", name = "firebase-config", version.ref = "firebase" }
+fonticons = { group = "dev.tclement.fonticons", name = "core", version.ref = "fonticons" }
 google-play-service = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services" }
 google-identity = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-identity" }
 google-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "android-credentials" }
