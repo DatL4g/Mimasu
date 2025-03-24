@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.ui.navigation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -7,10 +8,17 @@ import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.PersonPin
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Tv
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
+import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,6 +32,13 @@ import androidx.navigation.toRoute
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.ui.navigation.home.Home
 import kotlinx.serialization.Serializable
+import mimasu.composeapp.generated.resources.Res
+import mimasu.composeapp.generated.resources.home
+import mimasu.composeapp.generated.resources.movies
+import mimasu.composeapp.generated.resources.profile
+import mimasu.composeapp.generated.resources.search
+import mimasu.composeapp.generated.resources.series
+import org.jetbrains.compose.resources.stringResource
 
 object Navigation {
 
@@ -46,13 +61,13 @@ object Navigation {
     data class Detail(val param: String)
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun Navigation() {
     val controller = rememberNavController()
     val backStack by controller.currentBackStackEntryAsState()
 
     NavigationSuiteScaffold(
-        modifier = Modifier.statusBarsPadding(),
         navigationSuiteItems = {
             item(
                 selected = backStack?.destination?.hasRoute<Navigation.Profile>() ?: false,
@@ -69,7 +84,7 @@ fun Navigation() {
                     )
                 },
                 label = {
-                    Text(text = "Profile")
+                    Text(text = stringResource(Res.string.profile))
                 }
             )
             item(
@@ -87,7 +102,7 @@ fun Navigation() {
                     )
                 },
                 label = {
-                    Text(text = "Movies")
+                    Text(text = stringResource(Res.string.movies))
                 }
             )
             item(
@@ -105,7 +120,7 @@ fun Navigation() {
                     )
                 },
                 label = {
-                    Text(text = "Home")
+                    Text(text = stringResource(Res.string.home))
                 }
             )
             item(
@@ -123,7 +138,7 @@ fun Navigation() {
                     )
                 },
                 label = {
-                    Text(text = "Series")
+                    Text(text = stringResource(Res.string.series))
                 }
             )
             item(
@@ -141,7 +156,7 @@ fun Navigation() {
                     )
                 },
                 label = {
-                    Text(text = "Search")
+                    Text(text = stringResource(Res.string.search))
                 }
             )
         }
@@ -157,7 +172,27 @@ fun Navigation() {
                 Text(text = "Movies Screen")
             }
             composable<Navigation.Home> {
-                Home()
+                val navigator = rememberListDetailPaneScaffoldNavigator()
+
+                ListDetailPaneScaffold(
+                    directive = navigator.scaffoldDirective,
+                    value = navigator.scaffoldValue,
+                    listPane = {
+                        Home()
+                    },
+                    detailPane = {
+                        Column {
+                            Text(text = "Detail Home")
+                            Button(
+                                onClick = {
+                                    navigator.navigateBack()
+                                }
+                            ) {
+                                Text(text = "Back")
+                            }
+                        }
+                    }
+                )
             }
             composable<Navigation.Series> {
                 Text(text = "Series Screen")

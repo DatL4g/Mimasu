@@ -145,6 +145,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_21
     }
+    androidResources {
+        generateLocaleConfig = true
+    }
 }
 
 //https://developer.android.com/develop/ui/compose/testing#setup
@@ -153,9 +156,14 @@ android {
     debugImplementation(libs.androidx.uitest.testManifest)
 }*/
 
-compose.desktop {
-    application {
-        mainClass = "dev.datlag.mimasu.MainKt"
+compose {
+    resources {
+        generateResClass = auto
+    }
+    desktop {
+        application {
+            mainClass = "dev.datlag.mimasu.MainKt"
+        }
     }
 }
 

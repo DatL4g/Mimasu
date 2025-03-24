@@ -1,0 +1,13 @@
+<resources>
+    <string name="profile">Profile</string>
+    <string name="movies">Movies</string>
+    <string name="home">Home</string>
+    <string name="series">Series</string>
+    <string name="search">Search</string>
+    <string name="home_trending">Trending</string>
+    <string name="home_today">Today</string>
+    <string name="home_week">Week</string>
+    <string name="home_people">People</string>
+    <string name="home_series">TV Shows</string>
+    <string name="home_movies">Movies</string>
+</resources>

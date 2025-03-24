@@ -5,10 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -46,14 +50,24 @@ import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
+import mimasu.composeapp.generated.resources.Res
+import mimasu.composeapp.generated.resources.home_movies
+import mimasu.composeapp.generated.resources.home_people
+import mimasu.composeapp.generated.resources.home_series
+import mimasu.composeapp.generated.resources.home_today
+import mimasu.composeapp.generated.resources.home_trending
+import mimasu.composeapp.generated.resources.home_week
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun Home() {
     val trendingViewModel = kodeinViewModel<TrendingViewModel>()
 
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = WindowInsets.statusBars.asPaddingValues()
     ) {
         item {
             Row(
@@ -65,7 +79,7 @@ fun Home() {
 
                 Text(
                     modifier = Modifier.weight(1F),
-                    text = "Trending",
+                    text = stringResource(Res.string.home_trending),
                     fontWeight = FontWeight.Bold,
                     style = Platform.typography().headlineLarge,
                     maxLines = 1
@@ -82,7 +96,7 @@ fun Home() {
                         ),
                         label = {
                             Text(
-                                text = "Today",
+                                text = stringResource(Res.string.home_today),
                                 maxLines = 1,
                                 style = Platform.typography().labelSmall
                             )
@@ -99,7 +113,7 @@ fun Home() {
                         ),
                         label = {
                             Text(
-                                text = "Week",
+                                text = stringResource(Res.string.home_week),
                                 maxLines = 1,
                                 style = Platform.typography().labelSmall
                             )
@@ -110,14 +124,17 @@ fun Home() {
         }
         item {
             Column(
-                modifier = Modifier.fillParentMaxWidth().animateContentSize(),
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .animateContentSize()
+                    .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val people = trendingViewModel.people.collectAsLazyPagingItems()
 
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    text = "People",
+                    text = stringResource(Res.string.home_people),
                     style = Platform.typography().headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1
@@ -125,7 +142,7 @@ fun Home() {
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(people.itemCount) { index ->
                         val person = people[index]
@@ -139,14 +156,17 @@ fun Home() {
         }
         item {
             Column(
-                modifier = Modifier.fillParentMaxWidth().animateContentSize(),
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .animateContentSize()
+                    .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val series = trendingViewModel.tv.collectAsLazyPagingItems()
 
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    text = "TV Shows",
+                    text = stringResource(Res.string.home_series),
                     style = Platform.typography().headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1
@@ -154,7 +174,7 @@ fun Home() {
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(series.itemCount) { index ->
                         val show = series[index]
@@ -168,14 +188,17 @@ fun Home() {
         }
         item {
             Column(
-                modifier = Modifier.fillParentMaxWidth().animateContentSize(),
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .animateContentSize()
+                    .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val movies = trendingViewModel.movies.collectAsLazyPagingItems()
 
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    text = "Movies",
+                    text = stringResource(Res.string.home_movies),
                     style = Platform.typography().headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1
@@ -183,7 +206,7 @@ fun Home() {
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(movies.itemCount) { index ->
                         val movie = movies[index]
