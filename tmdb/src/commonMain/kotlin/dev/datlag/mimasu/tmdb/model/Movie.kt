@@ -1,9 +1,14 @@
 package dev.datlag.mimasu.tmdb.model
 
+import dev.datlag.tooling.scopeCatching
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 @ConsistentCopyVisibility
@@ -24,4 +29,13 @@ data class Movie internal constructor(
     @SerialName("video") val video: Boolean = true,
     @SerialName("vote_average") val voteAverage: Float = 0F,
     @SerialName("vote_count") val voteCount: Int = 0
-) : Response, HasBackdrop, HasPoster
+) : Response, HasBackdrop, HasPoster {
+
+    @Transient
+    val releaseInstant = releaseDate?.ifBlank { null }?.let { scopeCatching {
+        Instant.parse(it)
+    }.getOrNull() }
+
+    @Transient
+    val releaseYear = releaseInstant?.toLocalDateTime(TimeZone.currentSystemDefault())?.year
+}

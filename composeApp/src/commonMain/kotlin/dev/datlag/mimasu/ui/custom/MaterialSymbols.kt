@@ -21,6 +21,7 @@ data object MaterialSymbols {
     const val PERSON_PIN_CIRCLE = "person_pin_circle"
     const val MOVIE = "movie"
     const val TV = "tv"
+    const val THUMBS_UP_DOWN = "thumbs_up_down"
 
     @Composable
     operator fun invoke(

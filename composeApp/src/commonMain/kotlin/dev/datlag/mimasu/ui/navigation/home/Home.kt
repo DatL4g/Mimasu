@@ -26,25 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
-import coil3.compose.rememberAsyncImagePainter
-import com.eygraber.compose.placeholder.PlaceholderHighlight
-import com.eygraber.compose.placeholder.material3.fade
-import com.eygraber.compose.placeholder.material3.placeholder
 import dev.datlag.mimasu.tmdb.model.Movie
-import dev.datlag.mimasu.tmdb.model.People
-import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
+import dev.datlag.mimasu.ui.custom.MovieCard
+import dev.datlag.mimasu.ui.custom.ShowCard
+import dev.datlag.mimasu.ui.custom.PersonCard
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
@@ -60,7 +50,9 @@ import mimasu.composeapp.generated.resources.home_week
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Home() {
+fun Home(
+    onMovieClicked: (Movie) -> Unit
+) {
     val trendingViewModel = kodeinViewModel<TrendingViewModel>()
 
 
@@ -212,177 +204,15 @@ fun Home() {
                         val movie = movies[index]
 
                         if (movie != null) {
-                            MovieCard(movie)
+                            MovieCard(
+                                movie = movie
+                            ) {
+                                onMovieClicked(movie)
+                            }
                         }
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun PersonCard(person: People) {
-    Column(
-        modifier = Modifier.width(100.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        var loading by remember(person.id) { mutableStateOf(true) }
-
-        AsyncImage(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-                .placeholder(
-                    visible = loading,
-                    shape = CircleShape,
-                    highlight = PlaceholderHighlight.fade()
-                ),
-            model = person.logo,
-            contentScale = ContentScale.Crop,
-            error = rememberAsyncImagePainter(
-                model = person.logoW500,
-                contentScale = ContentScale.Crop,
-                error = rememberAsyncImagePainter(
-                    model = person.logoSource,
-                    contentScale = ContentScale.Crop
-                )
-            ),
-            alignment = Alignment.Center,
-            contentDescription = person.name,
-            onLoading = {
-                loading = true
-            },
-            onError = {
-                loading = true
-            },
-            onSuccess = {
-                loading = false
-            }
-        )
-        Text(
-            text = person.name,
-            maxLines = 2,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun ShowCard(show: TV) {
-    Column(
-        modifier = Modifier.width(100.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        var loading by remember(show.id) { mutableStateOf(true) }
-
-        AsyncImage(
-            modifier = Modifier
-                .size(width = 100.dp, height = 160.dp)
-                .clip(Platform.shapes().medium)
-                .placeholder(
-                    visible = loading,
-                    shape = Platform.shapes().medium,
-                    highlight = PlaceholderHighlight.fade()
-                ),
-            model = show.poster,
-            contentScale = ContentScale.Crop,
-            error = rememberAsyncImagePainter(
-                model = show.posterW500,
-                contentScale = ContentScale.Crop,
-                error = rememberAsyncImagePainter(
-                    model = show.posterW400,
-                    contentScale = ContentScale.Crop,
-                    error = rememberAsyncImagePainter(
-                        model = show.posterW300,
-                        contentScale = ContentScale.Crop,
-                        error = rememberAsyncImagePainter(
-                            model = show.posterW200,
-                            contentScale = ContentScale.Crop,
-                            error = rememberAsyncImagePainter(
-                                model = show.posterSource,
-                                contentScale = ContentScale.Crop
-                            )
-                        )
-                    )
-                )
-            ),
-            contentDescription = show.name,
-            onLoading = {
-                loading = true
-            },
-            onError = {
-                loading = true
-            },
-            onSuccess = {
-                loading = false
-            }
-        )
-        Text(
-            text = show.name,
-            maxLines = 2,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun MovieCard(movie: Movie) {
-    Column(
-        modifier = Modifier.width(100.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        var loading by remember(movie.id) { mutableStateOf(true) }
-
-        AsyncImage(
-            modifier = Modifier
-                .size(width = 100.dp, height = 160.dp)
-                .clip(Platform.shapes().medium)
-                .placeholder(
-                    visible = loading,
-                    shape = Platform.shapes().medium,
-                    highlight = PlaceholderHighlight.fade()
-                ),
-            model = movie.poster,
-            contentScale = ContentScale.Crop,
-            error = rememberAsyncImagePainter(
-                model = movie.posterW500,
-                contentScale = ContentScale.Crop,
-                error = rememberAsyncImagePainter(
-                    model = movie.posterW400,
-                    contentScale = ContentScale.Crop,
-                    error = rememberAsyncImagePainter(
-                        model = movie.posterW300,
-                        contentScale = ContentScale.Crop,
-                        error = rememberAsyncImagePainter(
-                            model = movie.posterW200,
-                            contentScale = ContentScale.Crop,
-                            error = rememberAsyncImagePainter(
-                                model = movie.posterSource,
-                                contentScale = ContentScale.Crop
-                            )
-                        )
-                    )
-                )
-            ),
-            contentDescription = movie.title,
-            onLoading = {
-                loading = true
-            },
-            onError = {
-                loading = true
-            },
-            onSuccess = {
-                loading = false
-            }
-        )
-        Text(
-            text = movie.title,
-            maxLines = 2,
-            textAlign = TextAlign.Center
-        )
     }
 }

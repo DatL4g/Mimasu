@@ -1,28 +1,21 @@
 package dev.datlag.mimasu.ui.navigation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.home.Home
 import kotlinx.serialization.Serializable
@@ -43,16 +36,20 @@ object Navigation {
     data object Movies
 
     @Serializable
-    data object Home
+    data object Home {
+
+        @Serializable
+        data object NoDetail
+
+        @Serializable
+        data object MovieDetail
+    }
 
     @Serializable
     data object Series
 
     @Serializable
     data object Search
-
-    @Serializable
-    data class Detail(val param: String)
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -178,22 +175,39 @@ fun Navigation() {
             }
             composable<Navigation.Home> {
                 val navigator = rememberListDetailPaneScaffoldNavigator()
+                val detailController = rememberNavController()
 
                 ListDetailPaneScaffold(
                     directive = navigator.scaffoldDirective,
                     value = navigator.scaffoldValue,
                     listPane = {
-                        Home()
+                        Home(
+                            onMovieClicked = {
+                                // ToDo("set movie in viewmodel before navigation")
+                                detailController.navigate(Navigation.Home.MovieDetail) {
+                                    launchSingleTop = true
+                                }
+                                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                            }
+                        )
                     },
                     detailPane = {
-                        Column {
-                            Text(text = "Detail Home")
-                            Button(
-                                onClick = {
-                                    navigator.navigateBack()
+                        NavHost(
+                            navController = detailController,
+                            startDestination = Navigation.Home.NoDetail
+                        ) {
+                            composable<Navigation.Home.NoDetail> {
+                                // ToDo("clear viewmodel")
+                                /*LaunchedEffect(Unit) {
+                                    navigator.navigateTo(ListDetailPaneScaffoldRole.List)
                                 }
-                            ) {
-                                Text(text = "Back")
+                                LaunchedEffect(navigator) {
+                                    navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                                }*/
+                            }
+                            composable<Navigation.Home.MovieDetail> {
+                                // val route = it.toRoute<Navigation.Home.MovieDetail>()
+                                Text(text = "Movie Details")
                             }
                         }
                     }
@@ -204,10 +218,6 @@ fun Navigation() {
             }
             composable<Navigation.Search> {
                 Text(text = "Search Screen")
-            }
-            composable<Navigation.Detail> {
-                val route = it.toRoute<Navigation.Detail>()
-                Text(text = "Detail Screen${route.param}")
             }
         }
     }
