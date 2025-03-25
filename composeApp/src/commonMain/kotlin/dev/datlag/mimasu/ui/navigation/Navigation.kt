@@ -23,8 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import co.touchlab.kermit.Logger
-import dev.datlag.mimasu.common.MaterialIcon
-import dev.datlag.mimasu.common.rememberMaterialSymbolsFont
+import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.home.Home
 import kotlinx.serialization.Serializable
 import mimasu.composeapp.generated.resources.Res
@@ -79,8 +78,8 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    MaterialIcon(
-                        name = "person_pin_circle",
+                    MaterialSymbols(
+                        name = MaterialSymbols.PERSON_PIN_CIRCLE,
                         contentDescription = null,
                         filled = isProfile
                     )
@@ -98,8 +97,8 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    MaterialIcon(
-                        name = "movie",
+                    MaterialSymbols(
+                        name = MaterialSymbols.MOVIE,
                         contentDescription = null,
                         filled = isMovies
                     )
@@ -117,8 +116,8 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    MaterialIcon(
-                        name = "home",
+                    MaterialSymbols(
+                        name = MaterialSymbols.HOME,
                         contentDescription = null,
                         filled = isHome
                     )
@@ -136,8 +135,8 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    MaterialIcon(
-                        name = "tv",
+                    MaterialSymbols(
+                        name = MaterialSymbols.TV,
                         contentDescription = null,
                         filled = isSeries
                     )
@@ -155,8 +154,8 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    MaterialIcon(
-                        name = "search",
+                    MaterialSymbols(
+                        name = MaterialSymbols.SEARCH,
                         contentDescription = null,
                         filled = isSearch
                     )
