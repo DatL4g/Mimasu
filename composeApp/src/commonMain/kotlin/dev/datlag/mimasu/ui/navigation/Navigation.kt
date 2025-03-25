@@ -11,6 +11,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,10 +42,14 @@ object Navigation {
     data object Home {
 
         @Serializable
-        data object NoDetail
+        sealed interface Detail {
 
-        @Serializable
-        data object MovieDetail
+            @Serializable
+            data object None : Detail
+
+            @Serializable
+            data object Movie : Detail
+        }
     }
 
     @Serializable
@@ -174,8 +181,10 @@ fun Navigation() {
                 Text(text = "Movies Screen")
             }
             composable<Navigation.Home> {
-                val navigator = rememberListDetailPaneScaffoldNavigator()
-                val detailController = rememberNavController()
+                val navigator = rememberListDetailPaneScaffoldNavigator(
+                    isDestinationHistoryAware = false
+                )
+                var detailNavigation by remember { mutableStateOf<Navigation.Home.Detail>(Navigation.Home.Detail.None) }
 
                 ListDetailPaneScaffold(
                     directive = navigator.scaffoldDirective,
@@ -184,30 +193,17 @@ fun Navigation() {
                         Home(
                             onMovieClicked = {
                                 // ToDo("set movie in viewmodel before navigation")
-                                detailController.navigate(Navigation.Home.MovieDetail) {
-                                    launchSingleTop = true
-                                }
+                                detailNavigation = Navigation.Home.Detail.Movie
                                 navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                             }
                         )
                     },
                     detailPane = {
-                        NavHost(
-                            navController = detailController,
-                            startDestination = Navigation.Home.NoDetail
-                        ) {
-                            composable<Navigation.Home.NoDetail> {
-                                // ToDo("clear viewmodel")
-                                /*LaunchedEffect(Unit) {
-                                    navigator.navigateTo(ListDetailPaneScaffoldRole.List)
-                                }
-                                LaunchedEffect(navigator) {
-                                    navigator.navigateTo(ListDetailPaneScaffoldRole.List)
-                                }*/
-                            }
-                            composable<Navigation.Home.MovieDetail> {
-                                // val route = it.toRoute<Navigation.Home.MovieDetail>()
-                                Text(text = "Movie Details")
+                        // ToDo("BackHandler when migrated to compose 1.8.0")
+                        when (detailNavigation) {
+                            is Navigation.Home.Detail.Movie -> { Text(text = "Movie Details") }
+                            else -> {
+                                navigator.navigateTo(ListDetailPaneScaffoldRole.List)
                             }
                         }
                     }

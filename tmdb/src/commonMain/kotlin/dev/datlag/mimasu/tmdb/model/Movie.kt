@@ -2,7 +2,9 @@ package dev.datlag.mimasu.tmdb.model
 
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -32,10 +34,10 @@ data class Movie internal constructor(
 ) : Response, HasBackdrop, HasPoster {
 
     @Transient
-    val releaseInstant = releaseDate?.ifBlank { null }?.let { scopeCatching {
-        Instant.parse(it)
+    val releaseLocalDate = releaseDate?.ifBlank { null }?.let { scopeCatching {
+        LocalDate.parse(it)
     }.getOrNull() }
 
     @Transient
-    val releaseYear = releaseInstant?.toLocalDateTime(TimeZone.currentSystemDefault())?.year
+    val releaseYear = releaseLocalDate?.year
 }
