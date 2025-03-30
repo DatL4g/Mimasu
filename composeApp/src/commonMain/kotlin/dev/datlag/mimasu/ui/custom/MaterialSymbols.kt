@@ -1,18 +1,34 @@
 package dev.datlag.mimasu.ui.custom
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Movie
+import androidx.compose.material.icons.rounded.PersonPinCircle
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.localContentColor
+import dev.datlag.tooling.compose.withIOContext
 import dev.tclement.fonticons.ExperimentalFontIconsApi
 import dev.tclement.fonticons.FontIcon
 import dev.tclement.fonticons.IconFont
-import dev.tclement.fonticons.rememberVariableIconFont
+import dev.tclement.fonticons.VariableIconFont
+import dev.tclement.fonticons.createVariableIconFont
 import mimasu.composeapp.generated.resources.MaterialSymbolsRounded
 import mimasu.composeapp.generated.resources.Res
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.FontResource
+import org.jetbrains.compose.resources.getSystemResourceEnvironment
 
 data object MaterialSymbols {
 
@@ -23,55 +39,130 @@ data object MaterialSymbols {
     const val TV = "tv"
     const val THUMBS_UP_DOWN = "thumbs_up_down"
 
+    private const val DEFAULT_GRADE = 24
+    private const val DEFAULT_OPSZ = 24F
+
+    private var defaultNonFilledFont: IconFont? = null
+    private var defaultFilledFont: IconFont? = null
+
     @Composable
     operator fun invoke(
         name: String,
         contentDescription: String?,
         modifier: Modifier = Modifier,
         tint: Color = Platform.localContentColor(),
-        filled: Boolean = false
+        filled: Boolean = false,
+        fallback: ImageVector? = fallbackFromName(name)
     ) {
-        FontIcon(
-            iconName = name,
-            contentDescription = contentDescription,
-            modifier = modifier,
-            tint = tint,
-            iconFont = rememberFont(
-                fill = if (filled) {
-                    1F
-                } else {
-                    0F
-                }
-            )
+        val font = rememberAsyncFont(
+            fill = if (filled) {
+                1F
+            } else {
+                0F
+            }
         )
+
+        if (font == null) {
+            if (fallback != null) {
+                PlatformIcon(
+                    imageVector = fallback,
+                    contentDescription = contentDescription,
+                    modifier = modifier,
+                    tint = tint
+                )
+            } else {
+                Spacer(modifier = modifier)
+            }
+        } else {
+            FontIcon(
+                iconName = name,
+                contentDescription = contentDescription,
+                modifier = modifier,
+                tint = tint,
+                iconFont = font
+            )
+        }
     }
 
-    @OptIn(ExperimentalFontIconsApi::class)
+    private fun fallbackFromName(name: String): ImageVector? = when {
+        name.equals(HOME, ignoreCase = true) -> Icons.Rounded.Home
+        name.equals(SEARCH, ignoreCase = true) -> Icons.Rounded.Search
+        name.equals(PERSON_PIN_CIRCLE, ignoreCase = true) -> Icons.Rounded.PersonPinCircle
+        name.equals(MOVIE, ignoreCase = true) -> Icons.Rounded.Movie
+        name.equals(TV, ignoreCase = true) -> Icons.Rounded.Tv
+        else -> null
+    }
+
+    @OptIn(ExperimentalResourceApi::class, ExperimentalFontIconsApi::class)
     @Composable
-    fun rememberFont(
-        grade: Int = 24,
+    fun asyncVariableFont(
+        fontResource: FontResource,
+        weights: Array<FontWeight>,
+        fontVariationSettings: FontVariation.Settings = FontVariation.Settings(),
+        fontFeatureSettings: String? = null
+    ): VariableIconFont? {
+        val density = LocalDensity.current
+
+        return produceState<VariableIconFont?>(initialValue = null, key1 = fontResource) {
+            value = withIOContext {
+                createVariableIconFont(
+                    fontResource = fontResource,
+                    weights = weights,
+                    fontVariationSettings = fontVariationSettings,
+                    fontFeatureSettings = fontFeatureSettings,
+                    resourceEnvironment = getSystemResourceEnvironment(),
+                    density = density
+                )
+            }
+        }.value
+    }
+
+    @Composable
+    fun rememberAsyncFont(
+        grade: Int = DEFAULT_GRADE,
         fill: Float = 0f,
         manualOpsz: Boolean = false,
-        opsz: Float = 24f
-    ): IconFont = rememberVariableIconFont(
-        fontResource = Res.font.MaterialSymbolsRounded,
-        weights = arrayOf(
-            FontWeight.W100,
-            FontWeight.W200,
-            FontWeight.W300,
-            FontWeight.W400,
-            FontWeight.W500,
-            FontWeight.W600,
-            FontWeight.W700,
-            FontWeight.W800,
-            FontWeight.W900,
-        ),
-        fontVariationSettings = FontVariation.Settings(*buildList {
-            add(FontVariation.grade(grade))
-            add(FontVariation.Setting("FILL", fill))
-            if (manualOpsz) {
-                add(FontVariation.Setting("opsz", opsz))
+        opsz: Float = DEFAULT_OPSZ
+    ): IconFont? {
+
+        @Composable
+        fun create() = asyncVariableFont(
+            fontResource = Res.font.MaterialSymbolsRounded,
+            weights = arrayOf(
+                FontWeight.W100,
+                FontWeight.W200,
+                FontWeight.W300,
+                FontWeight.W400,
+                FontWeight.W500,
+                FontWeight.W600,
+                FontWeight.W700,
+                FontWeight.W800,
+                FontWeight.W900,
+            ),
+            fontVariationSettings = FontVariation.Settings(*buildList {
+                add(FontVariation.grade(grade))
+                add(FontVariation.Setting("FILL", fill))
+                if (manualOpsz) {
+                    add(FontVariation.Setting("opsz", opsz))
+                }
+            }.toTypedArray())
+        )
+
+        if (grade == DEFAULT_GRADE && opsz == DEFAULT_OPSZ && !Platform.isDesktop) {
+            when {
+                fill <= 0F -> return defaultNonFilledFont ?: create().also {
+                    if (defaultNonFilledFont == null) {
+                        defaultNonFilledFont = it
+                    }
+                }
+                fill >= 1F -> return defaultFilledFont ?: create().also {
+                    if (defaultFilledFont == null) {
+                        defaultFilledFont = it
+                    }
+                }
             }
-        }.toTypedArray())
-    )
+        }
+
+        return create()
+    }
 }

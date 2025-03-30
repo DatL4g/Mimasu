@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose)
+    alias(libs.plugins.compose.reload)
     alias(libs.plugins.android.application)
     alias(libs.plugins.serialization)
     alias(libs.plugins.konfig)
@@ -59,6 +60,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.material3AdaptiveNavigationSuite)
+            implementation(compose.materialIconsExtended)
 
             implementation(libs.lifecycle)
             implementation(libs.navigation)
@@ -79,6 +81,7 @@ kotlin {
             implementation(libs.placeholder)
             implementation(libs.fonticons)
 
+            implementation(project(":core"))
             implementation(project(":ui"))
         }
 

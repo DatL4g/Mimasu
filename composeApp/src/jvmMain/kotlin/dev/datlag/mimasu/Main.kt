@@ -7,6 +7,7 @@ import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.tooling.Tooling
 import dev.datlag.tooling.applicationTitle
+import org.jetbrains.compose.reload.DevelopmentEntryPoint
 import org.kodein.di.DI
 
 fun main(vararg args: String) {
@@ -25,8 +26,10 @@ private fun runWindow(di: DI) {
             title = "Mimasu",
             onCloseRequest = ::exitApplication
         ) {
-            App(di) {
-                Navigation()
+            DevelopmentEntryPoint {
+                App(di) {
+                    Navigation()
+                }
             }
         }
     }
