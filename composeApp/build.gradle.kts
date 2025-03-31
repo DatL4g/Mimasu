@@ -102,6 +102,7 @@ kotlin {
             implementation(libs.ktor.jvm)
             implementation(libs.cronet)
             implementation(libs.cronet.okhttp)
+            implementation(libs.google.fonts)
         }
 
         jvmMain.dependencies {

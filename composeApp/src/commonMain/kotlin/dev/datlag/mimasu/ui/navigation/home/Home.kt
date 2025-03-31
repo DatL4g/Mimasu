@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
@@ -54,7 +55,6 @@ fun Home(
     onMovieClicked: (Movie) -> Unit
 ) {
     val trendingViewModel = kodeinViewModel<TrendingViewModel>()
-
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -139,8 +139,18 @@ fun Home(
                     items(people.itemCount) { index ->
                         val person = people[index]
 
-                        if (person != null) {
-                            PersonCard(person)
+                        PersonCard(person, placeholder = false)
+                    }
+                    when {
+                        people.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                PersonCard(null)
+                            }
+                        }
+                        people.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                PersonCard(null)
+                            }
                         }
                     }
                 }
@@ -171,8 +181,18 @@ fun Home(
                     items(series.itemCount) { index ->
                         val show = series[index]
 
-                        if (show != null) {
-                            ShowCard(show)
+                        ShowCard(show)
+                    }
+                    when {
+                        series.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                ShowCard(null)
+                            }
+                        }
+                        series.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                ShowCard(null)
+                            }
                         }
                     }
                 }
@@ -203,11 +223,21 @@ fun Home(
                     items(movies.itemCount) { index ->
                         val movie = movies[index]
 
-                        if (movie != null) {
-                            MovieCard(
-                                movie = movie
-                            ) {
-                                onMovieClicked(movie)
+                        MovieCard(
+                            movie = movie
+                        ) {
+                            onMovieClicked(it)
+                        }
+                    }
+                    when {
+                        movies.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                MovieCard(null)
+                            }
+                        }
+                        movies.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                MovieCard(null)
                             }
                         }
                     }

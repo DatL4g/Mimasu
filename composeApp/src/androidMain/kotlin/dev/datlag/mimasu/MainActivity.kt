@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.ui.navigation.Navigation
+import dev.datlag.mimasu.ui.theme.Font
+import dev.datlag.tooling.compose.toTypography
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DIAware
 import kotlin.reflect.safeCast
@@ -31,8 +33,11 @@ class MainActivity : ComponentActivity() {
             ?: return exit("Could not find dependency injection.")
 
         setContent {
+            // ToDo("ignore font on TV")
+            // ToDo("navigation wrapped for TV")
             App(
                 di = di,
+                typography = Font.manrope.toTypography()
             ) {
                 Navigation()
             }

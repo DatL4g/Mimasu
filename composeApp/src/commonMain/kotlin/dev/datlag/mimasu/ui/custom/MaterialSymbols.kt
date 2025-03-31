@@ -2,6 +2,10 @@ package dev.datlag.mimasu.ui.custom
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Face2
+import androidx.compose.material.icons.rounded.Face4
+import androidx.compose.material.icons.rounded.Face5
+import androidx.compose.material.icons.rounded.Face6
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.PersonPinCircle
@@ -15,6 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
+import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.localContentColor
@@ -39,6 +44,10 @@ data object MaterialSymbols {
     const val MOVIE = "movie"
     const val TV = "tv"
     const val THUMBS_UP_DOWN = "thumbs_up_down"
+    const val FACE_2 = "face_2" // non binary
+    const val FACE_4 = "face_4" // woman
+    const val FACE_5 = "face_5" // not specified
+    const val FACE_6 = "face_6" // man
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -85,12 +94,34 @@ data object MaterialSymbols {
         }
     }
 
+    @Composable
+    operator fun invoke(
+        person: People?,
+        contentDescription: String?,
+        modifier: Modifier = Modifier,
+        tint: Color = Platform.localContentColor(),
+        filled: Boolean = false,
+        fallback: ImageVector? = fallbackFromName(person?.let { nameFor(it) } ?: FACE_5)
+    ) = invoke(
+        name = person?.let { nameFor(it) } ?: FACE_5,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        tint = tint,
+        filled = filled,
+        fallback = fallback
+    )
+
     private fun fallbackFromName(name: String): ImageVector? = when {
         name.equals(HOME, ignoreCase = true) -> Icons.Rounded.Home
         name.equals(SEARCH, ignoreCase = true) -> Icons.Rounded.Search
         name.equals(PERSON_PIN_CIRCLE, ignoreCase = true) -> Icons.Rounded.PersonPinCircle
         name.equals(MOVIE, ignoreCase = true) -> Icons.Rounded.Movie
         name.equals(TV, ignoreCase = true) -> Icons.Rounded.Tv
+
+        name.equals(FACE_2, ignoreCase = true) -> Icons.Rounded.Face2
+        name.equals(FACE_4, ignoreCase = true) -> Icons.Rounded.Face4
+        name.equals(FACE_5, ignoreCase = true) -> Icons.Rounded.Face5
+        name.equals(FACE_6, ignoreCase = true) -> Icons.Rounded.Face6
         else -> null
     }
 
@@ -161,5 +192,12 @@ data object MaterialSymbols {
         }
 
         return create()
+    }
+
+    private fun nameFor(person: People): String = when {
+        person.isFemale -> FACE_4
+        person.isMale -> FACE_6
+        person.isNonBinary -> FACE_2
+        else -> FACE_5
     }
 }

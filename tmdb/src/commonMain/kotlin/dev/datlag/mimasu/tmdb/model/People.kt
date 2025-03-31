@@ -27,4 +27,13 @@ data class People internal constructor(
 
     @Transient
     val knownForTV = knownFor.filterIsInstance<TV>()
+
+    @Transient
+    val isFemale = gender == 1
+
+    @Transient
+    val isMale = gender == 2
+
+    @Transient
+    val isNonBinary = gender == 3
 }

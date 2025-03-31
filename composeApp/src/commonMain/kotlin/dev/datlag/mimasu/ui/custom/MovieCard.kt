@@ -39,19 +39,21 @@ import dev.datlag.tooling.compose.platform.typography
 
 @Composable
 fun MovieCard(
-    movie: Movie,
+    movie: Movie?,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: (Movie) -> Unit = { }
 ) {
     Card(
-        onClick = onClick,
-        modifier = modifier.width(100.dp).height(240.dp),
+        onClick = {
+            movie?.let(onClick)
+        },
+        modifier = modifier.width(100.dp).height(220.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent
         )
     ) {
-        var loading by remember(movie.id) { mutableStateOf(true) }
+        var loading by remember(movie?.id) { mutableStateOf(true) }
 
         AsyncImage(
             modifier = Modifier
@@ -62,29 +64,29 @@ fun MovieCard(
                     shape = Platform.shapes().medium,
                     highlight = PlaceholderHighlight.fade()
                 ),
-            model = movie.poster,
+            model = movie?.poster,
             contentScale = ContentScale.Crop,
             error = rememberAsyncImagePainter(
-                model = movie.posterW500,
+                model = movie?.posterW500,
                 contentScale = ContentScale.Crop,
                 error = rememberAsyncImagePainter(
-                    model = movie.posterW400,
+                    model = movie?.posterW400,
                     contentScale = ContentScale.Crop,
                     error = rememberAsyncImagePainter(
-                        model = movie.posterW300,
+                        model = movie?.posterW300,
                         contentScale = ContentScale.Crop,
                         error = rememberAsyncImagePainter(
-                            model = movie.posterW200,
+                            model = movie?.posterW200,
                             contentScale = ContentScale.Crop,
                             error = rememberAsyncImagePainter(
-                                model = movie.posterSource,
+                                model = movie?.posterSource,
                                 contentScale = ContentScale.Crop
                             )
                         )
                     )
                 )
             ),
-            contentDescription = movie.title,
+            contentDescription = movie?.title,
             onLoading = {
                 loading = true
             },
@@ -96,39 +98,20 @@ fun MovieCard(
             }
         )
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = movie.title,
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+                .placeholder(
+                    visible = movie == null,
+                    shape = Platform.shapes().small,
+                    highlight = PlaceholderHighlight.fade()
+                ),
+            text = movie?.title ?: movie?.originalTitle ?: "",
             maxLines = 2,
             textAlign = TextAlign.Center,
             softWrap = true,
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.Medium
         )
-        Spacer(modifier = Modifier.weight(1F))
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp, bottom = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            movie.releaseYear?.let {
-                Text(
-                    text = it.toString(),
-                    style = Platform.typography().labelSmall
-                )
-            }
-            Spacer(modifier = Modifier.weight(1F))
-            movie.voteAverage.takeIf { it > 0F }?.let {
-                MaterialSymbols(
-                    modifier = Modifier.size(12.dp),
-                    name = MaterialSymbols.THUMBS_UP_DOWN,
-                    contentDescription = null,
-                    filled = true
-                )
-                Text(
-                    text = it.round(1).toString(),
-                    style = Platform.typography().labelSmall
-                )
-            }
-        }
     }
 }

@@ -25,6 +25,7 @@ decompose = "3.2.2"
 desugar = "2.1.5"
 firebase = "2.1.0"
 fonticons = "2.0.0"
+google-fonts = "1.7.8"
 google-identity = "1.1.1"
 haze = "1.0.2"
 immutable = "0.3.8"
@@ -106,6 +107,7 @@ firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", versi
 firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "firebase" }
 firebase-config = { group = "dev.gitlive", name = "firebase-config", version.ref = "firebase" }
 fonticons = { group = "dev.tclement.fonticons", name = "core", version.ref = "fonticons" }
+google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "google-fonts" }
 google-play-service = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services" }
 google-identity = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-identity" }
 google-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "android-credentials" }
