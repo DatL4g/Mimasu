@@ -24,6 +24,7 @@ import dev.tclement.fonticons.FontIcon
 import dev.tclement.fonticons.IconFont
 import dev.tclement.fonticons.VariableIconFont
 import dev.tclement.fonticons.createVariableIconFont
+import kotlinx.atomicfu.atomic
 import mimasu.composeapp.generated.resources.MaterialSymbolsRounded
 import mimasu.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -42,8 +43,8 @@ data object MaterialSymbols {
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
 
-    private var defaultNonFilledFont: IconFont? = null
-    private var defaultFilledFont: IconFont? = null
+    private val defaultNonFilledFont = atomic<IconFont?>(null)
+    private val defaultFilledFont = atomic<IconFont?>(null)
 
     @Composable
     operator fun invoke(
@@ -150,15 +151,11 @@ data object MaterialSymbols {
 
         if (grade == DEFAULT_GRADE && opsz == DEFAULT_OPSZ && !Platform.isDesktop) {
             when {
-                fill <= 0F -> return defaultNonFilledFont ?: create().also {
-                    if (defaultNonFilledFont == null) {
-                        defaultNonFilledFont = it
-                    }
+                fill <= 0F -> return defaultNonFilledFont.value ?: create().also {
+                    defaultNonFilledFont.compareAndSet(null, it)
                 }
-                fill >= 1F -> return defaultFilledFont ?: create().also {
-                    if (defaultFilledFont == null) {
-                        defaultFilledFont = it
-                    }
+                fill >= 1F -> return defaultFilledFont.value ?: create().also {
+                    defaultFilledFont.compareAndSet(null, it)
                 }
             }
         }

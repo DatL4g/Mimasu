@@ -9,6 +9,7 @@ android-core = "1.15.0"
 android-credentials = "1.5.0"
 android-startup = "1.2.0"
 assertk = "0.28.1"
+atomicfu = "0.27.0"
 car = "1.4.0"
 coil = "3.1.0"
 compose = "1.7.3"
@@ -181,6 +182,7 @@ android-media = [ "media3", "media3-dash", "media3-hls", "media3-rtsp", "media3-
 android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
+atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "atomicfu" }
 cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

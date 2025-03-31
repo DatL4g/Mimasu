@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.konfig)
     alias(libs.plugins.sekret)
+    alias(libs.plugins.atomicfu)
 }
 
 composeCompiler {
