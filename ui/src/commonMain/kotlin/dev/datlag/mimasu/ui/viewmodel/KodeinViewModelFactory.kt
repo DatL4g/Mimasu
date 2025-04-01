@@ -26,6 +26,12 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
 
                 (model as? T) ?: super.create(modelClass, extras)
             }
+            modelClass typeOf MovieListsViewModel::class -> {
+                val tmdb = di.instance<TMDB>()
+                val model = MovieListsViewModel(movieListsRepository = tmdb.movieLists)
+
+                (model as? T) ?: super.create(modelClass, extras)
+            }
             else -> super.create(modelClass, extras)
         }
     }

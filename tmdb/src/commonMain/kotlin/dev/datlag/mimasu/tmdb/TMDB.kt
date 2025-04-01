@@ -1,13 +1,14 @@
 package dev.datlag.mimasu.tmdb
 
 import de.jensklingenberg.ktorfit.ktorfit
+import dev.datlag.mimasu.tmdb.api.createMovieLists
 import dev.datlag.mimasu.tmdb.api.createSearch
 import dev.datlag.mimasu.tmdb.api.createTrending
 import dev.datlag.mimasu.tmdb.converter.BoolStringConverter
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
+import dev.datlag.mimasu.tmdb.repository.MovieListsRepository
 import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import dev.datlag.mimasu.tmdb.repository.TrendingRepository
-import dev.datlag.sekret.Secret
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
@@ -21,7 +22,8 @@ import kotlin.coroutines.CoroutineContext
 data class TMDB internal constructor(
     val network: Network,
     val trending: TrendingRepository,
-    val search: SearchRepository
+    val search: SearchRepository,
+    val movieLists: MovieListsRepository
 ) {
 
     class Builder {
@@ -81,6 +83,13 @@ data class TMDB internal constructor(
                     apiKey = apiKey,
                     search = ktorfit.createSearch(),
                     language = language,
+                    context = network.context
+                ),
+                movieLists = MovieListsRepository(
+                    apiKey = apiKey,
+                    api = ktorfit.createMovieLists(),
+                    language = language,
+                    region = region,
                     context = network.context
                 )
             )

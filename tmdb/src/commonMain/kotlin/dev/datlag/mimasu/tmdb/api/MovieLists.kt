@@ -10,7 +10,6 @@ interface MovieLists {
     @GET("movie/now_playing")
     suspend fun nowPlaying(
         @Query("api_key") apiKey: String,
-        @Query("include_adult") @RequestType(String::class) includeAdult: Boolean,
         @Query("language") language: String,
         @Query("page") page: Int,
         @Query("region") region: String?

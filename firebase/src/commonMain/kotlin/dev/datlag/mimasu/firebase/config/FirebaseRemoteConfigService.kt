@@ -14,8 +14,10 @@ data class FirebaseRemoteConfigService(
 ) {
 
     suspend fun config(): FirebaseRemoteConfig = Firebase.remoteConfig(app).apply {
-        if (isDebug) {
+        settings {
+            if (isDebug) {
 
+            }
         }
     }.also { it.fetchAndActivate() }
 

@@ -10,4 +10,9 @@
     <string name="home_people">Personen</string>
     <string name="home_series">Serien</string>
     <string name="home_movies">Filme</string>
+
+    <string name="movies_now_playing">Jetzt im Kino</string>
+    <string name="movies_popular">Beliebt</string>
+    <string name="movies_top_rated">Top Bewertet</string>
+    <string name="movies_upcoming">Bald verfügbar</string>
 </resources>

@@ -28,6 +28,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.series
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.home.Home
+import dev.datlag.mimasu.ui.navigation.movies.Movies
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.stringResource
 
@@ -179,7 +180,24 @@ fun Navigation() {
                 Text(text = "Profile Screen")
             }
             composable<Navigation.Movies> {
-                Text(text = "Movies Screen")
+                val navigator = rememberListDetailPaneScaffoldNavigator(
+                    isDestinationHistoryAware = false
+                )
+
+                ListDetailPaneScaffold(
+                    directive = navigator.scaffoldDirective,
+                    value = navigator.scaffoldValue,
+                    listPane = {
+                        Movies(
+                            onMovieClicked = {
+                                // ToDo
+                            }
+                        )
+                    },
+                    detailPane = {
+                        // ToDo
+                    }
+                )
             }
             composable<Navigation.Home> {
                 val navigator = rememberListDetailPaneScaffoldNavigator(

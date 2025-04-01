@@ -1,0 +1,217 @@
+package dev.datlag.mimasu.ui.navigation.movies
+
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.home_people
+import dev.datlag.mimasu.composeapp.generated.resources.movies
+import dev.datlag.mimasu.composeapp.generated.resources.movies_now_playing
+import dev.datlag.mimasu.composeapp.generated.resources.movies_popular
+import dev.datlag.mimasu.composeapp.generated.resources.movies_top_rated
+import dev.datlag.mimasu.composeapp.generated.resources.movies_upcoming
+import dev.datlag.mimasu.tmdb.model.Movie
+import dev.datlag.mimasu.ui.collectAsLazyPagingItems
+import dev.datlag.mimasu.ui.custom.MovieCard
+import dev.datlag.mimasu.ui.viewmodel.MovieListsViewModel
+import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.typography
+import org.jetbrains.compose.resources.stringResource
+
+@Composable
+fun Movies(
+    onMovieClicked: (Movie) -> Unit
+) {
+    val movieListsViewModel = kodeinViewModel<MovieListsViewModel>()
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = WindowInsets.statusBars.asPaddingValues()
+    ) {
+        item {
+            Column(
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .animateContentSize()
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val nowPlaying = movieListsViewModel.nowPlaying.collectAsLazyPagingItems()
+
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = stringResource(Res.string.movies_now_playing),
+                    style = Platform.typography().headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(nowPlaying.itemCount) { index ->
+                        val movie = nowPlaying[index]
+
+                        MovieCard(movie)
+                    }
+                    when {
+                        nowPlaying.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                MovieCard(null)
+                            }
+                        }
+                        nowPlaying.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                MovieCard(null)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        item {
+            Column(
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .animateContentSize()
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val popular = movieListsViewModel.popular.collectAsLazyPagingItems()
+
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = stringResource(Res.string.movies_popular),
+                    style = Platform.typography().headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(popular.itemCount) { index ->
+                        val movie = popular[index]
+
+                        MovieCard(movie)
+                    }
+                    when {
+                        popular.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                MovieCard(null)
+                            }
+                        }
+                        popular.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                MovieCard(null)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        item {
+            Column(
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .animateContentSize()
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val topRated = movieListsViewModel.topRated.collectAsLazyPagingItems()
+
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = stringResource(Res.string.movies_top_rated),
+                    style = Platform.typography().headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(topRated.itemCount) { index ->
+                        val movie = topRated[index]
+
+                        MovieCard(movie)
+                    }
+                    when {
+                        topRated.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                MovieCard(null)
+                            }
+                        }
+                        topRated.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                MovieCard(null)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        item {
+            Column(
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .animateContentSize()
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val upcoming = movieListsViewModel.upcoming.collectAsLazyPagingItems()
+
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = stringResource(Res.string.movies_upcoming),
+                    style = Platform.typography().headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(upcoming.itemCount) { index ->
+                        val movie = upcoming[index]
+
+                        MovieCard(movie)
+                    }
+                    when {
+                        upcoming.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                MovieCard(null)
+                            }
+                        }
+                        upcoming.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                MovieCard(null)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
