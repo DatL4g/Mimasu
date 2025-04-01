@@ -15,4 +15,9 @@
     <string name="movies_popular">Popular</string>
     <string name="movies_top_rated">Top Rated</string>
     <string name="movies_upcoming">Upcoming</string>
+
+    <string name="series_airing_today">Airing Today</string>
+    <string name="series_on_the_air">On the Air</string>
+    <string name="series_popular">Popular</string>
+    <string name="series_top_rated">Top Rated</string>
 </resources>

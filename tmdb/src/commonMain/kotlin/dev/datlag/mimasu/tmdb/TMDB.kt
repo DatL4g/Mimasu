@@ -4,11 +4,13 @@ import de.jensklingenberg.ktorfit.ktorfit
 import dev.datlag.mimasu.tmdb.api.createMovieLists
 import dev.datlag.mimasu.tmdb.api.createSearch
 import dev.datlag.mimasu.tmdb.api.createTrending
+import dev.datlag.mimasu.tmdb.api.createTvSeriesLists
 import dev.datlag.mimasu.tmdb.converter.BoolStringConverter
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.tmdb.repository.MovieListsRepository
 import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import dev.datlag.mimasu.tmdb.repository.TrendingRepository
+import dev.datlag.mimasu.tmdb.repository.TvSeriesListsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
@@ -16,6 +18,7 @@ import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.datetime.TimeZone
 import kotlin.coroutines.CoroutineContext
 
 @ConsistentCopyVisibility
@@ -23,7 +26,8 @@ data class TMDB internal constructor(
     val network: Network,
     val trending: TrendingRepository,
     val search: SearchRepository,
-    val movieLists: MovieListsRepository
+    val movieLists: MovieListsRepository,
+    val tvSeriesLists: TvSeriesListsRepository
 ) {
 
     class Builder {
@@ -90,6 +94,12 @@ data class TMDB internal constructor(
                     api = ktorfit.createMovieLists(),
                     language = language,
                     region = region,
+                    context = network.context
+                ),
+                tvSeriesLists = TvSeriesListsRepository(
+                    apiKey = apiKey,
+                    api = ktorfit.createTvSeriesLists(),
+                    language = language,
                     context = network.context
                 )
             )

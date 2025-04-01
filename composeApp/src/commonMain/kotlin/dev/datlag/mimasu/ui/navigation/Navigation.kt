@@ -29,6 +29,8 @@ import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.home.Home
 import dev.datlag.mimasu.ui.navigation.movies.Movies
+import dev.datlag.mimasu.ui.navigation.series.Series
+import kotlinx.datetime.TimeZone
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.stringResource
 
@@ -229,7 +231,24 @@ fun Navigation() {
                 )
             }
             composable<Navigation.Series> {
-                Text(text = "Series Screen")
+                val navigator = rememberListDetailPaneScaffoldNavigator(
+                    isDestinationHistoryAware = false
+                )
+
+                ListDetailPaneScaffold(
+                    directive = navigator.scaffoldDirective,
+                    value = navigator.scaffoldValue,
+                    listPane = {
+                        Series(
+                            onSeriesClicked = {
+                                // ToDo
+                            }
+                        )
+                    },
+                    detailPane = {
+                        // ToDo
+                    }
+                )
             }
             composable<Navigation.Search> {
                 Text(text = "Search Screen")
