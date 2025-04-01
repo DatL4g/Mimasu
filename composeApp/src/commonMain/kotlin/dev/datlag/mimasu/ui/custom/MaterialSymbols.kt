@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
+import dev.datlag.mimasu.composeapp.generated.resources.MaterialSymbolsRounded
+import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformIcon
@@ -30,8 +32,6 @@ import dev.tclement.fonticons.IconFont
 import dev.tclement.fonticons.VariableIconFont
 import dev.tclement.fonticons.createVariableIconFont
 import kotlinx.atomicfu.atomic
-import mimasu.composeapp.generated.resources.MaterialSymbolsRounded
-import mimasu.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.FontResource
 import org.jetbrains.compose.resources.getSystemResourceEnvironment

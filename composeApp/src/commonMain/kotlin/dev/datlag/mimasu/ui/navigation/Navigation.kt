@@ -19,15 +19,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.home
+import dev.datlag.mimasu.composeapp.generated.resources.movies
+import dev.datlag.mimasu.composeapp.generated.resources.profile
+import dev.datlag.mimasu.composeapp.generated.resources.search
+import dev.datlag.mimasu.composeapp.generated.resources.series
+import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.home.Home
 import kotlinx.serialization.Serializable
-import mimasu.composeapp.generated.resources.Res
-import mimasu.composeapp.generated.resources.home
-import mimasu.composeapp.generated.resources.movies
-import mimasu.composeapp.generated.resources.profile
-import mimasu.composeapp.generated.resources.search
-import mimasu.composeapp.generated.resources.series
 import org.jetbrains.compose.resources.stringResource
 
 object Navigation {

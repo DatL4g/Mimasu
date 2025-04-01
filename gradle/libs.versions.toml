@@ -7,6 +7,7 @@ android = "8.9.1"
 android-autofill = "1.3.0-rc01"
 android-core = "1.15.0"
 android-credentials = "1.5.0"
+android-firebase = "33.11.0"
 android-startup = "1.2.0"
 assertk = "0.28.1"
 atomicfu = "0.27.0"
@@ -27,6 +28,7 @@ firebase = "2.1.0"
 fonticons = "2.0.0"
 google-fonts = "1.7.8"
 google-identity = "1.1.1"
+google-services = "4.4.2"
 haze = "1.0.2"
 immutable = "0.3.8"
 kache = "2.1.0"
@@ -36,7 +38,7 @@ kermit = "2.0.5"
 kmpalette = "3.1.0"
 kodein = "7.25.0"
 kolor = "2.0.0"
-konfig = "5.6.1"
+konfig = "0.17.0"
 kotlin = "2.1.20"
 ksp = "2.1.20-1.0.32"
 ktor = "3.1.2"
@@ -78,6 +80,7 @@ adaptive-layout = { group = "org.jetbrains.compose.material3.adaptive", name = "
 adaptive-navigation = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "adaptive" }
 android = { group = "androidx.core", name = "core-ktx", version.ref = "android-core" }
 android-autofill = { group = "androidx.autofill", name = "autofill", version.ref = "android-autofill" }
+android-firebase = { group = "com.google.firebase", name = "firebase-bom", version.ref = "android-firebase" }
 android-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "android-startup" }
 ackpine = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "ackpine" }
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
@@ -190,7 +193,8 @@ compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "compose-report" }
 compose-reload = { id = "org.jetbrains.compose.hot-reload", version.ref = "compose-reload" }
-konfig = { id = "com.github.gmazzo.buildconfig", version.ref = "konfig" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+konfig = { id = "com.codingfeline.buildkonfig", version.ref = "konfig" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

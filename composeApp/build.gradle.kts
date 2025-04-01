@@ -2,6 +2,7 @@ import dev.datlag.tolgee.common.set
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -14,6 +15,9 @@ plugins {
     alias(libs.plugins.sekret)
     alias(libs.plugins.atomicfu)
 }
+
+val artifact = "dev.datlag.mimasu"
+group = artifact
 
 composeCompiler {
     featureFlags.set(
@@ -70,6 +74,7 @@ kotlin {
             implementation(libs.adaptive.navigation)
 
             implementation(libs.coroutines)
+            implementation(libs.datetime)
             implementation(libs.ktor)
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.serialization.json)
@@ -123,6 +128,10 @@ kotlin {
     }
 }
 
+dependencies {
+    coreLibraryDesugaring(libs.desugar)
+}
+
 android {
     sourceSets["main"].setRoot("src/androidMain/")
     sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
@@ -132,7 +141,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 23
         targetSdk = 35
 
         applicationId = "dev.datlag.mimasu"
@@ -147,6 +156,8 @@ android {
         buildConfig = true
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_21
     }
@@ -172,7 +183,16 @@ compose {
     }
 }
 
-buildConfig {
-    // BuildConfig configuration here.
-    // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
+buildkonfig {
+    packageName = artifact
+
+    defaultConfigs {
+        buildConfigField(FieldSpec.Type.STRING, "packageName", artifact)
+    }
+}
+
+sekret {
+    properties {
+        enabled.set(true)
+    }
 }

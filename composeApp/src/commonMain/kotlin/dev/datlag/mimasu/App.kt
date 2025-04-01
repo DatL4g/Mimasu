@@ -6,7 +6,10 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformMaterialTheme
@@ -24,6 +27,8 @@ fun App(
     di: DI,
     typography: Typography = Platform.typography(),
     systemDarkTheme: Boolean = isSystemInDarkTheme() || Platform.rememberIsTv(anyOS = true),
+    fetchingContent: @Composable () -> Unit = { },
+    failureContent: @Composable (NetworkModule.Config.Failure) -> Unit = { },
     content: @Composable () -> Unit
 ) = withDI(di) {
     CompositionLocalProvider(
@@ -38,7 +43,13 @@ fun App(
                 containerColor = Platform.colorScheme().background,
                 contentColor = Platform.colorScheme().onBackground
             ) {
-                content()
+                val config by NetworkModule.config.collectAsStateWithLifecycle()
+
+                when (val current = config) {
+                    is NetworkModule.Config.Fetching -> fetchingContent()
+                    is NetworkModule.Config.Failure -> failureContent(current)
+                    is NetworkModule.Config.Success -> content()
+                }
             }
         }
     }

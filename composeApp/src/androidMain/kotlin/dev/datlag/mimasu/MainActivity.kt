@@ -8,6 +8,7 @@ import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.theme.Font
+import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.toTypography
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DIAware
@@ -37,10 +38,17 @@ class MainActivity : ComponentActivity() {
             // ToDo("navigation wrapped for TV")
             App(
                 di = di,
-                typography = Font.manrope.toTypography()
-            ) {
-                Navigation()
-            }
+                typography = Font.manrope.toTypography(),
+                fetchingContent = {
+                    PlatformText("Fetching Config, please wait")
+                },
+                failureContent = {
+                    PlatformText("Report Failure: $it")
+                },
+                content = {
+                    Navigation()
+                }
+            )
         }
     }
 

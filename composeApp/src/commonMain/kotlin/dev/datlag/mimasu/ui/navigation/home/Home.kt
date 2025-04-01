@@ -30,6 +30,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
+import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.home_movies
+import dev.datlag.mimasu.composeapp.generated.resources.home_people
+import dev.datlag.mimasu.composeapp.generated.resources.home_series
+import dev.datlag.mimasu.composeapp.generated.resources.home_today
+import dev.datlag.mimasu.composeapp.generated.resources.home_trending
+import dev.datlag.mimasu.composeapp.generated.resources.home_week
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
@@ -41,13 +48,6 @@ import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
-import mimasu.composeapp.generated.resources.Res
-import mimasu.composeapp.generated.resources.home_movies
-import mimasu.composeapp.generated.resources.home_people
-import mimasu.composeapp.generated.resources.home_series
-import mimasu.composeapp.generated.resources.home_today
-import mimasu.composeapp.generated.resources.home_trending
-import mimasu.composeapp.generated.resources.home_week
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

@@ -14,8 +14,8 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    // macosX64() // not supported by kodein compose
-    // macosArm64() // not supported by kodein compose
+    // macosX64() // not supported by kodein compose and firebase
+    // macosArm64() // not supported by kodein compose and firebase
 
     applyDefaultHierarchyTemplate()
 
@@ -28,6 +28,7 @@ kotlin {
             implementation(project(":core"))
 
             api(project(":tmdb"))
+            api(project(":firebase"))
             api(libs.kodein)
             api(libs.kodein.compose)
             api(libs.viewmodel)

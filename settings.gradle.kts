@@ -15,8 +15,9 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
+include(":composeApp", ":composeApp:sekret")
 include(":tmdb")
 include(":ui")
 include(":core")
 include(":extension")
+include(":firebase")
