@@ -180,7 +180,7 @@ data object MaterialSymbols {
             }.toTypedArray())
         )
 
-        if (grade == DEFAULT_GRADE && opsz == DEFAULT_OPSZ && !Platform.isDesktop) {
+        if (grade == DEFAULT_GRADE && opsz == DEFAULT_OPSZ) {
             when {
                 fill <= 0F -> return defaultNonFilledFont.value ?: create().also {
                     defaultNonFilledFont.compareAndSet(null, it)

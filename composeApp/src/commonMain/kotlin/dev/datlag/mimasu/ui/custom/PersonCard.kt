@@ -51,7 +51,7 @@ fun PersonCard(
         var loading by remember(person?.id) { mutableStateOf(true) }
         var fallback by remember(person?.id) { mutableStateOf(false) }
 
-        if (!loading && fallback && !placeholder) {
+        if (fallback && !placeholder) {
             Surface(
                 modifier = Modifier.size(100.dp),
                 shape = CircleShape
@@ -99,7 +99,6 @@ fun PersonCard(
                     fallback = false
                 },
                 onError = {
-                    loading = false
                     fallback = true
                 }
             )
