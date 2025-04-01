@@ -17,8 +17,8 @@ data class TrendingViewModel(
     val trendingRepository: TrendingRepository
 ) : ViewModel() {
 
-    private val _timeWindow = MutableStateFlow<TimeWindow>(TimeWindow.Day)
-    val timeWindow = _timeWindow.asStateFlow()
+    val timeWindow
+        get() = Companion.timeWindow
 
     val dayMovies = Pager(
         config = PagingConfig(pageSize = 1)
@@ -83,4 +83,9 @@ data class TrendingViewModel(
     fun updateTimeWindow(timeWindow: TimeWindow) = _timeWindow.updateAndGet { timeWindow }
     fun updateToDayTimeWindow() = updateTimeWindow(TimeWindow.Day)
     fun updateToWeekTimeWindow() = updateTimeWindow(TimeWindow.Week)
+
+    companion object {
+        private val _timeWindow = MutableStateFlow<TimeWindow>(TimeWindow.Day)
+        val timeWindow = _timeWindow.asStateFlow()
+    }
 }
