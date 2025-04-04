@@ -29,6 +29,7 @@ import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.home.Home
 import dev.datlag.mimasu.ui.navigation.movies.Movies
+import dev.datlag.mimasu.ui.navigation.search.Search
 import dev.datlag.mimasu.ui.navigation.series.Series
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.Serializable
@@ -251,7 +252,7 @@ fun Navigation() {
                 )
             }
             composable<Navigation.Search> {
-                Text(text = "Search Screen")
+                Search()
             }
         }
     }

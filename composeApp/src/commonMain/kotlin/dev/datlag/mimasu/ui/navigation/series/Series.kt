@@ -94,11 +94,11 @@ fun Series(
                     .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                val popular = seriesListsViewModel.popular.collectAsLazyPagingItems()
+                val topRated = seriesListsViewModel.topRated.collectAsLazyPagingItems()
 
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.series_popular),
+                    text = stringResource(Res.string.series_top_rated),
                     style = Platform.typography().headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1
@@ -108,18 +108,18 @@ fun Series(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-                    items(popular.itemCount) { index ->
-                        val series = popular[index]
+                    items(topRated.itemCount) { index ->
+                        val series = topRated[index]
 
                         ShowCard(series, onSeriesClicked)
                     }
                     when {
-                        popular.loadState.refresh is LoadState.Loading -> {
+                        topRated.loadState.refresh is LoadState.Loading -> {
                             items(5) {
                                 ShowCard(null)
                             }
                         }
-                        popular.loadState.append is LoadState.Loading -> {
+                        topRated.loadState.append is LoadState.Loading -> {
                             items(3) {
                                 ShowCard(null)
                             }
@@ -178,11 +178,11 @@ fun Series(
                     .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                val topRated = seriesListsViewModel.topRated.collectAsLazyPagingItems()
+                val popular = seriesListsViewModel.popular.collectAsLazyPagingItems()
 
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.series_top_rated),
+                    text = stringResource(Res.string.series_popular),
                     style = Platform.typography().headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1
@@ -192,18 +192,18 @@ fun Series(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-                    items(topRated.itemCount) { index ->
-                        val series = topRated[index]
+                    items(popular.itemCount) { index ->
+                        val series = popular[index]
 
                         ShowCard(series, onSeriesClicked)
                     }
                     when {
-                        topRated.loadState.refresh is LoadState.Loading -> {
+                        popular.loadState.refresh is LoadState.Loading -> {
                             items(5) {
                                 ShowCard(null)
                             }
                         }
-                        topRated.loadState.append is LoadState.Loading -> {
+                        popular.loadState.append is LoadState.Loading -> {
                             items(3) {
                                 ShowCard(null)
                             }

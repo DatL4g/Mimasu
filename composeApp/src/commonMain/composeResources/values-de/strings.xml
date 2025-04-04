@@ -7,6 +7,7 @@
     <string name="home_trending">Im Trend</string>
     <string name="home_today">Heute</string>
     <string name="home_week">Woche</string>
+
     <string name="home_people">Personen</string>
     <string name="home_series">Serien</string>
     <string name="home_movies">Filme</string>
@@ -20,4 +21,8 @@
     <string name="series_on_the_air">Auf Sendung</string>
     <string name="series_popular">Beliebt</string>
     <string name="series_top_rated">Top Bewertet</string>
+
+    <string name="search_people">Personen</string>
+    <string name="search_series">Serien</string>
+    <string name="search_movies">Filme</string>
 </resources>

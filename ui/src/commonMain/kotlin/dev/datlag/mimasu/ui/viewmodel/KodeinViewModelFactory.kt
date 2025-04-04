@@ -38,6 +38,12 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
 
                 (model as? T) ?: super.create(modelClass, extras)
             }
+            modelClass typeOf SearchViewModel::class -> {
+                val tmdb = di.instance<TMDB>()
+                val model = SearchViewModel(searchRepository = tmdb.search)
+
+                (model as? T) ?: super.create(modelClass, extras)
+            }
             else -> super.create(modelClass, extras)
         }
     }

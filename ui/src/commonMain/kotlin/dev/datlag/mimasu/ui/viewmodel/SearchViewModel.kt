@@ -13,11 +13,13 @@ import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.updateAndGet
 
 data class SearchViewModel(
@@ -35,31 +37,12 @@ data class SearchViewModel(
     }.distinctUntilChanged()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val multiSearch = searchInfo.flatMapLatest { info ->
-        Pager(
-            config = PagingConfig(pageSize = 1)
-        ) {
-            searchRepository.MultiPaging(
-                query = info.query,
-                includeAdult = info.includeAdult
-            )
-        }.flow
-    }.cachedIn(viewModelScope)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val multiMovieSearch = multiSearch.mapLatest {
-        it.filter { response -> response is Movie }.map { response -> response as Movie }
-    }.cachedIn(viewModelScope)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val multiTvSearch = multiSearch.mapLatest {
-        it.filter { response -> response is TV }.map { response -> response as TV }
-    }.cachedIn(viewModelScope)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val multiPeopleSearch = multiSearch.mapLatest {
-        it.filter { response -> response is People }.map { response -> response as People }
-    }.cachedIn(viewModelScope)
+    val searchResult = searchInfo.mapLatest { info ->
+        searchRepository.querySearch(
+            query = info.query,
+            includeAdult = info.includeAdult
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SearchRepository.SearchResult.Empty)
 
     fun updateQuery(query: String) = _query.updateAndGet { query.ifBlank { null } }
     fun updateIncludeAdult(value: Boolean) = _includeAdult.updateAndGet { value }

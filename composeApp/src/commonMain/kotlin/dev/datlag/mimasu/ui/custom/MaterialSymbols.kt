@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.custom
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Face2
 import androidx.compose.material.icons.rounded.Face4
 import androidx.compose.material.icons.rounded.Face5
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.PersonPinCircle
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
@@ -48,6 +50,8 @@ data object MaterialSymbols {
     const val FACE_4 = "face_4" // woman
     const val FACE_5 = "face_5" // not specified
     const val FACE_6 = "face_6" // man
+    const val TUNE = "tune"
+    const val CLOSE = "close"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -122,6 +126,9 @@ data object MaterialSymbols {
         name.equals(FACE_4, ignoreCase = true) -> Icons.Rounded.Face4
         name.equals(FACE_5, ignoreCase = true) -> Icons.Rounded.Face5
         name.equals(FACE_6, ignoreCase = true) -> Icons.Rounded.Face6
+
+        name.equals(TUNE, ignoreCase = true) -> Icons.Rounded.Tune
+        name.equals(CLOSE, ignoreCase = true) -> Icons.Rounded.Close
         else -> null
     }
 
