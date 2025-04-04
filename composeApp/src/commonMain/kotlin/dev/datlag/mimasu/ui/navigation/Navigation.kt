@@ -27,10 +27,12 @@ import dev.datlag.mimasu.composeapp.generated.resources.search
 import dev.datlag.mimasu.composeapp.generated.resources.series
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.ui.navigation.home.Home
 import dev.datlag.mimasu.ui.navigation.movies.Movies
 import dev.datlag.mimasu.ui.navigation.search.Search
 import dev.datlag.mimasu.ui.navigation.series.Series
+import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.stringResource
@@ -41,7 +43,18 @@ object Navigation {
     data object Profile
 
     @Serializable
-    data object Movies
+    data object Movies {
+
+        @Serializable
+        sealed interface Detail {
+
+            @Serializable
+            data object None : Detail
+
+            @Serializable
+            data object Movie : Detail
+        }
+    }
 
     @Serializable
     data object Home {
@@ -186,6 +199,7 @@ fun Navigation() {
                 val navigator = rememberListDetailPaneScaffoldNavigator(
                     isDestinationHistoryAware = false
                 )
+                var detailNavigation by remember { mutableStateOf<Navigation.Movies.Detail>(Navigation.Movies.Detail.None) }
 
                 ListDetailPaneScaffold(
                     directive = navigator.scaffoldDirective,
@@ -193,12 +207,27 @@ fun Navigation() {
                     listPane = {
                         Movies(
                             onMovieClicked = {
-                                // ToDo
+                                MovieViewModel.updateFrom(it)
+
+                                detailNavigation = Navigation.Movies.Detail.Movie
+                                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                             }
                         )
                     },
                     detailPane = {
-                        // ToDo
+                        when (detailNavigation) {
+                            is Navigation.Movies.Detail.Movie -> {
+                                MovieDetail(
+                                    onBack = {
+                                        detailNavigation = Navigation.Movies.Detail.None
+                                        navigator.navigateBack()
+                                    }
+                                )
+                            }
+                            else -> {
+                                navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                            }
+                        }
                     }
                 )
             }
@@ -214,7 +243,8 @@ fun Navigation() {
                     listPane = {
                         Home(
                             onMovieClicked = {
-                                // ToDo("set movie in viewmodel before navigation")
+                                MovieViewModel.updateFrom(it)
+
                                 detailNavigation = Navigation.Home.Detail.Movie
                                 navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                             }
@@ -223,7 +253,14 @@ fun Navigation() {
                     detailPane = {
                         // ToDo("BackHandler when migrated to compose 1.8.0")
                         when (detailNavigation) {
-                            is Navigation.Home.Detail.Movie -> { Text(text = "Movie Details") }
+                            is Navigation.Home.Detail.Movie -> {
+                                MovieDetail(
+                                    onBack = {
+                                        detailNavigation = Navigation.Home.Detail.None
+                                        navigator.navigateBack()
+                                    }
+                                )
+                            }
                             else -> {
                                 navigator.navigateTo(ListDetailPaneScaffoldRole.List)
                             }

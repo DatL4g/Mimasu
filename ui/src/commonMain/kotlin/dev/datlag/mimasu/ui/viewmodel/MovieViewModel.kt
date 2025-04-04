@@ -17,26 +17,42 @@ class MovieViewModel(
     val detailsRepository: DetailsRepository
 ) : ViewModel() {
 
-    private val _id = MutableStateFlow<Int?>(null)
-    val id = _id.asStateFlow()
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val movie: Flow<Movie?> = id.mapLatest { id ->
         id?.let { detailsRepository.movie(it) }
     }
 
-    private val _initialMovie = MutableStateFlow<CommonMovie?>(null)
-    val initialMovie = _initialMovie.asStateFlow()
+    val initialMovie = Companion.initialMovie
 
-    fun updateFrom(movie: CommonMovie) {
-        _id.update { movie.id }
-        _initialMovie.update { movie }
-    }
+    fun updateFrom(movie: CommonMovie) = Companion.updateFrom(movie)
 
     fun clear() {
         viewModelScope.cancel()
 
-        _id.update { null }
-        _initialMovie.update { null }
+        Companion.clear()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        clear()
+    }
+
+    companion object {
+        private val _id = MutableStateFlow<Int?>(null)
+        val id = _id.asStateFlow()
+
+        private val _initialMovie = MutableStateFlow<CommonMovie?>(null)
+        val initialMovie = _initialMovie.asStateFlow()
+
+        fun updateFrom(movie: CommonMovie) {
+            _id.update { movie.id }
+            _initialMovie.update { movie }
+        }
+
+        fun clear() {
+            _id.update { null }
+            _initialMovie.update { null }
+        }
     }
 }

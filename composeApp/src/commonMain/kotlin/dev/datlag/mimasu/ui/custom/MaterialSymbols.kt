@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.custom
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Face2
 import androidx.compose.material.icons.rounded.Face4
@@ -52,6 +53,7 @@ data object MaterialSymbols {
     const val FACE_6 = "face_6" // man
     const val TUNE = "tune"
     const val CLOSE = "close"
+    const val ARROW_BACK_IOS_NEW = "arrow_back_ios_new"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -129,6 +131,7 @@ data object MaterialSymbols {
 
         name.equals(TUNE, ignoreCase = true) -> Icons.Rounded.Tune
         name.equals(CLOSE, ignoreCase = true) -> Icons.Rounded.Close
+        name.equals(ARROW_BACK_IOS_NEW, ignoreCase = true) -> Icons.Rounded.ArrowBackIosNew
         else -> null
     }
 

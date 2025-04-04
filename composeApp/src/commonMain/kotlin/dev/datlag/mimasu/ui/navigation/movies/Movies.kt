@@ -70,7 +70,7 @@ fun Movies(
                     items(nowPlaying.itemCount) { index ->
                         val movie = nowPlaying[index]
 
-                        MovieCard(movie)
+                        MovieCard(movie, onClick = onMovieClicked)
                     }
                     when {
                         nowPlaying.loadState.refresh is LoadState.Loading -> {
@@ -112,7 +112,7 @@ fun Movies(
                     items(popular.itemCount) { index ->
                         val movie = popular[index]
 
-                        MovieCard(movie)
+                        MovieCard(movie, onClick = onMovieClicked)
                     }
                     when {
                         popular.loadState.refresh is LoadState.Loading -> {
@@ -154,7 +154,7 @@ fun Movies(
                     items(topRated.itemCount) { index ->
                         val movie = topRated[index]
 
-                        MovieCard(movie)
+                        MovieCard(movie, onClick = onMovieClicked)
                     }
                     when {
                         topRated.loadState.refresh is LoadState.Loading -> {
@@ -196,7 +196,7 @@ fun Movies(
                     items(upcoming.itemCount) { index ->
                         val movie = upcoming[index]
 
-                        MovieCard(movie)
+                        MovieCard(movie, onClick = onMovieClicked)
                     }
                     when {
                         upcoming.loadState.refresh is LoadState.Loading -> {

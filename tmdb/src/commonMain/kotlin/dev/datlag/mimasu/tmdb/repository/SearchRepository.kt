@@ -58,7 +58,8 @@ class SearchRepository(
     data class SearchResult(
         val people: ImmutableList<People>,
         val movies: ImmutableList<Movie>,
-        val series: ImmutableList<TV>
+        val series: ImmutableList<TV>,
+        val error: Boolean
     ) {
         fun hasPeople(): Boolean {
             return people.isNotEmpty()
@@ -72,15 +73,20 @@ class SearchRepository(
             return series.isNotEmpty()
         }
 
+        fun isEmpty(): Boolean {
+            return this == Empty || (!hasPeople() && !hasMovies() && !hasSeries())
+        }
+
         companion object {
             val Empty = SearchResult(
                 people = persistentListOf(),
                 movies = persistentListOf(),
-                series = persistentListOf()
+                series = persistentListOf(),
+                error = false
             )
 
             internal fun from(result: Result<PagedResponse<Response>>): SearchResult {
-                val result = result.getOrNull() ?: return Empty
+                val result = result.getOrNull() ?: return Empty.copy(error = result.isFailure)
 
                 val people = result.results.filterIsInstance<People>()
                 val movies = result.results.filterIsInstance<Movie>()
@@ -92,7 +98,8 @@ class SearchRepository(
                     SearchResult(
                         people = people.toImmutableList(),
                         movies = movies.toImmutableList(),
-                        series = series.toImmutableList()
+                        series = series.toImmutableList(),
+                        error = false
                     )
                 }
             }

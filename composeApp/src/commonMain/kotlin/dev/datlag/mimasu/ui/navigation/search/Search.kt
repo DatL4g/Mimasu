@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.navigation.search
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -115,101 +117,28 @@ fun Search() {
         // val results = searchViewModel.multiSearch.collectAsLazyPagingItems()
         val result by searchViewModel.searchResult.collectAsStateWithLifecycle()
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = padding + PaddingValues(top = 16.dp)
-        ) {
-            if (result.hasPeople()) {
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillParentMaxWidth()
-                            .animateContentSize()
-                            .padding(bottom = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            text = stringResource(Res.string.search_people),
-                            style = Platform.typography().headlineSmall,
-                            fontWeight = FontWeight.SemiBold,
-                            maxLines = 1
-                        )
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(horizontal = 16.dp)
-                        ) {
-                            items(result.people.toImmutableList()) {
-                                PersonCard(
-                                    person = it,
-                                    placeholder = false
-                                )
-                            }
-                        }
+        if (result.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                if (result.error) {
+                    // Fail
+                    Text("Something went wrong")
+                } else {
+                    if (query?.trim()?.takeIf { it.length >=  2 }?.isNotBlank() == true) {
+                        // Nothing found
+                        Text("Nothing found for: $query")
+                    } else {
+                        // Nothing searched
+                        Text("Search for people, show or movies")
                     }
                 }
             }
-            if (result.hasSeries()) {
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillParentMaxWidth()
-                            .animateContentSize()
-                            .padding(bottom = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            text = stringResource(Res.string.search_series),
-                            style = Platform.typography().headlineSmall,
-                            fontWeight = FontWeight.SemiBold,
-                            maxLines = 1
-                        )
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(horizontal = 16.dp)
-                        ) {
-                            items(result.series.toImmutableList()) {
-                                ShowCard(
-                                    show = it
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            if (result.hasMovies()) {
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillParentMaxWidth()
-                            .animateContentSize()
-                            .padding(bottom = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            text = stringResource(Res.string.search_movies),
-                            style = Platform.typography().headlineSmall,
-                            fontWeight = FontWeight.SemiBold,
-                            maxLines = 1
-                        )
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(horizontal = 16.dp)
-                        ) {
-                            items(result.movies.toImmutableList()) {
-                                MovieCard(
-                                    movie = it
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+        } else {
+            SearchContent(padding, query, result)
         }
     }
 }
