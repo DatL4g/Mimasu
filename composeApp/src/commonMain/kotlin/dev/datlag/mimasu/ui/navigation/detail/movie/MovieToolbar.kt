@@ -1,0 +1,150 @@
+package dev.datlag.mimasu.ui.navigation.detail.movie
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopAppBarState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import com.eygraber.compose.placeholder.PlaceholderHighlight
+import com.eygraber.compose.placeholder.material3.fade
+import com.eygraber.compose.placeholder.material3.placeholder
+import dev.datlag.mimasu.common.rememberNestedImagePainter
+import dev.datlag.mimasu.tmdb.common.backdrops
+import dev.datlag.mimasu.tmdb.model.details.Movie
+import dev.datlag.mimasu.ui.custom.CollapsingToolbar
+import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.colorScheme
+import dev.datlag.tooling.compose.platform.typography
+import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MovieToolbar(
+    appBarState: TopAppBarState,
+    scrollBehavior: TopAppBarScrollBehavior,
+    movie: Movie?,
+    initial: CommonMovie?,
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit
+) {
+    CollapsingToolbar(
+        state = appBarState,
+        scrollBehavior = scrollBehavior,
+        modifier = modifier,
+        background = { state ->
+            val backdrops = remember(movie, initial) { movie.backdrops(initial) }
+
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .matchParentSize(),
+                model = backdrops.firstOrNull(),
+                error = rememberNestedImagePainter(
+                    models = backdrops.drop(1),
+                    contentScale = ContentScale.Crop
+                ),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                alpha = state.expandProgress
+            )
+        },
+        navigationIcon = { state ->
+            IconButton(
+                modifier = if (state.isCollapsed) {
+                    Modifier
+                } else {
+                    Modifier.background(
+                        Platform.colorScheme().surface.copy(alpha = state.expandProgress * 0.5F),
+                        CircleShape
+                    )
+                },
+                onClick = onBack
+            ) {
+                MaterialSymbols(
+                    name = MaterialSymbols.ARROW_BACK_IOS_NEW,
+                    contentDescription = null,
+                )
+            }
+        },
+        title = { state ->
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
+            ) {
+                val mainTitle = remember(movie, initial) {
+                    movie?.title?.ifBlank { null } ?: initial?.title?.ifBlank { null }
+                }
+                val subTitle = remember(movie, initial, mainTitle) {
+                    (movie?.originalTitle?.ifBlank { null } ?: initial?.originalTitle?.ifBlank { null }).takeUnless {
+                        it.equals(mainTitle, ignoreCase = true)
+                    }
+                }
+                val finalMainTitle = remember(mainTitle, subTitle) {
+                    mainTitle?.ifBlank { null } ?: subTitle?.ifBlank { null } ?: ""
+                }
+                val finalSubTitle = remember(subTitle, finalMainTitle) {
+                    subTitle.takeUnless { it.equals(finalMainTitle, ignoreCase = true) }
+                }
+
+                Text(
+                    modifier = Modifier
+                        .placeholder(
+                            visible = finalMainTitle.isBlank(),
+                            highlight = PlaceholderHighlight.fade()
+                        ),
+                    text = finalMainTitle,
+                    softWrap = true,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = if (!state.isCollapsed) {
+                        LocalTextStyle.current.copy(
+                            shadow = Shadow(
+                                color = Platform.colorScheme().surface,
+                                offset = Offset(4F, 4F),
+                                blurRadius = 8F
+                            )
+                        )
+                    } else {
+                        LocalTextStyle.current
+                    }
+                )
+                if (!finalSubTitle.isNullOrBlank()) {
+                    Text(
+                        text = finalSubTitle,
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = if (!state.isCollapsed) {
+                            Platform.typography().labelMedium.copy(
+                                shadow = Shadow(
+                                    color = Platform.colorScheme().surface,
+                                    offset = Offset(4F, 4F),
+                                    blurRadius = 8F
+                                )
+                            )
+                        } else {
+                            Platform.typography().labelMedium
+                        }
+                    )
+                }
+            }
+        }
+    )
+}
