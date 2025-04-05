@@ -7,35 +7,71 @@ import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 import dev.datlag.mimasu.tmdb.repository.DetailsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 class MovieViewModel(
     val detailsRepository: DetailsRepository
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val movie: Flow<Movie?> = id.mapLatest { id ->
-        id?.let { detailsRepository.movie(it) }
+    val movie: Flow<State> = id.transformLatest { id ->
+        when (id) {
+            null -> return@transformLatest emit(State.Error(null))
+            else -> {
+                emit(State.Loading)
+
+                val result = detailsRepository.movie(id)
+                val movie = result.getOrNull()
+
+                return@transformLatest if (movie == null) {
+                    emit(State.Error(result.exceptionOrNull()))
+                } else {
+                    emit(State.Success(movie))
+                }
+            }
+        }
     }
 
     val initialMovie = Companion.initialMovie
 
     fun updateFrom(movie: CommonMovie) = Companion.updateFrom(movie)
 
-    fun clear() {
-        viewModelScope.cancel()
-
-        Companion.clear()
-    }
-
     override fun onCleared() {
         super.onCleared()
 
+        viewModelScope.cancel()
         clear()
+    }
+
+    @Serializable
+    sealed interface State {
+
+        fun getOrNull(): Movie? = when (this) {
+            is State.Success -> movie
+            else -> null
+        }
+
+        @Serializable
+        data object Loading : State
+
+        @Serializable
+        data class Success(
+            val movie: Movie
+        ) : State
+
+        @Serializable
+        data class Error(
+            @Transient val throwable: Throwable? = null
+        ) : State
     }
 
     companion object {

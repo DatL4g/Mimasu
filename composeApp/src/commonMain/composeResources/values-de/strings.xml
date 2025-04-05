@@ -25,4 +25,13 @@
     <string name="search_people">Personen</string>
     <string name="search_series">Serien</string>
     <string name="search_movies">Filme</string>
+
+    <string name="movie_status_rumored">Gerücht</string>
+    <string name="movie_status_planned">Geplant</string>
+    <string name="movie_status_in_production">In Produktion</string>
+    <string name="movie_status_post_production">Post-Produktion</string>
+    <string name="movie_status_released">Veröffentlicht</string>
+    <string name="movie_status_canceled">Eingestellt</string>
+
+    <string name="movie_overview">Handlung</string>
 </resources>

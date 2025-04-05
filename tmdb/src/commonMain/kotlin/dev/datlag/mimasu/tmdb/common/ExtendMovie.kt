@@ -20,3 +20,19 @@ fun Movie?.backdrops(fallback: CommonMovie?): ImmutableList<String> = setOfNotNu
     fallback?.backdropW200,
     fallback?.backdropSource
 ).toImmutableList()
+
+fun Movie?.posters(fallback: CommonMovie?): ImmutableList<String> = setOfNotNull(
+    this?.poster,
+    this?.posterW500,
+    this?.posterW400,
+    this?.posterW300,
+    this?.posterW200,
+    this?.posterSource,
+
+    fallback?.poster,
+    fallback?.posterW500,
+    fallback?.posterW400,
+    fallback?.posterW300,
+    fallback?.posterW200,
+    fallback?.posterSource
+).toImmutableList()

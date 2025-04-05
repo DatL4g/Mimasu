@@ -23,7 +23,7 @@ class DetailsRepository(
         expireAfterWriteDuration = 1.days
     }
 
-    suspend fun movie(id: Int): Movie? = withNonEmptyContext(context) {
+    suspend fun movie(id: Int): Result<Movie?> = withNonEmptyContext(context) {
         suspendCatching {
             movieKache.getOrPut(id) {
                 val response = details.movie(
@@ -34,6 +34,6 @@ class DetailsRepository(
 
                 response.body<Movie>()
             }
-        }.getOrNull()
+        }
     }
 }

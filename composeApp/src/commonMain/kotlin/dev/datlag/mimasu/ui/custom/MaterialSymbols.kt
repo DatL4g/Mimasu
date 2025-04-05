@@ -4,13 +4,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material.icons.rounded.Face2
 import androidx.compose.material.icons.rounded.Face4
 import androidx.compose.material.icons.rounded.Face5
 import androidx.compose.material.icons.rounded.Face6
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Movie
+import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.PersonPinCircle
+import androidx.compose.material.icons.rounded.RequestQuote
+import androidx.compose.material.icons.rounded.RssFeed
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.Tv
@@ -54,6 +61,13 @@ data object MaterialSymbols {
     const val TUNE = "tune"
     const val CLOSE = "close"
     const val ARROW_BACK_IOS_NEW = "arrow_back_ios_new"
+    const val EVENT = "event"
+    const val SCHEDULE = "schedule"
+    const val REQUEST_QUOTE = "request_quote"
+    const val PAYMENTS = "payments"
+    const val RSS_FEED = "rss_feed"
+    const val KEYBOARD_ARROW_DOWN = "keyboard_arrow_down"
+    const val KEYBOARD_ARROW_UP = "keyboard_arrow_up"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -132,6 +146,13 @@ data object MaterialSymbols {
         name.equals(TUNE, ignoreCase = true) -> Icons.Rounded.Tune
         name.equals(CLOSE, ignoreCase = true) -> Icons.Rounded.Close
         name.equals(ARROW_BACK_IOS_NEW, ignoreCase = true) -> Icons.Rounded.ArrowBackIosNew
+        name.equals(EVENT, ignoreCase = true) -> Icons.Rounded.Event
+        name.equals(SCHEDULE, ignoreCase = true) -> Icons.Rounded.Schedule
+        name.equals(REQUEST_QUOTE, ignoreCase = true) -> Icons.Rounded.RequestQuote
+        name.equals(PAYMENTS, ignoreCase = true) -> Icons.Rounded.Payments
+        name.equals(RSS_FEED, ignoreCase = true) -> Icons.Rounded.RssFeed
+        name.equals(KEYBOARD_ARROW_DOWN, ignoreCase = true) -> Icons.Rounded.KeyboardArrowDown
+        name.equals(KEYBOARD_ARROW_UP, ignoreCase = true) -> Icons.Rounded.KeyboardArrowUp
         else -> null
     }
 

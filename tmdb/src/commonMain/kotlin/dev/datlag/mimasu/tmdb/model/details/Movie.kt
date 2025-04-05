@@ -3,14 +3,21 @@ package dev.datlag.mimasu.tmdb.model.details
 import dev.datlag.mimasu.tmdb.model.HasBackdrop
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.mimasu.tmdb.model.HasLogo
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 @Serializable
 data class Movie(
     @SerialName("adult") val adult: Boolean = true,
     @SerialName("backdrop_path") override val backdropSource: String? = null,
-    @SerialName("belongs_to_collection") val belongsToCollection: String? = null,
+    // @SerialName("belongs_to_collection") val belongsToCollection: String? = null, // is not string
     @SerialName("budget") val budget: Int = 0,
     @SerialName("genres") val genres: Set<Genre> = emptySet(),
     @SerialName("homepage") val homepage: String? = null,
@@ -27,7 +34,7 @@ data class Movie(
     @SerialName("revenue") val revenue: Int = 0,
     @SerialName("runtime") val runtime: Int = 0,
     @SerialName("spoken_languages") val spokenLanguages: Set<SpokenLanguage> = emptySet(),
-    @SerialName("status") val status: String? = null,
+    @SerialName("status") @Serializable(Status.Serializer::class) val status: Status? = null,
     @SerialName("tagline") val tagline: String? = null,
     @SerialName("title") val title: String,
     @SerialName("video") val video: Boolean = true,
@@ -61,5 +68,92 @@ data class Movie(
         @SerialName("iso_639_1") val iso: String? = null,
         @SerialName("name") val name: String
     )
+
+    @Serializable
+    sealed class Status : CharSequence {
+
+        abstract val value: String
+
+        override val length: Int
+            get() = value.length
+
+        override operator fun get(index: Int): Char {
+            return value[index]
+        }
+
+        override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
+            return value.subSequence(startIndex, endIndex)
+        }
+
+        override fun toString(): String {
+            return value
+        }
+
+        @Serializable
+        data object Rumored : Status() {
+            override val value: String = "Rumored"
+        }
+
+        @Serializable
+        data object Planned : Status() {
+            override val value: String = "Planned"
+        }
+
+        @Serializable
+        data object InProduction : Status() {
+            override val value: String = "In Production"
+        }
+
+        @Serializable
+        data object PostProduction : Status() {
+            override val value: String = "Post Production"
+        }
+
+        @Serializable
+        data object Released : Status() {
+            override val value: String = "Released"
+        }
+
+        @Serializable
+        data object Canceled : Status() {
+            override val value: String = "Canceled"
+        }
+
+        @Serializable
+        data class Custom(override val value: String) : Status()
+
+        companion object Serializer : KSerializer<Status?> {
+            override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("MovieStatus", PrimitiveKind.STRING)
+
+            @OptIn(ExperimentalSerializationApi::class)
+            override fun serialize(encoder: Encoder, value: Status?) {
+                if (value == null || value.value.isBlank()) {
+                    encoder.encodeNull()
+                } else {
+                    encoder.encodeNotNullMark()
+                    encoder.encodeString(value.value)
+                }
+            }
+
+            @OptIn(ExperimentalSerializationApi::class)
+            override fun deserialize(decoder: Decoder): Status? {
+                return if (decoder.decodeNotNullMark()) {
+                    from(decoder.decodeString())
+                } else {
+                    decoder.decodeNull()
+                }
+            }
+
+            fun from(value: String): Status = when {
+                value.equals(Rumored.value, ignoreCase = true) -> Rumored
+                value.equals(Planned.value, ignoreCase = true) -> Planned
+                value.equals(InProduction.value, ignoreCase = true) -> InProduction
+                value.equals(PostProduction.value, ignoreCase = true) -> PostProduction
+                value.equals(Released.value, ignoreCase = true) -> Released
+                value.equals(Canceled.value, ignoreCase = true) -> Canceled
+                else -> Custom(value)
+            }
+        }
+    }
 
 }
