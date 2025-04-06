@@ -38,7 +38,7 @@ fun MovieContent(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = padding + PaddingValues(16.dp)
+        contentPadding = padding
     ) {
         item {
             MoviePosterContent(
@@ -46,12 +46,24 @@ fun MovieContent(
                 initial = initial,
                 modifier = Modifier
                     .fillParentMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(16.dp)
             )
         }
         item {
-            // budget and revenue here
-            // genres below, like AniFlow
+            MovieInfo(
+                movie = movie,
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
+            )
+        }
+        item {
+            MovieGenres(
+                movie = movie,
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
         }
         item {
             MovieOverview(
@@ -60,7 +72,7 @@ fun MovieContent(
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .animateContentSize()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
             )
         }
     }

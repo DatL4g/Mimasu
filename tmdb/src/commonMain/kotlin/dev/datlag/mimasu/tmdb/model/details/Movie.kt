@@ -3,10 +3,13 @@ package dev.datlag.mimasu.tmdb.model.details
 import dev.datlag.mimasu.tmdb.model.HasBackdrop
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.mimasu.tmdb.model.HasLogo
+import dev.datlag.tooling.scopeCatching
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -36,11 +39,17 @@ data class Movie(
     @SerialName("spoken_languages") val spokenLanguages: Set<SpokenLanguage> = emptySet(),
     @SerialName("status") @Serializable(Status.Serializer::class) val status: Status? = null,
     @SerialName("tagline") val tagline: String? = null,
+    @SerialName("original_tagline") val originalTagline: String? = null,
     @SerialName("title") val title: String,
     @SerialName("video") val video: Boolean = true,
     @SerialName("vote_average") val voteAverage: Float = 0F,
     @SerialName("vote_count") val voteCount: Int = 0
 ) : HasBackdrop, HasPoster {
+
+    @Transient
+    val releaseLocalDate = releaseDate?.ifBlank { null }?.let { scopeCatching {
+        LocalDate.parse(it)
+    }.getOrNull() }
 
     @Serializable
     data class Genre(

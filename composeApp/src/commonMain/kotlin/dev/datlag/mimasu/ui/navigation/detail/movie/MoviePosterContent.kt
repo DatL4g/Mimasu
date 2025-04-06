@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.movie_release_date_format
 import dev.datlag.mimasu.composeapp.generated.resources.movie_status_canceled
 import dev.datlag.mimasu.composeapp.generated.resources.movie_status_in_production
 import dev.datlag.mimasu.composeapp.generated.resources.movie_status_planned
@@ -31,6 +32,12 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
+import dev.datlag.tooling.scopeCatching
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.byUnicodePattern
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -66,14 +73,24 @@ fun MoviePosterContent(
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
             val tagline = remember(movie) {
-                movie.tagline?.ifBlank { null }
+                movie.tagline?.ifBlank { null } ?: movie.originalTagline?.ifBlank { null }
+            }
+            val localFormat = stringResource(Res.string.movie_release_date_format)
+            val releaseDate = remember(movie, localFormat) {
+                scopeCatching {
+                    movie.releaseLocalDate?.let {
+                        LocalDate.Format {
+                            byUnicodePattern(localFormat)
+                        }.format(it)
+                    }
+                }.getOrNull() ?: movie.releaseDate
             }
 
             tagline?.let {
                 Text(text = it)
                 Spacer(modifier = Modifier.weight(1F))
             }
-            movie.releaseDate?.let {
+            releaseDate?.let {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)

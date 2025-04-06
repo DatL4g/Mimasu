@@ -33,5 +33,14 @@
     <string name="movie_status_released">Veröffentlicht</string>
     <string name="movie_status_canceled">Eingestellt</string>
 
+    <string name="movie_release_date_format">dd.MM.yyyy</string>
     <string name="movie_overview">Handlung</string>
+    <string name="movie_budget">Budget</string>
+    <string name="movie_rating">Wertung</string>
+    <string name="movie_rating_placeholder">%1$d%</string>
+    <string name="movie_revenue">Einnahmen</string>
+
+    <string name="currency_thousand">K</string>
+    <string name="currency_million">Mio</string>
+    <string name="currency_billion">Mrd</string>
 </resources>

@@ -65,7 +65,7 @@ fun MovieDetail(
                 Box(
                     modifier = Modifier.padding(padding)
                 ) {
-                    Text(text = "Loading Movie failed: ${current.throwable?.message}")
+                    Text(text = "Loading Movie failed: ${current.throwable}")
                 }
             }
             is MovieViewModel.State.Success -> MovieContent(

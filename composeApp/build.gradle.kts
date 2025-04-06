@@ -86,6 +86,7 @@ kotlin {
             implementation(libs.kermit)
             implementation(libs.placeholder)
             implementation(libs.fonticons)
+            implementation(libs.tolgee)
 
             implementation(project(":core"))
             implementation(project(":ui"))
