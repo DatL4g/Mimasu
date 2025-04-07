@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,6 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +52,23 @@ fun MovieDetail(
                 modifier = Modifier.fillMaxWidth(),
                 onBack = onBack
             )
-        }
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { },
+                icon = {
+                    MaterialSymbols(
+                        name = MaterialSymbols.PLAY_ARROW,
+                        contentDescription = null,
+                        filled = true
+                    )
+                },
+                text = {
+                    Text(text = "Watch")
+                }
+            )
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
         when (val current = movieState) {
             is MovieViewModel.State.Loading -> {

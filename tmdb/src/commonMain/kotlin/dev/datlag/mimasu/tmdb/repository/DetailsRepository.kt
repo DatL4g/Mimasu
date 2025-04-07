@@ -29,11 +29,16 @@ class DetailsRepository(
                 val response = details.movie(
                     apiKey = apiKey,
                     id = id,
-                    language = language
+                    language = language,
+                    appendToResponse = APPEND_CREDITS
                 )
 
                 response.body<Movie>()
             }
         }
+    }
+
+    companion object {
+        private const val APPEND_CREDITS = "credits"
     }
 }

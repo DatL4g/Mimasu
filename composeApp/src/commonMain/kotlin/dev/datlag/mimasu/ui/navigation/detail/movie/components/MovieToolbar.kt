@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.detail.movie
+package dev.datlag.mimasu.ui.navigation.detail.movie.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

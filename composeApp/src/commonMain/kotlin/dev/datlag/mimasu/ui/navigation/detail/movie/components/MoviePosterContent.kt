@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.detail.movie
+package dev.datlag.mimasu.ui.navigation.detail.movie.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,9 +33,6 @@ import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeComponents
-import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.format.byUnicodePattern
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit

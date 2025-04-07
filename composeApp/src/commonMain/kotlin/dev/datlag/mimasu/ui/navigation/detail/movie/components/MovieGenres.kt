@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.detail.movie
+package dev.datlag.mimasu.ui.navigation.detail.movie.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,7 +43,7 @@ fun MovieGenres(
         LazyRow(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
-            contentPadding = PaddingValues(horizontal = inBetweenSpace),
+            contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(inBetweenSpace, Alignment.CenterHorizontally)
         ) {
             items(genres) { genre ->

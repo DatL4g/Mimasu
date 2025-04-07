@@ -3,10 +3,13 @@ package dev.datlag.mimasu.tmdb.model.details
 import dev.datlag.mimasu.tmdb.model.HasBackdrop
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.mimasu.tmdb.model.HasLogo
+import dev.datlag.mimasu.tmdb.model.People
+import dev.datlag.mimasu.tmdb.model.Response
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -43,7 +46,8 @@ data class Movie(
     @SerialName("title") val title: String,
     @SerialName("video") val video: Boolean = true,
     @SerialName("vote_average") val voteAverage: Float = 0F,
-    @SerialName("vote_count") val voteCount: Int = 0
+    @SerialName("vote_count") val voteCount: Int = 0,
+    @SerialName("credits") val credits: Credits? = null
 ) : HasBackdrop, HasPoster {
 
     @Transient
@@ -162,6 +166,75 @@ data class Movie(
                 value.equals(Canceled.value, ignoreCase = true) -> Canceled
                 else -> Custom(value)
             }
+        }
+    }
+
+    @Serializable
+    data class Credits(
+        @SerialName("cast") private val _cast: Set<Cast> = emptySet(),
+        @SerialName("crew") private val _crew: Set<Crew> = emptySet()
+    ) {
+
+        @Transient
+        val cast = _cast.sortedWith(compareBy<Cast> { it.order }.thenBy { it.popularity })
+
+        @Transient
+        val crew = _crew.sortedBy { it.popularity }
+
+        @Serializable
+        data class Cast(
+            @SerialName("adult") val adult: Boolean = true,
+            @SerialName("id") val id: Int,
+            @SerialName("name") val name: String,
+            @SerialName("original_name") val originalName: String? = null,
+            @SerialName("popularity") val popularity: Float = 0F,
+            @SerialName("gender") val gender: Int = 0,
+            @SerialName("known_for_department") val knownForDepartment: String? = null,
+            @SerialName("profile_path") override val logoSource: String? = null,
+            @SerialName("known_for") private val knownFor: Set<Response> = emptySet(),
+            @SerialName("cast_id") val castId: Int = 0,
+            @SerialName("character") private val _character: String? = null,
+            @SerialName("credit_id") val creditId: String? = null,
+            @SerialName("order") val order: Int = 0
+        ) : HasLogo {
+
+            @Transient
+            val character : String? = _character?.ifBlank { null }
+                ?.replace("($knownForDepartment)", "", ignoreCase = true)
+                ?.replace("(voice)", "", ignoreCase = true)
+
+            @Transient
+            val isFemale = gender == 1
+
+            @Transient
+            val isMale = gender == 2
+
+            @Transient
+            val isNonBinary = gender == 3
+        }
+
+        @Serializable
+        data class Crew(
+            @SerialName("adult") val adult: Boolean = true,
+            @SerialName("id") val id: Int,
+            @SerialName("name") val name: String,
+            @SerialName("original_name") val originalName: String? = null,
+            @SerialName("popularity") val popularity: Float = 0F,
+            @SerialName("gender") val gender: Int = 0,
+            @SerialName("known_for_department") val knownForDepartment: String? = null,
+            @SerialName("profile_path") override val logoSource: String? = null,
+            @SerialName("credit_id") val creditId: String? = null,
+            @SerialName("department") val department: String? = null,
+            @SerialName("job") val job: String? = null,
+        ) : HasLogo {
+            @Transient
+            val isFemale = gender == 1
+
+            @Transient
+            val isMale = gender == 2
+
+            @Transient
+            val isNonBinary = gender == 3
         }
     }
 

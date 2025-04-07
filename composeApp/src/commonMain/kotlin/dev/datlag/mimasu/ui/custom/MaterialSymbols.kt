@@ -15,6 +15,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.PersonPinCircle
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.RequestQuote
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.datlag.mimasu.composeapp.generated.resources.MaterialSymbolsRounded
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.tmdb.model.People
+import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.localContentColor
@@ -68,6 +70,7 @@ data object MaterialSymbols {
     const val RSS_FEED = "rss_feed"
     const val KEYBOARD_ARROW_DOWN = "keyboard_arrow_down"
     const val KEYBOARD_ARROW_UP = "keyboard_arrow_up"
+    const val PLAY_ARROW = "play_arrow"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -131,6 +134,40 @@ data object MaterialSymbols {
         fallback = fallback
     )
 
+    @Composable
+    operator fun invoke(
+        cast: Movie.Credits.Cast?,
+        contentDescription: String?,
+        modifier: Modifier = Modifier,
+        tint: Color = Platform.localContentColor(),
+        filled: Boolean = false,
+        fallback: ImageVector? = fallbackFromName(cast?.let { nameFor(it) } ?: FACE_5)
+    ) = invoke(
+        name = cast?.let { nameFor(it) } ?: FACE_5,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        tint = tint,
+        filled = filled,
+        fallback = fallback
+    )
+
+    @Composable
+    operator fun invoke(
+        crew: Movie.Credits.Crew?,
+        contentDescription: String?,
+        modifier: Modifier = Modifier,
+        tint: Color = Platform.localContentColor(),
+        filled: Boolean = false,
+        fallback: ImageVector? = fallbackFromName(crew?.let { nameFor(it) } ?: FACE_5)
+    ) = invoke(
+        name = crew?.let { nameFor(it) } ?: FACE_5,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        tint = tint,
+        filled = filled,
+        fallback = fallback
+    )
+
     private fun fallbackFromName(name: String): ImageVector? = when {
         name.equals(HOME, ignoreCase = true) -> Icons.Rounded.Home
         name.equals(SEARCH, ignoreCase = true) -> Icons.Rounded.Search
@@ -153,6 +190,7 @@ data object MaterialSymbols {
         name.equals(RSS_FEED, ignoreCase = true) -> Icons.Rounded.RssFeed
         name.equals(KEYBOARD_ARROW_DOWN, ignoreCase = true) -> Icons.Rounded.KeyboardArrowDown
         name.equals(KEYBOARD_ARROW_UP, ignoreCase = true) -> Icons.Rounded.KeyboardArrowUp
+        name.equals(PLAY_ARROW, ignoreCase = true) -> Icons.Rounded.PlayArrow
         else -> null
     }
 
@@ -229,6 +267,20 @@ data object MaterialSymbols {
         person.isFemale -> FACE_4
         person.isMale -> FACE_6
         person.isNonBinary -> FACE_2
+        else -> FACE_5
+    }
+
+    private fun nameFor(cast: Movie.Credits.Cast): String = when {
+        cast.isFemale -> FACE_4
+        cast.isMale -> FACE_6
+        cast.isNonBinary -> FACE_2
+        else -> FACE_5
+    }
+
+    private fun nameFor(crew: Movie.Credits.Crew): String = when {
+        crew.isFemale -> FACE_4
+        crew.isMale -> FACE_6
+        crew.isNonBinary -> FACE_2
         else -> FACE_5
     }
 }

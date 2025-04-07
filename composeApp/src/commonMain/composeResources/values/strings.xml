@@ -39,6 +39,8 @@
     <string name="movie_rating">Rating</string>
     <string name="movie_rating_placeholder">%1$d%</string>
     <string name="movie_revenue">Revenue</string>
+    <string name="movie_cast">Cast</string>
+    <string name="movie_crew">Crew</string>
 
     <string name="currency_thousand">K</string>
     <string name="currency_million">Mil</string>

@@ -12,6 +12,7 @@ interface Details {
         @Query("api_key") apiKey: String,
         @Path("id") id: Int,
         @Query("language") language: String,
+        @Query("append_to_response") appendToResponse: String?
     ): HttpResponse
 
 }
