@@ -22,6 +22,8 @@ import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import dev.chrisbanes.haze.HazeState
@@ -30,8 +32,9 @@ import dev.datlag.mimasu.composeapp.generated.resources.movie_watch
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 import dev.datlag.tolgee.stringResource
+import dev.datlag.tooling.async.suspendCatching
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun MovieDetail(
     onBack: () -> Unit
@@ -46,6 +49,15 @@ fun MovieDetail(
     )
     val haze = remember { HazeState() }
     val listState = rememberLazyListState()
+
+    PredictiveBackHandler(enabled = true) { state ->
+        suspendCatching {
+            state.collect {
+                // Collecting required, but does not contain relevant data
+            }
+            onBack()
+        }
+    }
 
     Scaffold(
         modifier = Modifier

@@ -66,6 +66,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.material3AdaptiveNavigationSuite)
             implementation(compose.materialIconsExtended)
+            implementation("org.jetbrains.compose.ui:ui-backhandler:${libs.versions.compose.asProvider().get()}")
 
             implementation(libs.lifecycle)
             implementation(libs.navigation)

@@ -13,6 +13,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
@@ -33,6 +34,7 @@ import dev.datlag.mimasu.ui.navigation.movies.Movies
 import dev.datlag.mimasu.ui.navigation.search.Search
 import dev.datlag.mimasu.ui.navigation.series.Series
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
+import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.stringResource
@@ -200,6 +202,7 @@ fun Navigation() {
                     isDestinationHistoryAware = false
                 )
                 var detailNavigation by remember { mutableStateOf<Navigation.Movies.Detail>(Navigation.Movies.Detail.None) }
+                val scope = rememberCoroutineScope()
 
                 ListDetailPaneScaffold(
                     directive = navigator.scaffoldDirective,
@@ -210,7 +213,9 @@ fun Navigation() {
                                 MovieViewModel.updateFrom(it)
 
                                 detailNavigation = Navigation.Movies.Detail.Movie
-                                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                                scope.launch {
+                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                                }
                             }
                         )
                     },
@@ -220,12 +225,17 @@ fun Navigation() {
                                 MovieDetail(
                                     onBack = {
                                         detailNavigation = Navigation.Movies.Detail.None
-                                        navigator.navigateBack()
+
+                                        scope.launch {
+                                            navigator.navigateBack()
+                                        }
                                     }
                                 )
                             }
                             else -> {
-                                navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                                scope.launch {
+                                    navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                                }
                             }
                         }
                     }
@@ -236,6 +246,7 @@ fun Navigation() {
                     isDestinationHistoryAware = false
                 )
                 var detailNavigation by remember { mutableStateOf<Navigation.Home.Detail>(Navigation.Home.Detail.None) }
+                val scope = rememberCoroutineScope()
 
                 ListDetailPaneScaffold(
                     directive = navigator.scaffoldDirective,
@@ -246,23 +257,28 @@ fun Navigation() {
                                 MovieViewModel.updateFrom(it)
 
                                 detailNavigation = Navigation.Home.Detail.Movie
-                                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                                scope.launch {
+                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                                }
                             }
                         )
                     },
                     detailPane = {
-                        // ToDo("BackHandler when migrated to compose 1.8.0")
                         when (detailNavigation) {
                             is Navigation.Home.Detail.Movie -> {
                                 MovieDetail(
                                     onBack = {
                                         detailNavigation = Navigation.Home.Detail.None
-                                        navigator.navigateBack()
+                                        scope.launch {
+                                            navigator.navigateBack()
+                                        }
                                     }
                                 )
                             }
                             else -> {
-                                navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                                scope.launch {
+                                    navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                                }
                             }
                         }
                     }
