@@ -24,7 +24,7 @@ fun MovieGenres(
     movie: Movie,
     modifier: Modifier = Modifier
 ) {
-    val genres = remember(movie) { movie.genres.toImmutableList() }
+    val genres = remember(movie.id) { movie.genres.toImmutableList() }
 
     if (genres.isNotEmpty()) {
         val inBetweenSpace = remember(genres) {

@@ -20,7 +20,9 @@ import dev.chrisbanes.haze.hazeChild
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.CupertinoMaterials
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.FluentMaterials
 import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.datlag.mimasu.LocalDarkMode
 import dev.datlag.tooling.Platform
 import kotlin.math.absoluteValue
 
@@ -109,10 +111,10 @@ fun rememberNestedImagePainter(
 @Composable
 fun Modifier.hazeEffect(
     state: HazeState,
-    style: HazeStyle = if (Platform.isApple) {
-        CupertinoMaterials.thin()
-    } else {
-        HazeMaterials.thin()
+    style: HazeStyle = when {
+        Platform.isApple -> CupertinoMaterials.thin()
+        Platform.isWindows -> FluentMaterials.acrylicBase(isDark = LocalDarkMode.current)
+        else -> HazeMaterials.thin()
     },
     listState: LazyListState,
     progressive: Boolean = false

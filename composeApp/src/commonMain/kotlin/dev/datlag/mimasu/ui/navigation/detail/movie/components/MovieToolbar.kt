@@ -96,10 +96,10 @@ fun MovieToolbar(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
             ) {
-                val mainTitle = remember(movie, initial) {
+                val mainTitle = remember(movie?.id, initial?.id) {
                     movie?.title?.ifBlank { null } ?: initial?.title?.ifBlank { null }
                 }
-                val subTitle = remember(movie, initial, mainTitle) {
+                val subTitle = remember(movie?.id, initial?.id, mainTitle) {
                     (movie?.originalTitle?.ifBlank { null } ?: initial?.originalTitle?.ifBlank { null }).takeUnless {
                         it.equals(mainTitle, ignoreCase = true)
                     }

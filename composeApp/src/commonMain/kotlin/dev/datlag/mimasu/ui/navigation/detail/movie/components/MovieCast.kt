@@ -29,7 +29,7 @@ fun MovieCast(
     movie: Movie,
     modifier: Modifier = Modifier
 ) {
-    val cast = remember(movie) { movie.credits?.cast.orEmpty().toImmutableList() }
+    val cast = remember(movie.id) { movie.credits?.cast.orEmpty().toImmutableList() }
 
     if (cast.isNotEmpty()) {
         Column(

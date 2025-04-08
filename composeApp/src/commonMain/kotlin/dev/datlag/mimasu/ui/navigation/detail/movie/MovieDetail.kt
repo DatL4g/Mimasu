@@ -25,8 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import dev.chrisbanes.haze.HazeState
+import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.movie_watch
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
+import dev.datlag.tolgee.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +74,7 @@ fun MovieDetail(
                     )
                 },
                 text = {
-                    Text(text = "Watch")
+                    Text(text = stringResource(Res.string.movie_watch))
                 }
             )
         },

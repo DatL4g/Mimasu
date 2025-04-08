@@ -30,7 +30,7 @@ fun MovieOverview(
     initial: CommonMovie?,
     modifier: Modifier = Modifier
 ) {
-    val overview = remember(movie, initial) {
+    val overview = remember(movie.id, initial?.id) {
         movie.overview?.ifBlank { null } ?: initial?.overview?.ifBlank { null }
     }
 

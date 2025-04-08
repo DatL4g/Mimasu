@@ -36,11 +36,11 @@ fun MovieProduction(
     movie: Movie,
     modifier: Modifier = Modifier
 ) {
-    val countries = remember(movie) { movie.productionCountries.mapNotNull {
+    val countries = remember(movie.id) { movie.productionCountries.mapNotNull {
         it.name?.ifBlank { null }
     }.toImmutableList() }
     // Keep company to search by id sometime
-    val companies = remember(movie) { movie.productionCompanies.toImmutableList() }
+    val companies = remember(movie.id) { movie.productionCompanies.toImmutableList() }
 
     if (countries.isNotEmpty() || companies.isNotEmpty()) {
         Column(

@@ -49,7 +49,7 @@ fun MoviePosterContent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val posters = remember(movie) { movie.posters(initial) }
+        val posters = remember(movie.id) { movie.posters(initial) }
 
         AsyncImage(
             modifier = Modifier
@@ -68,11 +68,11 @@ fun MoviePosterContent(
             modifier = Modifier.weight(1F).fillMaxHeight(),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
-            val tagline = remember(movie) {
+            val tagline = remember(movie.id) {
                 movie.tagline?.ifBlank { null } ?: movie.originalTagline?.ifBlank { null }
             }
             val localFormat = stringResource(Res.string.movie_release_date_format)
-            val releaseDate = remember(movie, localFormat) {
+            val releaseDate = remember(movie.id, localFormat) {
                 scopeCatching {
                     movie.releaseLocalDate?.let {
                         LocalDate.Format {

@@ -30,7 +30,7 @@ fun MovieCrew(
     movie: Movie,
     modifier: Modifier = Modifier
 ) {
-    val crew = remember(movie) { movie.credits?.crew.orEmpty().toImmutableList() }
+    val crew = remember(movie.id) { movie.credits?.crew.orEmpty().toImmutableList() }
 
     if (crew.isNotEmpty()) {
         Column(
