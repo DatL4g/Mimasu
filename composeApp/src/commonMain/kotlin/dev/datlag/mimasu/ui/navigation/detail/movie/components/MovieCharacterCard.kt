@@ -35,6 +35,7 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -43,22 +44,86 @@ fun MovieCharacterCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val logos = remember(cast.id) {
+        listOfNotNull(
+            cast.logo,
+            cast.logoW500,
+            cast.logoW400,
+            cast.logoW300,
+            cast.logoW200,
+            cast.logoSource
+        ).toImmutableList()
+    }
+
+    MovieCharacterCard(
+        id = cast.id,
+        logos = logos,
+        character = cast.character,
+        name = cast.name,
+        fallbackIcon = {
+            MaterialSymbols(
+                modifier = Modifier.size(50.dp),
+                cast = cast,
+                contentDescription = cast.character ?: cast.name,
+                filled = true
+            )
+        },
+        modifier = modifier,
+        onClick = onClick
+    )
+}
+
+@Composable
+fun MovieCharacterCard(
+    crew: Movie.Credits.Crew,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val logos = remember(crew.id) {
+        listOfNotNull(
+            crew.logo,
+            crew.logoW500,
+            crew.logoW400,
+            crew.logoW300,
+            crew.logoW200,
+            crew.logoSource
+        ).toImmutableList()
+    }
+
+    MovieCharacterCard(
+        id = crew.id,
+        logos = logos,
+        character = null,
+        name = crew.name,
+        fallbackIcon = {
+            MaterialSymbols(
+                modifier = Modifier.size(50.dp),
+                crew = crew,
+                contentDescription = crew.name,
+                filled = true
+            )
+        },
+        modifier = modifier,
+        onClick = onClick
+    )
+}
+
+@Composable
+fun MovieCharacterCard(
+    id: Int,
+    logos: ImmutableList<String>,
+    character: String?,
+    name: String,
+    fallbackIcon: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     Card(
         modifier = modifier,
         onClick = onClick
     ) {
-        var loading by remember(cast.id) { mutableStateOf(true) }
-        var fallback by remember(cast.id) { mutableStateOf(false) }
-        val logos = remember(cast.id) {
-            listOfNotNull(
-                cast.logo,
-                cast.logoW500,
-                cast.logoW400,
-                cast.logoW300,
-                cast.logoW200,
-                cast.logoSource
-            ).toImmutableList()
-        }
+        var loading by remember(id) { mutableStateOf(true) }
+        var fallback by remember(id) { mutableStateOf(false) }
         val imageModifier = Modifier
             .fillMaxWidth()
             .aspectRatio(0.7F)
@@ -71,12 +136,7 @@ fun MovieCharacterCard(
                     modifier = Modifier.size(50.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    MaterialSymbols(
-                        modifier = Modifier.size(50.dp),
-                        cast = cast,
-                        contentDescription = cast.name,
-                        filled = true
-                    )
+                    fallbackIcon()
                 }
             }
         } else {
@@ -89,7 +149,7 @@ fun MovieCharacterCard(
                     contentScale = ContentScale.Crop
                 ),
                 alignment = Alignment.Center,
-                contentDescription = cast.name,
+                contentDescription = character ?: name,
                 onLoading = {
                     loading = true
                     fallback = false
@@ -109,7 +169,7 @@ fun MovieCharacterCard(
             verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            cast.character?.ifBlank { null }?.let {
+            character?.ifBlank { null }?.let {
                 Text(
                     text = it,
                     style = Platform.typography().labelLarge,
@@ -124,9 +184,9 @@ fun MovieCharacterCard(
                 )
             }
             Text(
-                text = cast.name,
+                text = name,
                 style = Platform.typography().labelLarge,
-                maxLines = if (cast.character.isNullOrBlank()) 2 else 1,
+                maxLines = if (character.isNullOrBlank()) 2 else 1,
                 softWrap = true,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,

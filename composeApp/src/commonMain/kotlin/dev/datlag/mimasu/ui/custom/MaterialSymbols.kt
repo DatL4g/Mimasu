@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.custom
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Apartment
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Event
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.PersonPinCircle
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.RequestQuote
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
@@ -71,6 +73,8 @@ data object MaterialSymbols {
     const val KEYBOARD_ARROW_DOWN = "keyboard_arrow_down"
     const val KEYBOARD_ARROW_UP = "keyboard_arrow_up"
     const val PLAY_ARROW = "play_arrow"
+    const val GLOBE_LOCATION_PIN = "globe_location_pin"
+    const val APARTMENT = "apartment"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -191,6 +195,8 @@ data object MaterialSymbols {
         name.equals(KEYBOARD_ARROW_DOWN, ignoreCase = true) -> Icons.Rounded.KeyboardArrowDown
         name.equals(KEYBOARD_ARROW_UP, ignoreCase = true) -> Icons.Rounded.KeyboardArrowUp
         name.equals(PLAY_ARROW, ignoreCase = true) -> Icons.Rounded.PlayArrow
+        name.equals(GLOBE_LOCATION_PIN, ignoreCase = true) -> Icons.Rounded.Public
+        name.equals(APARTMENT, ignoreCase = true) -> Icons.Rounded.Apartment
         else -> null
     }
 

@@ -41,6 +41,9 @@
     <string name="movie_revenue">Revenue</string>
     <string name="movie_cast">Cast</string>
     <string name="movie_crew">Crew</string>
+    <string name="movie_production">Production</string>
+    <string name="movie_countries">Countries: </string>
+    <string name="movie_companies">Companies: </string>
 
     <string name="currency_thousand">K</string>
     <string name="currency_million">Mil</string>

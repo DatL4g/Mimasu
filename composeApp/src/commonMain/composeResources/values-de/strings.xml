@@ -41,6 +41,9 @@
     <string name="movie_revenue">Einnahmen</string>
     <string name="movie_cast">Besetzung</string>
     <string name="movie_crew">Crew</string>
+    <string name="movie_production">Produktion</string>
+    <string name="movie_countries">Länder: </string>
+    <string name="movie_companies">Firmen: </string>
 
     <string name="currency_thousand">K</string>
     <string name="currency_million">Mio</string>

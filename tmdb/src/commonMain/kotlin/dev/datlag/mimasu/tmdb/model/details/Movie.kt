@@ -28,7 +28,7 @@ data class Movie(
     @SerialName("genres") val genres: Set<Genre> = emptySet(),
     @SerialName("homepage") val homepage: String? = null,
     @SerialName("id") val id: Int,
-    @SerialName("imdb_id") val imdbId: String? = null,
+    @SerialName("imdb_id") private val _imdbId: String? = null,
     @SerialName("original_language") val originalLanguage: String? = null,
     @SerialName("original_title") val originalTitle: String? = null,
     @SerialName("overview") val overview: String? = null,
@@ -47,8 +47,12 @@ data class Movie(
     @SerialName("video") val video: Boolean = true,
     @SerialName("vote_average") val voteAverage: Float = 0F,
     @SerialName("vote_count") val voteCount: Int = 0,
-    @SerialName("credits") val credits: Credits? = null
+    @SerialName("credits") val credits: Credits? = null,
+    @SerialName("external_ids") val externalIDs: ExternalIDs? = null,
 ) : HasBackdrop, HasPoster {
+
+    @Transient
+    val imdbId: String? = _imdbId?.ifBlank { null } ?: externalIDs?.imdbId?.ifBlank { null }
 
     @Transient
     val releaseLocalDate = releaseDate?.ifBlank { null }?.let { scopeCatching {
@@ -176,10 +180,10 @@ data class Movie(
     ) {
 
         @Transient
-        val cast = _cast.sortedWith(compareBy<Cast> { it.order }.thenBy { it.popularity })
+        val cast = _cast.distinctBy { it.id }.sortedWith(compareBy<Cast> { it.order }.thenBy { it.popularity })
 
         @Transient
-        val crew = _crew.sortedBy { it.popularity }
+        val crew = _crew.distinctBy { it.id }.sortedBy { it.popularity }
 
         @Serializable
         data class Cast(
@@ -237,5 +241,15 @@ data class Movie(
             val isNonBinary = gender == 3
         }
     }
+
+    @Serializable
+    data class ExternalIDs(
+        @SerialName("id") val id: Int = 0,
+        @SerialName("imdb_id") val imdbId: String? = null,
+        @SerialName("wikidata_id") val wikidataId: String? = null,
+        @SerialName("facebook_id") val facebookId: String? = null,
+        @SerialName("instagram_id") val instagramId: String? = null,
+        @SerialName("twitter_id") val twitterId: String? = null
+    )
 
 }

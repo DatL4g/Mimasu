@@ -9,11 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.tmdb.model.details.Movie
-import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieCredits
+import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieCast
+import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieCrew
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieGenres
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieInfo
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieOverview
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MoviePosterContent
+import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieProduction
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable
@@ -62,11 +64,23 @@ fun MovieContent(
             )
         }
         item {
-            // Probably more info here
-            // So FAB don't overlap with cast images -> hard to see
+            MovieProduction(
+                movie = movie,
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
+            )
         }
         item {
-            MovieCredits(
+            MovieCast(
+                movie = movie,
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
+        }
+        item {
+            MovieCrew(
                 movie = movie,
                 modifier = Modifier
                     .fillParentMaxWidth()
