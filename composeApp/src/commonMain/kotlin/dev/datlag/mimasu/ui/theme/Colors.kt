@@ -8,35 +8,35 @@ import androidx.compose.ui.graphics.Color
 
 data object Colors {
 
-    const val THEME_LIGHT_PRIMARY = 0xff000000
+    const val THEME_LIGHT_PRIMARY = 0xff415f91
     private const val THEME_LIGHT_ON_PRIMARY = 0xffffffff
-    private const val THEME_LIGHT_PRIMARY_CONTAINER = 0xff1b1b1b
-    private const val THEME_LIGHT_ON_PRIMARY_CONTAINER = 0xffffffff
+    private const val THEME_LIGHT_PRIMARY_CONTAINER = 0xffd6e3ff
+    private const val THEME_LIGHT_ON_PRIMARY_CONTAINER = 0xff284777
 
-    const val THEME_DARK_PRIMARY = 0xffffffff
-    private const val THEME_DARK_ON_PRIMARY = 0xff000000
-    private const val THEME_DARK_PRIMARY_CONTAINER = 0xffe2e2e2
-    private const val THEME_DARK_ON_PRIMARY_CONTAINER = 0xff000000
+    const val THEME_DARK_PRIMARY = 0xffaac7ff
+    private const val THEME_DARK_ON_PRIMARY = 0xff0a305f
+    private const val THEME_DARK_PRIMARY_CONTAINER = 0xff284777
+    private const val THEME_DARK_ON_PRIMARY_CONTAINER = 0xffd6e3ff
 
-    private const val THEME_LIGHT_SECONDARY = 0xff373737
+    private const val THEME_LIGHT_SECONDARY = 0xff565f71
     private const val THEME_LIGHT_ON_SECONDARY = 0xffffffff
-    private const val THEME_LIGHT_SECONDARY_CONTAINER = 0xff4e4e4e
-    private const val THEME_LIGHT_ON_SECONDARY_CONTAINER = 0xffffffff
+    private const val THEME_LIGHT_SECONDARY_CONTAINER = 0xffdae2f9
+    private const val THEME_LIGHT_ON_SECONDARY_CONTAINER = 0xff3e4759
 
-    private const val THEME_DARK_SECONDARY = 0xffc8c6c6
-    private const val THEME_DARK_ON_SECONDARY = 0xff000000
-    private const val THEME_DARK_SECONDARY_CONTAINER = 0xff494949
-    private const val THEME_DARK_ON_SECONDARY_CONTAINER = 0xffffffff
+    private const val THEME_DARK_SECONDARY = 0xffbec6dc
+    private const val THEME_DARK_ON_SECONDARY = 0xff283141
+    private const val THEME_DARK_SECONDARY_CONTAINER = 0xff3e4759
+    private const val THEME_DARK_ON_SECONDARY_CONTAINER = 0xffdae2f9
 
-    private const val THEME_LIGHT_TERTIARY = 0xff000000
+    private const val THEME_LIGHT_TERTIARY = 0xff276389
     private const val THEME_LIGHT_ON_TERTIARY = 0xffffffff
-    private const val THEME_LIGHT_TERTIARY_CONTAINER = 0xff1b1b1b
-    private const val THEME_LIGHT_ON_TERTIARY_CONTAINER = 0xffffffff
+    private const val THEME_LIGHT_TERTIARY_CONTAINER = 0xffc9e6ff
+    private const val THEME_LIGHT_ON_TERTIARY_CONTAINER = 0xff004b6f
 
-    private const val THEME_DARK_TERTIARY = 0xffdfdcdd
-    private const val THEME_DARK_ON_TERTIARY = 0xff000000
-    private const val THEME_DARK_TERTIARY_CONTAINER = 0xffc3c0c1
-    private const val THEME_DARK_ON_TERTIARY_CONTAINER = 0xff000000
+    private const val THEME_DARK_TERTIARY = 0xff95cdf7
+    private const val THEME_DARK_ON_TERTIARY = 0xff00344e
+    private const val THEME_DARK_TERTIARY_CONTAINER = 0xff004b6f
+    private const val THEME_DARK_ON_TERTIARY_CONTAINER = 0xffc9e6ff
 
     private const val THEME_LIGHT_ERROR = 0xffba1a1a
     private const val THEME_LIGHT_ON_ERROR = 0xffffffff
@@ -54,25 +54,25 @@ data object Colors {
     private const val THEME_DARK_BACKGROUND = 0xff000000
     private const val THEME_DARK_ON_BACKGROUND = 0xffffffff
 
-    private const val THEME_LIGHT_SURFACE = 0xfff9f9f9
-    private const val THEME_LIGHT_ON_SURFACE = 0xff1b1b1b
-    private const val THEME_LIGHT_SURFACE_VARIANT = 0xffebdfe9
-    private const val THEME_LIGHT_ON_SURFACE_VARIANT = 0xff4c4546
+    private const val THEME_LIGHT_SURFACE = 0xfff9f9ff
+    private const val THEME_LIGHT_ON_SURFACE = 0xff191c20
+    private const val THEME_LIGHT_SURFACE_VARIANT = 0xfff9f9ff
+    private const val THEME_LIGHT_ON_SURFACE_VARIANT = 0xff44474e
 
-    private const val THEME_DARK_SURFACE = 0xff141313
-    private const val THEME_DARK_ON_SURFACE = 0xffe5e2e1
-    private const val THEME_DARK_SURFACE_VARIANT = 0xff4c444d
-    private const val THEME_DARK_ON_SURFACE_VARIANT = 0xffc4c7c8
+    private const val THEME_DARK_SURFACE = 0xff111318
+    private const val THEME_DARK_ON_SURFACE = 0xffe2e2e9
+    private const val THEME_DARK_SURFACE_VARIANT = 0xff37393e
+    private const val THEME_DARK_ON_SURFACE_VARIANT = 0xffc4c6d0
 
-    private const val THEME_LIGHT_OUTLINE = 0xff7e7576
-    private const val THEME_LIGHT_INVERSE_SURFACE = 0xff303030
-    private const val THEME_LIGHT_INVERSE_ON_SURFACE = 0xfff1f1f1
-    private const val THEME_LIGHT_INVERSE_PRIMARY = 0xffc6c6c6
+    private const val THEME_LIGHT_OUTLINE = 0xff74777f
+    private const val THEME_LIGHT_INVERSE_SURFACE = 0xff2e3036
+    private const val THEME_LIGHT_INVERSE_ON_SURFACE = 0xfff0f0f7
+    private const val THEME_LIGHT_INVERSE_PRIMARY = 0xffaac7ff
 
-    private const val THEME_DARK_OUTLINE = 0xff8e9192
-    private const val THEME_DARK_INVERSE_SURFACE = 0xffe5e2e1
-    private const val THEME_DARK_INVERSE_ON_SURFACE = 0xff313030
-    private const val THEME_DARK_INVERSE_PRIMARY = 0xff5d5f5f
+    private const val THEME_DARK_OUTLINE = 0xff8e9099
+    private const val THEME_DARK_INVERSE_SURFACE = 0xffe2e2e9
+    private const val THEME_DARK_INVERSE_ON_SURFACE = 0xff2e3036
+    private const val THEME_DARK_INVERSE_PRIMARY = 0xff415f91
 
     fun getDarkScheme() = darkColorScheme(
         primary = Color(THEME_DARK_PRIMARY),
