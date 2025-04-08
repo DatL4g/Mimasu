@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -19,9 +20,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import dev.chrisbanes.haze.HazeState
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 
@@ -38,6 +41,8 @@ fun MovieDetail(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         state = appBarState
     )
+    val haze = remember { HazeState() }
+    val listState = rememberLazyListState()
 
     Scaffold(
         modifier = Modifier
@@ -47,6 +52,8 @@ fun MovieDetail(
             MovieToolbar(
                 appBarState = appBarState,
                 scrollBehavior = scrollBehavior,
+                hazeState = haze,
+                listState = listState,
                 movie = movieState.getOrNull(),
                 initial = initial,
                 modifier = Modifier.fillMaxWidth(),
@@ -89,6 +96,8 @@ fun MovieDetail(
                 }
             }
             is MovieViewModel.State.Success -> MovieContent(
+                hazeState = haze,
+                listState = listState,
                 movie = current.movie,
                 initial = initial,
                 padding = padding

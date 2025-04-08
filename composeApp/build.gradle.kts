@@ -87,6 +87,8 @@ kotlin {
             implementation(libs.placeholder)
             implementation(libs.fonticons)
             implementation(libs.tolgee)
+            implementation(libs.haze)
+            implementation(libs.haze.materials)
 
             implementation(project(":core"))
             implementation(project(":ui"))

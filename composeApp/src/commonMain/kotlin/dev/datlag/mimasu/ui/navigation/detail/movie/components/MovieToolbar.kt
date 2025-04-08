@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
@@ -24,6 +25,8 @@ import coil3.compose.AsyncImage
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.material3.fade
 import com.eygraber.compose.placeholder.material3.placeholder
+import dev.chrisbanes.haze.HazeState
+import dev.datlag.mimasu.common.hazeEffect
 import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.details.Movie
@@ -39,6 +42,8 @@ import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 fun MovieToolbar(
     appBarState: TopAppBarState,
     scrollBehavior: TopAppBarScrollBehavior,
+    hazeState: HazeState,
+    listState: LazyListState,
     movie: Movie?,
     initial: CommonMovie?,
     modifier: Modifier = Modifier,
@@ -47,7 +52,10 @@ fun MovieToolbar(
     CollapsingToolbar(
         state = appBarState,
         scrollBehavior = scrollBehavior,
-        modifier = modifier,
+        modifier = modifier.hazeEffect(
+            state = hazeState,
+            listState = listState
+        ),
         background = { state ->
             val backdrops = remember(movie, initial) { movie.backdrops(initial) }
 

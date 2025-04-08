@@ -3,8 +3,10 @@ package dev.datlag.mimasu.common
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
@@ -12,6 +14,15 @@ import androidx.compose.ui.unit.max
 import coil3.compose.AsyncImagePainter
 import coil3.compose.AsyncImagePainter.State
 import coil3.compose.rememberAsyncImagePainter
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.materials.CupertinoMaterials
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.datlag.tooling.Platform
+import kotlin.math.absoluteValue
 
 @Composable
 operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
@@ -92,4 +103,40 @@ fun rememberNestedImagePainter(
             }
         }
     )
+}
+
+@OptIn(ExperimentalHazeMaterialsApi::class)
+@Composable
+fun Modifier.hazeEffect(
+    state: HazeState,
+    style: HazeStyle = if (Platform.isApple) {
+        CupertinoMaterials.thin()
+    } else {
+        HazeMaterials.thin()
+    },
+    listState: LazyListState,
+    progressive: Boolean = false
+) = Modifier.hazeEffect(
+    state = state,
+    style = style
+) {
+    alpha = if (listState.firstVisibleItemIndex == 0) {
+        if (progressive) {
+            listState.layoutInfo.visibleItemsInfo.firstOrNull()?.let {
+                (it.offset / it.size.toFloat()).absoluteValue
+            } ?: if (listState.firstVisibleItemScrollOffset == 0) {
+                0F
+            } else {
+                1F
+            }
+        } else {
+            if (listState.firstVisibleItemScrollOffset == 0) {
+                0F
+            } else {
+                1F
+            }
+        }
+    } else {
+        1F
+    }
 }

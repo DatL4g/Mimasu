@@ -5,9 +5,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeSource
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieCast
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieCrew
@@ -20,12 +23,17 @@ import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable
 fun MovieContent(
+    hazeState: HazeState,
+    listState: LazyListState,
     movie: Movie,
     initial: CommonMovie?,
     padding: PaddingValues
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        state = listState,
+        modifier = Modifier
+            .fillMaxSize()
+            .hazeSource(state = hazeState),
         contentPadding = padding
     ) {
         item {
