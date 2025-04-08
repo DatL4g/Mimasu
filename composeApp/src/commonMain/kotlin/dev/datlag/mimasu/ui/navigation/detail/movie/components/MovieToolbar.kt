@@ -1,9 +1,12 @@
 package dev.datlag.mimasu.ui.navigation.detail.movie.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,7 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -33,6 +40,8 @@ import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.CollapsingToolbar
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.ifFalse
+import dev.datlag.tooling.compose.ifTrue
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
@@ -151,6 +160,38 @@ fun MovieToolbar(
                             Platform.typography().labelMedium
                         }
                     )
+                }
+            }
+        },
+        actions = { state ->
+            Row(
+                modifier = Modifier
+                    .animateContentSize()
+                    .ifFalse(state.isCollapsed) {
+                        background(Platform.colorScheme().surface.copy(alpha = 0.5F), CircleShape)
+                    },
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                var bookmarked by remember(movie?.id, initial?.id) { mutableStateOf(false) }
+
+                IconButton(
+                    onClick = {
+                        bookmarked = !bookmarked
+                    }
+                ) {
+                    if (bookmarked) {
+                        MaterialSymbols(
+                            name = MaterialSymbols.BOOKMARK,
+                            contentDescription = null,
+                            filled = true
+                        )
+                    } else {
+                        MaterialSymbols(
+                            name = MaterialSymbols.BOOKMARK_ADD,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
         }

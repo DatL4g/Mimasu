@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Apartment
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Bookmark
+import androidx.compose.material.icons.rounded.BookmarkAdd
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material.icons.rounded.Face2
@@ -75,6 +77,8 @@ data object MaterialSymbols {
     const val PLAY_ARROW = "play_arrow"
     const val GLOBE_LOCATION_PIN = "globe_location_pin"
     const val APARTMENT = "apartment"
+    const val BOOKMARK = "bookmark"
+    const val BOOKMARK_ADD = "bookmark_add"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -197,6 +201,8 @@ data object MaterialSymbols {
         name.equals(PLAY_ARROW, ignoreCase = true) -> Icons.Rounded.PlayArrow
         name.equals(GLOBE_LOCATION_PIN, ignoreCase = true) -> Icons.Rounded.Public
         name.equals(APARTMENT, ignoreCase = true) -> Icons.Rounded.Apartment
+        name.equals(BOOKMARK, ignoreCase = true) -> Icons.Rounded.Bookmark
+        name.equals(BOOKMARK_ADD, ignoreCase = true) -> Icons.Rounded.BookmarkAdd
         else -> null
     }
 
