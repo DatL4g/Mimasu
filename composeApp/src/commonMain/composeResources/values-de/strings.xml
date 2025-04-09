@@ -49,4 +49,17 @@
     <string name="currency_thousand">K</string>
     <string name="currency_million">Mio</string>
     <string name="currency_billion">Mrd</string>
+
+    <string name="person_known_for">Bekannt für:</string>
+    <string name="person_gender">Geschlecht:</string>
+    <string name="person_birthday">Geburtstag:</string>
+    <string name="person_deathday">Todestag:</string>
+    <string name="person_place_of_birth">Geburtsort:</string>
+    <string name="person_gender_female">Frau</string>
+    <string name="person_gender_male">Mann</string>
+    <string name="person_gender_non_binary">Nicht-binär</string>
+    <string name="person_gender_unknown">Unbekannt</string>
+    <string name="person_biography">Biografie</string>
+    <string name="person_birthday_date_format">dd.MM.yyyy</string>
+    <string name="person_deathday_date_format">dd.MM.yyyy</string>
 </resources>

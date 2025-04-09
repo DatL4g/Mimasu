@@ -27,7 +27,8 @@ fun MovieContent(
     listState: LazyListState,
     movie: Movie,
     initial: CommonMovie?,
-    padding: PaddingValues
+    padding: PaddingValues,
+    onCastClick: (Movie.Credits.Cast) -> Unit,
 ) {
     LazyColumn(
         state = listState,
@@ -84,7 +85,8 @@ fun MovieContent(
                 movie = movie,
                 modifier = Modifier
                     .fillParentMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 16.dp),
+                onClick = onCastClick
             )
         }
         item {

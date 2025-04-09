@@ -6,6 +6,7 @@ import androidx.compose.material.icons.rounded.Apartment
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkAdd
+import androidx.compose.material.icons.rounded.Cake
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material.icons.rounded.Face2
@@ -15,8 +16,10 @@ import androidx.compose.material.icons.rounded.Face6
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.LocalFlorist
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Payments
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonPinCircle
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Public
@@ -26,6 +29,7 @@ import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.Tv
+import androidx.compose.material.icons.rounded.Work
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
@@ -79,6 +83,10 @@ data object MaterialSymbols {
     const val APARTMENT = "apartment"
     const val BOOKMARK = "bookmark"
     const val BOOKMARK_ADD = "bookmark_add"
+    const val WORK = "work"
+    const val PERSON = "person"
+    const val CAKE = "cake"
+    const val DECEASED = "deceased"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -203,6 +211,10 @@ data object MaterialSymbols {
         name.equals(APARTMENT, ignoreCase = true) -> Icons.Rounded.Apartment
         name.equals(BOOKMARK, ignoreCase = true) -> Icons.Rounded.Bookmark
         name.equals(BOOKMARK_ADD, ignoreCase = true) -> Icons.Rounded.BookmarkAdd
+        name.equals(WORK, ignoreCase = true) -> Icons.Rounded.Work
+        name.equals(PERSON, ignoreCase = true) -> Icons.Rounded.Person
+        name.equals(CAKE, ignoreCase = true) -> Icons.Rounded.Cake
+        name.equals(DECEASED, ignoreCase = true) -> Icons.Rounded.LocalFlorist
         else -> null
     }
 

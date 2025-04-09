@@ -31,12 +31,10 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
-import dev.datlag.tooling.scopeCatching
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.format.byUnicodePattern
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+import dev.datlag.mimasu.common.formatMedium
 
 @Composable
 fun MoviePosterContent(
@@ -71,22 +69,15 @@ fun MoviePosterContent(
             val tagline = remember(movie.id) {
                 movie.tagline?.ifBlank { null } ?: movie.originalTagline?.ifBlank { null }
             }
-            val localFormat = stringResource(Res.string.movie_release_date_format)
-            val releaseDate = remember(movie.id, localFormat) {
-                scopeCatching {
-                    movie.releaseLocalDate?.let {
-                        LocalDate.Format {
-                            byUnicodePattern(localFormat)
-                        }.format(it)
-                    }
-                }.getOrNull() ?: movie.releaseDate
-            }
 
             tagline?.let {
                 Text(text = it)
                 Spacer(modifier = Modifier.weight(1F))
             }
-            releaseDate?.let {
+            movie.releaseLocalDate.formatMedium(
+                fallbackFormat = Res.string.movie_release_date_format,
+                fallbackValue = movie.releaseDate
+            )?.let {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)

@@ -29,6 +29,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import dev.chrisbanes.haze.HazeState
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.movie_watch
+import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 import dev.datlag.tolgee.stringResource
@@ -37,7 +38,8 @@ import dev.datlag.tooling.async.suspendCatching
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun MovieDetail(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onCastClick: (Movie.Credits.Cast) -> Unit
 ) {
     val movieViewModel = kodeinViewModel<MovieViewModel>()
     val movieState by movieViewModel.movie.collectAsStateWithLifecycle(MovieViewModel.State.Loading)
@@ -89,8 +91,7 @@ fun MovieDetail(
                     Text(text = stringResource(Res.string.movie_watch))
                 }
             )
-        },
-        floatingActionButtonPosition = FabPosition.Center
+        }
     ) { padding ->
         when (val current = movieState) {
             is MovieViewModel.State.Loading -> {
@@ -115,7 +116,8 @@ fun MovieDetail(
                 listState = listState,
                 movie = current.movie,
                 initial = initial,
-                padding = padding
+                padding = padding,
+                onCastClick = onCastClick
             )
         }
     }

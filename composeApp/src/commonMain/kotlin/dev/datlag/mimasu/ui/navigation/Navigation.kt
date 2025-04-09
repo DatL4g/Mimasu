@@ -29,11 +29,13 @@ import dev.datlag.mimasu.composeapp.generated.resources.series
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
+import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
 import dev.datlag.mimasu.ui.navigation.home.Home
 import dev.datlag.mimasu.ui.navigation.movies.Movies
 import dev.datlag.mimasu.ui.navigation.search.Search
 import dev.datlag.mimasu.ui.navigation.series.Series
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
+import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.Serializable
@@ -56,6 +58,16 @@ object Navigation {
             @Serializable
             data object Movie : Detail
         }
+
+        @Serializable
+        sealed interface Extra {
+
+            @Serializable
+            data object None : Extra
+
+            @Serializable
+            data object Person : Extra
+        }
     }
 
     @Serializable
@@ -69,6 +81,9 @@ object Navigation {
 
             @Serializable
             data object Movie : Detail
+
+            @Serializable
+            data object Person : Detail
         }
     }
 
@@ -198,12 +213,12 @@ fun Navigation() {
                 Text(text = "Profile Screen")
             }
             composable<Navigation.Movies> {
-                val navigator = rememberListDetailPaneScaffoldNavigator(
-                    isDestinationHistoryAware = false
-                )
+                val navigator = rememberListDetailPaneScaffoldNavigator()
                 var detailNavigation by remember { mutableStateOf<Navigation.Movies.Detail>(Navigation.Movies.Detail.None) }
+                var extraNavigation by remember { mutableStateOf<Navigation.Movies.Extra>(Navigation.Movies.Extra.None) }
                 val scope = rememberCoroutineScope()
 
+                // ToDo("replace with navigable when available")
                 ListDetailPaneScaffold(
                     directive = navigator.scaffoldDirective,
                     value = navigator.scaffoldValue,
@@ -229,6 +244,14 @@ fun Navigation() {
                                         scope.launch {
                                             navigator.navigateBack()
                                         }
+                                    },
+                                    onCastClick = {
+                                        PersonViewModel.updateFrom(it)
+
+                                        extraNavigation = Navigation.Movies.Extra.Person
+                                        scope.launch {
+                                            navigator.navigateTo(ListDetailPaneScaffoldRole.Extra)
+                                        }
                                     }
                                 )
                             }
@@ -237,6 +260,21 @@ fun Navigation() {
                                     navigator.navigateTo(ListDetailPaneScaffoldRole.List)
                                 }
                             }
+                        }
+                    },
+                    extraPane = if (extraNavigation is Navigation.Movies.Extra.None) {
+                        null
+                    } else {
+                        {
+                            PersonDetail(
+                                onBack = {
+                                    extraNavigation = Navigation.Movies.Extra.None
+
+                                    scope.launch {
+                                        navigator.navigateBack()
+                                    }
+                                }
+                            )
                         }
                     }
                 )
@@ -253,6 +291,14 @@ fun Navigation() {
                     value = navigator.scaffoldValue,
                     listPane = {
                         Home(
+                            onPersonClicked = {
+                                PersonViewModel.updateFrom(it)
+
+                                detailNavigation = Navigation.Home.Detail.Person
+                                scope.launch {
+                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                                }
+                            },
                             onMovieClicked = {
                                 MovieViewModel.updateFrom(it)
 
@@ -267,6 +313,19 @@ fun Navigation() {
                         when (detailNavigation) {
                             is Navigation.Home.Detail.Movie -> {
                                 MovieDetail(
+                                    onBack = {
+                                        detailNavigation = Navigation.Home.Detail.None
+                                        scope.launch {
+                                            navigator.navigateBack()
+                                        }
+                                    },
+                                    onCastClick = {
+
+                                    }
+                                )
+                            }
+                            is Navigation.Home.Detail.Person -> {
+                                PersonDetail(
                                     onBack = {
                                         detailNavigation = Navigation.Home.Detail.None
                                         scope.launch {

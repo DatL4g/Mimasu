@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.common.formatCurrencyShort
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.movie_budget
@@ -27,10 +28,11 @@ fun MovieInfo(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         movie.budget.takeIf { it > 0 }?.let {
             Column(
+                modifier = Modifier.weight(1F),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -46,6 +48,7 @@ fun MovieInfo(
         }
         movie.voteAverage.takeIf { it > 0F }?.let {
             Column(
+                modifier = Modifier.weight(1F),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -61,6 +64,7 @@ fun MovieInfo(
         }
         movie.revenue.takeIf { it > 0F }?.let {
             Column(
+                modifier = Modifier.weight(1F),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
