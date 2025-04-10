@@ -206,6 +206,9 @@ data class Movie(
             val character : String? = _character?.ifBlank { null }
                 ?.replace("($knownForDepartment)", "", ignoreCase = true)
                 ?.replace("(voice)", "", ignoreCase = true)
+                ?.trim()
+                ?.takeUnless { it.equals("self", ignoreCase = true) }
+                ?.ifBlank { null }
 
             @Transient
             val isFemale = gender == 1

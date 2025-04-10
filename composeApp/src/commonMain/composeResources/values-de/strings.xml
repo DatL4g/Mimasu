@@ -62,4 +62,5 @@
     <string name="person_biography">Biografie</string>
     <string name="person_birthday_date_format">dd.MM.yyyy</string>
     <string name="person_deathday_date_format">dd.MM.yyyy</string>
+    <string name="person_also_known_as">Auch bekannt als</string>
 </resources>

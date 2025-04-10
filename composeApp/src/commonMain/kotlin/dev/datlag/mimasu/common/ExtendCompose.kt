@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -141,4 +142,14 @@ fun Modifier.hazeEffect(
     } else {
         1F
     }
+}
+
+@Composable
+fun LazyListState.isSticking(index: Int): Boolean {
+    return remember(this) {
+        derivedStateOf {
+            val firstVisible = layoutInfo.visibleItemsInfo.firstOrNull()
+            firstVisible?.index == index && firstVisible.offset == -layoutInfo.beforeContentPadding
+        }
+    }.value
 }

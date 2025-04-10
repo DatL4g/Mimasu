@@ -47,7 +47,7 @@ fun MovieCast(
                 modifier = modifier,
                 verticalAlignment = Alignment.CenterVertically,
                 contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(cast) {
                     MovieCharacterCard(
