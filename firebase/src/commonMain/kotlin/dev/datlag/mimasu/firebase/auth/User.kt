@@ -7,7 +7,7 @@ import net.pearx.kasechange.toTitleCase
 import net.pearx.kasechange.universalWordSplitter
 
 data class User(
-    private val firebase: FirebaseUser,
+    internal val firebase: FirebaseUser,
     val name: String? = firebase.displayName?.ifBlank { null }
         ?: firebase.email?.let(::emailToName)
         ?: firebase.providerData.firstNotNullOfOrNull {
