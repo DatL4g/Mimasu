@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.ui.navigation
 
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
@@ -15,11 +17,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil3.compose.AsyncImage
+import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.home
 import dev.datlag.mimasu.composeapp.generated.resources.movies
@@ -31,11 +40,15 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
 import dev.datlag.mimasu.ui.navigation.home.Home
+import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.navigation.movies.Movies
 import dev.datlag.mimasu.ui.navigation.search.Search
 import dev.datlag.mimasu.ui.navigation.series.Series
+import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
+import dev.datlag.mimasu.ui.viewmodel.accountViewModel
+import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.Serializable
@@ -97,8 +110,10 @@ object Navigation {
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun Navigation() {
+    val accountViewModel = accountViewModel()
     val controller = rememberNavController()
     val backStack by controller.currentBackStackEntryAsState()
+    val user by accountViewModel.user.collectAsStateWithLifecycle()
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
@@ -117,14 +132,38 @@ fun Navigation() {
                     }
                 },
                 icon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.PERSON_PIN_CIRCLE,
-                        contentDescription = null,
-                        filled = isProfile
-                    )
+                    var fallback by remember(user?.email) { mutableStateOf(false) }
+
+                    if (fallback) {
+                        MaterialSymbols(
+                            name = MaterialSymbols.PERSON_PIN_CIRCLE,
+                            contentDescription = null,
+                            filled = isProfile
+                        )
+                    } else {
+                        AsyncImage(
+                            modifier = Modifier.size(24.dp).clip(CircleShape),
+                            model = user?.profilePictures?.firstOrNull(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            error = rememberNestedImagePainter(
+                                models = user?.profilePictures.orEmpty(),
+                                contentScale = ContentScale.Crop
+                            ),
+                            onLoading = {
+                                fallback = false
+                            },
+                            onSuccess = {
+                                fallback = false
+                            },
+                            onError = {
+                                fallback = true
+                            }
+                        )
+                    }
                 },
                 label = {
-                    Text(text = stringResource(Res.string.profile))
+                    Text(text = user?.name ?: stringResource(Res.string.profile))
                 }
             )
             item(
@@ -210,7 +249,7 @@ fun Navigation() {
             startDestination = Navigation.Home
         ) {
             composable<Navigation.Profile> {
-                Text(text = "Profile Screen")
+                Login()
             }
             composable<Navigation.Movies> {
                 val navigator = rememberListDetailPaneScaffoldNavigator()

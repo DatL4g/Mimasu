@@ -2,6 +2,7 @@ package dev.datlag.mimasu.firebase.auth.datasource
 
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.User
+import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.Flow
@@ -9,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 class FirebaseAuthDataSource(
     private val firebaseAuthService: FirebaseAuthService
 ) {
+
+    val auth: FirebaseAuth
+        get() = firebaseAuthService.auth
 
     val user: Flow<User?> = firebaseAuthService.user
 

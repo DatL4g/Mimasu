@@ -17,7 +17,9 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.LocalFlorist
+import androidx.compose.material.icons.rounded.Mail
 import androidx.compose.material.icons.rounded.Movie
+import androidx.compose.material.icons.rounded.Password
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonPinCircle
@@ -87,6 +89,8 @@ data object MaterialSymbols {
     const val PERSON = "person"
     const val CAKE = "cake"
     const val DECEASED = "deceased"
+    const val MAIL = "mail"
+    const val PASSWORD = "password"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -215,6 +219,8 @@ data object MaterialSymbols {
         name.equals(PERSON, ignoreCase = true) -> Icons.Rounded.Person
         name.equals(CAKE, ignoreCase = true) -> Icons.Rounded.Cake
         name.equals(DECEASED, ignoreCase = true) -> Icons.Rounded.LocalFlorist
+        name.equals(MAIL, ignoreCase = true) -> Icons.Rounded.Mail
+        name.equals(PASSWORD, ignoreCase = true) -> Icons.Rounded.Password
         else -> null
     }
 

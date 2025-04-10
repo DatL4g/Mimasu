@@ -4,6 +4,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.app
 import dev.gitlive.firebase.auth.AuthCredential
+import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,40 +15,40 @@ data class FirebaseAuthService(
     private val app: FirebaseApp = Firebase.app
 ) {
 
+    val auth: FirebaseAuth
+        get() = Firebase.auth(app)
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val user: Flow<User?> = Firebase.auth(app).authStateChanged.mapLatest { it?.let(::User) }
+    val user: Flow<User?> = auth.authStateChanged.mapLatest { it?.let(::User) }
 
     val currentUser: User?
-        get() = Firebase.auth(app).currentUser?.let(::User)
+        get() = auth.currentUser?.let(::User)
 
     suspend fun signIn(
         credential: AuthCredential
-    ): User? = Firebase
-        .auth(app)
+    ): User? = auth
         .signInWithCredential(credential)
         .user?.let(::User)
 
     suspend fun createUserWithEmailAndPassword(
         email: String,
         password: String
-    ): User? = Firebase
-        .auth(app)
+    ): User? = auth
         .createUserWithEmailAndPassword(email, password)
         .user?.let(::User)
 
     suspend fun signInWithEmailAndPassword(
         email: String,
         password: String
-    ): User? = Firebase
-        .auth(app)
+    ): User? = auth
         .signInWithEmailAndPassword(email, password)
         .user?.let(::User)
 
     suspend fun updateCurrentUser(user: FirebaseUser) {
-        Firebase.auth(app).updateCurrentUser(user)
+        auth.updateCurrentUser(user)
     }
 
     suspend fun signOut() {
-        Firebase.auth(app).signOut()
+        auth.signOut()
     }
 }

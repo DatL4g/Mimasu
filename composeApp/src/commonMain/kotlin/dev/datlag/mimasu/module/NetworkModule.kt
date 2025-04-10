@@ -11,6 +11,8 @@ import coil3.serviceLoaderEnabled
 import coil3.svg.SvgDecoder
 import dev.datlag.mimasu.core.now
 import dev.datlag.mimasu.core.toEpochMilliseconds
+import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
+import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.ui.viewmodel.KodeinViewModelFactory
@@ -92,6 +94,12 @@ data object NetworkModule {
         }
         bindSingleton<KodeinViewModelFactory> {
             KodeinViewModelFactory(this)
+        }
+        bindSingleton<FirebaseAuthService> {
+            FirebaseAuthService()
+        }
+        bindSingleton<FirebaseAuthDataSource> {
+            FirebaseAuthDataSource(firebaseAuthService = instance())
         }
     }
 

@@ -6,8 +6,13 @@ sealed interface FirebaseAuthException {
 
     sealed interface Google : FirebaseAuthException {
 
-        class Unknown : IllegalStateException("Unknown error occurred during Google Sing In"), Google
+        class Unknown : IllegalStateException("Unknown error occurred during Google Sign In"), Google
 
         class UnknownCredential : IllegalArgumentException("Unexpected type of credentials"), Google
+    }
+
+    sealed interface GitHub : FirebaseAuthException {
+
+        class Unknown : IllegalStateException("Unknown error occurred during GitHub Sign In")
     }
 }

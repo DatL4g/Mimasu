@@ -8,11 +8,11 @@ import net.pearx.kasechange.universalWordSplitter
 
 data class User(
     internal val firebase: FirebaseUser,
-    val name: String? = firebase.displayName?.ifBlank { null }
-        ?: firebase.email?.let(::emailToName)
+    val name: String? = firebase.displayName?.ifBlank { null }?.let(::normalizeName)
         ?: firebase.providerData.firstNotNullOfOrNull {
-            it.displayName?.ifBlank { null }
+            it.displayName?.ifBlank { null }?.let(::normalizeName)
         }
+        ?: firebase.email?.let(::emailToName)
         ?: firebase.providerData.firstNotNullOfOrNull {
             it.email?.let(::emailToName)
         },
@@ -35,8 +35,12 @@ data class User(
                 return null
             }
 
-            val formatted = part.toTitleCase(from = universalWordSplitter(treatDigitsAsUppercase = true))
-            return formatted.replace("[0-9]+".toRegex(), "").trim().substringBefore(' ').trim().ifBlank { null }
+            return normalizeName(part)
+        }
+
+        internal fun normalizeName(name: String): String {
+            val formatted = name.toTitleCase(from = universalWordSplitter(treatDigitsAsUppercase = true))
+            return formatted.replace("[0-9]+".toRegex(), "").trim().substringBefore(' ').trim().ifBlank { name }
         }
     }
 }

@@ -8,23 +8,16 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.NoCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.User
 import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.FirebaseAuthException
 import dev.datlag.mimasu.firebase.auth.provider.FirebaseProvider
 import dev.datlag.tooling.async.suspendCatching
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.FirebaseApp
-import dev.gitlive.firebase.app
 import dev.gitlive.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.delay
 
 class FirebaseGoogleAuthProviderAndroid(
-    app: FirebaseApp = Firebase.app,
-    firebaseAuthDataSource: FirebaseAuthDataSource = FirebaseAuthDataSource(
-        firebaseAuthService = FirebaseAuthService(app)
-    ),
+    firebaseAuthDataSource: FirebaseAuthDataSource,
     serverClientId: String,
     private val context: Context,
     private val filterByAuthorizedAccounts: Boolean = false

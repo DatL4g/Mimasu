@@ -9,7 +9,13 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.datlag.mimasu.core.typeOf
+import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
+import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
+import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
+import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
+import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.tmdb.TMDB
+import dev.datlag.mimasu.ui.GoogleProvider
 import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.compose.localDI
@@ -53,6 +59,22 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
             modelClass typeOf PersonViewModel::class -> {
                 val tmdb = di.instance<TMDB>()
                 val model = PersonViewModel(detailsRepository = tmdb.details)
+
+                (model as? T) ?: super.create(modelClass, extras)
+            }
+            modelClass typeOf AccountViewModel::class -> {
+                val service = di.instanceOrNull<FirebaseAuthService>() ?: FirebaseAuthService()
+                val dataSource = di.instanceOrNull<FirebaseAuthDataSource>() ?: FirebaseAuthDataSource(service)
+                val emailProvider = di.instanceOrNull<FirebaseEmailAuthProvider>() ?: FirebaseEmailAuthProvider(dataSource)
+                val googleProvider = di.instanceOrNull<FirebaseGoogleAuthProvider>() ?: di.instanceOrNull<GoogleProvider>()?.getOrNull()
+                val githubProvider = di.instanceOrNull<FirebaseGitHubAuthProvider>()
+                val model = AccountViewModel(
+                    directDI = di,
+                    service = service,
+                    emailAuthProvider = emailProvider,
+                    _googleAuthProvider = googleProvider,
+                    gitHubAuthProvider = githubProvider
+                )
 
                 (model as? T) ?: super.create(modelClass, extras)
             }

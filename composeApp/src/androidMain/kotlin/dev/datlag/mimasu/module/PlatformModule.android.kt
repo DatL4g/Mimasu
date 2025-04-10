@@ -1,8 +1,19 @@
 package dev.datlag.mimasu.module
 
 import android.content.Context
+import co.touchlab.kermit.Logger
 import com.google.net.cronet.okhttptransport.CronetInterceptor
+import dev.datlag.mimasu.BuildKonfig
+import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.common.cronetEngine
+import dev.datlag.mimasu.common.firebaseDataSource
+import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
+import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
+import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
+import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProviderAndroid
+import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
+import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderAndroid
+import dev.datlag.mimasu.ui.GoogleProvider
 import dev.datlag.tooling.scopeCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -12,8 +23,10 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import org.chromium.net.CronetEngine
 import org.kodein.di.DI
+import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
+import org.kodein.di.instanceOrNull
 
 actual object PlatformModule {
 
@@ -47,6 +60,19 @@ actual object PlatformModule {
                 }
                 install(HttpCache)
             }
+        }
+        bindProvider<GoogleProvider> {
+            // Use provider as initial Sekret call may fail -> bindSingleton always null
+            GoogleProvider.basedOn(Sekret.firebaseWebOrAuthId(BuildKonfig.packageName)) { serverClientId ->
+                FirebaseGoogleAuthProviderAndroid(
+                    firebaseAuthDataSource = firebaseDataSource(),
+                    serverClientId = serverClientId,
+                    context = instance()
+                )
+            }
+        }
+        bindSingleton<FirebaseGitHubAuthProvider> {
+            FirebaseGitHubAuthProviderAndroid(firebaseAuthDataSource = firebaseDataSource())
         }
     }
 
