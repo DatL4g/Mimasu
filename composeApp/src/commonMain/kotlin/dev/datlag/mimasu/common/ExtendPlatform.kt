@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.common
 
 import androidx.compose.runtime.Composable
+import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.Platform.isIOS
 import dev.datlag.tooling.Platform.isMacOS
@@ -31,3 +32,6 @@ fun LocalDate?.formatMedium(
     fallbackFormat = stringResource(fallbackFormat),
     fallbackValue = fallbackValue
 )
+
+@Composable
+expect fun rememberGitHubAuthParams(): GitHubAuthParams?

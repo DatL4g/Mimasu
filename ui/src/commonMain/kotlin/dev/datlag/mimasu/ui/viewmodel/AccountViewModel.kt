@@ -14,9 +14,12 @@ import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvide
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.ui.GoogleProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.DirectDIAware
@@ -53,13 +56,32 @@ class AccountViewModel(
     val hasGitHubProvider: Boolean
         get() = gitHubAuthProvider != null
 
-    suspend fun emailSignIn(params: EmailAuthParams) = emailAuthProvider.signIn(params)
-    suspend fun googleSignIn() = googleAuthProvider?.signIn(
-        FirebaseGoogleAuthProvider.SignInParams(isRetrying = false)
-    )
-    suspend fun githubSignIn(params: GitHubAuthParams) = gitHubAuthProvider?.signIn(params)
+    private var loginJob: Job? = null
 
-    suspend fun signOut() = service.signOut()
+    fun emailSignIn(params: EmailAuthParams) = startLoginJob {
+        emailAuthProvider.signIn(params)
+    }
+
+    fun googleSignIn() = startLoginJob {
+        googleAuthProvider?.signIn(
+            FirebaseGoogleAuthProvider.SignInParams(isRetrying = false)
+        )
+    }
+
+    fun githubSignIn(params: GitHubAuthParams) = startLoginJob {
+        gitHubAuthProvider?.signIn(params)
+    }
+
+    fun signOut() = startLoginJob {
+        service.signOut()
+    }
+
+    private fun startLoginJob(block: suspend CoroutineScope.() -> Unit) {
+        loginJob?.cancel()
+        loginJob = viewModelScope.launch {
+            block()
+        }
+    }
 
     private inline fun <reified T : Any> provideInstance(): T? {
         return instanceOrNull<T>()

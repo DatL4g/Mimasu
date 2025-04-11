@@ -6,7 +6,9 @@ import android.content.ContextWrapper
 import android.view.Window
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.module.PlatformModule
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.LocalDate
@@ -61,4 +63,12 @@ actual fun LocalDate?.formatMedium(fallbackFormat: String): String? {
     }.getOrNull()?.ifBlank { null } ?: scopeCatching {
         fallbackFormatter.format(this)
     }.getOrNull()?.ifBlank { null }
+}
+
+@Composable
+actual fun rememberGitHubAuthParams(): GitHubAuthParams? {
+    val context = LocalContext.current
+    return remember(context) {
+        context.findActivity()
+    } ?: context.findActivity()
 }
