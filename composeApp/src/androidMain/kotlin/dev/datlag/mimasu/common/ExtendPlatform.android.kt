@@ -7,9 +7,12 @@ import android.view.Window
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import app.rive.runtime.kotlin.core.RendererType
+import app.rive.runtime.kotlin.core.Rive
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.module.PlatformModule
+import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format.byUnicodePattern
@@ -71,4 +74,33 @@ actual fun rememberGitHubAuthParams(): GitHubAuthParams? {
     return remember(context) {
         context.findActivity()
     } ?: context.findActivity()
+}
+
+fun Rive.initSafely(
+    context: Context,
+    defaultRenderer: RendererType = defaultRendererType
+): Boolean {
+    val riveClass = "app.rive.runtime.kotlin.core.Rive"
+    val libName = scopeCatching {
+        val clazz = Class.forName(riveClass)
+        val field = clazz.getDeclaredField("RIVE_ANDROID")
+        field.isAccessible = true
+        field.get(null) as? String
+    }.getOrNull()?.trim()?.ifBlank { null } ?: "rive-android"
+
+    val libLoaded = NativeLoader.loadLibrary(context, libName)
+    val rendererSet = this.defaultRendererType == defaultRenderer || scopeCatching {
+        val clazz = Class.forName(riveClass)
+        val field = clazz.getDeclaredField("defaultRendererType")
+        field.isAccessible = true
+        field.set(clazz, defaultRenderer)
+    }.isSuccess
+
+    return if (libLoaded && rendererSet) {
+        initializeCppEnvironment()
+        true
+    } else {
+        init(context, defaultRenderer)
+        false
+    }
 }

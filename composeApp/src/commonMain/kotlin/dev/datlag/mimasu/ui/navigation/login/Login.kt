@@ -1,14 +1,22 @@
 package dev.datlag.mimasu.ui.navigation.login
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -28,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.autofill.ContentDataType
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.contentDataType
 import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.semantics
@@ -46,13 +55,26 @@ import dev.datlag.mimasu.ui.custom.GitHubIconButton
 import dev.datlag.mimasu.ui.custom.GoogleButton
 import dev.datlag.mimasu.ui.custom.GoogleIconButton
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.navigation.login.components.LoginAppImage
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
+import dev.datlag.mimasu.common.plus
+import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.github
+import dev.datlag.mimasu.composeapp.generated.resources.google
+import dev.datlag.mimasu.composeapp.generated.resources.login_email
+import dev.datlag.mimasu.composeapp.generated.resources.login_forgot_password
+import dev.datlag.mimasu.composeapp.generated.resources.login_or_login_with
+import dev.datlag.mimasu.composeapp.generated.resources.login_password
+import dev.datlag.mimasu.composeapp.generated.resources.login_sign_in
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun Login() {
     val accountViewModel = accountViewModel()
     var emailValue by remember { mutableStateOf("") }
     var passwordValue by remember { mutableStateOf("") }
+    val emailInteractionSource = remember { MutableInteractionSource() }
+    val passwordInteractionSource = remember { MutableInteractionSource() }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -62,36 +84,47 @@ fun Login() {
     ) {
         item {
             Column(
-                modifier = Modifier.fillParentMaxHeight(0.3F).fillParentMaxWidth()
-            ) {  }
-        }
-        item {
-            OutlinedTextField(
-                modifier = Modifier.fillParentMaxWidth().semantics {
-                    contentType = ContentType.EmailAddress
-                    contentDataType = ContentDataType.Text
-                },
-                value = emailValue,
-                onValueChange = {
-                    emailValue = it
-                },
-                leadingIcon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.MAIL,
-                        contentDescription = null
-                    )
-                },
-                label = {
-                    Text(text = "E-Mail")
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.None,
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                maxLines = 1,
-                singleLine = true
-            )
+                modifier = Modifier.fillParentMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val typingEmail by emailInteractionSource.collectIsFocusedAsState()
+                val typingPassword by passwordInteractionSource.collectIsFocusedAsState()
+
+                LoginAppImage(
+                    imageModifier = Modifier.size(200.dp).clip(CircleShape),
+                    riveModifier = Modifier.fillMaxWidth(),
+                    typingEmail = typingEmail && !typingPassword,
+                    typingPassword = typingPassword && !typingEmail
+                )
+                OutlinedTextField(
+                    modifier = Modifier.fillParentMaxWidth().semantics {
+                        contentType = ContentType.EmailAddress
+                        contentDataType = ContentDataType.Text
+                    },
+                    value = emailValue,
+                    onValueChange = {
+                        emailValue = it
+                    },
+                    leadingIcon = {
+                        MaterialSymbols(
+                            name = MaterialSymbols.MAIL,
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text(text = stringResource(Res.string.login_email))
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.None,
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
+                    maxLines = 1,
+                    singleLine = true,
+                    interactionSource = emailInteractionSource
+                )
+            }
         }
         item {
             var showPassword by remember { mutableStateOf(false) }
@@ -112,7 +145,7 @@ fun Login() {
                     )
                 },
                 label = {
-                    Text(text = "Password")
+                    Text(text = stringResource(Res.string.login_password))
                 },
                 trailingIcon = if (passwordValue.isBlank()) null else {
                     {
@@ -139,7 +172,8 @@ fun Login() {
                     imeAction = ImeAction.Go
                 ),
                 maxLines = 1,
-                singleLine = true
+                singleLine = true,
+                interactionSource = passwordInteractionSource
             )
         }
         item {
@@ -155,7 +189,7 @@ fun Login() {
                     },
                     enabled = emailValue.isNotBlank()
                 ) {
-                    Text(text = "Forgot Password")
+                    Text(text = stringResource(Res.string.login_forgot_password))
                 }
             }
         }
@@ -167,7 +201,7 @@ fun Login() {
                 },
                 enabled = emailValue.isNotBlank() && passwordValue.isNotBlank()
             ) {
-                Text(text = "Sign In")
+                Text(text = stringResource(Res.string.login_sign_in))
             }
         }
         item {
@@ -180,7 +214,7 @@ fun Login() {
                     HorizontalDivider(
                         modifier = Modifier.weight(1F)
                     )
-                    Text(text = "Or login with")
+                    Text(text = stringResource(Res.string.login_or_login_with))
                     HorizontalDivider(
                         modifier = Modifier.weight(1F)
                     )
@@ -200,7 +234,7 @@ fun Login() {
                         onClick = { params ->
                             accountViewModel.githubSignIn(params)
                         },
-                        text = "GitHub"
+                        text = stringResource(Res.string.github)
                     )
                 }
                 if (accountViewModel.hasGoogleProvider) {
@@ -209,7 +243,7 @@ fun Login() {
                         onClick = {
                             accountViewModel.googleSignIn()
                         },
-                        text = "Google"
+                        text = stringResource(Res.string.google)
                     )
                 }
             }

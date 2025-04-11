@@ -63,4 +63,12 @@
     <string name="person_birthday_date_format">MM.dd.yyyy</string>
     <string name="person_deathday_date_format">MM.dd.yyyy</string>
     <string name="person_also_known_as">Also known as</string>
+
+    <string name="login_email">E-Mail</string>
+    <string name="login_password">Password</string>
+    <string name="login_forgot_password">Forgot Password</string>
+    <string name="login_sign_in">Sign In</string>
+    <string name="login_or_login_with">Or login with</string>
+    <string name="github">GitHub</string>
+    <string name="google">Google</string>
 </resources>

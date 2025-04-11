@@ -49,7 +49,7 @@ class App : MultiDexApplication(), DIAware {
 
         CronetProviderInstaller.installProvider(this)
 
-        if (NativeLoader.loadLibrary(this, "sekret")) {
+        if (AppInitializer.isSekretLoaded(applicationContext)) {
             val appId = Sekret.firebaseAppId(BuildKonfig.packageName)
             val apiKey = Sekret.firebaseApiKey(BuildKonfig.packageName)
 
