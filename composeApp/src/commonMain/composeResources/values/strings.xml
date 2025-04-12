@@ -74,6 +74,9 @@
     <string name="login_password_criteria_number">Number</string>
     <string name="login_password_criteria_special">Special character</string>
     <string name="login_password_criteria_length_minimum">8 characters minimum</string>
+    <string name="login_agreement">By creating an account you agree to our {terms} and {privacy}.</string>
+    <string name="login_terms_of_service">Terms of Service</string>
+    <string name="login_privacy_policy">Privacy Policy</string>
 
     <string name="github">GitHub</string>
     <string name="google">Google</string>

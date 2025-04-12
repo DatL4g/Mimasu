@@ -45,15 +45,22 @@ import androidx.compose.ui.autofill.ContentDataType
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.contentDataType
 import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.LinkInteractionListener
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
@@ -69,6 +76,7 @@ import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.github
 import dev.datlag.mimasu.composeapp.generated.resources.google
+import dev.datlag.mimasu.composeapp.generated.resources.login_agreement
 import dev.datlag.mimasu.composeapp.generated.resources.login_email
 import dev.datlag.mimasu.composeapp.generated.resources.login_forgot_password
 import dev.datlag.mimasu.composeapp.generated.resources.login_or_login_with
@@ -78,9 +86,13 @@ import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_
 import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_number
 import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_special
 import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_uppercase
+import dev.datlag.mimasu.composeapp.generated.resources.login_privacy_policy
 import dev.datlag.mimasu.composeapp.generated.resources.login_sign_in
+import dev.datlag.mimasu.composeapp.generated.resources.login_terms_of_service
+import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.ui.navigation.login.components.LoginPasswordCriteria
 import org.jetbrains.compose.resources.stringResource
+import kotlin.math.min
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -262,7 +274,10 @@ fun Login() {
             Button(
                 modifier = Modifier.fillParentMaxWidth(),
                 onClick = {
-
+                    accountViewModel.emailSignIn(EmailAuthParams(
+                        email = emailValue,
+                        password = passwordValue
+                    ))
                 },
                 enabled = emailValid && passwordValid
             ) {
@@ -314,9 +329,48 @@ fun Login() {
             }
         }
         item {
+            val uriHandler = LocalUriHandler.current
+            val rawAgreement = stringResource(Res.string.login_agreement)
+            val terms = stringResource(Res.string.login_terms_of_service)
+            val privacy = stringResource(Res.string.login_privacy_policy)
+            val agreement = remember(rawAgreement, terms, privacy) {
+                buildAnnotatedString {
+                    val termsIndex = rawAgreement.indexOf("{terms}")
+                    val termsAgreement = rawAgreement.replace("{terms}", terms)
+                    val privacyIndex = termsAgreement.indexOf("{privacy}")
+                    val agreement = termsAgreement.replace("{privacy}", privacy)
+
+                    append(agreement)
+
+                    if (termsIndex >= 0) {
+                        addLink(clickable = LinkAnnotation.Clickable(
+                            tag = "TERMS",
+                            styles = TextLinkStyles(style = SpanStyle(textDecoration = TextDecoration.Underline)),
+                            linkInteractionListener = object : LinkInteractionListener {
+                                override fun onClick(link: LinkAnnotation) {
+                                    uriHandler.openUri("https://github.com/DatL4g/Mimasu")
+                                }
+                            }
+                        ), start = termsIndex, end = min(termsIndex + terms.length, agreement.length))
+                    }
+
+                    if (privacyIndex >= 0) {
+                        addLink(clickable = LinkAnnotation.Clickable(
+                            tag = "PRIVACY",
+                            styles = TextLinkStyles(style = SpanStyle(textDecoration = TextDecoration.Underline)),
+                            linkInteractionListener = object : LinkInteractionListener {
+                                override fun onClick(link: LinkAnnotation) {
+                                    uriHandler.openUri("https://github.com/DatL4g/Mimasu")
+                                }
+                            }
+                        ), start = privacyIndex, end = min(privacyIndex + privacy.length, agreement.length))
+                    }
+                }
+            }
+
             Text(
-                modifier = Modifier.fillParentMaxWidth(0.75F).padding(top = 16.dp),
-                text = "By creating an account you agree to our Terms of Service and Privacy Policy.",
+                modifier = Modifier.fillParentMaxWidth().padding(top = 16.dp),
+                text = agreement,
                 textAlign = TextAlign.Center
             )
         }
