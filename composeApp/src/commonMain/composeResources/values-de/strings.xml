@@ -69,6 +69,12 @@
     <string name="login_forgot_password">Passwort vergessen</string>
     <string name="login_sign_in">Anmelden</string>
     <string name="login_or_login_with">Oder einloggen mit</string>
+    <string name="login_password_criteria_lowercase">Kleinbuchstaben</string>
+    <string name="login_password_criteria_uppercase">Großbuchstaben</string>
+    <string name="login_password_criteria_number">Zahl</string>
+    <string name="login_password_criteria_special">Sonderzeichen</string>
+    <string name="login_password_criteria_length_minimum">8 Zeichen mindestens</string>
+
     <string name="github">GitHub</string>
     <string name="google">Google</string>
 </resources>

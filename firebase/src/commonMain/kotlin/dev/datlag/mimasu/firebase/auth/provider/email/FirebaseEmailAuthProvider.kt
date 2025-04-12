@@ -18,7 +18,7 @@ class FirebaseEmailAuthProvider(
         val currentUser = firebaseAuthDataSource.currentUser
 
         currentUser?.firebase?.linkWithCredential(
-            EmailAuthProvider.credential(params.email, params.password)
+            params.asCredential()
         )?.user?.let(::User)?.let {
             return@suspendCatching it
         }

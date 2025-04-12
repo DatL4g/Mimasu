@@ -7,6 +7,7 @@ import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkAdd
 import androidx.compose.material.icons.rounded.Cake
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material.icons.rounded.Face2
@@ -101,6 +102,8 @@ data object MaterialSymbols {
     const val PASSWORD = "password"
     const val VISIBILITY = "visibility"
     const val VISIBILITY_OFF = "visibility_off"
+    const val CHECK_SMALL = "check_small"
+    const val CLOSE_SMALL = "close_small"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -405,6 +408,8 @@ data object MaterialSymbols {
         name.equals(PASSWORD, ignoreCase = true) -> Icons.Rounded.Password
         name.equals(VISIBILITY, ignoreCase = true) -> Icons.Rounded.Visibility
         name.equals(VISIBILITY_OFF, ignoreCase = true) -> Icons.Rounded.VisibilityOff
+        name.equals(CHECK_SMALL, ignoreCase = true) -> Icons.Rounded.Check
+        name.equals(CLOSE_SMALL, ignoreCase = true) -> Icons.Rounded.Close
         else -> null
     }
 

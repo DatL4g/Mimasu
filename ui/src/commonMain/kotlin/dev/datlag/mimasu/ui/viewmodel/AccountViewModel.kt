@@ -15,11 +15,17 @@ import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.ui.GoogleProvider
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.DirectDIAware
@@ -34,6 +40,54 @@ class AccountViewModel(
     private val _googleAuthProvider: FirebaseGoogleAuthProvider?,
     private val gitHubAuthProvider: FirebaseGitHubAuthProvider?
 ) : ViewModel(), DirectDIAware {
+
+    private val _email = MutableStateFlow("")
+    val email = _email.asStateFlow()
+
+    private val emailAddressRegex = Regex(
+        "[a-zA-Z0-9+._%\\-]{1,256}@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+"
+    )
+
+    private val passwordLowercaseCharRegex = Regex("[a-z]+")
+    private val passwordUppercaseCharRegex = Regex("[A-Z]+")
+    private val passwordNumberRegex = Regex("[0-9]+")
+    private val passwordSpecialCharRegex = Regex("[\\^$*.\\[\\]{}()?\"!@#%&/,><':;|_~]+")
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val emailHasError = email.mapLatest {
+        if (it.isNotEmpty()) { // using empty as whitespaces not allowed, but empty is not an error
+            !it.matches(emailAddressRegex)
+        } else {
+            false
+        }
+    }
+
+    fun updateEmail(value: String) {
+        _email.update { value.trim() }
+    }
+
+    private val _password = MutableStateFlow("")
+    val password = _password.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val passwordErrorState = password.mapLatest {
+        if (it.isNotEmpty()) { // using empty as whitespaces not allowed, but empty is not an error
+            PasswordErrorState(
+                hasLowercaseLetter = it.contains(passwordLowercaseCharRegex),
+                hasUppercaseLetter = it.contains(passwordUppercaseCharRegex),
+                hasNumber = it.contains(passwordNumberRegex),
+                hasSpecialChar = it.contains(passwordSpecialCharRegex),
+                isLongEnough = it.length >= 8,
+                isTooLong = it.length > 4096
+            )
+        } else {
+            null
+        }
+    }
+
+    fun updatePassword(value: String) {
+        _password.update { value.trim() }
+    }
 
     val user = service.user.stateIn(
         scope = viewModelScope,
@@ -92,6 +146,23 @@ class AccountViewModel(
         super.onCleared()
 
         viewModelScope.cancel()
+    }
+
+    @Serializable
+    data class PasswordErrorState(
+        val hasLowercaseLetter: Boolean,
+        val hasUppercaseLetter: Boolean,
+        val hasNumber: Boolean,
+        val hasSpecialChar: Boolean,
+        val isLongEnough: Boolean,
+        val isTooLong: Boolean
+    ) {
+        val hasError: Boolean = !hasLowercaseLetter
+                || !hasUppercaseLetter
+                || !hasNumber
+                || !hasSpecialChar
+                || !isLongEnough
+                || isTooLong
     }
 
     companion object : ViewModelStoreOwner {

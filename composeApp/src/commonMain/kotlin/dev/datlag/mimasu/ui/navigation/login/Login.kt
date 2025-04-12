@@ -1,5 +1,10 @@
 package dev.datlag.mimasu.ui.navigation.login
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -27,16 +32,19 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.autofill.ContentDataType
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDataType
 import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.semantics
@@ -47,6 +55,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
@@ -57,7 +66,6 @@ import dev.datlag.mimasu.ui.custom.GoogleIconButton
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.login.components.LoginAppImage
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
-import dev.datlag.mimasu.common.plus
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.github
 import dev.datlag.mimasu.composeapp.generated.resources.google
@@ -65,16 +73,44 @@ import dev.datlag.mimasu.composeapp.generated.resources.login_email
 import dev.datlag.mimasu.composeapp.generated.resources.login_forgot_password
 import dev.datlag.mimasu.composeapp.generated.resources.login_or_login_with
 import dev.datlag.mimasu.composeapp.generated.resources.login_password
+import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_length_minimum
+import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_lowercase
+import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_number
+import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_special
+import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_uppercase
 import dev.datlag.mimasu.composeapp.generated.resources.login_sign_in
+import dev.datlag.mimasu.ui.navigation.login.components.LoginPasswordCriteria
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Login() {
     val accountViewModel = accountViewModel()
-    var emailValue by remember { mutableStateOf("") }
-    var passwordValue by remember { mutableStateOf("") }
+
+    val emailValue by accountViewModel.email.collectAsStateWithLifecycle()
+    val emailHasError by accountViewModel.emailHasError.collectAsStateWithLifecycle(false)
+    val emailValid = remember(emailValue, emailHasError) {
+        emailValue.isNotBlank() && !emailHasError
+    }
     val emailInteractionSource = remember { MutableInteractionSource() }
+    val typingEmail by emailInteractionSource.collectIsFocusedAsState()
+
+    val passwordValue by accountViewModel.password.collectAsStateWithLifecycle()
+    val passwordErrorState by accountViewModel.passwordErrorState.collectAsStateWithLifecycle(null)
+    val passwordHasError = remember(passwordErrorState) {
+        passwordErrorState?.hasError == true
+    }
+    val passwordValid = remember(passwordValue, passwordHasError) {
+        passwordValue.isNotBlank() && !passwordHasError
+    }
     val passwordInteractionSource = remember { MutableInteractionSource() }
+    val typingPassword by passwordInteractionSource.collectIsFocusedAsState()
+
+    val focusManager = LocalFocusManager.current
+
+    BackHandler(enabled = typingEmail || typingPassword) {
+        focusManager.clearFocus(true)
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -88,8 +124,7 @@ fun Login() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val typingEmail by emailInteractionSource.collectIsFocusedAsState()
-                val typingPassword by passwordInteractionSource.collectIsFocusedAsState()
+
 
                 LoginAppImage(
                     imageModifier = Modifier.size(200.dp).clip(CircleShape),
@@ -104,7 +139,7 @@ fun Login() {
                     },
                     value = emailValue,
                     onValueChange = {
-                        emailValue = it
+                        accountViewModel.updateEmail(it)
                     },
                     leadingIcon = {
                         MaterialSymbols(
@@ -122,6 +157,7 @@ fun Login() {
                     ),
                     maxLines = 1,
                     singleLine = true,
+                    isError = emailHasError,
                     interactionSource = emailInteractionSource
                 )
             }
@@ -136,7 +172,7 @@ fun Login() {
                 },
                 value = passwordValue,
                 onValueChange = {
-                    passwordValue = it
+                    accountViewModel.updatePassword(it)
                 },
                 leadingIcon = {
                     MaterialSymbols(
@@ -173,21 +209,50 @@ fun Login() {
                 ),
                 maxLines = 1,
                 singleLine = true,
+                isError = passwordHasError,
                 interactionSource = passwordInteractionSource
             )
         }
         item {
             Row(
                 modifier = Modifier.fillParentMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End)
             ) {
+                AnimatedVisibility(
+                    modifier = Modifier.weight(1F),
+                    visible = passwordValue.isNotEmpty(),
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    Column {
+                        LoginPasswordCriteria(
+                            fulfilled = passwordErrorState?.hasLowercaseLetter == true,
+                            text = Res.string.login_password_criteria_lowercase
+                        )
+                        LoginPasswordCriteria(
+                            fulfilled = passwordErrorState?.hasUppercaseLetter == true,
+                            text = Res.string.login_password_criteria_uppercase
+                        )
+                        LoginPasswordCriteria(
+                            fulfilled = passwordErrorState?.hasNumber == true,
+                            text = Res.string.login_password_criteria_number
+                        )
+                        LoginPasswordCriteria(
+                            fulfilled = passwordErrorState?.hasSpecialChar == true,
+                            text = Res.string.login_password_criteria_special
+                        )
+                        LoginPasswordCriteria(
+                            fulfilled = passwordErrorState?.isLongEnough == true,
+                            text = Res.string.login_password_criteria_length_minimum
+                        )
+                    }
+                }
                 TextButton(
                     modifier = Modifier,
                     onClick = {
 
                     },
-                    enabled = emailValue.isNotBlank()
+                    enabled = emailValid
                 ) {
                     Text(text = stringResource(Res.string.login_forgot_password))
                 }
@@ -199,7 +264,7 @@ fun Login() {
                 onClick = {
 
                 },
-                enabled = emailValue.isNotBlank() && passwordValue.isNotBlank()
+                enabled = emailValid && passwordValid
             ) {
                 Text(text = stringResource(Res.string.login_sign_in))
             }
