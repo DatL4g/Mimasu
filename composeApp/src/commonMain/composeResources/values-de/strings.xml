@@ -74,9 +74,10 @@
     <string name="login_password_criteria_number">Zahl</string>
     <string name="login_password_criteria_special">Sonderzeichen</string>
     <string name="login_password_criteria_length_minimum">8 Zeichen mindestens</string>
-    <string name="login_agreement">Durch Erstellung eines Kontos stimmenst du unseren {terms} und {privacy} zu.</string>
+    <string name="login_agreement">Durch Erstellung eines Kontos stimmst du unseren {terms} und {privacy} zu.</string>
     <string name="login_terms_of_service">Servicebedingungen</string>
     <string name="login_privacy_policy">Datenschutzbestimmungen</string>
+    <string name="login_failure">Anmeldung fehlgeschlagen, überprüfe dass deine angegebenen Informationen korrekt sind oder versuche es später nochmal.</string>
 
     <string name="github">GitHub</string>
     <string name="google">Google</string>

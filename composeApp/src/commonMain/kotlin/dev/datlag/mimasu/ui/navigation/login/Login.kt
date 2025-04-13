@@ -78,6 +78,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.github
 import dev.datlag.mimasu.composeapp.generated.resources.google
 import dev.datlag.mimasu.composeapp.generated.resources.login_agreement
 import dev.datlag.mimasu.composeapp.generated.resources.login_email
+import dev.datlag.mimasu.composeapp.generated.resources.login_failure
 import dev.datlag.mimasu.composeapp.generated.resources.login_forgot_password
 import dev.datlag.mimasu.composeapp.generated.resources.login_or_login_with
 import dev.datlag.mimasu.composeapp.generated.resources.login_password
@@ -91,12 +92,15 @@ import dev.datlag.mimasu.composeapp.generated.resources.login_sign_in
 import dev.datlag.mimasu.composeapp.generated.resources.login_terms_of_service
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.ui.navigation.login.components.LoginPasswordCriteria
+import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.colorScheme
+import dev.datlag.tooling.compose.withMainContext
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.min
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Login() {
+fun Login(onSuccess: () -> Unit) {
     val accountViewModel = accountViewModel()
 
     val emailValue by accountViewModel.email.collectAsStateWithLifecycle()
@@ -274,10 +278,17 @@ fun Login() {
             Button(
                 modifier = Modifier.fillParentMaxWidth(),
                 onClick = {
-                    accountViewModel.emailSignIn(EmailAuthParams(
-                        email = emailValue,
-                        password = passwordValue
-                    ))
+                    accountViewModel.emailSignIn(
+                        params = EmailAuthParams(
+                            email = emailValue,
+                            password = passwordValue
+                        ),
+                        onSuccess = {
+                            withMainContext {
+                                onSuccess()
+                            }
+                        }
+                    )
                 },
                 enabled = emailValid && passwordValid
             ) {
@@ -312,7 +323,14 @@ fun Login() {
                     GitHubButton(
                         modifier = Modifier.weight(1F),
                         onClick = { params ->
-                            accountViewModel.githubSignIn(params)
+                            accountViewModel.githubSignIn(
+                                params = params,
+                                onSuccess = {
+                                    withMainContext {
+                                        onSuccess()
+                                    }
+                                }
+                            )
                         },
                         text = stringResource(Res.string.github)
                     )
@@ -321,11 +339,30 @@ fun Login() {
                     GoogleButton(
                         modifier = Modifier.weight(1F),
                         onClick = {
-                            accountViewModel.googleSignIn()
+                            accountViewModel.googleSignIn(
+                                onSuccess = {
+                                    withMainContext {
+                                        onSuccess()
+                                    }
+                                }
+                            )
                         },
                         text = stringResource(Res.string.google)
                     )
                 }
+            }
+        }
+        item {
+            val loginResult by accountViewModel.loginResult.collectAsStateWithLifecycle()
+
+            AnimatedVisibility(
+                modifier = Modifier.fillParentMaxWidth(),
+                visible = loginResult == false
+            ) {
+                Text(
+                    text = stringResource(Res.string.login_failure),
+                    color = Platform.colorScheme().error
+                )
             }
         }
         item {

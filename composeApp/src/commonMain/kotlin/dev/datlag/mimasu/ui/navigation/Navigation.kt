@@ -249,7 +249,11 @@ fun Navigation() {
             startDestination = Navigation.Home
         ) {
             composable<Navigation.Profile> {
-                Login()
+                Login(
+                    onSuccess = {
+
+                    }
+                )
             }
             composable<Navigation.Movies> {
                 val navigator = rememberListDetailPaneScaffoldNavigator()

@@ -111,19 +111,39 @@ class AccountViewModel(
         get() = gitHubAuthProvider != null
 
     private var loginJob: Job? = null
+    private val _loginResult = MutableStateFlow<Boolean?>(null)
+    val loginResult = _loginResult.asStateFlow()
 
-    fun emailSignIn(params: EmailAuthParams) = startLoginJob {
-        emailAuthProvider.signIn(params)
+    fun emailSignIn(params: EmailAuthParams, onSuccess: suspend () -> Unit) = startLoginJob {
+        _loginResult.update { null }
+        emailAuthProvider.signIn(params).also { result ->
+            _loginResult.update { result.isSuccess }
+            if (result.isSuccess) {
+                onSuccess()
+            }
+        }
     }
 
-    fun googleSignIn() = startLoginJob {
+    fun googleSignIn(onSuccess: suspend () -> Unit) = startLoginJob {
+        _loginResult.update { null }
         googleAuthProvider?.signIn(
             FirebaseGoogleAuthProvider.SignInParams(isRetrying = false)
-        )
+        ).also { result ->
+            _loginResult.update { result?.isSuccess }
+            if (result?.isSuccess == true) {
+                onSuccess()
+            }
+        }
     }
 
-    fun githubSignIn(params: GitHubAuthParams) = startLoginJob {
-        gitHubAuthProvider?.signIn(params)
+    fun githubSignIn(params: GitHubAuthParams, onSuccess: suspend () -> Unit) = startLoginJob {
+        _loginResult.update { null }
+        gitHubAuthProvider?.signIn(params).also { result ->
+            _loginResult.update { result?.isSuccess }
+            if (result?.isSuccess == true) {
+                onSuccess()
+            }
+        }
     }
 
     fun signOut() = startLoginJob {
