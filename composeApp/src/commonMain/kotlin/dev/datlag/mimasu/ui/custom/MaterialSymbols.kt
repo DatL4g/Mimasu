@@ -43,11 +43,14 @@ import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.composeapp.generated.resources.MaterialSymbolsRounded
 import dev.datlag.mimasu.composeapp.generated.resources.Res
@@ -60,8 +63,10 @@ import dev.datlag.tooling.compose.withIOContext
 import dev.tclement.fonticons.ExperimentalFontIconsApi
 import dev.tclement.fonticons.FontIcon
 import dev.tclement.fonticons.IconFont
+import dev.tclement.fonticons.LocalIconSize
 import dev.tclement.fonticons.VariableIconFont
 import dev.tclement.fonticons.createVariableIconFont
+import dev.tclement.fonticons.painter.rememberFontIconPainter
 import kotlinx.atomicfu.atomic
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.FontResource
@@ -372,6 +377,38 @@ data object MaterialSymbols {
         filled = filled,
         fallback = fallback
     )
+
+    @Composable
+    fun rememberPainter(
+        name: String,
+        tint: Color = Platform.localContentColor(),
+        filled: Boolean = false,
+        fallback: ImageVector? = fallbackFromName(name),
+        size: Dp = LocalIconSize.current
+    ): Painter? {
+        val font = rememberAsyncFont(
+            fill = if (filled) {
+                1F
+            } else {
+                0F
+            }
+        )
+
+        return if (font == null) {
+            if (fallback != null) {
+                rememberVectorPainter(fallback)
+            } else {
+                null
+            }
+        } else {
+            rememberFontIconPainter(
+                iconName = name,
+                tint = tint,
+                iconFont = font,
+                size = size
+            )
+        }
+    }
 
     private fun fallbackFromName(name: String): ImageVector? = when {
         name.equals(HOME, ignoreCase = true) -> Icons.Rounded.Home

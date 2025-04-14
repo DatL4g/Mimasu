@@ -26,10 +26,8 @@ private fun runWindow(di: DI) {
             title = "Mimasu",
             onCloseRequest = ::exitApplication
         ) {
-            DevelopmentEntryPoint {
-                App(di) {
-                    Navigation()
-                }
+            App(di) {
+                Navigation()
             }
         }
     }

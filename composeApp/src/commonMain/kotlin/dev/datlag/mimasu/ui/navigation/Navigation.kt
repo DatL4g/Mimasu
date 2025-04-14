@@ -150,6 +150,10 @@ fun Navigation() {
                                 models = user?.profilePictures.orEmpty(),
                                 contentScale = ContentScale.Crop
                             ),
+                            placeholder = MaterialSymbols.rememberPainter(
+                                name = MaterialSymbols.PERSON_PIN_CIRCLE,
+                                filled = isProfile
+                            ),
                             onLoading = {
                                 fallback = false
                             },
