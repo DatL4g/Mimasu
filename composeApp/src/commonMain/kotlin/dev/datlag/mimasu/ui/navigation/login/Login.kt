@@ -361,7 +361,8 @@ fun Login(onSuccess: () -> Unit) {
             ) {
                 Text(
                     text = stringResource(Res.string.login_failure),
-                    color = Platform.colorScheme().error
+                    color = Platform.colorScheme().error,
+                    textAlign = TextAlign.Center
                 )
             }
         }

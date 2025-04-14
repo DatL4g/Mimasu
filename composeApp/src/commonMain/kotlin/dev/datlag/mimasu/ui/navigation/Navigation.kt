@@ -148,7 +148,10 @@ fun Navigation() {
                             contentScale = ContentScale.Crop,
                             error = rememberNestedImagePainter(
                                 models = user?.profilePictures.orEmpty(),
-                                contentScale = ContentScale.Crop
+                                contentScale = ContentScale.Crop,
+                                onError = {
+                                    fallback = true
+                                }
                             ),
                             placeholder = MaterialSymbols.rememberPainter(
                                 name = MaterialSymbols.PERSON_PIN_CIRCLE,
@@ -159,9 +162,6 @@ fun Navigation() {
                             },
                             onSuccess = {
                                 fallback = false
-                            },
-                            onError = {
-                                fallback = true
                             }
                         )
                     }

@@ -146,7 +146,10 @@ fun MovieCharacterCard(
                 contentScale = ContentScale.Crop,
                 error = rememberNestedImagePainter(
                     models = logos.drop(1),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    onError = {
+                        fallback = true
+                    }
                 ),
                 alignment = Alignment.Center,
                 contentDescription = character ?: name,
@@ -157,9 +160,6 @@ fun MovieCharacterCard(
                 onSuccess = {
                     loading = false
                     fallback = false
-                },
-                onError = {
-                    fallback = true
                 }
             )
         }
