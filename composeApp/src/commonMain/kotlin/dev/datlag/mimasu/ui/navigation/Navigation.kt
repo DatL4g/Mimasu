@@ -109,309 +109,318 @@ object Navigation {
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun Navigation() {
+fun Navigation(
+    isLoggedIn: Boolean,
+    loginContent: @Composable () -> Unit
+) {
     val accountViewModel = accountViewModel()
-    val controller = rememberNavController()
-    val backStack by controller.currentBackStackEntryAsState()
     val user by accountViewModel.user.collectAsStateWithLifecycle()
+    val loggedIn by remember(isLoggedIn, user) { mutableStateOf(isLoggedIn || user != null) }
 
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            val isProfile = backStack?.destination?.hasRoute<Navigation.Profile>() ?: false
-            val isMovies = backStack?.destination?.hasRoute<Navigation.Movies>() ?: false
-            val isHome = backStack?.destination?.hasRoute<Navigation.Home>() ?: false
-            val isSeries = backStack?.destination?.hasRoute<Navigation.Series>() ?: false
-            val isSearch = backStack?.destination?.hasRoute<Navigation.Search>() ?: false
+    if (!loggedIn) {
+        loginContent()
+    } else {
+        val controller = rememberNavController()
+        val backStack by controller.currentBackStackEntryAsState()
 
-            item(
-                selected = isProfile,
-                onClick = {
-                    controller.navigate(Navigation.Profile) {
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    var fallback by remember(user?.email) { mutableStateOf(false) }
+        NavigationSuiteScaffold(
+            navigationSuiteItems = {
+                val isProfile = backStack?.destination?.hasRoute<Navigation.Profile>() ?: false
+                val isMovies = backStack?.destination?.hasRoute<Navigation.Movies>() ?: false
+                val isHome = backStack?.destination?.hasRoute<Navigation.Home>() ?: false
+                val isSeries = backStack?.destination?.hasRoute<Navigation.Series>() ?: false
+                val isSearch = backStack?.destination?.hasRoute<Navigation.Search>() ?: false
 
-                    if (fallback) {
-                        MaterialSymbols(
-                            name = MaterialSymbols.PERSON_PIN_CIRCLE,
-                            contentDescription = null,
-                            filled = isProfile
-                        )
-                    } else {
-                        AsyncImage(
-                            modifier = Modifier.size(24.dp).clip(CircleShape),
-                            model = user?.profilePictures?.firstOrNull(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            error = rememberNestedImagePainter(
-                                models = user?.profilePictures.orEmpty(),
-                                contentScale = ContentScale.Crop,
-                                onError = {
-                                    fallback = true
-                                }
-                            ),
-                            placeholder = MaterialSymbols.rememberPainter(
-                                name = MaterialSymbols.PERSON_PIN_CIRCLE,
-                                filled = isProfile
-                            ),
-                            onLoading = {
-                                fallback = false
-                            },
-                            onSuccess = {
-                                fallback = false
-                            }
-                        )
-                    }
-                },
-                label = {
-                    Text(text = user?.name ?: stringResource(Res.string.profile))
-                }
-            )
-            item(
-                selected = isMovies,
-                onClick = {
-                    controller.navigate(Navigation.Movies) {
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.MOVIE,
-                        contentDescription = null,
-                        filled = isMovies
-                    )
-                },
-                label = {
-                    Text(text = stringResource(Res.string.movies))
-                }
-            )
-            item(
-                selected = isHome,
-                onClick = {
-                    controller.navigate(Navigation.Home) {
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.HOME,
-                        contentDescription = null,
-                        filled = isHome
-                    )
-                },
-                label = {
-                    Text(text = stringResource(Res.string.home))
-                }
-            )
-            item(
-                selected = isSeries,
-                onClick = {
-                    controller.navigate(Navigation.Series) {
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.TV,
-                        contentDescription = null,
-                        filled = isSeries
-                    )
-                },
-                label = {
-                    Text(text = stringResource(Res.string.series))
-                }
-            )
-            item(
-                selected = isSearch,
-                onClick = {
-                    controller.navigate(Navigation.Search) {
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.SEARCH,
-                        contentDescription = null,
-                        filled = isSearch
-                    )
-                },
-                label = {
-                    Text(text = stringResource(Res.string.search))
-                }
-            )
-        }
-    ) {
-        NavHost(
-            navController = controller,
-            startDestination = Navigation.Home
-        ) {
-            composable<Navigation.Profile> {
-                Login(
-                    onSuccess = {
-
-                    }
-                )
-            }
-            composable<Navigation.Movies> {
-                val navigator = rememberListDetailPaneScaffoldNavigator()
-                var detailNavigation by remember { mutableStateOf<Navigation.Movies.Detail>(Navigation.Movies.Detail.None) }
-                var extraNavigation by remember { mutableStateOf<Navigation.Movies.Extra>(Navigation.Movies.Extra.None) }
-                val scope = rememberCoroutineScope()
-
-                // ToDo("replace with navigable when available")
-                ListDetailPaneScaffold(
-                    directive = navigator.scaffoldDirective,
-                    value = navigator.scaffoldValue,
-                    listPane = {
-                        Movies(
-                            onMovieClicked = {
-                                MovieViewModel.updateFrom(it)
-
-                                detailNavigation = Navigation.Movies.Detail.Movie
-                                scope.launch {
-                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-                                }
-                            }
-                        )
-                    },
-                    detailPane = {
-                        when (detailNavigation) {
-                            is Navigation.Movies.Detail.Movie -> {
-                                MovieDetail(
-                                    onBack = {
-                                        detailNavigation = Navigation.Movies.Detail.None
-
-                                        scope.launch {
-                                            navigator.navigateBack()
-                                        }
-                                    },
-                                    onCastClick = {
-                                        PersonViewModel.updateFrom(it)
-
-                                        extraNavigation = Navigation.Movies.Extra.Person
-                                        scope.launch {
-                                            navigator.navigateTo(ListDetailPaneScaffoldRole.Extra)
-                                        }
-                                    }
-                                )
-                            }
-                            else -> {
-                                scope.launch {
-                                    navigator.navigateTo(ListDetailPaneScaffoldRole.List)
-                                }
-                            }
+                item(
+                    selected = isProfile,
+                    onClick = {
+                        controller.navigate(Navigation.Profile) {
+                            launchSingleTop = true
+                            restoreState = true
                         }
                     },
-                    extraPane = if (extraNavigation is Navigation.Movies.Extra.None) {
-                        null
-                    } else {
-                        {
-                            PersonDetail(
-                                onBack = {
-                                    extraNavigation = Navigation.Movies.Extra.None
+                    icon = {
+                        var fallback by remember(user?.email) { mutableStateOf(false) }
 
-                                    scope.launch {
-                                        navigator.navigateBack()
+                        if (fallback) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.PERSON_PIN_CIRCLE,
+                                contentDescription = null,
+                                filled = isProfile
+                            )
+                        } else {
+                            AsyncImage(
+                                modifier = Modifier.size(24.dp).clip(CircleShape),
+                                model = user?.profilePictures?.firstOrNull(),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                error = rememberNestedImagePainter(
+                                    models = user?.profilePictures.orEmpty(),
+                                    contentScale = ContentScale.Crop,
+                                    onError = {
+                                        fallback = true
                                     }
+                                ),
+                                placeholder = MaterialSymbols.rememberPainter(
+                                    name = MaterialSymbols.PERSON_PIN_CIRCLE,
+                                    filled = isProfile
+                                ),
+                                onLoading = {
+                                    fallback = false
+                                },
+                                onSuccess = {
+                                    fallback = false
                                 }
                             )
                         }
+                    },
+                    label = {
+                        Text(text = user?.name ?: stringResource(Res.string.profile))
+                    }
+                )
+                item(
+                    selected = isMovies,
+                    onClick = {
+                        controller.navigate(Navigation.Movies) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = {
+                        MaterialSymbols(
+                            name = MaterialSymbols.MOVIE,
+                            contentDescription = null,
+                            filled = isMovies
+                        )
+                    },
+                    label = {
+                        Text(text = stringResource(Res.string.movies))
+                    }
+                )
+                item(
+                    selected = isHome,
+                    onClick = {
+                        controller.navigate(Navigation.Home) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = {
+                        MaterialSymbols(
+                            name = MaterialSymbols.HOME,
+                            contentDescription = null,
+                            filled = isHome
+                        )
+                    },
+                    label = {
+                        Text(text = stringResource(Res.string.home))
+                    }
+                )
+                item(
+                    selected = isSeries,
+                    onClick = {
+                        controller.navigate(Navigation.Series) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = {
+                        MaterialSymbols(
+                            name = MaterialSymbols.TV,
+                            contentDescription = null,
+                            filled = isSeries
+                        )
+                    },
+                    label = {
+                        Text(text = stringResource(Res.string.series))
+                    }
+                )
+                item(
+                    selected = isSearch,
+                    onClick = {
+                        controller.navigate(Navigation.Search) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = {
+                        MaterialSymbols(
+                            name = MaterialSymbols.SEARCH,
+                            contentDescription = null,
+                            filled = isSearch
+                        )
+                    },
+                    label = {
+                        Text(text = stringResource(Res.string.search))
                     }
                 )
             }
-            composable<Navigation.Home> {
-                val navigator = rememberListDetailPaneScaffoldNavigator(
-                    isDestinationHistoryAware = false
-                )
-                var detailNavigation by remember { mutableStateOf<Navigation.Home.Detail>(Navigation.Home.Detail.None) }
-                val scope = rememberCoroutineScope()
+        ) {
+            NavHost(
+                navController = controller,
+                startDestination = Navigation.Home
+            ) {
+                composable<Navigation.Profile> {
+                    Login(
+                        onSuccess = {
 
-                ListDetailPaneScaffold(
-                    directive = navigator.scaffoldDirective,
-                    value = navigator.scaffoldValue,
-                    listPane = {
-                        Home(
-                            onPersonClicked = {
-                                PersonViewModel.updateFrom(it)
+                        }
+                    )
+                }
+                composable<Navigation.Movies> {
+                    val navigator = rememberListDetailPaneScaffoldNavigator()
+                    var detailNavigation by remember { mutableStateOf<Navigation.Movies.Detail>(Navigation.Movies.Detail.None) }
+                    var extraNavigation by remember { mutableStateOf<Navigation.Movies.Extra>(Navigation.Movies.Extra.None) }
+                    val scope = rememberCoroutineScope()
 
-                                detailNavigation = Navigation.Home.Detail.Person
-                                scope.launch {
-                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-                                }
-                            },
-                            onMovieClicked = {
-                                MovieViewModel.updateFrom(it)
+                    // ToDo("replace with navigable when available")
+                    ListDetailPaneScaffold(
+                        directive = navigator.scaffoldDirective,
+                        value = navigator.scaffoldValue,
+                        listPane = {
+                            Movies(
+                                onMovieClicked = {
+                                    MovieViewModel.updateFrom(it)
 
-                                detailNavigation = Navigation.Home.Detail.Movie
-                                scope.launch {
-                                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-                                }
-                            }
-                        )
-                    },
-                    detailPane = {
-                        when (detailNavigation) {
-                            is Navigation.Home.Detail.Movie -> {
-                                MovieDetail(
-                                    onBack = {
-                                        detailNavigation = Navigation.Home.Detail.None
-                                        scope.launch {
-                                            navigator.navigateBack()
-                                        }
-                                    },
-                                    onCastClick = {
-
+                                    detailNavigation = Navigation.Movies.Detail.Movie
+                                    scope.launch {
+                                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                                     }
-                                )
+                                }
+                            )
+                        },
+                        detailPane = {
+                            when (detailNavigation) {
+                                is Navigation.Movies.Detail.Movie -> {
+                                    MovieDetail(
+                                        onBack = {
+                                            detailNavigation = Navigation.Movies.Detail.None
+
+                                            scope.launch {
+                                                navigator.navigateBack()
+                                            }
+                                        },
+                                        onCastClick = {
+                                            PersonViewModel.updateFrom(it)
+
+                                            extraNavigation = Navigation.Movies.Extra.Person
+                                            scope.launch {
+                                                navigator.navigateTo(ListDetailPaneScaffoldRole.Extra)
+                                            }
+                                        }
+                                    )
+                                }
+                                else -> {
+                                    scope.launch {
+                                        navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                                    }
+                                }
                             }
-                            is Navigation.Home.Detail.Person -> {
+                        },
+                        extraPane = if (extraNavigation is Navigation.Movies.Extra.None) {
+                            null
+                        } else {
+                            {
                                 PersonDetail(
                                     onBack = {
-                                        detailNavigation = Navigation.Home.Detail.None
+                                        extraNavigation = Navigation.Movies.Extra.None
+
                                         scope.launch {
                                             navigator.navigateBack()
                                         }
                                     }
                                 )
                             }
-                            else -> {
-                                scope.launch {
-                                    navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                        }
+                    )
+                }
+                composable<Navigation.Home> {
+                    val navigator = rememberListDetailPaneScaffoldNavigator(
+                        isDestinationHistoryAware = false
+                    )
+                    var detailNavigation by remember { mutableStateOf<Navigation.Home.Detail>(Navigation.Home.Detail.None) }
+                    val scope = rememberCoroutineScope()
+
+                    ListDetailPaneScaffold(
+                        directive = navigator.scaffoldDirective,
+                        value = navigator.scaffoldValue,
+                        listPane = {
+                            Home(
+                                onPersonClicked = {
+                                    PersonViewModel.updateFrom(it)
+
+                                    detailNavigation = Navigation.Home.Detail.Person
+                                    scope.launch {
+                                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                                    }
+                                },
+                                onMovieClicked = {
+                                    MovieViewModel.updateFrom(it)
+
+                                    detailNavigation = Navigation.Home.Detail.Movie
+                                    scope.launch {
+                                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                                    }
+                                }
+                            )
+                        },
+                        detailPane = {
+                            when (detailNavigation) {
+                                is Navigation.Home.Detail.Movie -> {
+                                    MovieDetail(
+                                        onBack = {
+                                            detailNavigation = Navigation.Home.Detail.None
+                                            scope.launch {
+                                                navigator.navigateBack()
+                                            }
+                                        },
+                                        onCastClick = {
+
+                                        }
+                                    )
+                                }
+                                is Navigation.Home.Detail.Person -> {
+                                    PersonDetail(
+                                        onBack = {
+                                            detailNavigation = Navigation.Home.Detail.None
+                                            scope.launch {
+                                                navigator.navigateBack()
+                                            }
+                                        }
+                                    )
+                                }
+                                else -> {
+                                    scope.launch {
+                                        navigator.navigateTo(ListDetailPaneScaffoldRole.List)
+                                    }
                                 }
                             }
                         }
-                    }
-                )
-            }
-            composable<Navigation.Series> {
-                val navigator = rememberListDetailPaneScaffoldNavigator(
-                    isDestinationHistoryAware = false
-                )
+                    )
+                }
+                composable<Navigation.Series> {
+                    val navigator = rememberListDetailPaneScaffoldNavigator(
+                        isDestinationHistoryAware = false
+                    )
 
-                ListDetailPaneScaffold(
-                    directive = navigator.scaffoldDirective,
-                    value = navigator.scaffoldValue,
-                    listPane = {
-                        Series(
-                            onSeriesClicked = {
-                                // ToDo
-                            }
-                        )
-                    },
-                    detailPane = {
-                        // ToDo
-                    }
-                )
-            }
-            composable<Navigation.Search> {
-                Search()
+                    ListDetailPaneScaffold(
+                        directive = navigator.scaffoldDirective,
+                        value = navigator.scaffoldValue,
+                        listPane = {
+                            Series(
+                                onSeriesClicked = {
+                                    // ToDo
+                                }
+                            )
+                        },
+                        detailPane = {
+                            // ToDo
+                        }
+                    )
+                }
+                composable<Navigation.Search> {
+                    Search()
+                }
             }
         }
     }

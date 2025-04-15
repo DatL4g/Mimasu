@@ -1,12 +1,18 @@
 package dev.datlag.mimasu
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.ui.navigation.Navigation
+import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.toTypography
@@ -15,6 +21,11 @@ import org.kodein.di.DIAware
 import kotlin.reflect.safeCast
 
 class MainActivity : ComponentActivity() {
+
+    // ToDo("use Tolgee wrapper")
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         fun exit(reason: String?) {
@@ -46,7 +57,18 @@ class MainActivity : ComponentActivity() {
                     PlatformText("Report Failure: $it")
                 },
                 content = {
-                    Navigation()
+                    var logInResult by remember { mutableStateOf(false) }
+
+                    Navigation(
+                        isLoggedIn = logInResult,
+                        loginContent = {
+                            Login(
+                                onSuccess = {
+                                    logInResult = true
+                                }
+                            )
+                        }
+                    )
                 }
             )
         }

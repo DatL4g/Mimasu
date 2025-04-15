@@ -93,7 +93,10 @@ import dev.datlag.mimasu.composeapp.generated.resources.login_terms_of_service
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.ui.navigation.login.components.LoginPasswordCriteria
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.PlatformButton
+import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.colorScheme
+import dev.datlag.tooling.compose.platform.rememberIsTv
 import dev.datlag.tooling.compose.withMainContext
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.min
@@ -263,19 +266,21 @@ fun Login(onSuccess: () -> Unit) {
                         )
                     }
                 }
-                TextButton(
-                    modifier = Modifier,
-                    onClick = {
+                if (!Platform.rememberIsTv()) {
+                    TextButton(
+                        modifier = Modifier,
+                        onClick = {
 
-                    },
-                    enabled = emailValid
-                ) {
-                    Text(text = stringResource(Res.string.login_forgot_password))
+                        },
+                        enabled = emailValid
+                    ) {
+                        Text(text = stringResource(Res.string.login_forgot_password))
+                    }
                 }
             }
         }
         item {
-            Button(
+            PlatformButton(
                 modifier = Modifier.fillParentMaxWidth(),
                 onClick = {
                     accountViewModel.emailSignIn(
@@ -292,7 +297,7 @@ fun Login(onSuccess: () -> Unit) {
                 },
                 enabled = emailValid && passwordValid
             ) {
-                Text(text = stringResource(Res.string.login_sign_in))
+                PlatformText(text = stringResource(Res.string.login_sign_in))
             }
         }
         item {
@@ -305,7 +310,7 @@ fun Login(onSuccess: () -> Unit) {
                     HorizontalDivider(
                         modifier = Modifier.weight(1F)
                     )
-                    Text(text = stringResource(Res.string.login_or_login_with))
+                    PlatformText(text = stringResource(Res.string.login_or_login_with))
                     HorizontalDivider(
                         modifier = Modifier.weight(1F)
                     )
@@ -359,7 +364,7 @@ fun Login(onSuccess: () -> Unit) {
                 modifier = Modifier.fillParentMaxWidth(),
                 visible = loginResult == false
             ) {
-                Text(
+                PlatformText(
                     text = stringResource(Res.string.login_failure),
                     color = Platform.colorScheme().error,
                     textAlign = TextAlign.Center
@@ -406,7 +411,7 @@ fun Login(onSuccess: () -> Unit) {
                 }
             }
 
-            Text(
+            PlatformText(
                 modifier = Modifier.fillParentMaxWidth().padding(top = 16.dp),
                 text = agreement,
                 textAlign = TextAlign.Center
