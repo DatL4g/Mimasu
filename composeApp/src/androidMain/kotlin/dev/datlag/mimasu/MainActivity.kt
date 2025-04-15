@@ -9,8 +9,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.theme.Font
@@ -34,6 +36,11 @@ class MainActivity : ComponentActivity() {
         }
 
         super.onCreate(savedInstanceState)
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                NetworkModule.showSplashscreen
+            }
+        }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()

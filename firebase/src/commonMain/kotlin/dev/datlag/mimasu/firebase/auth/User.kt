@@ -21,7 +21,13 @@ data class User(
     },
     val profilePictures: ImmutableSet<String> = firebase.providerData.mapNotNull {
         it.photoURL?.ifBlank { null }
-    }.toImmutableSet()
+    }.toImmutableSet(),
+    val linkedGoogle: Boolean = firebase.providerData.any {
+        it.providerId.equals("google", ignoreCase = true) || it.providerId.equals("google.com", ignoreCase = true)
+    },
+    val linkedGitHub: Boolean = firebase.providerData.any {
+        it.providerId.equals("github", ignoreCase = true) || it.providerId.equals("github.com", ignoreCase = true)
+    }
 ) {
 
     companion object {
@@ -40,7 +46,7 @@ data class User(
 
         internal fun normalizeName(name: String): String {
             val formatted = name.toTitleCase(from = universalWordSplitter(treatDigitsAsUppercase = true))
-            return formatted.replace("[0-9]+".toRegex(), "").trim().substringBefore(' ').trim().ifBlank { name }
+            return formatted.replace("[0-9]+".toRegex(), "").trim().substringBefore(' ').trim().ifBlank { name }.takeIf { it.length >= 3 } ?: name
         }
     }
 }

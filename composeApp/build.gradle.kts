@@ -113,6 +113,7 @@ kotlin {
             implementation(libs.cronet.okhttp)
             implementation(libs.google.fonts)
             implementation(libs.android.startup)
+            implementation(libs.splashscreen)
 
             implementation(project(":rive"))
         }
