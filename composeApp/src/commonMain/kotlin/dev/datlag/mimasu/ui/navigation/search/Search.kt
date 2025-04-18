@@ -76,17 +76,17 @@ fun Search() {
                         expanded = false,
                         onExpandedChange = { },
                         leadingIcon = {
-                            if (query.isNullOrBlank()) {
-                                MaterialSymbols(
-                                    name = MaterialSymbols.SEARCH,
-                                    contentDescription = null
-                                )
-                            } else {
-                                IconButton(
-                                    onClick = {
-                                        searchViewModel.updateQuery("")
-                                    }
-                                ) {
+                            IconButton(
+                                onClick = {
+                                    searchViewModel.updateQuery("")
+                                }
+                            ) {
+                                if (query.isNullOrBlank()) {
+                                    MaterialSymbols(
+                                        name = MaterialSymbols.SEARCH,
+                                        contentDescription = null
+                                    )
+                                } else {
                                     MaterialSymbols(
                                         name = MaterialSymbols.CLOSE,
                                         contentDescription = null
