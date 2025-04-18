@@ -49,6 +49,7 @@ import dev.datlag.mimasu.ui.navigation.movies.movieItem
 import dev.datlag.mimasu.ui.navigation.profile.Profile
 import dev.datlag.mimasu.ui.navigation.profile.profileItem
 import dev.datlag.mimasu.ui.navigation.search.Search
+import dev.datlag.mimasu.ui.navigation.search.SearchNavigation
 import dev.datlag.mimasu.ui.navigation.search.searchItem
 import dev.datlag.mimasu.ui.navigation.series.Series
 import dev.datlag.mimasu.ui.navigation.series.SeriesNavigation
@@ -123,7 +124,31 @@ object Navigation {
     data object Series
 
     @Serializable
-    data object Search
+    data object Search {
+
+        @Serializable
+        sealed interface Detail {
+
+            @Serializable
+            data object None : Detail
+
+            @Serializable
+            data object Movie : Detail
+
+            @Serializable
+            data object Person : Detail
+        }
+
+        @Serializable
+        sealed interface Extra {
+
+            @Serializable
+            data object None : Extra
+
+            @Serializable
+            data object Person : Extra
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -219,7 +244,7 @@ fun Navigation(
                     SeriesNavigation()
                 }
                 composable<Navigation.Search> {
-                    Search()
+                    SearchNavigation()
                 }
             }
         }

@@ -51,9 +51,7 @@ fun NavigationSuiteScope.homeItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun HomeNavigation() {
-    val navigator = rememberListDetailPaneScaffoldNavigator(
-        isDestinationHistoryAware = false
-    )
+    val navigator = rememberListDetailPaneScaffoldNavigator()
     var detailNavigation by remember { mutableStateOf<Navigation.Home.Detail>(Navigation.Home.Detail.None) }
     var extraNavigation by remember { mutableStateOf<Navigation.Home.Extra>(Navigation.Home.Extra.None) }
     val scope = rememberCoroutineScope()

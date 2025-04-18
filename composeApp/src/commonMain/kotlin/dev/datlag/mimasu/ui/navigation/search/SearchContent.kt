@@ -19,6 +19,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.search_movies
 import dev.datlag.mimasu.composeapp.generated.resources.search_people
 import dev.datlag.mimasu.composeapp.generated.resources.search_series
+import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import dev.datlag.mimasu.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.custom.PersonCard
@@ -33,6 +34,7 @@ fun SearchContent(
     padding: PaddingValues,
     query: String?,
     result: SearchRepository.SearchResult,
+    onMovieClicked: (Movie) -> Unit
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -122,7 +124,8 @@ fun SearchContent(
                     ) {
                         items(result.movies.toImmutableList()) {
                             MovieCard(
-                                movie = it
+                                movie = it,
+                                onClick = onMovieClicked
                             )
                         }
                     }

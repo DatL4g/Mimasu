@@ -56,7 +56,9 @@ import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Search() {
+fun Search(
+    onMovieClicked: (Movie) -> Unit
+) {
     val searchViewModel = kodeinViewModel<SearchViewModel>()
     val query by searchViewModel.query.collectAsStateWithLifecycle()
 
@@ -138,7 +140,12 @@ fun Search() {
                 }
             }
         } else {
-            SearchContent(padding, query, result)
+            SearchContent(
+                padding = padding,
+                query = query,
+                result = result,
+                onMovieClicked = onMovieClicked
+            )
         }
     }
 }

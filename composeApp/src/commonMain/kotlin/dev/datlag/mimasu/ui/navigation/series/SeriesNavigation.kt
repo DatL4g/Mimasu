@@ -38,9 +38,7 @@ fun NavigationSuiteScope.seriesItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SeriesNavigation() {
-    val navigator = rememberListDetailPaneScaffoldNavigator(
-        isDestinationHistoryAware = false
-    )
+    val navigator = rememberListDetailPaneScaffoldNavigator()
 
     ListDetailPaneScaffold(
         directive = navigator.scaffoldDirective,
