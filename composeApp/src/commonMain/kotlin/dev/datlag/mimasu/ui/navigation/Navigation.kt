@@ -99,6 +99,16 @@ object Navigation {
             @Serializable
             data object Person : Detail
         }
+
+        @Serializable
+        sealed interface Extra {
+
+            @Serializable
+            data object None : Extra
+
+            @Serializable
+            data object Person : Extra
+        }
     }
 
     @Serializable
@@ -340,6 +350,7 @@ fun Navigation(
                         isDestinationHistoryAware = false
                     )
                     var detailNavigation by remember { mutableStateOf<Navigation.Home.Detail>(Navigation.Home.Detail.None) }
+                    var extraNavigation by remember { mutableStateOf<Navigation.Home.Extra>(Navigation.Home.Extra.None) }
                     val scope = rememberCoroutineScope()
 
                     ListDetailPaneScaffold(
@@ -376,7 +387,12 @@ fun Navigation(
                                             }
                                         },
                                         onCastClick = {
+                                            PersonViewModel.updateFrom(it)
 
+                                            extraNavigation = Navigation.Home.Extra.Person
+                                            scope.launch {
+                                                navigator.navigateTo(ListDetailPaneScaffoldRole.Extra)
+                                            }
                                         }
                                     )
                                 }
@@ -395,6 +411,21 @@ fun Navigation(
                                         navigator.navigateTo(ListDetailPaneScaffoldRole.List)
                                     }
                                 }
+                            }
+                        },
+                        extraPane = if (extraNavigation is Navigation.Home.Extra.None) {
+                            null
+                        } else {
+                            {
+                                PersonDetail(
+                                    onBack = {
+                                        extraNavigation = Navigation.Home.Extra.None
+
+                                        scope.launch {
+                                            navigator.navigateBack()
+                                        }
+                                    }
+                                )
                             }
                         }
                     )
