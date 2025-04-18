@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.localContentColor
 import org.jetbrains.compose.resources.StringResource
@@ -34,7 +35,7 @@ fun LoginPasswordCriteria(
             contentDescription = null,
             tint = if (fulfilled) Platform.localContentColor() else Platform.colorScheme().error
         )
-        Text(
+        PlatformText(
             text = text,
             color = if (fulfilled) Platform.localContentColor() else Platform.colorScheme().error
         )

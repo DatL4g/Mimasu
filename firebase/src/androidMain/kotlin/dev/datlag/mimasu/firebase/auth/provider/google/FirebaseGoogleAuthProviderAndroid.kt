@@ -51,8 +51,32 @@ class FirebaseGoogleAuthProviderAndroid(
         handleSignInResponse(result.getOrThrow()).getOrThrow()
     }
 
+    override suspend fun link(params: SignInParams): Result<User> = suspendCatching {
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
+            .setServerClientId(serverClientId)
+            .setAutoSelectEnabled(true)
+            .build()
+
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        val result = suspendCatching {
+            credentialManager.getCredential(context, request)
+        }.onFailure {
+            if (it is NoCredentialException && !params.isRetrying) {
+                delay(1000) // Wait 1 second and try again as it's sometimes buggy
+                return@suspendCatching link(params.copy(isRetrying = true)).getOrThrow()
+            }
+        }
+
+        handleSignInResponse(result.getOrThrow(), linkOnly = true).getOrThrow()
+    }
+
     private suspend fun handleSignInResponse(
-        result: GetCredentialResponse
+        result: GetCredentialResponse,
+        linkOnly: Boolean = false
     ): Result<User> = suspendCatching {
         when (val credential = result.credential) {
             is CustomCredential -> {
@@ -62,10 +86,16 @@ class FirebaseGoogleAuthProviderAndroid(
                         val idToken = googleIdTokenCredential.idToken
                         val currentUser = firebaseAuthDataSource.currentUser
 
-                        currentUser?.firebase?.linkWithCredential(
-                            credential = GoogleAuthProvider.credential(idToken, null)
-                        )?.user?.let(::User)?.let {
-                            return@suspendCatching it
+                        if (linkOnly) {
+                            return@suspendCatching currentUser?.firebase?.linkWithCredential(
+                                credential = GoogleAuthProvider.credential(idToken, null)
+                            )?.user?.let(::User) ?: throw FirebaseAuthException.Google.Unknown()
+                        } else {
+                            currentUser?.firebase?.linkWithCredential(
+                                credential = GoogleAuthProvider.credential(idToken, null)
+                            )?.user?.let(::User)?.let {
+                                return@suspendCatching it
+                            }
                         }
 
                         val authResult = firebaseAuthDataSource.authenticateWithGoogleIdToken(

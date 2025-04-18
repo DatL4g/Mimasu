@@ -42,6 +42,7 @@ import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
 import dev.datlag.mimasu.ui.navigation.home.Home
 import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.navigation.movies.Movies
+import dev.datlag.mimasu.ui.navigation.profile.Profile
 import dev.datlag.mimasu.ui.navigation.search.Search
 import dev.datlag.mimasu.ui.navigation.series.Series
 import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
@@ -115,7 +116,7 @@ fun Navigation(
 ) {
     val accountViewModel = accountViewModel()
     val user by accountViewModel.user.collectAsStateWithLifecycle()
-    val loggedIn by remember(isLoggedIn, user) { mutableStateOf(isLoggedIn || user != null) }
+    var loggedIn by remember(isLoggedIn, user) { mutableStateOf(isLoggedIn || user != null) }
 
     if (!loggedIn) {
         loginContent()
@@ -261,9 +262,9 @@ fun Navigation(
                 startDestination = Navigation.Home
             ) {
                 composable<Navigation.Profile> {
-                    Login(
-                        onSuccess = {
-
+                    Profile(
+                        onLogout = {
+                            loggedIn = user != null
                         }
                     )
                 }

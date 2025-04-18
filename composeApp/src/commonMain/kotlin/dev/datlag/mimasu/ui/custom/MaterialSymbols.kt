@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.custom
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.rounded.Apartment
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Bookmark
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.LocalFlorist
+import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Mail
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Password
@@ -109,6 +111,7 @@ data object MaterialSymbols {
     const val VISIBILITY_OFF = "visibility_off"
     const val CHECK_SMALL = "check_small"
     const val CLOSE_SMALL = "close_small"
+    const val LOGOUT = "logout"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -447,6 +450,7 @@ data object MaterialSymbols {
         name.equals(VISIBILITY_OFF, ignoreCase = true) -> Icons.Rounded.VisibilityOff
         name.equals(CHECK_SMALL, ignoreCase = true) -> Icons.Rounded.Check
         name.equals(CLOSE_SMALL, ignoreCase = true) -> Icons.Rounded.Close
+        name.equals(LOGOUT, ignoreCase = true) -> Icons.AutoMirrored.Rounded.Logout
         else -> null
     }
 

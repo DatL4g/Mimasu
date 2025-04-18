@@ -5,6 +5,7 @@ import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.User
 import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.FirebaseAuthException
+import dev.datlag.mimasu.firebase.auth.provider.FirebaseProvider
 import dev.datlag.tooling.async.suspendCatching
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
@@ -40,6 +41,25 @@ class FirebaseGitHubAuthProviderAndroid(
         }
 
         return suspendCatching {
+            firebaseAuthDataSource.currentUser
+                ?: firebaseAuthDataSource.user.firstOrNull()
+                ?: throw FirebaseAuthException.GitHub.Unknown()
+        }
+    }
+
+    override suspend fun link(params: GitHubAuthParams): Result<User> {
+        val currentUser = firebaseAuthDataSource.currentUser?.firebase?.android
+
+        val linkAuthResult = currentUser?.startActivityForLinkWithProvider(
+            params,
+            provider.android
+        )?.linkOrSignInUser(currentUser)
+
+        return suspendCatching {
+            val linkedUser = linkAuthResult?.getOrThrow() ?: throw FirebaseAuthException.UnknownUser(FirebaseProvider.GitHub)
+
+            firebaseAuthDataSource.auth.android.updateCurrentUser(linkedUser).await()
+
             firebaseAuthDataSource.currentUser
                 ?: firebaseAuthDataSource.user.firstOrNull()
                 ?: throw FirebaseAuthException.GitHub.Unknown()

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
+import dev.datlag.mimasu.firebase.auth.User
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
@@ -92,11 +93,14 @@ class AccountViewModel(
     val user = service.user.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = service.currentUser
+        initialValue = currentUser
     )
 
+    val currentUser: User?
+        get() = service.currentUser
+
     val isSignedIn: Boolean
-        get() = service.currentUser != null
+        get() = currentUser != null
 
     private var existingGoogleAuthProvider: FirebaseGoogleAuthProvider? = _googleAuthProvider
     private val googleAuthProvider
@@ -136,6 +140,12 @@ class AccountViewModel(
         }
     }
 
+    fun googleLink() = startLoginJob {
+        googleAuthProvider?.link(
+            FirebaseGoogleAuthProvider.SignInParams(isRetrying = false)
+        )
+    }
+
     fun githubSignIn(params: GitHubAuthParams, onSuccess: suspend () -> Unit) = startLoginJob {
         _loginResult.update { null }
         gitHubAuthProvider?.signIn(params).also { result ->
@@ -146,15 +156,20 @@ class AccountViewModel(
         }
     }
 
+    fun githubLink(params: GitHubAuthParams) = startLoginJob {
+        gitHubAuthProvider?.link(params)
+    }
+
     fun signOut() = startLoginJob {
         service.signOut()
     }
 
-    private fun startLoginJob(block: suspend CoroutineScope.() -> Unit) {
+    private fun startLoginJob(block: suspend CoroutineScope.() -> Unit): Job? {
         loginJob?.cancel()
         loginJob = viewModelScope.launch {
             block()
         }
+        return loginJob
     }
 
     private inline fun <reified T : Any> provideInstance(): T? {
