@@ -3,27 +3,19 @@ package dev.datlag.mimasu.ui.navigation.movies
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
-import kotlinx.coroutines.launch
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.movies
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import org.jetbrains.compose.resources.stringResource
 
@@ -66,7 +58,7 @@ fun MoviesNavigation() {
                 onMovieClicked = {
                     MovieViewModel.updateFrom(it)
 
-                    controller.toDetail(Navigation.Movies.Detail.Movie)
+                    controller.navigateToDetail(Navigation.Movies.Detail.Movie)
                 }
             )
         },
@@ -75,16 +67,16 @@ fun MoviesNavigation() {
                 is Navigation.Movies.Detail.Movie -> {
                     MovieDetail(
                         onBack = {
-                            controller.toList()
+                            controller.navigateBack()
                         },
                         onCastClick = {
                             PersonViewModel.updateFrom(it)
 
-                            controller.toExtra(Navigation.Movies.Extra.Person)
+                            controller.navigateToExtra(Navigation.Movies.Extra.Person)
                         }
                     )
                 }
-                else -> controller.toList()
+                else -> controller.navigateBack()
             }
         },
         extraPane = when (extraNavigation) {
@@ -92,7 +84,7 @@ fun MoviesNavigation() {
                 {
                     PersonDetail(
                         onBack = {
-                            controller.toDetail()
+                            controller.navigateBack()
                         }
                     )
                 }

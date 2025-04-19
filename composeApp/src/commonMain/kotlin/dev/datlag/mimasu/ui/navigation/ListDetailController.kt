@@ -51,7 +51,7 @@ class ListDetailController<ContentKey : Any, Detail : Any, Extra : Any> internal
     val detailValue = detailState.asStateFlow()
     val extraValue = extraState.asStateFlow()
 
-    fun toList() {
+    fun navigateToList() {
         detailState.update { null }
         extraState.update { null }
 
@@ -60,7 +60,7 @@ class ListDetailController<ContentKey : Any, Detail : Any, Extra : Any> internal
                 scope.launch {
                     navigator.navigateBack()
 
-                    toList()
+                    navigateToList()
                 }
             } else {
                 scope.launch {
@@ -70,7 +70,7 @@ class ListDetailController<ContentKey : Any, Detail : Any, Extra : Any> internal
         }
     }
 
-    fun toDetail(value: Detail? = detailValue.value) {
+    fun navigateToDetail(value: Detail? = detailValue.value) {
         detailState.update { value }
         extraState.update { null }
 
@@ -79,7 +79,7 @@ class ListDetailController<ContentKey : Any, Detail : Any, Extra : Any> internal
                 scope.launch {
                     navigator.navigateBack()
 
-                    toDetail(value)
+                    navigateToDetail(value)
                 }
             } else {
                 scope.launch {
@@ -89,12 +89,25 @@ class ListDetailController<ContentKey : Any, Detail : Any, Extra : Any> internal
         }
     }
 
-    fun toExtra(value: Extra? = extraValue.value) {
+    fun navigateToExtra(value: Extra? = extraValue.value) {
         extraState.update { value }
 
         if (!extraShown || extraHidden) {
             scope.launch {
                 navigator.navigateTo(extraRole)
+            }
+        }
+    }
+
+    fun navigateBack() {
+        if (navigator.canNavigateBack()) {
+            scope.launch {
+                navigator.navigateBack()
+            }
+        } else {
+            when {
+                extraShown || !extraHidden -> navigateToDetail()
+                detailShown || !detailHidden -> navigateToList()
             }
         }
     }

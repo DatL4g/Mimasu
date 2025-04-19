@@ -3,30 +3,20 @@ package dev.datlag.mimasu.ui.navigation.home
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.home
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
-import dev.datlag.mimasu.ui.navigation.ListDetailController
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
 import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 fun NavigationSuiteScope.homeItem(
@@ -67,12 +57,12 @@ fun HomeNavigation() {
                 onPersonClicked = {
                     PersonViewModel.updateFrom(it)
 
-                    controller.toDetail(Navigation.Home.Detail.Person)
+                    controller.navigateToDetail(Navigation.Home.Detail.Person)
                 },
                 onMovieClicked = {
                     MovieViewModel.updateFrom(it)
 
-                    controller.toDetail(Navigation.Home.Detail.Movie)
+                    controller.navigateToDetail(Navigation.Home.Detail.Movie)
                 }
             )
         },
@@ -81,23 +71,23 @@ fun HomeNavigation() {
                 is Navigation.Home.Detail.Movie -> {
                     MovieDetail(
                         onBack = {
-                            controller.toList()
+                            controller.navigateBack()
                         },
                         onCastClick = {
                             PersonViewModel.updateFrom(it)
 
-                            controller.toExtra(Navigation.Home.Extra.Person)
+                            controller.navigateToExtra(Navigation.Home.Extra.Person)
                         }
                     )
                 }
                 is Navigation.Home.Detail.Person -> {
                     PersonDetail(
                         onBack = {
-                            controller.toList()
+                            controller.navigateBack()
                         }
                     )
                 }
-                else -> controller.toList()
+                else -> controller.navigateBack()
             }
         },
         extraPane = when (extraNavigation) {
@@ -105,7 +95,7 @@ fun HomeNavigation() {
                 {
                     PersonDetail(
                         onBack = {
-                            controller.toDetail()
+                            controller.navigateBack()
                         }
                     )
                 }
