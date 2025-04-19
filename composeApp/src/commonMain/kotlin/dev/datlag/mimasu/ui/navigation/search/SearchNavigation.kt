@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.search
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -21,6 +22,7 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
+import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import kotlinx.coroutines.launch
@@ -52,23 +54,19 @@ fun NavigationSuiteScope.searchItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SearchNavigation() {
-    val navigator = rememberListDetailPaneScaffoldNavigator()
-    var detailNavigation by remember { mutableStateOf<Navigation.Search.Detail>(Navigation.Search.Detail.None) }
-    var extraNavigation by remember { mutableStateOf<Navigation.Search.Extra>(Navigation.Search.Extra.None) }
-    val scope = rememberCoroutineScope()
+    val controller = rememberListDetailController<Any, Navigation.Search.Detail, Navigation.Search.Extra>()
+    val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
+    val extraNavigation by controller.extraValue.collectAsStateWithLifecycle()
 
     ListDetailPaneScaffold(
-        directive = navigator.scaffoldDirective,
-        value = navigator.scaffoldValue,
+        directive = controller.scaffoldDirective,
+        value = controller.scaffoldValue,
         listPane = {
             Search(
                 onMovieClicked = {
                     MovieViewModel.updateFrom(it)
 
-                    detailNavigation = Navigation.Search.Detail.Movie
-                    scope.launch {
-                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-                    }
+                    controller.toDetail(Navigation.Search.Detail.Movie)
                 }
             )
         },
@@ -77,51 +75,36 @@ fun SearchNavigation() {
                 is Navigation.Search.Detail.Movie -> {
                     MovieDetail(
                         onBack = {
-                            detailNavigation = Navigation.Search.Detail.None
-                            scope.launch {
-                                navigator.navigateBack()
-                            }
+                            controller.toList()
                         },
                         onCastClick = {
                             PersonViewModel.updateFrom(it)
 
-                            extraNavigation = Navigation.Search.Extra.Person
-                            scope.launch {
-                                navigator.navigateTo(ListDetailPaneScaffoldRole.Extra)
-                            }
+                            controller.toExtra(Navigation.Search.Extra.Person)
                         }
                     )
                 }
                 is Navigation.Search.Detail.Person -> {
                     PersonDetail(
                         onBack = {
-                            detailNavigation = Navigation.Search.Detail.None
-                            scope.launch {
-                                navigator.navigateBack()
-                            }
+                            controller.toList()
                         }
                     )
                 }
-                else -> {
-                    scope.launch {
-                        navigator.navigateTo(ListDetailPaneScaffoldRole.List)
-                    }
-                }
+                else -> controller.toList()
             }
         },
-        extraPane = if (extraNavigation is Navigation.Search.Extra.None) {
-            null
-        } else {
-            {
-                PersonDetail(
-                    onBack = {
-                        detailNavigation = Navigation.Search.Detail.None
-                        scope.launch {
-                            navigator.navigateBack()
+        extraPane = when (extraNavigation) {
+            is Navigation.Search.Extra.Person -> {
+                {
+                    PersonDetail(
+                        onBack = {
+                            controller.toDetail()
                         }
-                    }
-                )
+                    )
+                }
             }
+            else -> null
         }
     )
 }

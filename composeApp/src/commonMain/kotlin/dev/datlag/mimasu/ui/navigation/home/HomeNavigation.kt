@@ -13,13 +13,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.home
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
+import dev.datlag.mimasu.ui.navigation.ListDetailController
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
+import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import kotlinx.coroutines.launch
@@ -51,31 +55,24 @@ fun NavigationSuiteScope.homeItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun HomeNavigation() {
-    val navigator = rememberListDetailPaneScaffoldNavigator()
-    var detailNavigation by remember { mutableStateOf<Navigation.Home.Detail>(Navigation.Home.Detail.None) }
-    var extraNavigation by remember { mutableStateOf<Navigation.Home.Extra>(Navigation.Home.Extra.None) }
-    val scope = rememberCoroutineScope()
+    val controller = rememberListDetailController<Any, Navigation.Home.Detail, Navigation.Home.Extra>()
+    val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
+    val extraNavigation by controller.extraValue.collectAsStateWithLifecycle()
 
     ListDetailPaneScaffold(
-        directive = navigator.scaffoldDirective,
-        value = navigator.scaffoldValue,
+        directive = controller.scaffoldDirective,
+        value = controller.scaffoldValue,
         listPane = {
             Home(
                 onPersonClicked = {
                     PersonViewModel.updateFrom(it)
 
-                    detailNavigation = Navigation.Home.Detail.Person
-                    scope.launch {
-                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-                    }
+                    controller.toDetail(Navigation.Home.Detail.Person)
                 },
                 onMovieClicked = {
                     MovieViewModel.updateFrom(it)
 
-                    detailNavigation = Navigation.Home.Detail.Movie
-                    scope.launch {
-                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-                    }
+                    controller.toDetail(Navigation.Home.Detail.Movie)
                 }
             )
         },
@@ -84,52 +81,36 @@ fun HomeNavigation() {
                 is Navigation.Home.Detail.Movie -> {
                     MovieDetail(
                         onBack = {
-                            detailNavigation = Navigation.Home.Detail.None
-                            scope.launch {
-                                navigator.navigateBack()
-                            }
+                            controller.toList()
                         },
                         onCastClick = {
                             PersonViewModel.updateFrom(it)
 
-                            extraNavigation = Navigation.Home.Extra.Person
-                            scope.launch {
-                                navigator.navigateTo(ListDetailPaneScaffoldRole.Extra)
-                            }
+                            controller.toExtra(Navigation.Home.Extra.Person)
                         }
                     )
                 }
                 is Navigation.Home.Detail.Person -> {
                     PersonDetail(
                         onBack = {
-                            detailNavigation = Navigation.Home.Detail.None
-                            scope.launch {
-                                navigator.navigateBack()
-                            }
+                            controller.toList()
                         }
                     )
                 }
-                else -> {
-                    scope.launch {
-                        navigator.navigateTo(ListDetailPaneScaffoldRole.List)
-                    }
-                }
+                else -> controller.toList()
             }
         },
-        extraPane = if (extraNavigation is Navigation.Home.Extra.None) {
-            null
-        } else {
-            {
-                PersonDetail(
-                    onBack = {
-                        extraNavigation = Navigation.Home.Extra.None
-
-                        scope.launch {
-                            navigator.navigateBack()
+        extraPane = when (extraNavigation) {
+            is Navigation.Home.Extra.Person -> {
+                {
+                    PersonDetail(
+                        onBack = {
+                            controller.toDetail()
                         }
-                    }
-                )
+                    )
+                }
             }
+            else -> null
         }
     )
 }

@@ -19,10 +19,12 @@ import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.movies
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
+import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import org.jetbrains.compose.resources.stringResource
 
 fun NavigationSuiteScope.movieItem(
@@ -51,24 +53,20 @@ fun NavigationSuiteScope.movieItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun MoviesNavigation() {
-    val navigator = rememberListDetailPaneScaffoldNavigator()
-    var detailNavigation by remember { mutableStateOf<Navigation.Movies.Detail>(Navigation.Movies.Detail.None) }
-    var extraNavigation by remember { mutableStateOf<Navigation.Movies.Extra>(Navigation.Movies.Extra.None) }
-    val scope = rememberCoroutineScope()
+    val controller = rememberListDetailController<Any, Navigation.Movies.Detail, Navigation.Movies.Extra>()
+    val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
+    val extraNavigation by controller.extraValue.collectAsStateWithLifecycle()
 
     // ToDo("replace with navigable when available")
     ListDetailPaneScaffold(
-        directive = navigator.scaffoldDirective,
-        value = navigator.scaffoldValue,
+        directive = controller.scaffoldDirective,
+        value = controller.scaffoldValue,
         listPane = {
             Movies(
                 onMovieClicked = {
                     MovieViewModel.updateFrom(it)
 
-                    detailNavigation = Navigation.Movies.Detail.Movie
-                    scope.launch {
-                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
-                    }
+                    controller.toDetail(Navigation.Movies.Detail.Movie)
                 }
             )
         },
@@ -77,43 +75,29 @@ fun MoviesNavigation() {
                 is Navigation.Movies.Detail.Movie -> {
                     MovieDetail(
                         onBack = {
-                            detailNavigation = Navigation.Movies.Detail.None
-
-                            scope.launch {
-                                navigator.navigateBack()
-                            }
+                            controller.toList()
                         },
                         onCastClick = {
                             PersonViewModel.updateFrom(it)
 
-                            extraNavigation = Navigation.Movies.Extra.Person
-                            scope.launch {
-                                navigator.navigateTo(ListDetailPaneScaffoldRole.Extra)
-                            }
+                            controller.toExtra(Navigation.Movies.Extra.Person)
                         }
                     )
                 }
-                else -> {
-                    scope.launch {
-                        navigator.navigateTo(ListDetailPaneScaffoldRole.List)
-                    }
-                }
+                else -> controller.toList()
             }
         },
-        extraPane = if (extraNavigation is Navigation.Movies.Extra.None) {
-            null
-        } else {
-            {
-                PersonDetail(
-                    onBack = {
-                        extraNavigation = Navigation.Movies.Extra.None
-
-                        scope.launch {
-                            navigator.navigateBack()
+        extraPane = when (extraNavigation) {
+            is Navigation.Movies.Extra.Person -> {
+                {
+                    PersonDetail(
+                        onBack = {
+                            controller.toDetail()
                         }
-                    }
-                )
+                    )
+                }
             }
+            else -> null
         }
     )
 }

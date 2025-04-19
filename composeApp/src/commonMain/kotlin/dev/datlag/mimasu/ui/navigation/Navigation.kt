@@ -6,6 +6,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
+import androidx.compose.material3.adaptive.layout.PaneScaffoldValue
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
+import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
@@ -22,11 +28,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import co.touchlab.kermit.Logger
 import coil3.compose.AsyncImage
 import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
@@ -59,6 +68,11 @@ import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.Serializable
@@ -76,17 +90,11 @@ object Navigation {
         sealed interface Detail {
 
             @Serializable
-            data object None : Detail
-
-            @Serializable
             data object Movie : Detail
         }
 
         @Serializable
         sealed interface Extra {
-
-            @Serializable
-            data object None : Extra
 
             @Serializable
             data object Person : Extra
@@ -100,9 +108,6 @@ object Navigation {
         sealed interface Detail {
 
             @Serializable
-            data object None : Detail
-
-            @Serializable
             data object Movie : Detail
 
             @Serializable
@@ -111,9 +116,6 @@ object Navigation {
 
         @Serializable
         sealed interface Extra {
-
-            @Serializable
-            data object None : Extra
 
             @Serializable
             data object Person : Extra
@@ -130,9 +132,6 @@ object Navigation {
         sealed interface Detail {
 
             @Serializable
-            data object None : Detail
-
-            @Serializable
             data object Movie : Detail
 
             @Serializable
@@ -141,9 +140,6 @@ object Navigation {
 
         @Serializable
         sealed interface Extra {
-
-            @Serializable
-            data object None : Extra
 
             @Serializable
             data object Person : Extra
