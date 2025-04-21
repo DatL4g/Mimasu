@@ -2,6 +2,8 @@ package dev.datlag.mimasu.module
 
 import android.content.Context
 import co.touchlab.kermit.Logger
+import com.appmattus.certificatetransparency.cache.AndroidDiskCache
+import com.appmattus.certificatetransparency.certificateTransparencyInterceptor
 import com.google.net.cronet.okhttptransport.CronetInterceptor
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
@@ -21,6 +23,7 @@ import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
+import okhttp3.Interceptor
 import org.chromium.net.CronetEngine
 import org.kodein.di.DI
 import org.kodein.di.bindProvider
@@ -31,6 +34,8 @@ import org.kodein.di.instanceOrNull
 actual object PlatformModule {
 
     private const val NAME = "AndroidPlatformModule"
+
+    private const val TAG_CERT_TRANSPARENT = "CERTIFICATE_TRANSPARENCY"
 
     actual val di: DI.Module = DI.Module(NAME) {
         bindSingleton<Cronet> {
@@ -43,10 +48,16 @@ actual object PlatformModule {
                     .build()
             }.getOrNull()?.let(Cronet::Available) ?: Cronet.NonAvailable
         }
+        bindSingleton<Interceptor>(TAG_CERT_TRANSPARENT) {
+            certificateTransparencyInterceptor {
+                diskCache = AndroidDiskCache(instance<Context>())
+            }
+        }
         bindSingleton<HttpClient> {
             HttpClient(OkHttp) {
                 followRedirects = true
                 engine {
+                    addNetworkInterceptor(instance(TAG_CERT_TRANSPARENT))
                     // Add the Cronet interceptor last, otherwise the subsequent interceptors will be skipped.
                     cronetEngine()?.let {
                         addInterceptor(

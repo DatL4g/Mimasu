@@ -15,6 +15,7 @@
         android:enableOnBackInvokedCallback="true"
         android:name=".App"
         android:resizeableActivity="true"
+        android:networkSecurityConfig="@xml/network_security"
         android:theme="@style/SplashScreenTheme">
 
         <activity android:name=".MainActivity"

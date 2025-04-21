@@ -114,6 +114,7 @@ kotlin {
             implementation(libs.google.fonts)
             implementation(libs.android.startup)
             implementation(libs.splashscreen)
+            implementation(libs.certificate.transparency.android)
 
             implementation(project(":rive"))
         }
@@ -122,6 +123,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.coroutines.swing)
             implementation(libs.ktor.jvm)
+            implementation(libs.certificate.transparency.jvm)
         }
 
         jsMain.dependencies {

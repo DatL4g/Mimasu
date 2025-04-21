@@ -5,6 +5,9 @@ import androidx.multidex.MultiDexApplication
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
+import com.appmattus.certificatetransparency.BasicAndroidCTLogger
+import com.appmattus.certificatetransparency.cache.AndroidDiskCache
+import com.appmattus.certificatetransparency.installCertificateTransparencyProvider
 import com.google.android.gms.net.CronetProviderInstaller
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.module.NetworkModule
@@ -43,6 +46,11 @@ class App : MultiDexApplication(), DIAware {
     @OptIn(DelicateCoilApi::class)
     override fun onCreate() {
         super.onCreate()
+
+        installCertificateTransparencyProvider {
+            logger = BasicAndroidCTLogger(BuildConfig.DEBUG)
+            diskCache = AndroidDiskCache(applicationContext)
+        }
 
         val imageLoader by di.instanceOrNull<ImageLoader>()
         imageLoader?.let(SingletonImageLoader::setUnsafe)
