@@ -37,7 +37,7 @@ data class SearchViewModel(
     }.distinctUntilChanged()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val searchResult = searchInfo.mapLatest { info ->
+    val searchResult = searchInfo.flatMapLatest { info ->
         searchRepository.querySearch(
             query = info.query,
             includeAdult = info.includeAdult

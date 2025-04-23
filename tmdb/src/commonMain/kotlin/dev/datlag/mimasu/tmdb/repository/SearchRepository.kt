@@ -18,6 +18,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
@@ -32,11 +33,12 @@ class SearchRepository(
     suspend fun querySearch(
         query: String,
         includeAdult: Boolean
-    ): SearchResult {
+    ): Flow<SearchResult> = flow {
         if (query.isBlank()) {
-            return SearchResult.Empty
+            return@flow emit(SearchResult.Empty)
         }
 
+        emit(SearchResult.Loading)
         val result = withNonEmptyContext(context) {
             suspendCatching {
                 val response = search.multi(
@@ -51,42 +53,53 @@ class SearchRepository(
             }
         }
 
-        return SearchResult.from(result)
+        return@flow emit(SearchResult.from(result))
     }
 
     @Serializable
-    data class SearchResult(
-        val people: ImmutableList<People>,
-        val movies: ImmutableList<Movie>,
-        val series: ImmutableList<TV>,
-        val error: Boolean
-    ) {
-        fun hasPeople(): Boolean {
-            return people.isNotEmpty()
-        }
+    sealed interface SearchResult {
 
-        fun hasMovies(): Boolean {
-            return movies.isNotEmpty()
-        }
+        @Serializable
+        data object Loading : SearchResult
 
-        fun hasSeries(): Boolean {
-            return series.isNotEmpty()
-        }
+        @Serializable
+        data object Error : SearchResult
 
-        fun isEmpty(): Boolean {
-            return this == Empty || (!hasPeople() && !hasMovies() && !hasSeries())
+        @Serializable
+        data class Success(
+            val people: ImmutableList<People>,
+            val movies: ImmutableList<Movie>,
+            val series: ImmutableList<TV>
+        ) : SearchResult {
+            fun hasPeople(): Boolean {
+                return people.isNotEmpty()
+            }
+
+            fun hasMovies(): Boolean {
+                return movies.isNotEmpty()
+            }
+
+            fun hasSeries(): Boolean {
+                return series.isNotEmpty()
+            }
+
+            fun isEmpty(): Boolean {
+                return this == Empty || (!hasPeople() && !hasMovies() && !hasSeries())
+            }
         }
 
         companion object {
-            val Empty = SearchResult(
+            val Empty = Success(
                 people = persistentListOf(),
                 movies = persistentListOf(),
-                series = persistentListOf(),
-                error = false
+                series = persistentListOf()
             )
 
             internal fun from(result: Result<PagedResponse<Response>>): SearchResult {
-                val result = result.getOrNull() ?: return Empty.copy(error = result.isFailure)
+                if (result.isFailure) {
+                    return Error
+                }
+                val result = result.getOrNull() ?: return Empty
 
                 val people = result.results.filterIsInstance<People>()
                 val movies = result.results.filterIsInstance<Movie>()
@@ -95,11 +108,10 @@ class SearchRepository(
                 return if (people.isEmpty() && movies.isEmpty() && series.isEmpty()) {
                     Empty
                 } else {
-                    SearchResult(
+                    Success(
                         people = people.toImmutableList(),
                         movies = movies.toImmutableList(),
-                        series = series.toImmutableList(),
-                        error = false
+                        series = series.toImmutableList()
                     )
                 }
             }

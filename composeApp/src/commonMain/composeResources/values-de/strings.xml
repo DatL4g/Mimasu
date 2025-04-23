@@ -25,6 +25,9 @@
     <string name="search_people">Personen</string>
     <string name="search_series">Serien</string>
     <string name="search_movies">Filme</string>
+    <string name="search_info_default">Suche nach Personen, Serien oder Filmen.</string>
+    <string name="search_info_empty">Zu deiner Eingabe konnte nichts gefunden werden.</string>
+    <string name="search_info_error">Etwas ist schiefgelaufen, bitte versuche es später noch einmal.</string>
 
     <string name="movie_status_rumored">Gerücht</string>
     <string name="movie_status_planned">Geplant</string>

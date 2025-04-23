@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,11 +37,14 @@ fun SearchContent(
     result: SearchRepository.SearchResult,
     onMovieClicked: (Movie) -> Unit
 ) {
+    val loading = remember(result) { result is SearchRepository.SearchResult.Loading }
+    val success = remember(result) { result as? SearchRepository.SearchResult.Success }
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = padding + PaddingValues(top = 16.dp)
     ) {
-        if (result.hasPeople()) {
+        if (loading || success?.hasPeople() == true) {
             item {
                 Column(
                     modifier = Modifier
@@ -61,17 +65,26 @@ fun SearchContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
-                        items(result.people.toImmutableList()) {
-                            PersonCard(
-                                person = it,
-                                placeholder = false
-                            )
+                        if (success != null) {
+                            items(success.people.toImmutableList()) {
+                                PersonCard(
+                                    person = it,
+                                    placeholder = false
+                                )
+                            }
+                        } else {
+                            items(5) {
+                                PersonCard(
+                                    person = null,
+                                    placeholder = true
+                                )
+                            }
                         }
                     }
                 }
             }
         }
-        if (result.hasSeries()) {
+        if (loading || success?.hasSeries() == true) {
             item {
                 Column(
                     modifier = Modifier
@@ -92,16 +105,22 @@ fun SearchContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
-                        items(result.series.toImmutableList()) {
-                            ShowCard(
-                                show = it
-                            )
+                        if (success != null) {
+                            items(success.series.toImmutableList()) {
+                                ShowCard(
+                                    show = it
+                                )
+                            }
+                        } else {
+                            items(5) {
+                                ShowCard(null)
+                            }
                         }
                     }
                 }
             }
         }
-        if (result.hasMovies()) {
+        if (loading || success?.hasMovies() == true) {
             item {
                 Column(
                     modifier = Modifier
@@ -122,11 +141,17 @@ fun SearchContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
-                        items(result.movies.toImmutableList()) {
-                            MovieCard(
-                                movie = it,
-                                onClick = onMovieClicked
-                            )
+                        if (success != null) {
+                            items(success.movies.toImmutableList()) {
+                                MovieCard(
+                                    movie = it,
+                                    onClick = onMovieClicked
+                                )
+                            }
+                        } else {
+                            items(5) {
+                                MovieCard(null)
+                            }
                         }
                     }
                 }

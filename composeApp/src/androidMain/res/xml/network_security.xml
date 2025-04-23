@@ -11,5 +11,9 @@
         <domain includeSubdomains="true">tmdb.org</domain>
 
         <domain includeSubdomains="true">googleapis.com</domain>
+        <domain includeSubdomains="true">google.com</domain>
+        <domain includeSubdomains="true">datlag.dev</domain>
+
+        <domain includeSubdomains="true">github.com</domain>
     </domain-config>
 </network-security-config>
