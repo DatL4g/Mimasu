@@ -84,4 +84,8 @@
 
     <string name="profile_connect">Connect</string>
     <string name="profile_connected">Connected</string>
+    <string name="profile_sign_out">Sign Out</string>
+    <string name="profile_sign_out_text">Are you sure you want to sign out of your account?</string>
+    <string name="profile_sign_out_yes">Yes</string>
+    <string name="profile_sign_out_cancel">Cancel</string>
 </resources>

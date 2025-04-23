@@ -84,4 +84,8 @@
 
     <string name="profile_connect">Verbinden</string>
     <string name="profile_connected">Verbunden</string>
+    <string name="profile_sign_out">Ausloggen</string>
+    <string name="profile_sign_out_text">Bist du sicher, dass du dich von deinem Account abmelden willst?</string>
+    <string name="profile_sign_out_yes">Ja</string>
+    <string name="profile_sign_out_cancel">Abbrechen</string>
 </resources>

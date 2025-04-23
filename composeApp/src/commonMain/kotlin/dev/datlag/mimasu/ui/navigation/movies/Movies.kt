@@ -19,8 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.home_people
-import dev.datlag.mimasu.composeapp.generated.resources.movies
 import dev.datlag.mimasu.composeapp.generated.resources.movies_now_playing
 import dev.datlag.mimasu.composeapp.generated.resources.movies_popular
 import dev.datlag.mimasu.composeapp.generated.resources.movies_top_rated
@@ -79,6 +77,48 @@ fun Movies(
                             }
                         }
                         nowPlaying.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                MovieCard(null)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        item {
+            Column(
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .animateContentSize()
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val upcoming = movieListsViewModel.upcoming.collectAsLazyPagingItems()
+
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = stringResource(Res.string.movies_upcoming),
+                    style = Platform.typography().headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(upcoming.itemCount) { index ->
+                        val movie = upcoming[index]
+
+                        MovieCard(movie, onClick = onMovieClicked)
+                    }
+                    when {
+                        upcoming.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                MovieCard(null)
+                            }
+                        }
+                        upcoming.loadState.append is LoadState.Loading -> {
                             items(3) {
                                 MovieCard(null)
                             }
@@ -163,48 +203,6 @@ fun Movies(
                             }
                         }
                         topRated.loadState.append is LoadState.Loading -> {
-                            items(3) {
-                                MovieCard(null)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        item {
-            Column(
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .animateContentSize()
-                    .padding(bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                val upcoming = movieListsViewModel.upcoming.collectAsLazyPagingItems()
-
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.movies_upcoming),
-                    style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1
-                )
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    items(upcoming.itemCount) { index ->
-                        val movie = upcoming[index]
-
-                        MovieCard(movie, onClick = onMovieClicked)
-                    }
-                    when {
-                        upcoming.loadState.refresh is LoadState.Loading -> {
-                            items(5) {
-                                MovieCard(null)
-                            }
-                        }
-                        upcoming.loadState.append is LoadState.Loading -> {
                             items(3) {
                                 MovieCard(null)
                             }

@@ -13,12 +13,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +42,10 @@ import dev.datlag.mimasu.composeapp.generated.resources.github
 import dev.datlag.mimasu.composeapp.generated.resources.google
 import dev.datlag.mimasu.composeapp.generated.resources.profile_connect
 import dev.datlag.mimasu.composeapp.generated.resources.profile_connected
+import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out
+import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_cancel
+import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_text
+import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_yes
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.Platform
@@ -47,10 +56,57 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun Profile(
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
 ) {
     val accountViewModel = accountViewModel()
     val user by accountViewModel.user.collectAsStateWithLifecycle()
+
+    var showSignOutDialog by remember { mutableStateOf(false) }
+
+    if (showSignOutDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showSignOutDialog = false
+            },
+            icon = {
+                MaterialSymbols(
+                    name = MaterialSymbols.LOGOUT,
+                    contentDescription = null
+                )
+            },
+            title = {
+                Text(text = stringResource(Res.string.profile_sign_out))
+            },
+            text = {
+                Text(text = stringResource(Res.string.profile_sign_out_text))
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showSignOutDialog = false
+                        accountViewModel.signOut()?.invokeOnCompletion {
+                            onLogout()
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Platform.colorScheme().error,
+                        contentColor = Platform.colorScheme().onError
+                    )
+                ) {
+                    Text(text = stringResource(Res.string.profile_sign_out_yes))
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showSignOutDialog = false
+                    }
+                ) {
+                    Text(text = stringResource(Res.string.profile_sign_out_cancel))
+                }
+            },
+        )
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -82,9 +138,7 @@ fun Profile(
                 ) {
                     IconButton(
                         onClick = {
-                            accountViewModel.signOut()?.invokeOnCompletion {
-                                onLogout()
-                            }
+                            showSignOutDialog = true
                         }
                     ) {
                         MaterialSymbols(
