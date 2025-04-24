@@ -29,7 +29,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -62,13 +64,17 @@ import dev.datlag.tooling.compose.platform.typography
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun Search(
     onMovieClicked: (Movie) -> Unit
 ) {
     val searchViewModel = kodeinViewModel<SearchViewModel>()
     val query by searchViewModel.query.collectAsStateWithLifecycle()
+
+    BackHandler(enabled = !query.isNullOrEmpty()) {
+        searchViewModel.updateQuery("")
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
