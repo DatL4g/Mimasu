@@ -1,5 +1,6 @@
 [versions]
 app = "1.0.0"
+about = "12.0.1"
 ackpine = "0.11.1"
 activity = "1.10.1"
 adaptive = "1.1.0-rc01"
@@ -73,6 +74,7 @@ windowsize = "0.5.0"
 youtube-player = "2.0.5"
 
 [libraries]
+about = { group = "com.mikepenz", name = "aboutlibraries-compose-core", version.ref = "about" }
 adaptive = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive", version.ref = "adaptive" }
 adaptive-layout = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-layout", version.ref = "adaptive" }
 adaptive-navigation = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "adaptive" }
@@ -182,6 +184,7 @@ google-auth = [ "google-credentials", "google-credentials-play-service", "google
 android-media = [ "media3", "media3-dash", "media3-hls", "media3-rtsp", "media3-session", "media3-smooth", "media3-ui", "media3-cast", "media3-cronet" ]
 
 [plugins]
+about = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about" }
 android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }

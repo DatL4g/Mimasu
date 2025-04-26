@@ -91,4 +91,13 @@
     <string name="profile_sign_out_text">Bist du sicher, dass du dich von deinem Account abmelden willst?</string>
     <string name="profile_sign_out_yes">Ja</string>
     <string name="profile_sign_out_cancel">Abbrechen</string>
+    <string name="profile_about">Über Mimasu</string>
+    <string name="profile_about_text">Mimasu (みます) ist ein Open-Source Projekt um deine Lieblingsfilme und Serien zu verwalten.</string>
+    <string name="profile_open_source">Open-Source</string>
+    <string name="profile_open_source_licenses">Open-Source Lizenzen</string>
+    <string name="profile_open_source_text">Das Projekt ist Open-Source, damit jeder den Code einsehen, verbessern und zur Weiterentwicklung beitragen kann.</string>
+    <string name="profile_extension">Erweiterungen</string>
+    <string name="profile_extension_text">Die App unterstützt Erweiterungen und ermöglicht so Integrationen mit Inhaltsanbietern. Dadurch können Filme und Serien von unterstützten Plattformen direkt in der App abgerufgen werden.</string>
+    <string name="profile_owner">Entwickelt von Jeff Retz</string>
+    <string name="profile_github_repository">GitHub Repository</string>
 </resources>

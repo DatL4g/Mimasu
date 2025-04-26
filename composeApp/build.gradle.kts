@@ -3,6 +3,8 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import com.codingfeline.buildkonfig.compiler.FieldSpec
+import com.mikepenz.aboutlibraries.plugin.DuplicateMode
+import com.mikepenz.aboutlibraries.plugin.DuplicateRule
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -14,6 +16,7 @@ plugins {
     alias(libs.plugins.konfig)
     alias(libs.plugins.sekret)
     alias(libs.plugins.atomicfu)
+    alias(libs.plugins.about)
 }
 
 val artifact = "dev.datlag.mimasu"
@@ -90,6 +93,7 @@ kotlin {
             implementation(libs.tolgee)
             implementation(libs.haze)
             implementation(libs.haze.materials)
+            implementation(libs.about)
 
             implementation(project(":core"))
             implementation(project(":ui"))
@@ -204,5 +208,19 @@ buildkonfig {
 sekret {
     properties {
         enabled.set(true)
+    }
+}
+
+aboutLibraries {
+    collect {
+        includePlatform.set(true)
+    }
+    library {
+        duplicationMode.set(DuplicateMode.MERGE)
+        duplicationRule.set(DuplicateRule.GROUP)
+    }
+    export {
+        excludeFields.set("generated")
+        outputPath.set(project.layout.projectDirectory.file("src/commonMain/composeResources/files/aboutlibraries.json"))
     }
 }
