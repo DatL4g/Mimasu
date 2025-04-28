@@ -1,13 +1,19 @@
 package dev.datlag.mimasu.firebase.auth
 
+import dev.datlag.tooling.async.suspendCatching
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.FirebaseApp
+import dev.gitlive.firebase.app
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.firestore
+import kotlinx.atomicfu.atomic
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.pearx.kasechange.toTitleCase
@@ -44,11 +50,26 @@ data class User(
         }.firstNotNullOfOrNull { it.displayName?.ifBlank { null } }
     )
 ) {
-    private val document: Flow<DocumentSnapshot> = Firebase.firestore.collection("user").document(firebase.uid).snapshots
+    val info = atomic<Info?>(null)
+    private val infoMutex = Mutex()
 
-    val info = document.map {
-        it.data(Info.serializer())
+    suspend fun info(app: FirebaseApp = Firebase.app): Info {
+        return info.value
+            ?: remoteInfo(app)?.also { info.value = it }
+            ?: info.value
+            ?: Info()
     }
+
+    private suspend fun remoteInfo(app: FirebaseApp): Info? = suspendCatching {
+        infoMutex.withLock {
+            Firebase
+                .firestore(app)
+                .collection("user")
+                .document(firebase.uid)
+                .get()
+                .data(Info.serializer())
+        }
+    }.getOrNull()
 
     data class GitHub(
         val linked: Boolean,

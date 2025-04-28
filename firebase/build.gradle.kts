@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.serialization)
     alias(libs.plugins.sekret)
+    alias(libs.plugins.atomicfu)
 }
 
 kotlin {
