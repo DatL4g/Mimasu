@@ -95,6 +95,7 @@
     <string name="profile_about_text">Mimasu (みます) ist ein Open-Source Projekt um deine Lieblingsfilme und Serien zu verwalten.</string>
     <string name="profile_open_source">Open-Source</string>
     <string name="profile_open_source_licenses">Open-Source Lizenzen</string>
+    <string name="profile_open_source_licenses_text">Das ist eine Liste von Bibliotheken, die in diesem Projekt verwendet werden und deren Lizenzen.</string>
     <string name="profile_open_source_text">Das Projekt ist Open-Source, damit jeder den Code einsehen, verbessern und zur Weiterentwicklung beitragen kann.</string>
     <string name="profile_extension">Erweiterungen</string>
     <string name="profile_extension_text">Die App unterstützt Erweiterungen und ermöglicht so Integrationen mit Inhaltsanbietern. Dadurch können Filme und Serien von unterstützten Plattformen direkt in der App abgerufgen werden.</string>

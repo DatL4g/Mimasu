@@ -302,16 +302,16 @@ fun Profile(
             )
         }
         item {
-            OwnerSection(modifier = Modifier
-                .fillParentMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-        }
-        item {
             LicensesSection(
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+        }
+        item {
+            OwnerSection(modifier = Modifier
+                .fillParentMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }
         item {

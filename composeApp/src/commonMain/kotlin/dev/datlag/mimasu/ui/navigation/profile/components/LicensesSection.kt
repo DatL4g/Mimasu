@@ -1,9 +1,11 @@
 package dev.datlag.mimasu.ui.navigation.profile.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ButtonDefaults
@@ -18,18 +20,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mikepenz.aboutlibraries.ui.compose.rememberLibraries
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source_licenses
-import dev.datlag.mimasu.composeapp.generated.resources.profile_owner
-import dev.datlag.mimasu.core.Constants
+import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source_licenses_text
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.onClick
 import dev.datlag.tooling.compose.platform.shapes
+import dev.datlag.tooling.compose.platform.typography
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import org.jetbrains.compose.resources.stringResource
@@ -42,7 +45,9 @@ fun LicensesSection(
     val libs by rememberLibraries {
         Res.readBytes("files/aboutlibraries.json").decodeToString()
     }
-    val libraries = remember(libs) { libs?.libraries.orEmpty().toImmutableSet() }
+    val libraries = remember(libs) {
+        libs?.libraries.orEmpty().toImmutableSet().filter { it.openSource }.toImmutableList()
+    }
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
@@ -53,9 +58,26 @@ fun LicensesSection(
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(16.dp)
             ) {
-                items(libraries.toImmutableList(), key = { it.uniqueId }) {
+                item {
+                    Text(
+                        modifier = Modifier.fillParentMaxWidth(),
+                        text = stringResource(Res.string.profile_open_source_licenses),
+                        style = Platform.typography().headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                item {
+                    Text(
+                        modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp),
+                        text = stringResource(Res.string.profile_open_source_licenses_text),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                items(libraries, key = { it.uniqueId }) {
                     LibraryCard(it)
                 }
             }

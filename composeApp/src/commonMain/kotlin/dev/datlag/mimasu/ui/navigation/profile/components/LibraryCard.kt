@@ -30,7 +30,9 @@ fun LibraryCard(
     modifier: Modifier = Modifier
 ) {
     val uriHandler = LocalUriHandler.current
-    val website = remember(library) { library.website?.ifBlank { null } ?: library.scm?.url?.ifBlank { null } }
+    val website = remember(library) {
+        library.website?.ifBlank { null } ?: library.scm?.url?.ifBlank { null }
+    }
 
     ElevatedCard(
         onClick = {
@@ -45,6 +47,17 @@ fun LibraryCard(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically)
         ) {
+            val owner = remember(library) {
+                library.organization?.name?.ifBlank { null } ?: library.developers.mapNotNull { it.name?.ifBlank { null } }.joinToString()
+            }
+            val name = remember(library) {
+                if (library.name.equals(library.artifactId, ignoreCase = true) || library.artifactId.startsWith(library.name, ignoreCase = true)) {
+                    library.name.split(':').last()
+                } else {
+                    library.name
+                }
+            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -52,7 +65,7 @@ fun LibraryCard(
             ) {
                 Text(
                     modifier = Modifier.weight(1F),
-                    text = library.name,
+                    text = name,
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,
@@ -66,7 +79,7 @@ fun LibraryCard(
                 }
             }
             Text(
-                text = library.organization?.name?.ifBlank { null } ?: library.developers.mapNotNull { it.name?.ifBlank { null } }.joinToString(),
+                text = owner,
                 style = Platform.typography().bodySmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

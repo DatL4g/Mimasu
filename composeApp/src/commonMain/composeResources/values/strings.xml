@@ -95,6 +95,7 @@
     <string name="profile_about_text">Mimasu (みます) is an open-source project for keeping track of your favorite movies and shows.</string>
     <string name="profile_open_source">Open-Source</string>
     <string name="profile_open_source_licenses">Open-Source licenses</string>
+    <string name="profile_open_source_licenses_text">This is a list of libraries used in this project and their licenses.</string>
     <string name="profile_open_source_text">The project is open-source so everyone can review the code, improve it and contribute to it's development.</string>
     <string name="profile_extension">Extensions</string>
     <string name="profile_extension_text">The app supports extensions, enabling direct integration with any content provider. This allows users to watch movies and shows from supported platforms within the app.</string>
