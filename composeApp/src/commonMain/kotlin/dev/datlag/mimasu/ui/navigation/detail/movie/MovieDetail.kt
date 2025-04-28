@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -26,7 +27,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.backhandler.PredictiveBackHandler
@@ -102,35 +105,39 @@ fun MovieDetail(
                 val info = provider.flatrate.firstOrNull() ?: provider.buy.firstOrNull() ?: provider.rent.firstOrNull()
                 val uriHandler = LocalUriHandler.current
 
-                BadgedBox(
-                    badge = {
-                        Badge(
-                            containerColor = Platform.colorScheme().secondary
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(12.dp),
-                                painter = painterResource(Res.drawable.justwatch),
-                                contentDescription = stringResource(Res.string.justwatch)
-                            )
-                            Text(text = stringResource(Res.string.justwatch))
-                        }
-                    }
-                ) {
+                Box {
                     ExtendedFloatingActionButton(
                         onClick = {
                             provider.link?.let(uriHandler::openUri)
                         },
                         icon = {
-                            AsyncImage(
-                                modifier = Modifier.height(24.dp).clip(Platform.shapes().small),
-                                model = info?.logo,
-                                contentDescription = null,
-                                error = rememberNestedImagePainter(
-                                    models = info.logos().drop(1),
+                            var fallback by remember(info) { mutableStateOf(info?.hasLogo != true) }
+
+                            if (fallback) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.PLAY_ARROW,
+                                    contentDescription = null,
+                                    filled = true
+                                )
+                            } else {
+                                AsyncImage(
+                                    modifier = Modifier.height(24.dp).clip(Platform.shapes().small),
+                                    model = info?.logo,
+                                    contentDescription = null,
+                                    placeholder = MaterialSymbols.rememberPainter(
+                                        name = MaterialSymbols.PLAY_ARROW,
+                                        filled = true
+                                    ),
+                                    error = rememberNestedImagePainter(
+                                        models = info.logos().drop(1),
+                                        contentScale = ContentScale.Inside,
+                                        onError = {
+                                            fallback = true
+                                        }
+                                    ),
                                     contentScale = ContentScale.Inside
-                                ),
-                                contentScale = ContentScale.Inside
-                            )
+                                )
+                            }
                         },
                         text = {
                             Text(
@@ -139,8 +146,19 @@ fun MovieDetail(
                             )
                         }
                     )
-                }
 
+                    Badge(
+                        modifier = Modifier.align(Alignment.TopCenter).offset(y = (-8).dp),
+                        containerColor = Platform.colorScheme().secondary
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(12.dp),
+                            painter = painterResource(Res.drawable.justwatch),
+                            contentDescription = stringResource(Res.string.justwatch)
+                        )
+                        Text(text = stringResource(Res.string.justwatch))
+                    }
+                }
             }
         }
     ) { padding ->
