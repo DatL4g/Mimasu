@@ -37,9 +37,11 @@ class DetailsRepository(
                     apiKey = apiKey,
                     id = id,
                     language = language,
-                    appendToResponse = listOf(APPEND_CREDITS, APPEND_EXTERNAL_IDS).joinToString(
-                        separator = ","
-                    )
+                    appendToResponse = listOf(
+                        APPEND_CREDITS,
+                        APPEND_EXTERNAL_IDS,
+                        WATCH_PROVIDERS
+                    ).joinToString(separator = ",")
                 )
 
                 response.body<Movie>()
@@ -64,5 +66,6 @@ class DetailsRepository(
     companion object {
         private const val APPEND_CREDITS = "credits"
         private const val APPEND_EXTERNAL_IDS = "external_ids"
+        private const val WATCH_PROVIDERS = "watch/providers"
     }
 }

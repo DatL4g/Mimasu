@@ -3,12 +3,18 @@ package dev.datlag.mimasu.ui.navigation.detail.movie
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgeDefaults
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,14 +32,28 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
+import coil3.compose.AsyncImage
 import dev.chrisbanes.haze.HazeState
+import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.justwatch
 import dev.datlag.mimasu.composeapp.generated.resources.movie_watch
+import dev.datlag.mimasu.tmdb.common.logos
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 import dev.datlag.tolgee.stringResource
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.async.suspendCatching
+import dev.datlag.tooling.compose.platform.colorScheme
+import dev.datlag.tooling.compose.platform.shapes
+import dev.datlag.tooling.listFrom
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -78,19 +98,50 @@ fun MovieDetail(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { },
-                icon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.PLAY_ARROW,
-                        contentDescription = null,
-                        filled = true
+            movieState.getOrNull()?.watchProviders?.providerFor(Locale.current.region)?.let { provider ->
+                val info = provider.flatrate.firstOrNull() ?: provider.buy.firstOrNull() ?: provider.rent.firstOrNull()
+                val uriHandler = LocalUriHandler.current
+
+                BadgedBox(
+                    badge = {
+                        Badge(
+                            containerColor = Platform.colorScheme().secondary
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(12.dp),
+                                painter = painterResource(Res.drawable.justwatch),
+                                contentDescription = stringResource(Res.string.justwatch)
+                            )
+                            Text(text = stringResource(Res.string.justwatch))
+                        }
+                    }
+                ) {
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            provider.link?.let(uriHandler::openUri)
+                        },
+                        icon = {
+                            AsyncImage(
+                                modifier = Modifier.height(24.dp).clip(Platform.shapes().small),
+                                model = info?.logo,
+                                contentDescription = null,
+                                error = rememberNestedImagePainter(
+                                    models = info.logos().drop(1),
+                                    contentScale = ContentScale.Inside
+                                ),
+                                contentScale = ContentScale.Inside
+                            )
+                        },
+                        text = {
+                            Text(
+                                text = info?.providerName?.ifBlank { null } ?: stringResource(Res.string.movie_watch),
+                                maxLines = 1
+                            )
+                        }
                     )
-                },
-                text = {
-                    Text(text = stringResource(Res.string.movie_watch))
                 }
-            )
+
+            }
         }
     ) { padding ->
         when (val current = movieState) {

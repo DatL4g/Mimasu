@@ -49,6 +49,7 @@ data class Movie(
     @SerialName("vote_count") val voteCount: Int = 0,
     @SerialName("credits") val credits: Credits? = null,
     @SerialName("external_ids") val externalIDs: ExternalIDs? = null,
+    @SerialName("watch/providers") val watchProviders: WatchProviders? = null
 ) : HasBackdrop, HasPoster {
 
     @Transient
@@ -254,5 +255,30 @@ data class Movie(
         @SerialName("instagram_id") val instagramId: String? = null,
         @SerialName("twitter_id") val twitterId: String? = null
     )
+
+    @Serializable
+    data class WatchProviders(
+        @SerialName("results") val results: Map<String, Providers> = emptyMap()
+    ) {
+
+        fun providerFor(locale: String) = results[locale] ?: results[locale.uppercase()]
+
+        @Serializable
+        data class Providers(
+            @SerialName("link") val link: String? = null,
+            @SerialName("flatrate") val flatrate: Set<Info> = emptySet(),
+            @SerialName("buy") val buy: Set<Info> = emptySet(),
+            @SerialName("rent") val rent: Set<Info> = emptySet(),
+        ) {
+
+            @Serializable
+            data class Info(
+                @SerialName("logo_path") override val logoSource: String?,
+                @SerialName("provider_id") val providerId: Int = 0,
+                @SerialName("provider_name") val providerName: String,
+                @SerialName("display_priority") val displayPriority: Int = 0
+            ) : HasLogo
+        }
+    }
 
 }
