@@ -5,6 +5,7 @@ import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Details
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tmdb.model.details.Person
+import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import io.ktor.client.call.body
@@ -25,6 +26,12 @@ class DetailsRepository(
     }
 
     private val personKache = InMemoryKache<Int, Person>(
+        maxSize = 5 * 1024 * 1024
+    ) {
+        expireAfterWriteDuration = 1.days
+    }
+
+    private val showKache = InMemoryKache<Int, Show>(
         maxSize = 5 * 1024 * 1024
     ) {
         expireAfterWriteDuration = 1.days
@@ -59,6 +66,21 @@ class DetailsRepository(
                 )
 
                 response.body<Person>()
+            }
+        }
+    }
+
+    suspend fun show(id: Int): Result<Show?> = withNonEmptyContext(context) {
+        suspendCatching {
+            showKache.getOrPut(id) {
+                val response = details.show(
+                    apiKey = apiKey,
+                    id = id,
+                    language = language,
+                    appendToResponse = null
+                )
+
+                response.body<Show>()
             }
         }
     }

@@ -22,4 +22,12 @@ interface Details {
         @Query("language") language: String,
     ): HttpResponse
 
+    @GET("tv/{id}")
+    suspend fun show(
+        @Query("api_key") apiKey: String,
+        @Path("id") id: Int,
+        @Query("language") language: String,
+        @Query("append_to_response") appendToResponse: String?
+    ): HttpResponse
+
 }
