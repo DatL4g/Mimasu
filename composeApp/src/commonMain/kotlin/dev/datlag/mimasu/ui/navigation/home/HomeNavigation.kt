@@ -14,9 +14,11 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
+import dev.datlag.mimasu.ui.navigation.detail.show.ShowDetail
 import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
+import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import org.jetbrains.compose.resources.stringResource
 
 fun NavigationSuiteScope.homeItem(
@@ -59,6 +61,11 @@ fun HomeNavigation() {
 
                     controller.navigateToDetail(Navigation.Home.Detail.Person)
                 },
+                onShowClicked = {
+                    ShowViewModel.updateFrom(it)
+
+                    controller.navigateToDetail(Navigation.Home.Detail.Show)
+                },
                 onMovieClicked = {
                     MovieViewModel.updateFrom(it)
 
@@ -82,6 +89,13 @@ fun HomeNavigation() {
                 }
                 is Navigation.Home.Detail.Person -> {
                     PersonDetail(
+                        onBack = {
+                            controller.navigateBack()
+                        }
+                    )
+                }
+                is Navigation.Home.Detail.Show -> {
+                    ShowDetail(
                         onBack = {
                             controller.navigateBack()
                         }

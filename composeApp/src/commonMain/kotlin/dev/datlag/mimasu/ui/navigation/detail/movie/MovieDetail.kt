@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -75,13 +76,8 @@ fun MovieDetail(
     val haze = remember { HazeState() }
     val listState = rememberLazyListState()
 
-    PredictiveBackHandler(enabled = true) { state ->
-        suspendCatching {
-            state.collect {
-                // Collecting required, but does not contain relevant data
-            }
-            onBack()
-        }
+    BackHandler(enabled = true) {
+        onBack()
     }
 
     Scaffold(

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.rounded.Cake
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Event
@@ -38,6 +39,7 @@ import androidx.compose.material.icons.rounded.RequestQuote
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.material.icons.rounded.Visibility
@@ -122,6 +124,8 @@ data object MaterialSymbols {
     const val HELP = "help"
     const val CODE = "code"
     const val CONTRACT = "contract"
+    const val TODAY = "today"
+    const val DATE_RANGE = "date_range"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -465,6 +469,8 @@ data object MaterialSymbols {
         name.equals(HELP, ignoreCase = true) -> Icons.AutoMirrored.Rounded.HelpOutline
         name.equals(CODE, ignoreCase = true) -> Icons.Rounded.Code
         name.equals(CONTRACT, ignoreCase = true) -> Icons.Rounded.Handshake
+        name.equals(TODAY, ignoreCase = true) -> Icons.Rounded.Today
+        name.equals(DATE_RANGE, ignoreCase = true) -> Icons.Rounded.DateRange
         else -> null
     }
 

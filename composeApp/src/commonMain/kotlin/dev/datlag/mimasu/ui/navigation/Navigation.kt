@@ -61,6 +61,9 @@ object Navigation {
 
             @Serializable
             data object Person : Detail
+
+            @Serializable
+            data object Show : Detail
         }
 
         @Serializable

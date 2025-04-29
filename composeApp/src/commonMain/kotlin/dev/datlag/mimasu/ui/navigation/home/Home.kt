@@ -39,6 +39,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.home_trending
 import dev.datlag.mimasu.composeapp.generated.resources.home_week
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.People
+import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.custom.MovieCard
@@ -54,6 +55,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun Home(
     onPersonClicked: (People) -> Unit,
+    onShowClicked: (TV) -> Unit,
     onMovieClicked: (Movie) -> Unit
 ) {
     val trendingViewModel = kodeinViewModel<TrendingViewModel>()
@@ -183,7 +185,9 @@ fun Home(
                     items(series.itemCount) { index ->
                         val show = series[index]
 
-                        ShowCard(show)
+                        ShowCard(show) {
+                            onShowClicked(it)
+                        }
                     }
                     when {
                         series.loadState.refresh is LoadState.Loading -> {

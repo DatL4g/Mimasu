@@ -102,4 +102,13 @@
     <string name="profile_extension_text">The app supports extensions, enabling direct integration with any content provider. This allows users to watch movies and shows from supported platforms within the app.</string>
     <string name="profile_owner">Developed by Jeff Retz</string>
     <string name="profile_github_repository">GitHub Repository</string>
+
+    <string name="show_air_date_format">MM.dd.yyyy</string>
+
+    <string name="show_status_returning">Returning</string>
+    <string name="show_status_planned">Planned</string>
+    <string name="show_status_pilot">Pilot</string>
+    <string name="show_status_in_production">In Production</string>
+    <string name="show_status_ended">Ended</string>
+    <string name="show_status_canceled">Canceled</string>
 </resources>

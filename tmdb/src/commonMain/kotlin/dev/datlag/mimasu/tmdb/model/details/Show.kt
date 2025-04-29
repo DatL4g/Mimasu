@@ -4,9 +4,17 @@ import dev.datlag.mimasu.tmdb.model.HasBackdrop
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.LocalDate
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlin.math.roundToInt
 
 @Serializable
 data class Show(
@@ -23,7 +31,7 @@ data class Show(
     @SerialName("last_air_date") val lastAirDate: String? = null,
 
     @SerialName("name") val name: String,
-    @SerialName("next_episode_to_air") val nextEpisodeToAir: String? = null,
+    // @SerialName("next_episode_to_air") val nextEpisodeToAir: String? = null, // not a string
     @SerialName("number_of_episodes") val numberOfEpisodes: Int = 0,
     @SerialName("number_of_seasons") val numberOfSeasons: Int = 0,
     @SerialName("origin_country") val originCountry: Set<String> = emptySet(),
@@ -32,10 +40,29 @@ data class Show(
     @SerialName("overview") val overview: String? = null,
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("poster_path") override val posterSource: String? = null,
+    @SerialName("status") @Serializable(Status.Serializer::class) val status: Status? = null,
     @SerialName("tagline") val tagline: String? = null,
+    @SerialName("original_tagline") val originalTagline: String? = null,
     @SerialName("vote_average") val voteAverage: Float = 0F,
     @SerialName("vote_count") val voteCount: Int = 0,
 ) : HasBackdrop, HasPoster {
+
+    @Transient
+    val runtimeAverage: Int = episodeRuntime.filter { it > 0 }.let {
+        if (it.isEmpty()) {
+            0
+        } else {
+            val avg = scopeCatching { it.average() }.getOrNull() ?: return@let 0
+            scopeCatching {
+                avg.roundToInt()
+            }.getOrNull() ?: avg.toInt()
+        }
+    }
+
+    @Transient
+    val firstAirLocalDate = firstAirDate?.ifBlank { null }?.let { scopeCatching {
+        LocalDate.parse(it)
+    }.getOrNull() }
 
     @Transient
     val lastAirLocalDate = lastAirDate?.ifBlank { null }?.let { scopeCatching {
@@ -47,4 +74,91 @@ data class Show(
         @SerialName("id") val id: Int,
         @SerialName("name") val name: String
     )
+
+    @Serializable
+    sealed class Status : CharSequence {
+
+        abstract val value: String
+
+        override val length: Int
+            get() = value.length
+
+        override operator fun get(index: Int): Char {
+            return value[index]
+        }
+
+        override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
+            return value.subSequence(startIndex, endIndex)
+        }
+
+        override fun toString(): String {
+            return value
+        }
+
+        @Serializable
+        data object Returning : Status() {
+            override val value: String = "Returning Series"
+        }
+
+        @Serializable
+        data object Planned : Status() {
+            override val value: String = "Planned"
+        }
+
+        @Serializable
+        data object Pilot : Status() {
+            override val value: String = "Pilot"
+        }
+
+        @Serializable
+        data object InProduction : Status() {
+            override val value: String = "In Production"
+        }
+
+        @Serializable
+        data object Ended : Status() {
+            override val value: String = "Ended"
+        }
+
+        @Serializable
+        data object Canceled : Status() {
+            override val value: String = "Canceled"
+        }
+
+        @Serializable
+        data class Custom(override val value: String) : Status()
+
+        companion object Serializer : KSerializer<Status?> {
+            override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ShowStatus", PrimitiveKind.STRING)
+
+            @OptIn(ExperimentalSerializationApi::class)
+            override fun serialize(encoder: Encoder, value: Status?) {
+                if (value == null || value.value.isBlank()) {
+                    encoder.encodeNull()
+                } else {
+                    encoder.encodeNotNullMark()
+                    encoder.encodeString(value.value)
+                }
+            }
+
+            @OptIn(ExperimentalSerializationApi::class)
+            override fun deserialize(decoder: Decoder): Status? {
+                return if (decoder.decodeNotNullMark()) {
+                    from(decoder.decodeString())
+                } else {
+                    decoder.decodeNull()
+                }
+            }
+
+            fun from(value: String): Status = when {
+                value.equals(Returning.value, ignoreCase = true) -> Returning
+                value.equals(Planned.value, ignoreCase = true) -> Planned
+                value.equals(Pilot.value, ignoreCase = true) -> Pilot
+                value.equals(InProduction.value, ignoreCase = true) -> InProduction
+                value.equals(Ended.value, ignoreCase = true) -> Ended
+                value.equals(Canceled.value, ignoreCase = true) -> Canceled
+                else -> Custom(value)
+            }
+        }
+    }
 }
