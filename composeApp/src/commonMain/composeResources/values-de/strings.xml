@@ -104,6 +104,11 @@
     <string name="profile_github_repository">GitHub Repository</string>
 
     <string name="show_air_date_format">dd.MM.yyyy</string>
+    <string name="show_rating_placeholder">%1$d%</string>
+    <string name="show_overview">Handlung</string>
+    <string name="show_rating">Wertung</string>
+    <string name="show_episodes">Folgen</string>
+    <string name="show_seasons">Staffeln</string>
 
     <string name="show_status_returning">Wiederkehrend</string>
     <string name="show_status_planned">Geplant</string>

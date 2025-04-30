@@ -104,6 +104,11 @@
     <string name="profile_github_repository">GitHub Repository</string>
 
     <string name="show_air_date_format">MM.dd.yyyy</string>
+    <string name="show_rating_placeholder">%1$d%</string>
+    <string name="show_overview">Overview</string>
+    <string name="show_rating">Rating</string>
+    <string name="show_episodes">Episodes</string>
+    <string name="show_seasons">Seasons</string>
 
     <string name="show_status_returning">Returning</string>
     <string name="show_status_planned">Planned</string>
