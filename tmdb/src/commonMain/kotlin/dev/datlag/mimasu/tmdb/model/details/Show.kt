@@ -40,6 +40,7 @@ data class Show(
     @SerialName("overview") val overview: String? = null,
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("poster_path") override val posterSource: String? = null,
+    @SerialName("seasons") val seasons: Set<Season> = emptySet(),
     @SerialName("status") @Serializable(Status.Serializer::class) val status: Status? = null,
     @SerialName("tagline") val tagline: String? = null,
     @SerialName("original_tagline") val originalTagline: String? = null,
@@ -74,6 +75,18 @@ data class Show(
         @SerialName("id") val id: Int,
         @SerialName("name") val name: String
     )
+
+    @Serializable
+    data class Season(
+        @SerialName("air_date") val airDate: String? = null,
+        @SerialName("episode_count") val episodeCount: Int = 0,
+        @SerialName("id") val id: Int = 0,
+        @SerialName("name") val name: String,
+        @SerialName("overview") val overview: String? = null,
+        @SerialName("poster_path") override val posterSource: String? = null,
+        @SerialName("season_number") val seasonNumber: Int = 0,
+        @SerialName("vote_average") val voteAverage: Float = 0F
+    ) : HasPoster
 
     @Serializable
     sealed class Status : CharSequence {
