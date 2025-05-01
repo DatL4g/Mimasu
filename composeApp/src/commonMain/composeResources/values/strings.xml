@@ -109,6 +109,9 @@
     <string name="show_rating">Rating</string>
     <string name="show_episodes">Episodes</string>
     <string name="show_seasons">Seasons</string>
+    <string name="show_production">Production</string>
+    <string name="show_countries">Countries: </string>
+    <string name="show_watch">Watch</string>
 
     <string name="show_status_returning">Returning</string>
     <string name="show_status_planned">Planned</string>

@@ -22,7 +22,7 @@ fun HasBackdrop?.backdrops(fallback: CommonShow?): ImmutableList<String> = setOf
     fallback?.backdropSource
 ).toImmutableList()
 
-fun HasPoster?.posters(fallback: CommonShow?): ImmutableList<String> = setOfNotNull(
+fun HasPoster?.posters(fallbackShow: CommonShow?): ImmutableList<String> = setOfNotNull(
     this?.poster,
     this?.posterW500,
     this?.posterW400,
@@ -30,10 +30,10 @@ fun HasPoster?.posters(fallback: CommonShow?): ImmutableList<String> = setOfNotN
     this?.posterW200,
     this?.posterSource,
 
-    fallback?.poster,
-    fallback?.posterW500,
-    fallback?.posterW400,
-    fallback?.posterW300,
-    fallback?.posterW200,
-    fallback?.posterSource
+    fallbackShow?.poster,
+    fallbackShow?.posterW500,
+    fallbackShow?.posterW400,
+    fallbackShow?.posterW300,
+    fallbackShow?.posterW200,
+    fallbackShow?.posterSource
 ).toImmutableList()

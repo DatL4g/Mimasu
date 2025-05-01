@@ -29,10 +29,13 @@ import org.jetbrains.compose.resources.stringResource
 fun ShowOverview(
     show: Show,
     initial: TV?,
+    season: Show.Season?,
     modifier: Modifier = Modifier
 ) {
-    val overview = remember(show.id, initial?.id) {
-        show.overview?.ifBlank { null } ?: initial?.overview?.ifBlank { null }
+    val overview = remember(season, show.id, initial?.id) {
+        season?.overview?.ifBlank { null }
+            ?: show.overview?.ifBlank { null }
+            ?: initial?.overview?.ifBlank { null }
     }
 
     if (!overview.isNullOrBlank()) {

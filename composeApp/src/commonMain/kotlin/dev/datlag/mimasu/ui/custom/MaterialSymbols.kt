@@ -10,6 +10,7 @@ import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkAdd
 import androidx.compose.material.icons.rounded.Cake
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.DateRange
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.LocalFlorist
 import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Mail
+import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.Password
 import androidx.compose.material.icons.rounded.Payments
@@ -126,6 +128,8 @@ data object MaterialSymbols {
     const val CONTRACT = "contract"
     const val TODAY = "today"
     const val DATE_RANGE = "date_range"
+    const val STEPPERS = "steppers"
+    const val CHEVRON_RIGHT = "chevron_right"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -471,6 +475,8 @@ data object MaterialSymbols {
         name.equals(CONTRACT, ignoreCase = true) -> Icons.Rounded.Handshake
         name.equals(TODAY, ignoreCase = true) -> Icons.Rounded.Today
         name.equals(DATE_RANGE, ignoreCase = true) -> Icons.Rounded.DateRange
+        name.equals(STEPPERS, ignoreCase = true) -> Icons.Rounded.MoreHoriz
+        name.equals(CHEVRON_RIGHT, ignoreCase = true) -> Icons.Rounded.ChevronRight
         else -> null
     }
 

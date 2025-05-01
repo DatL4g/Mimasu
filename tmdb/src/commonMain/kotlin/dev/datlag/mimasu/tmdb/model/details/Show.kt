@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.tmdb.model.details
 
 import dev.datlag.mimasu.tmdb.model.HasBackdrop
+import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.LocalDate
@@ -40,6 +41,8 @@ data class Show(
     @SerialName("overview") val overview: String? = null,
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("poster_path") override val posterSource: String? = null,
+    @SerialName("production_companies") val productionCompanies: Set<ProductionCompany> = emptySet(),
+    @SerialName("production_countries") val productionCountries: Set<ProductionCountries> = emptySet(),
     @SerialName("seasons") val seasons: Set<Season> = emptySet(),
     @SerialName("status") @Serializable(Status.Serializer::class) val status: Status? = null,
     @SerialName("tagline") val tagline: String? = null,
@@ -74,6 +77,20 @@ data class Show(
     data class Genre(
         @SerialName("id") val id: Int,
         @SerialName("name") val name: String
+    )
+
+    @Serializable
+    data class ProductionCompany(
+        @SerialName("id") val id: Int = 0,
+        @SerialName("logo_path") override val logoSource: String? = null,
+        @SerialName("name") val name: String,
+        @SerialName("origin_country") val originCountry: String? = null
+    ) : HasLogo
+
+    @Serializable
+    data class ProductionCountries(
+        @SerialName("iso_3166_1") val iso: String? = null,
+        @SerialName("name") val name: String? = null
     )
 
     @Serializable

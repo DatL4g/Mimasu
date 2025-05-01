@@ -109,6 +109,9 @@
     <string name="show_rating">Wertung</string>
     <string name="show_episodes">Folgen</string>
     <string name="show_seasons">Staffeln</string>
+    <string name="show_production">Produktion</string>
+    <string name="show_countries">Länder: </string>
+    <string name="show_watch">Ansehen</string>
 
     <string name="show_status_returning">Wiederkehrend</string>
     <string name="show_status_planned">Geplant</string>

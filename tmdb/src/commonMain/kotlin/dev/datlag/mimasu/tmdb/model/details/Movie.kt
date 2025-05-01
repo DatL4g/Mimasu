@@ -68,7 +68,7 @@ data class Movie(
 
     @Serializable
     data class ProductionCompany(
-        @SerialName("id") val id: Int,
+        @SerialName("id") val id: Int = 0,
         @SerialName("logo_path") override val logoSource: String? = null,
         @SerialName("name") val name: String,
         @SerialName("origin_country") val originCountry: String? = null
