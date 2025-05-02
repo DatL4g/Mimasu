@@ -1,43 +1,41 @@
 package dev.datlag.mimasu.ui.navigation.detail.show
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Card
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.touchlab.kermit.Logger
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
-import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.show_seasons
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
-import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowGenres
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowInfo
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowOverview
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowPosterContent
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowProduction
-import org.jetbrains.compose.resources.stringResource
+import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowSeason
+import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
+import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ShowContent(
@@ -46,9 +44,17 @@ fun ShowContent(
     show: Show,
     initial: TV?,
     padding: PaddingValues,
-
+    viewModel: ShowViewModel = kodeinViewModel<ShowViewModel>()
 ) {
-    var selectedSeason by remember { mutableStateOf<Show.Season?>(null) }
+    val showSeason by viewModel.showSeason.collectAsStateWithLifecycle()
+    val initialSeasonState = remember(showSeason) {
+        if (showSeason == null) {
+            ShowViewModel.SeasonState.Empty
+        } else {
+            ShowViewModel.SeasonState.Loading
+        }
+    }
+    val seasonState by viewModel.season.collectAsStateWithLifecycle(initialSeasonState)
 
     LazyColumn(
         state = listState,
@@ -61,7 +67,7 @@ fun ShowContent(
             ShowPosterContent(
                 show = show,
                 initial = initial,
-                season = selectedSeason,
+                season = showSeason,
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(16.dp)
@@ -84,53 +90,22 @@ fun ShowContent(
             )
         }
         item {
-            Row(
+            ShowSeason(
+                show = show,
+                season = showSeason,
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    modifier = Modifier.weight(2F),
-                    onClick = {
-
-                    },
-                    shape = CircleShape.copy(topEnd = CornerSize(2.dp), bottomEnd = CornerSize(2.dp))
-                ) {
-                    MaterialSymbols(
-                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                        name = MaterialSymbols.STEPPERS,
-                        contentDescription = null,
-                    )
-                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(text = stringResource(Res.string.show_seasons))
+                onSelect = {
+                    viewModel.select(it)
                 }
-                FilledTonalButton(
-                    modifier = Modifier.weight(1F).padding(start = 4.dp),
-                    onClick = {
-                        selectedSeason = if (selectedSeason == null) {
-                            show.seasons.firstOrNull()
-                        } else {
-                            show.seasons.elementAtOrNull(show.seasons.indexOf(selectedSeason).plus(1))
-                        }
-                    },
-                    shape = CircleShape.copy(topStart = CornerSize(2.dp), bottomStart = CornerSize(2.dp))
-                ) {
-                    Text(text = "Next")
-                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                    MaterialSymbols(
-                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                        name = MaterialSymbols.CHEVRON_RIGHT,
-                        contentDescription = null
-                    )
-                }
-            }
+            )
         }
         item {
             ShowOverview(
                 show = show,
                 initial = initial,
-                season = selectedSeason,
+                season = showSeason,
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .animateContentSize()
@@ -144,6 +119,46 @@ fun ShowContent(
                     .fillParentMaxWidth()
                     .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
             )
+        }
+        item {
+            Text(text = "Episodes: ${showSeason?.episodeCount}")
+        }
+        when (val current = seasonState) {
+            is ShowViewModel.SeasonState.Empty -> { }
+            is ShowViewModel.SeasonState.Loading -> item {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxWidth()
+                        .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth(0.5F).clip(CircleShape)
+                    )
+                }
+            }
+            is ShowViewModel.SeasonState.Error -> item {
+                Text(text = "Loading Season failed: ${current.throwable}")
+            }
+            is ShowViewModel.SeasonState.Success -> {
+                item {
+                    Button(
+                        onClick = {
+                            Logger.e(messageString = current.toString())
+                        }
+                    ) {
+                        Text(text = "Log Success")
+                    }
+                }
+                items(current.season.episodes.toImmutableList()) {
+                    Card(
+                        modifier = Modifier.fillParentMaxWidth(),
+                        onClick = { }
+                    ) {
+                        Text(text = it.name?.ifBlank { null } ?: "Episode ${it.episodeNumber}")
+                    }
+                }
+            }
         }
     }
 }

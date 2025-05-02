@@ -30,4 +30,13 @@ interface Details {
         @Query("append_to_response") appendToResponse: String?
     ): HttpResponse
 
+    @GET("tv/{show_id}/season/{season_id}")
+    suspend fun showSeason(
+        @Query("api_key") apiKey: String,
+        @Path("show_id") showId: Int,
+        @Path("season_id") seasonId: Int,
+        @Query("language") language: String,
+        @Query("append_to_response") appendToResponse: String?
+    ): HttpResponse
+
 }

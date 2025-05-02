@@ -52,6 +52,9 @@ data class Show(
 ) : HasBackdrop, HasPoster {
 
     @Transient
+    val displaySeasons = seasons.filter { it.episodeCount > 0 }
+
+    @Transient
     val runtimeAverage: Int = episodeRuntime.filter { it > 0 }.let {
         if (it.isEmpty()) {
             0

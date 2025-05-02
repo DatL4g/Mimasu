@@ -41,6 +41,7 @@ kotlin {
             implementation(libs.serialization.json)
             implementation(libs.ktorfit)
             implementation(libs.datetime)
+            implementation(libs.kermit)
             implementation(project(":core"))
 
             api(libs.immutable)

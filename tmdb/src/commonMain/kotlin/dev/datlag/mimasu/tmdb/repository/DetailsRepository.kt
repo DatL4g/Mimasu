@@ -1,14 +1,18 @@
 package dev.datlag.mimasu.tmdb.repository
 
+import co.touchlab.kermit.Logger
 import com.mayakapps.kache.InMemoryKache
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Details
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tmdb.model.details.Person
+import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import io.ktor.client.call.body
+import io.ktor.client.statement.request
+import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.days
 
@@ -32,6 +36,12 @@ class DetailsRepository(
     }
 
     private val showKache = InMemoryKache<Int, Show>(
+        maxSize = 5 * 1024 * 1024
+    ) {
+        expireAfterWriteDuration = 1.days
+    }
+
+    private val showSeasonKache = InMemoryKache<ShowSeasonCacheKey, Season>(
         maxSize = 5 * 1024 * 1024
     ) {
         expireAfterWriteDuration = 1.days
@@ -84,6 +94,33 @@ class DetailsRepository(
             }
         }
     }
+
+    suspend fun showSeason(showId: Int, seasonId: Int): Result<Season?> = withNonEmptyContext(context) {
+        suspendCatching {
+            showSeasonKache.getOrPut(
+                ShowSeasonCacheKey(
+                    showId = showId,
+                    seasonId = seasonId
+                )
+            ) {
+                val response = details.showSeason(
+                    apiKey = apiKey,
+                    showId = showId,
+                    seasonId = seasonId,
+                    language = language,
+                    appendToResponse = null
+                )
+
+                response.body<Season>()
+            }
+        }
+    }
+
+    @Serializable
+    private data class ShowSeasonCacheKey(
+        val showId: Int,
+        val seasonId: Int
+    )
 
     companion object {
         private const val APPEND_CREDITS = "credits"

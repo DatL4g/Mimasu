@@ -1,22 +1,15 @@
 package dev.datlag.mimasu.ui.navigation.detail.show
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -29,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisbanes.haze.HazeState
 import dev.datlag.mimasu.composeapp.generated.resources.Res
@@ -46,7 +38,7 @@ fun ShowDetail(
     onBack: () -> Unit,
 ) {
     val showViewModel = kodeinViewModel<ShowViewModel>()
-    val showState by showViewModel.show.collectAsStateWithLifecycle(ShowViewModel.State.Loading)
+    val showState by showViewModel.show.collectAsStateWithLifecycle(ShowViewModel.ShowState.Loading)
     val initial by showViewModel.initialShow.collectAsStateWithLifecycle()
 
     val appBarState = rememberTopAppBarState()
@@ -93,7 +85,7 @@ fun ShowDetail(
         }
     ) { padding ->
         when (val current = showState) {
-            is ShowViewModel.State.Loading -> {
+            is ShowViewModel.ShowState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     contentAlignment = Alignment.Center
@@ -103,14 +95,14 @@ fun ShowDetail(
                     )
                 }
             }
-            is ShowViewModel.State.Error -> {
+            is ShowViewModel.ShowState.Error -> {
                 Box(
                     modifier = Modifier.padding(padding)
                 ) {
                     Text(text = "Loading Show failed: ${current.throwable}")
                 }
             }
-            is ShowViewModel.State.Success -> ShowContent(
+            is ShowViewModel.ShowState.Success -> ShowContent(
                 hazeState = haze,
                 listState = listState,
                 show = current.show,
