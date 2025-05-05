@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -27,6 +28,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.mimasu.ui.navigation.detail.show.components.EpisodeItem
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowGenres
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowInfo
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowOverview
@@ -35,6 +37,7 @@ import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowProduction
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowSeason
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.compose.ifTrue
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -120,9 +123,6 @@ fun ShowContent(
                     .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
             )
         }
-        item {
-            Text(text = "Episodes: ${showSeason?.episodeCount}")
-        }
         when (val current = seasonState) {
             is ShowViewModel.SeasonState.Empty -> { }
             is ShowViewModel.SeasonState.Loading -> item {
@@ -141,22 +141,13 @@ fun ShowContent(
                 Text(text = "Loading Season failed: ${current.throwable}")
             }
             is ShowViewModel.SeasonState.Success -> {
-                item {
-                    Button(
-                        onClick = {
-                            Logger.e(messageString = current.toString())
-                        }
-                    ) {
-                        Text(text = "Log Success")
-                    }
-                }
-                items(current.season.episodes.toImmutableList()) {
-                    Card(
-                        modifier = Modifier.fillParentMaxWidth(),
-                        onClick = { }
-                    ) {
-                        Text(text = it.name?.ifBlank { null } ?: "Episode ${it.episodeNumber}")
-                    }
+                itemsIndexed(current.season.episodes.toImmutableList()) { index, episode ->
+                    EpisodeItem(
+                        episode = episode,
+                        modifier = Modifier.fillParentMaxWidth().ifTrue(index >= current.season.episodes.size - 1) {
+                            padding(bottom = 16.dp)
+                        },
+                    )
                 }
             }
         }
