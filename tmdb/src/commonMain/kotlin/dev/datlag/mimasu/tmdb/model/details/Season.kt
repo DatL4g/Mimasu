@@ -3,6 +3,7 @@ package dev.datlag.mimasu.tmdb.model.details
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class Season(
@@ -24,9 +25,13 @@ data class Season(
         @SerialName("id") val id: Int = 0,
         @SerialName("name") val name: String? = null,
         @SerialName("overview") val overview: String? = null,
-        @SerialName("runtime") val runtime: Int = 0,
+        @SerialName("runtime") private val _runtime: Int? = null,
         @SerialName("season_number") val seasonNumber: Int = 0,
         @SerialName("show_id") val showId: Int = 0,
         @SerialName("still_path") override val posterSource: String? = null,
-    ) : HasPoster
+    ) : HasPoster {
+
+        @Transient
+        val runtime = _runtime ?: 0
+    }
 }

@@ -67,6 +67,7 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun Search(
+    onShowClicked: (TV) -> Unit,
     onMovieClicked: (Movie) -> Unit
 ) {
     val searchViewModel = kodeinViewModel<SearchViewModel>()
@@ -131,6 +132,7 @@ fun Search(
                     padding = padding,
                     query = query,
                     result = current,
+                    onShowClicked = onShowClicked,
                     onMovieClicked = onMovieClicked
                 )
             }
@@ -173,6 +175,7 @@ fun Search(
                         padding = padding,
                         query = query,
                         result = current,
+                        onShowClicked = onShowClicked,
                         onMovieClicked = onMovieClicked
                     )
                 }

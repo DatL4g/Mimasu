@@ -21,6 +21,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.search_movies
 import dev.datlag.mimasu.composeapp.generated.resources.search_people
 import dev.datlag.mimasu.composeapp.generated.resources.search_series
 import dev.datlag.mimasu.tmdb.model.Movie
+import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import dev.datlag.mimasu.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.custom.PersonCard
@@ -35,6 +36,7 @@ fun SearchContent(
     padding: PaddingValues,
     query: String?,
     result: SearchRepository.SearchResult,
+    onShowClicked: (TV) -> Unit,
     onMovieClicked: (Movie) -> Unit
 ) {
     val loading = remember(result) { result is SearchRepository.SearchResult.Loading }
@@ -108,7 +110,8 @@ fun SearchContent(
                         if (success != null) {
                             items(success.series.toImmutableList()) {
                                 ShowCard(
-                                    show = it
+                                    show = it,
+                                    onClick = onShowClicked
                                 )
                             }
                         } else {

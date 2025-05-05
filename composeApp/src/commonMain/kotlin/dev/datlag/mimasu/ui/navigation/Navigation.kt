@@ -75,7 +75,16 @@ object Navigation {
     }
 
     @Serializable
-    data object Series
+    data object Series {
+
+
+        @Serializable
+        sealed interface Detail {
+
+            @Serializable
+            data object Show : Detail
+        }
+    }
 
     @Serializable
     data object Search {
@@ -88,6 +97,9 @@ object Navigation {
 
             @Serializable
             data object Person : Detail
+
+            @Serializable
+            data object Show : Detail
         }
 
         @Serializable

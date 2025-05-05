@@ -51,8 +51,8 @@ class ShowViewModel(
     val season: Flow<SeasonState> = combine(id, show, showSeason) { t1, t2, t3 ->
         val currentShow = t2.getOrNull() ?: show.firstOrNull()?.getOrNull()
         val showId = t1?.takeIf { it > 0 } ?: currentShow?.id?.takeIf { it > 0 }
-        val seasonNumber = currentShow?.seasons?.indexOf(t3)?.takeIf { it > 0 }
-            ?: currentShow?.seasons?.indexOfFirst { it.id > 0 && it.id == t3?.id }?.takeIf { it > 0 }
+        val seasonNumber = t3?.seasonNumber?.takeIf { it >= 0 } ?: currentShow?.seasons?.indexOf(t3)?.takeIf { it >= 0 }?.plus(1)
+            ?: currentShow?.seasons?.indexOfFirst { it.id > 0 && it.id == t3?.id }?.takeIf { it >= 0 }?.plus(1)
 
         if (showId != null && seasonNumber != null) {
             SeasonRequest(
