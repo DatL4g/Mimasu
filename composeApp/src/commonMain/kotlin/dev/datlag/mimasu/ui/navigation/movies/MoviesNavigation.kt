@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.navigation.movies
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,20 +64,22 @@ fun MoviesNavigation() {
             )
         },
         detailPane = {
-            when (detailNavigation) {
-                is Navigation.Movies.Detail.Movie -> {
-                    MovieDetail(
-                        onBack = {
-                            controller.navigateBack()
-                        },
-                        onCastClick = {
-                            PersonViewModel.updateFrom(it)
+            AnimatedPane {
+                when (detailNavigation) {
+                    is Navigation.Movies.Detail.Movie -> {
+                        MovieDetail(
+                            onBack = {
+                                controller.navigateBack()
+                            },
+                            onCastClick = {
+                                PersonViewModel.updateFrom(it)
 
-                            controller.navigateToExtra(Navigation.Movies.Extra.Person)
-                        }
-                    )
+                                controller.navigateToExtra(Navigation.Movies.Extra.Person)
+                            }
+                        )
+                    }
+                    else -> controller.navigateBack()
                 }
-                else -> controller.navigateBack()
             }
         },
         extraPane = when (extraNavigation) {

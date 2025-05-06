@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.navigation.home
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
@@ -74,34 +75,36 @@ fun HomeNavigation() {
             )
         },
         detailPane = {
-            when (detailNavigation) {
-                is Navigation.Home.Detail.Movie -> {
-                    MovieDetail(
-                        onBack = {
-                            controller.navigateBack()
-                        },
-                        onCastClick = {
-                            PersonViewModel.updateFrom(it)
+            AnimatedPane {
+                when (detailNavigation) {
+                    is Navigation.Home.Detail.Movie -> {
+                        MovieDetail(
+                            onBack = {
+                                controller.navigateBack()
+                            },
+                            onCastClick = {
+                                PersonViewModel.updateFrom(it)
 
-                            controller.navigateToExtra(Navigation.Home.Extra.Person)
-                        }
-                    )
+                                controller.navigateToExtra(Navigation.Home.Extra.Person)
+                            }
+                        )
+                    }
+                    is Navigation.Home.Detail.Person -> {
+                        PersonDetail(
+                            onBack = {
+                                controller.navigateBack()
+                            }
+                        )
+                    }
+                    is Navigation.Home.Detail.Show -> {
+                        ShowDetail(
+                            onBack = {
+                                controller.navigateBack()
+                            }
+                        )
+                    }
+                    else -> controller.navigateBack()
                 }
-                is Navigation.Home.Detail.Person -> {
-                    PersonDetail(
-                        onBack = {
-                            controller.navigateBack()
-                        }
-                    )
-                }
-                is Navigation.Home.Detail.Show -> {
-                    ShowDetail(
-                        onBack = {
-                            controller.navigateBack()
-                        }
-                    )
-                }
-                else -> controller.navigateBack()
             }
         },
         extraPane = when (extraNavigation) {

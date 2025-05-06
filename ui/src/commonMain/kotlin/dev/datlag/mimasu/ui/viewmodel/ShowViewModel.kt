@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
@@ -43,25 +44,20 @@ class ShowViewModel(
     }
 
     val initialShow = Companion.initialShow
-
-    private val _season = MutableStateFlow<Show.Season?>(null)
-    val showSeason = _season.asStateFlow()
+    val showSeason = Companion.showSeason
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val season: Flow<SeasonState> = combine(id, show, showSeason) { t1, t2, t3 ->
-        val currentShow = t2.getOrNull() ?: show.firstOrNull()?.getOrNull()
-        val showId = t1?.takeIf { it > 0 } ?: currentShow?.id?.takeIf { it > 0 }
-        val seasonNumber = t3?.seasonNumber?.takeIf { it >= 0 } ?: currentShow?.seasons?.indexOf(t3)?.takeIf { it >= 0 }?.plus(1)
-            ?: currentShow?.seasons?.indexOfFirst { it.id > 0 && it.id == t3?.id }?.takeIf { it >= 0 }?.plus(1)
+    val season = showSeason.mapNotNull { s ->
+        s?.seasonNumber?.takeIf { it >= 0 }
+    }.combine(id) { seasonNumber, showId ->
+        val showNotNullId = showId?.takeIf { it > 0 }
+            ?: show.firstOrNull()?.getOrNull()?.id?.takeIf { it > 0 }
+            ?: return@combine null
 
-        if (showId != null && seasonNumber != null) {
-            SeasonRequest(
-                showId = showId,
-                seasonId = seasonNumber
-            )
-        } else {
-            null
-        }
+        SeasonRequest(
+            showId = showNotNullId,
+            seasonId = seasonNumber
+        )
     }.transformLatest { request ->
         when (request) {
             null -> return@transformLatest emit(SeasonState.Empty)
@@ -150,14 +146,19 @@ class ShowViewModel(
         private val _initialShow = MutableStateFlow<TV?>(null)
         val initialShow = _initialShow.asStateFlow()
 
+        private val _season = MutableStateFlow<Show.Season?>(null)
+        val showSeason = _season.asStateFlow()
+
         fun updateFrom(show: TV) {
             _id.update { show.id }
             _initialShow.update { show }
+            _season.update { null }
         }
 
         fun clear() {
             _id.update { null }
             _initialShow.update { null }
+            _season.update { null }
         }
     }
 }

@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.navigation.search
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
@@ -69,34 +70,36 @@ fun SearchNavigation() {
             )
         },
         detailPane = {
-            when (detailNavigation) {
-                is Navigation.Search.Detail.Movie -> {
-                    MovieDetail(
-                        onBack = {
-                            controller.navigateBack()
-                        },
-                        onCastClick = {
-                            PersonViewModel.updateFrom(it)
+            AnimatedPane {
+                when (detailNavigation) {
+                    is Navigation.Search.Detail.Movie -> {
+                        MovieDetail(
+                            onBack = {
+                                controller.navigateBack()
+                            },
+                            onCastClick = {
+                                PersonViewModel.updateFrom(it)
 
-                            controller.navigateToExtra(Navigation.Search.Extra.Person)
-                        }
-                    )
+                                controller.navigateToExtra(Navigation.Search.Extra.Person)
+                            }
+                        )
+                    }
+                    is Navigation.Search.Detail.Person -> {
+                        PersonDetail(
+                            onBack = {
+                                controller.navigateBack()
+                            }
+                        )
+                    }
+                    is Navigation.Search.Detail.Show -> {
+                        ShowDetail(
+                            onBack = {
+                                controller.navigateBack()
+                            }
+                        )
+                    }
+                    else -> controller.navigateBack()
                 }
-                is Navigation.Search.Detail.Person -> {
-                    PersonDetail(
-                        onBack = {
-                            controller.navigateBack()
-                        }
-                    )
-                }
-                is Navigation.Search.Detail.Show -> {
-                    ShowDetail(
-                        onBack = {
-                            controller.navigateBack()
-                        }
-                    )
-                }
-                else -> controller.navigateBack()
             }
         },
         extraPane = when (extraNavigation) {

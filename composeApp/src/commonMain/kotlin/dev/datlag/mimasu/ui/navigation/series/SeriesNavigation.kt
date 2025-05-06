@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.navigation.series
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
@@ -60,15 +61,17 @@ fun SeriesNavigation() {
             )
         },
         detailPane = {
-            when (detailNavigation) {
-                is Navigation.Series.Detail.Show -> {
-                    ShowDetail(
-                        onBack = {
-                            controller.navigateBack()
-                        }
-                    )
+            AnimatedPane {
+                when (detailNavigation) {
+                    is Navigation.Series.Detail.Show -> {
+                        ShowDetail(
+                            onBack = {
+                                controller.navigateBack()
+                            }
+                        )
+                    }
+                    else -> controller.navigateBack()
                 }
-                else -> controller.navigateBack()
             }
         }
     )
