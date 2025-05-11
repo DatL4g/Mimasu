@@ -39,6 +39,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.bundles.google.auth)
+            api(project.dependencies.platform(libs.android.firebase))
         }
     }
 }

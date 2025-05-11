@@ -14,6 +14,7 @@ import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
+import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.ui.GoogleProvider
 import org.kodein.di.DI
@@ -81,6 +82,16 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
             modelClass typeOf ShowViewModel::class -> {
                 val tmdb = di.instance<TMDB>()
                 val model = ShowViewModel(detailsRepository = tmdb.details)
+
+                (model as? T) ?: super.create(modelClass, extras)
+            }
+            modelClass typeOf FirebaseViewModel::class -> {
+                val tmdb = di.instance<TMDB>()
+                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper()
+                val model = FirebaseViewModel(
+                    firestoreWrapper = wrapper,
+                    detailsRepository = tmdb.details
+                )
 
                 (model as? T) ?: super.create(modelClass, extras)
             }

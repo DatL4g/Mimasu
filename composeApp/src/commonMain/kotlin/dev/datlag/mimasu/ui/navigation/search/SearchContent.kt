@@ -153,7 +153,7 @@ fun SearchContent(
                             }
                         } else {
                             items(5) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                     }

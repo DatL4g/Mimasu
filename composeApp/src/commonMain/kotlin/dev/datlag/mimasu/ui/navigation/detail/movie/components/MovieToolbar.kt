@@ -39,6 +39,8 @@ import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.CollapsingToolbar
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
+import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.ifTrue
@@ -58,6 +60,8 @@ fun MovieToolbar(
     modifier: Modifier = Modifier,
     onBack: () -> Unit
 ) {
+    val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
+
     CollapsingToolbar(
         state = appBarState,
         scrollBehavior = scrollBehavior,
@@ -178,6 +182,9 @@ fun MovieToolbar(
                 IconButton(
                     onClick = {
                         bookmarked = !bookmarked
+                        if (movie != null) {
+                            firebaseViewModel.bookmark(bookmarked, movie)
+                        }
                     }
                 ) {
                     if (bookmarked) {

@@ -73,12 +73,12 @@ fun Movies(
                     when {
                         nowPlaying.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                         nowPlaying.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                     }
@@ -115,12 +115,12 @@ fun Movies(
                     when {
                         upcoming.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                         upcoming.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                     }
@@ -157,12 +157,12 @@ fun Movies(
                     when {
                         popular.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                         popular.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                     }
@@ -199,12 +199,12 @@ fun Movies(
                     when {
                         topRated.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                         topRated.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                     }

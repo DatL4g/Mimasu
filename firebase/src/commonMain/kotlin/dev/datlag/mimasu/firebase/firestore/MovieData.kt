@@ -1,0 +1,38 @@
+package dev.datlag.mimasu.firebase.firestore
+
+import dev.gitlive.firebase.firestore.BaseTimestamp
+import dev.gitlive.firebase.firestore.Timestamp
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+@OptIn(ExperimentalSerializationApi::class)
+data class MovieData(
+    @SerialName(BOOKMARKED) val bookmarked: Boolean,
+    @SerialName(TMDB_ID) val tmdbId: Int,
+    @SerialName(IMDB_ID) val imdbId: String? = null,
+    @SerialName(WATCH_PROGRESS) val watchProgress: Long = 0L,
+    @SerialName(LENGTH) val length: Long = 0L,
+    @SerialName(FINISH_THRESHOLD) val finishThreshold: Long = 0L,
+    @SerialName(WATCH_LANGUAGE) val watchLanguage: String? = null,
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS) @SerialName(LAST_UPDATED) val lastUpdated: BaseTimestamp = Timestamp.ServerTimestamp,
+    @SerialName(LAST_WATCHED) val lastWatched: BaseTimestamp? = null,
+) {
+
+    internal companion object {
+        const val COLLECTION = "movie"
+        const val GROUP = "items"
+
+        const val BOOKMARKED = "bookmarked"
+        const val TMDB_ID = "tmdbId"
+        const val IMDB_ID = "imdbId"
+        const val WATCH_PROGRESS = "watchProgress"
+        const val LENGTH = "length"
+        const val FINISH_THRESHOLD = "finishThreshold"
+        const val WATCH_LANGUAGE = "watchLanguage"
+        const val LAST_UPDATED = "lastUpdated"
+        const val LAST_WATCHED = "lastWatched"
+    }
+}

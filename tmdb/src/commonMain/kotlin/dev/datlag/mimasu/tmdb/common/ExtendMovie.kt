@@ -7,7 +7,7 @@ import dev.datlag.mimasu.tmdb.model.details.Movie
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
-fun HasBackdrop?.backdrops(fallback: CommonMovie?): ImmutableList<String> = setOfNotNull(
+fun HasBackdrop?.backdrops(fallbackMovie: CommonMovie?): ImmutableList<String> = setOfNotNull(
     this?.backdrop,
     this?.backdropW500,
     this?.backdropW400,
@@ -15,12 +15,12 @@ fun HasBackdrop?.backdrops(fallback: CommonMovie?): ImmutableList<String> = setO
     this?.backdropW200,
     this?.backdropSource,
 
-    fallback?.backdrop,
-    fallback?.backdropW500,
-    fallback?.backdropW400,
-    fallback?.backdropW300,
-    fallback?.backdropW200,
-    fallback?.backdropSource
+    fallbackMovie?.backdrop,
+    fallbackMovie?.backdropW500,
+    fallbackMovie?.backdropW400,
+    fallbackMovie?.backdropW300,
+    fallbackMovie?.backdropW200,
+    fallbackMovie?.backdropSource
 ).toImmutableList()
 
 fun HasPoster?.posters(fallbackMovie: CommonMovie?): ImmutableList<String> = setOfNotNull(

@@ -75,9 +75,9 @@ fun HomeNavigation() {
             )
         },
         detailPane = {
-            AnimatedPane {
-                when (detailNavigation) {
-                    is Navigation.Home.Detail.Movie -> {
+            when (detailNavigation) {
+                is Navigation.Home.Detail.Movie -> {
+                    AnimatedPane {
                         MovieDetail(
                             onBack = {
                                 controller.navigateBack()
@@ -89,22 +89,26 @@ fun HomeNavigation() {
                             }
                         )
                     }
-                    is Navigation.Home.Detail.Person -> {
+                }
+                is Navigation.Home.Detail.Person -> {
+                    AnimatedPane {
                         PersonDetail(
                             onBack = {
                                 controller.navigateBack()
                             }
                         )
                     }
-                    is Navigation.Home.Detail.Show -> {
+                }
+                is Navigation.Home.Detail.Show -> {
+                    AnimatedPane {
                         ShowDetail(
                             onBack = {
                                 controller.navigateBack()
                             }
                         )
                     }
-                    else -> controller.navigateBack()
                 }
+                else -> controller.navigateBack()
             }
         },
         extraPane = when (extraNavigation) {

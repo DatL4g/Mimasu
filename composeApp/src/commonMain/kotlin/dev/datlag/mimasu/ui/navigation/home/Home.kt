@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -43,8 +45,11 @@ import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.custom.MovieCard
+import dev.datlag.mimasu.ui.custom.MoviePage
+import dev.datlag.mimasu.ui.custom.PagerWormIndicator
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.mimasu.ui.custom.PersonCard
+import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
@@ -58,13 +63,45 @@ fun Home(
     onShowClicked: (TV) -> Unit,
     onMovieClicked: (Movie) -> Unit
 ) {
+    val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
     val trendingViewModel = kodeinViewModel<TrendingViewModel>()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = WindowInsets.statusBars.asPaddingValues()
     ) {
+        item {
+            val hasBookmarks by firebaseViewModel.hasBookmarkedMovies.collectAsStateWithLifecycle()
+
+            if (hasBookmarks) {
+                Column(
+                    modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val bookmarked = firebaseViewModel.bookmarkedMovies.collectAsLazyPagingItems()
+                    val pagerState = rememberPagerState { bookmarked.itemCount }
+
+                    HorizontalPager(
+                        state = pagerState,
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        pageSpacing = 8.dp
+                    ) { page ->
+                        val movie = bookmarked[page]
+
+                        MoviePage(
+                            detailedMovie = movie,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            // onMovieClicked(it)
+                        }
+                    }
+                    PagerWormIndicator(
+                        pagerState = pagerState,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                }
+            }
+        }
         item {
             Row(
                 modifier = Modifier.fillParentMaxWidth().padding(16.dp),
@@ -238,12 +275,12 @@ fun Home(
                     when {
                         movies.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                         movies.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                MovieCard(null)
+                                MovieCard(movie = null)
                             }
                         }
                     }

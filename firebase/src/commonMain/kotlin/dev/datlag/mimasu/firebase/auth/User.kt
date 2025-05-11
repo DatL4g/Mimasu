@@ -81,7 +81,11 @@ data class User(
     data class Info(
         @SerialName("adult") val adult: Boolean = false,
         @SerialName("premium") val premium: Boolean = false
-    )
+    ) {
+        companion object {
+            val Default = Info()
+        }
+    }
 
     companion object {
         internal fun emailToName(mail: String): String? {
