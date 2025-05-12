@@ -39,6 +39,8 @@ import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.ui.custom.CollapsingToolbar
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
+import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.platform.colorScheme
@@ -56,10 +58,12 @@ fun ShowToolbar(
     modifier: Modifier = Modifier,
     onBack: () -> Unit
 ) {
+    val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
+
     CollapsingToolbar(
         state = appBarState,
         scrollBehavior = scrollBehavior,
-        modifier = Modifier.hazeEffect(
+        modifier = modifier.hazeEffect(
             state = hazeState,
             listState = listState
         ),
@@ -176,6 +180,10 @@ fun ShowToolbar(
                 IconButton(
                     onClick = {
                         bookmarked = !bookmarked
+
+                        if (show != null) {
+                            firebaseViewModel.bookmark(bookmarked, show)
+                        }
                     }
                 ) {
                     if (bookmarked) {

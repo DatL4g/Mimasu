@@ -49,6 +49,7 @@ import dev.datlag.mimasu.ui.custom.MoviePage
 import dev.datlag.mimasu.ui.custom.PagerWormIndicator
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.mimasu.ui.custom.PersonCard
+import dev.datlag.mimasu.ui.custom.ShowPager
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
@@ -71,16 +72,60 @@ fun Home(
         contentPadding = WindowInsets.statusBars.asPaddingValues()
     ) {
         item {
+            val hasBookmarks by firebaseViewModel.hasBookmarkedShows.collectAsStateWithLifecycle()
+
+            if (hasBookmarks) {
+                Column(
+                    modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    val bookmarked = firebaseViewModel.bookmarkedShows.collectAsLazyPagingItems()
+                    val pagerState = rememberPagerState { bookmarked.itemCount }
+
+                    Text(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = stringResource(Res.string.home_series),
+                        style = Platform.typography().headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
+                    HorizontalPager(
+                        state = pagerState,
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        pageSpacing = 8.dp
+                    ) { page ->
+                        val show = bookmarked[page]
+
+                        ShowPager(
+                            show = show,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    PagerWormIndicator(
+                        pagerState = pagerState,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+            }
+        }
+        item {
             val hasBookmarks by firebaseViewModel.hasBookmarkedMovies.collectAsStateWithLifecycle()
 
             if (hasBookmarks) {
                 Column(
                     modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val bookmarked = firebaseViewModel.bookmarkedMovies.collectAsLazyPagingItems()
                     val pagerState = rememberPagerState { bookmarked.itemCount }
 
+                    Text(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = stringResource(Res.string.home_movies),
+                        style = Platform.typography().headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
                     HorizontalPager(
                         state = pagerState,
                         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -97,7 +142,7 @@ fun Home(
                     }
                     PagerWormIndicator(
                         pagerState = pagerState,
-                        modifier = Modifier.padding(top = 8.dp),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
             }

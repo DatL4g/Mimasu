@@ -55,6 +55,17 @@ data class FirebaseFirestoreWrapper(
         }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.map { it.data<MovieData>() }
     }
 
+    suspend fun getBookmarkedShows(db: FirebaseFirestore = firestore): List<ShowData> {
+        val uid = auth.currentUser?.uid ?: return emptyList()
+
+        return db.collection(ShowData.COLLECTION).document(uid).collection(ShowData.GROUP).where {
+            all(
+                ShowData.BOOKMARKED equalTo true,
+                ShowData.TMDB_ID greaterThan 0
+            )
+        }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.map { it.data<ShowData>() }
+    }
+
     suspend fun bookmark(movie: MovieData, db: FirebaseFirestore = firestore) {
         val uid = auth.currentUser?.uid ?: return
         val doc = db.collection(MovieData.COLLECTION)
@@ -63,6 +74,18 @@ data class FirebaseFirestoreWrapper(
             .document(movie.tmdbId.toString())
 
         doc.set(movie, merge = true) {
+            encodeDefaults = false
+        }
+    }
+
+    suspend fun bookmark(show: ShowData, db: FirebaseFirestore = firestore) {
+        val uid = auth.currentUser?.uid ?: return
+        val doc = db.collection(ShowData.COLLECTION)
+            .document(uid)
+            .collection(ShowData.GROUP)
+            .document(show.tmdbId.toString())
+
+        doc.set(show, merge = true) {
             encodeDefaults = false
         }
     }

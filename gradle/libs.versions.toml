@@ -15,6 +15,7 @@ atomicfu = "0.27.0"
 car = "1.4.0"
 certificate-transparency = "2.5.87"
 coil = "3.1.0"
+collection = "1.5.0"
 compose = "1.8.0"
 compose-report = "1.4.2"
 compose-reload = "1.0.0-alpha08"
@@ -94,6 +95,7 @@ coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
+collection = { group = "androidx.collection", name = "collection", version.ref = "collection" }
 connectivity = { group = "dev.jordond.connectivity", name = "connectivity-core", version.ref = "connectivity" }
 connectivity-device = { group = "dev.jordond.connectivity", name = "connectivity-device", version.ref = "connectivity" }
 constraint-layout = { group = "tech.annexflow.compose", name = "constraintlayout-compose-multiplatform", version.ref = "constraint-layout" }

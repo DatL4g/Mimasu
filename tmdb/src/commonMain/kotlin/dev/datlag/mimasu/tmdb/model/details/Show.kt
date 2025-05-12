@@ -27,6 +27,7 @@ data class Show(
     @SerialName("genres") val genres: Set<Genre> = emptySet(),
     @SerialName("homepage") val homepage: String? = null,
     @SerialName("id") val id: Int,
+    @SerialName("imdb_id") private val _imdbId: String? = null,
     @SerialName("in_production") val inProduction: Boolean = true,
     @SerialName("languages") val languages: Set<String> = emptySet(),
     @SerialName("last_air_date") val lastAirDate: String? = null,
@@ -49,7 +50,11 @@ data class Show(
     @SerialName("original_tagline") val originalTagline: String? = null,
     @SerialName("vote_average") val voteAverage: Float = 0F,
     @SerialName("vote_count") val voteCount: Int = 0,
+    @SerialName("external_ids") val externalIDs: ExternalIDs? = null,
 ) : HasBackdrop, HasPoster {
+
+    @Transient
+    val imdbId: String? = _imdbId?.ifBlank { null } ?: externalIDs?.imdbId?.ifBlank { null }
 
     @Transient
     val displaySeasons = seasons.filter { it.episodeCount > 0 }
@@ -194,4 +199,14 @@ data class Show(
             }
         }
     }
+
+    @Serializable
+    data class ExternalIDs(
+        @SerialName("id") val id: Int = 0,
+        @SerialName("imdb_id") val imdbId: String? = null,
+        @SerialName("wikidata_id") val wikidataId: String? = null,
+        @SerialName("facebook_id") val facebookId: String? = null,
+        @SerialName("instagram_id") val instagramId: String? = null,
+        @SerialName("twitter_id") val twitterId: String? = null
+    )
 }

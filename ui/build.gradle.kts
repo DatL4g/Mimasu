@@ -25,6 +25,7 @@ kotlin {
             implementation(libs.coroutines)
             implementation(libs.serialization)
             implementation(libs.tooling)
+            implementation(libs.collection)
             implementation(project(":core"))
 
             api(project(":tmdb"))

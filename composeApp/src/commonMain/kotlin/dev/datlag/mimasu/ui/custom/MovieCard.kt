@@ -126,11 +126,7 @@ fun MoviePage(
         onClick = {
             detailedMovie?.let(onClick)
         },
-        modifier = modifier.height(200.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent
-        )
+        modifier = modifier.height(200.dp)
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
