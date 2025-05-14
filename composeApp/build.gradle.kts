@@ -122,6 +122,7 @@ kotlin {
             implementation(libs.certificate.transparency.android)
 
             implementation(project(":rive"))
+            implementation(project(":extension"))
         }
 
         jvmMain.dependencies {
