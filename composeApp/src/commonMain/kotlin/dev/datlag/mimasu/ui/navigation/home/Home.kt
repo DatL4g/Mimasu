@@ -45,7 +45,7 @@ import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.custom.MovieCard
-import dev.datlag.mimasu.ui.custom.MoviePage
+import dev.datlag.mimasu.ui.custom.MoviePager
 import dev.datlag.mimasu.ui.custom.PagerWormIndicator
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.mimasu.ui.custom.PersonCard
@@ -98,7 +98,10 @@ fun Home(
 
                         ShowPager(
                             show = show,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                onShowClicked(it.asCommon())
+                            }
                         )
                     }
                     PagerWormIndicator(
@@ -133,11 +136,11 @@ fun Home(
                     ) { page ->
                         val movie = bookmarked[page]
 
-                        MoviePage(
-                            detailedMovie = movie,
+                        MoviePager(
+                            movie = movie,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            // onMovieClicked(it)
+                            onMovieClicked(it.asCommon())
                         }
                     }
                     PagerWormIndicator(

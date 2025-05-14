@@ -6,6 +6,7 @@ import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.Response
 import dev.datlag.tooling.scopeCatching
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -18,6 +19,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Serializable
 data class Movie(
@@ -59,6 +61,23 @@ data class Movie(
     val releaseLocalDate = releaseDate?.ifBlank { null }?.let { scopeCatching {
         LocalDate.parse(it)
     }.getOrNull() }
+
+    fun asCommon(): CommonMovie = CommonMovie(
+        adult = adult,
+        backdropSource = backdropSource,
+        id = id,
+        title = title,
+        originalLanguage = originalLanguage,
+        originalTitle = originalTitle,
+        overview = overview,
+        popularity = popularity,
+        posterSource = posterSource,
+        releaseDate = releaseDate,
+        genreIds = genres.map { it.id }.toImmutableSet(),
+        video = video,
+        voteAverage = voteAverage,
+        voteCount = voteCount
+    )
 
     @Serializable
     data class Genre(

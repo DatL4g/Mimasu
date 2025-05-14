@@ -29,7 +29,6 @@ import org.jetbrains.compose.resources.stringResource
 fun RepositorySection(
     modifier: Modifier = Modifier
 ) {
-
     val uriHandler = LocalUriHandler.current
 
     Row(
@@ -37,7 +36,7 @@ fun RepositorySection(
             .defaultMinSize(minHeight = ButtonDefaults.MinHeight, minWidth = ButtonDefaults.MinWidth)
             .clip(Platform.shapes().medium)
             .onClick {
-                uriHandler.openUri(Constants.GITHUB_OWNER)
+                uriHandler.openUri(Constants.GITHUB_REPOSITORY)
             },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)

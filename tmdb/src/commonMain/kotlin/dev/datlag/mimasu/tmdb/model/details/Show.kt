@@ -3,7 +3,9 @@ package dev.datlag.mimasu.tmdb.model.details
 import dev.datlag.mimasu.tmdb.model.HasBackdrop
 import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.mimasu.tmdb.model.HasPoster
+import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.tooling.scopeCatching
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -80,6 +82,23 @@ data class Show(
     val lastAirLocalDate = lastAirDate?.ifBlank { null }?.let { scopeCatching {
         LocalDate.parse(it)
     }.getOrNull() }
+
+    fun asCommon(): TV = TV(
+        adult = adult,
+        backdropSource = backdropSource,
+        id = id,
+        name = name,
+        originalLanguage = originalLanguage,
+        originalName = originalName,
+        overview = overview,
+        popularity = popularity,
+        posterSource = posterSource,
+        genreIds = genres.map { it.id }.toImmutableSet(),
+        firstAirDate = firstAirDate,
+        voteAverage = voteAverage,
+        voteCount = voteCount,
+        originCountry = originCountry
+    )
 
     @Serializable
     data class Genre(
