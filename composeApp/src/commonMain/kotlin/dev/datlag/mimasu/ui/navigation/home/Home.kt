@@ -72,7 +72,7 @@ fun Home(
         contentPadding = WindowInsets.statusBars.asPaddingValues()
     ) {
         item {
-            val hasBookmarks by firebaseViewModel.hasBookmarkedShows.collectAsStateWithLifecycle()
+            val hasBookmarks by firebaseViewModel.hasBookmarkedShows.collectAsStateWithLifecycle(false)
 
             if (hasBookmarks) {
                 Column(
@@ -109,7 +109,7 @@ fun Home(
             }
         }
         item {
-            val hasBookmarks by firebaseViewModel.hasBookmarkedMovies.collectAsStateWithLifecycle()
+            val hasBookmarks by firebaseViewModel.hasBookmarkedMovies.collectAsStateWithLifecycle(false)
 
             if (hasBookmarks) {
                 Column(

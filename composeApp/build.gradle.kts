@@ -222,6 +222,7 @@ aboutLibraries {
     }
     export {
         excludeFields.set("generated")
+        prettyPrint.set(true)
         outputPath.set(project.layout.projectDirectory.file("src/commonMain/composeResources/files/aboutlibraries.json"))
     }
 }

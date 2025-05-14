@@ -9,9 +9,15 @@ import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.firestore
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.datetime.Clock
+import kotlin.time.Duration.Companion.days
 
+/**
+ * Wrapper for Firebase Firestore to simplify requests and lower usage.
+ */
 data class FirebaseFirestoreWrapper(
     private val app: FirebaseApp = Firebase.app
 ) {
@@ -44,26 +50,54 @@ data class FirebaseFirestoreWrapper(
         }.getOrNull()
     }
 
-    suspend fun getBookmarkedMovies(db: FirebaseFirestore = firestore): List<MovieData> {
+    suspend fun getBookmarkedMovies(): List<MovieData> {
         val uid = auth.currentUser?.uid ?: return emptyList()
+        suspend fun request(db: FirebaseFirestore): List<MovieData> {
+            return db.collection(MovieData.COLLECTION).document(uid).collection(MovieData.GROUP).where {
+                all(
+                    MovieData.BOOKMARKED equalTo true,
+                    MovieData.TMDB_ID greaterThan 0
+                )
+            }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.map { it.data<MovieData>() }
+        }
 
-        return db.collection(MovieData.COLLECTION).document(uid).collection(MovieData.GROUP).where {
-            all(
-                MovieData.BOOKMARKED equalTo true,
-                MovieData.TMDB_ID greaterThan 0
-            )
-        }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.map { it.data<MovieData>() }
+        val time = bookmarkedMoviesRequested.value
+        return if (time <= 0L || Clock.System.now().minus(1.days).epochSeconds > time) {
+            getOnlineData { db ->
+                request(db)
+            }?.ifEmpty { null }?.also { bookmarkedMoviesRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
+        } else {
+            getOfflineData { db ->
+                request(db)
+            }?.ifEmpty { null } ?: getOnlineData { db ->
+                request(db)
+            }?.ifEmpty { null }?.also { bookmarkedMoviesRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
+        }
     }
 
-    suspend fun getBookmarkedShows(db: FirebaseFirestore = firestore): List<ShowData> {
+    suspend fun getBookmarkedShows(): List<ShowData> {
         val uid = auth.currentUser?.uid ?: return emptyList()
+        suspend fun request(db: FirebaseFirestore): List<ShowData> {
+            return db.collection(ShowData.COLLECTION).document(uid).collection(ShowData.GROUP).where {
+                all(
+                    ShowData.BOOKMARKED equalTo true,
+                    ShowData.TMDB_ID greaterThan 0
+                )
+            }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.map { it.data<ShowData>() }
+        }
 
-        return db.collection(ShowData.COLLECTION).document(uid).collection(ShowData.GROUP).where {
-            all(
-                ShowData.BOOKMARKED equalTo true,
-                ShowData.TMDB_ID greaterThan 0
-            )
-        }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.map { it.data<ShowData>() }
+        val time = bookmarkedShowsRequested.value
+        return if (time <= 0L || Clock.System.now().minus(1.days).epochSeconds > time) {
+            getOnlineData { db ->
+                request(db)
+            }?.ifEmpty { null }?.also { bookmarkedShowsRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
+        } else {
+            getOfflineData { db ->
+                request(db)
+            }?.ifEmpty { null } ?: getOnlineData { db ->
+                request(db)
+            }?.ifEmpty { null }?.also { bookmarkedShowsRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
+        }
     }
 
     suspend fun bookmark(movie: MovieData, db: FirebaseFirestore = firestore) {
@@ -73,8 +107,10 @@ data class FirebaseFirestoreWrapper(
             .collection(MovieData.GROUP)
             .document(movie.tmdbId.toString())
 
-        doc.set(movie, merge = true) {
-            encodeDefaults = false
+        getOnlineData {
+            doc.set(movie, merge = true) {
+                encodeDefaults = false
+            }
         }
     }
 
@@ -85,8 +121,15 @@ data class FirebaseFirestoreWrapper(
             .collection(ShowData.GROUP)
             .document(show.tmdbId.toString())
 
-        doc.set(show, merge = true) {
-            encodeDefaults = false
+        getOnlineData {
+            doc.set(show, merge = true) {
+                encodeDefaults = false
+            }
         }
+    }
+
+    companion object {
+        private val bookmarkedMoviesRequested = atomic(0L)
+        private val bookmarkedShowsRequested = atomic(0L)
     }
 }

@@ -30,19 +30,19 @@ class FirebaseViewModel(
 
     private val bookmarkedMovieData = flow {
         emit(firestoreWrapper.getBookmarkedMovies())
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    }
 
     private val bookmarkedShowData = flow {
         emit(firestoreWrapper.getBookmarkedShows())
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    }
 
     val hasBookmarkedMovies = bookmarkedMovieData.map {
         it.isNotEmpty()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), bookmarkedMovieData.value.isNotEmpty())
+    }
 
     val hasBookmarkedShows = bookmarkedShowData.map {
         it.isNotEmpty()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), bookmarkedShowData.value.isNotEmpty())
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val bookmarkedMovies = bookmarkedMovieData.transformLatest {
