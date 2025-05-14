@@ -12,6 +12,8 @@ import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.extension.ExtensionInitializer
+import dev.datlag.mimasu.extension.MovieProvider
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.login.Login
@@ -19,10 +21,18 @@ import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.toTypography
 import dev.datlag.tooling.safeCast
+import org.kodein.di.DI
 import org.kodein.di.DIAware
+import org.kodein.di.instanceOrNull
 import kotlin.reflect.safeCast
 
 class MainActivity : ComponentActivity() {
+
+    private val di: DI?
+        get() = applicationContext.safeCast<DIAware>()?.di
+            ?: application.safeCast<DIAware>()?.di
+            ?: DIAware::class.safeCast(applicationContext)?.di
+            ?: DIAware::class.safeCast(application)?.di
 
     // ToDo("use Tolgee wrapper")
     override fun attachBaseContext(newBase: Context?) {
@@ -45,11 +55,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
 
-        val di = applicationContext.safeCast<DIAware>()?.di
-            ?: application.safeCast<DIAware>()?.di
-            ?: DIAware::class.safeCast(applicationContext)?.di
-            ?: DIAware::class.safeCast(application)?.di
-            ?: return exit("Could not find dependency injection.")
+        val di = this.di ?: return exit("Could not find dependency injection.")
 
         setContent {
             // ToDo("ignore font on TV")
@@ -79,6 +85,12 @@ class MainActivity : ComponentActivity() {
                 }
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        ExtensionInitializer.nullableMovieProvider()?.unbind(this)
     }
 
 }

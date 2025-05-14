@@ -15,11 +15,9 @@ import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tmdb.repository.DetailsRepository
 import dev.datlag.tooling.safeSubSet
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 
@@ -95,6 +93,14 @@ class FirebaseViewModel(
                 numberOfSeasons = show.numberOfSeasons.takeIf { it > 0 }
             )
         )
+    }
+
+    suspend fun isMovieBookmarked(tmdbId: Int): Boolean {
+        return firestoreWrapper.isMovieBookmarked(tmdbId)
+    }
+
+    suspend fun isShowBookmarked(tmdbId: Int): Boolean {
+        return firestoreWrapper.isShowBookmarked(tmdbId)
     }
 
     inner class BookmarkedMoviesPagingSource(

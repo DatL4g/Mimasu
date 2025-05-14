@@ -27,8 +27,12 @@ kotlin {
             implementation(libs.serialization)
             implementation(libs.kase.change)
             implementation(libs.tooling)
+            implementation(libs.android.annotation)
 
             implementation(project(":core"))
+        }
+        androidMain.dependencies {
+            implementation(libs.android.startup)
         }
         jsMain.dependencies {
             runtimeOnly(npm("webextension-polyfill", "0.12.0"))

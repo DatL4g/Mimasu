@@ -33,7 +33,7 @@ class AppInitializer : Initializer<AppInitializer.State> {
     )
 
     companion object {
-        private var state = atomic<State?>(null)
+        private val state = atomic<State?>(null)
         private const val SEKRET_LIB = "sekret"
 
         fun isSekretLoaded(context: Context): Boolean {

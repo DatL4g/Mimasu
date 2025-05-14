@@ -26,6 +26,7 @@ kotlin {
             implementation(libs.serialization)
             implementation(libs.tooling)
             implementation(libs.collection)
+            implementation(libs.kermit)
             implementation(project(":core"))
 
             api(project(":tmdb"))

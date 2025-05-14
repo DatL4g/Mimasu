@@ -2,6 +2,7 @@ package dev.datlag.mimasu.extension
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -129,4 +130,50 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
     abstract fun onConnected(service: T)
     abstract fun onDisconnected()
 
+    companion object {
+        /**
+         * Get all available packageNames implementing the action.
+         */
+        fun extensions(packageManager: PackageManager, action: String): Set<String> {
+            val intent = Intent(action)
+            val resolveInfoList = dev.datlag.tooling.scopeCatching {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    packageManager.queryIntentServices(
+                        intent,
+                        PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_ALL.toLong())
+                    )
+                } else {
+                    packageManager.queryIntentServices(
+                        intent,
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            PackageManager.MATCH_ALL
+                        } else {
+                            0
+                        }
+                    )
+                }
+            }.getOrNull() ?: return emptySet()
+
+            return resolveInfoList.mapNotNull {
+                it.serviceInfo?.packageName?.ifBlank { null } ?: it.resolvePackageName?.ifBlank { null }
+            }.toSet()
+        }
+
+        fun bind(context: Context, service: AIDLService<*>, packageName: String): Boolean {
+            val bindIntent = Intent(service.connectionAction).apply {
+                setPackage(packageName)
+            }
+            val couldBind = scopeCatching {
+                context.bindService(bindIntent, service, Context.BIND_AUTO_CREATE)
+            }.getOrNull()
+
+            return couldBind == true || service.isBound
+        }
+
+        fun unbind(context: Context, service: AIDLService<*>): Boolean {
+            return scopeCatching {
+                context.unbindService(service)
+            }.isSuccess
+        }
+    }
 }

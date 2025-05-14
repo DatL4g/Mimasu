@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -178,6 +179,10 @@ fun MovieToolbar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var bookmarked by remember(movie?.id, initial?.id) { mutableStateOf(false) }
+
+                LaunchedEffect(firebaseViewModel, movie?.id, initial?.id) {
+                    bookmarked = firebaseViewModel.isMovieBookmarked(movie?.id ?: initial?.id ?: 0)
+                }
 
                 IconButton(
                     onClick = {

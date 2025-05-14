@@ -128,6 +128,14 @@ data class FirebaseFirestoreWrapper(
         }
     }
 
+    suspend fun isMovieBookmarked(tmdbId: Int): Boolean {
+        return getBookmarkedMovies().any { it.tmdbId == tmdbId }
+    }
+
+    suspend fun isShowBookmarked(tmdbId: Int): Boolean {
+        return getBookmarkedShows().any { it.tmdbId == tmdbId }
+    }
+
     companion object {
         private val bookmarkedMoviesRequested = atomic(0L)
         private val bookmarkedShowsRequested = atomic(0L)

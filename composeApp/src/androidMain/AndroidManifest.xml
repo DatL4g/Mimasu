@@ -16,6 +16,7 @@
         android:name=".App"
         android:resizeableActivity="true"
         android:networkSecurityConfig="@xml/network_security"
+        android:largeHeap="true"
         android:theme="@style/SplashScreenTheme">
 
         <activity android:name=".MainActivity"
@@ -50,6 +51,9 @@
             tools:node="merge">
 
             <meta-data android:name="dev.datlag.mimasu.AppInitializer"
+                android:value="androidx.startup" />
+
+            <meta-data android:name="dev.datlag.mimasu.extension.ExtensionInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>
