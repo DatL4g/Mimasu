@@ -17,6 +17,7 @@ import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Event
+import androidx.compose.material.icons.rounded.Extension
 import androidx.compose.material.icons.rounded.Face2
 import androidx.compose.material.icons.rounded.Face4
 import androidx.compose.material.icons.rounded.Face5
@@ -130,6 +131,7 @@ data object MaterialSymbols {
     const val DATE_RANGE = "date_range"
     const val STEPPERS = "steppers"
     const val CHEVRON_RIGHT = "chevron_right"
+    const val EXTENSION = "extension"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -477,6 +479,7 @@ data object MaterialSymbols {
         name.equals(DATE_RANGE, ignoreCase = true) -> Icons.Rounded.DateRange
         name.equals(STEPPERS, ignoreCase = true) -> Icons.Rounded.MoreHoriz
         name.equals(CHEVRON_RIGHT, ignoreCase = true) -> Icons.Rounded.ChevronRight
+        name.equals(EXTENSION, ignoreCase = true) -> Icons.Rounded.Extension
         else -> null
     }
 

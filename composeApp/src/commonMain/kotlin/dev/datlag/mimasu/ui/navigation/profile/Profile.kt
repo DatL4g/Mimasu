@@ -54,6 +54,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_cancel
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_text
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_yes
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.navigation.profile.components.AboutHeader
 import dev.datlag.mimasu.ui.navigation.profile.components.LicensesSection
 import dev.datlag.mimasu.ui.navigation.profile.components.OwnerSection
 import dev.datlag.mimasu.ui.navigation.profile.components.RepositorySection
@@ -251,12 +252,10 @@ fun Profile(
             }
         }
         item {
-            Text(
-                modifier = Modifier.padding(16.dp),
-                text = stringResource(Res.string.profile_about),
-                style = Platform.typography().headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1
+            AboutHeader(
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .padding(16.dp)
             )
         }
         item {

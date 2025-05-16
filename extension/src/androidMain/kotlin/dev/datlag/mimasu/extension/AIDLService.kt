@@ -6,11 +6,13 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.IInterface
 import dev.datlag.mimasu.extension.model.AppInfo
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.async.scopeCatching
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +58,7 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
                 if (packageName.isNullOrBlank()) {
                     null
                 } else {
-                    val info = applicationInfo(packageName)
+                    val info = applicationInfo(packageName, packageManager)
 
                     AppInfo(
                         packageName = packageName,
@@ -101,17 +103,6 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
         onDisconnected()
     }
 
-    protected fun applicationInfo(
-        packageName: String,
-        packageManager: PackageManager? = this.packageManager
-    ): ApplicationInfo? = scopeCatching {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            packageManager?.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0))
-        } else {
-            packageManager?.getApplicationInfo(packageName, 0)
-        }
-    }.getOrNull()
-
     protected fun packageName(
         name: ComponentName?,
         packageManager: PackageManager? = this.packageManager
@@ -131,6 +122,9 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
     abstract fun onDisconnected()
 
     companion object {
+
+        private const val EXTENSION_PACKAGE = "dev.datlag.mimasu.extension"
+
         /**
          * Get all available packageNames implementing the action.
          */
@@ -174,6 +168,51 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
             return scopeCatching {
                 context.unbindService(service)
             }.isSuccess
+        }
+
+        private fun applicationInfo(
+            packageName: String,
+            packageManager: PackageManager?
+        ): ApplicationInfo? = scopeCatching {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager?.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0))
+            } else {
+                packageManager?.getApplicationInfo(packageName, 0)
+            }
+        }.getOrNull()
+
+        fun extensionInstalled(context: Context): Boolean = applicationInfo(EXTENSION_PACKAGE, context.packageManager) != null
+
+        fun openExtension(context: Context) {
+            fun activities(intent: Intent): List<ResolveInfo> {
+                val resolved = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    context.packageManager?.queryIntentActivities(
+                        intent,
+                        PackageManager.ResolveInfoFlags.of(PackageManager.GET_RESOLVED_FILTER.toLong())
+                    )
+                } else {
+                    context.packageManager?.queryIntentActivities(intent, PackageManager.GET_RESOLVED_FILTER)
+                }
+                return resolved.orEmpty().filterNotNull()
+            }
+
+            val foundLaunchIntent = if (Platform.isTelevision(context)) {
+                context.packageManager?.getLeanbackLaunchIntentForPackage(EXTENSION_PACKAGE)
+            } else {
+                context.packageManager?.getLaunchIntentForPackage(EXTENSION_PACKAGE)
+            }
+            val launchIntent = foundLaunchIntent ?: extensionInstalled(context).takeIf { it }?.let {
+                val intent = Intent(Intent.ACTION_MAIN).apply {
+                    setPackage(EXTENSION_PACKAGE)
+                }
+
+                activities(intent).firstOrNull()?.let { activity ->
+                    intent.setClassName(EXTENSION_PACKAGE, activity.activityInfo.name)
+                }
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            } ?: return
+
+            context.startActivity(launchIntent)
         }
     }
 }
