@@ -98,10 +98,11 @@
     <string name="profile_open_source_licenses">Open-Source Lizenzen</string>
     <string name="profile_open_source_licenses_text">Das ist eine Liste von Bibliotheken, die in diesem Projekt verwendet werden und deren Lizenzen.</string>
     <string name="profile_open_source_text">Das Projekt ist Open-Source, damit jeder den Code einsehen, verbessern und zur Weiterentwicklung beitragen kann.</string>
-    <string name="profile_extension">Erweiterungen</string>
+    <string name="profile_extension_header">Erweiterungen</string>
     <string name="profile_extension_text">Die App unterstützt Erweiterungen und ermöglicht so Integrationen mit Inhaltsanbietern. Dadurch können Filme und Serien von unterstützten Plattformen direkt in der App abgerufgen werden.</string>
     <string name="profile_owner">Entwickelt von Jeff Retz</string>
     <string name="profile_github_repository">GitHub Repository</string>
+    <string name="profile_extension">Erweiterung</string>
 
     <string name="show_air_date_format">dd.MM.yyyy</string>
     <string name="show_rating_placeholder">%1$d%</string>

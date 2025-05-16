@@ -9,8 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.profile_extension
 import dev.datlag.mimasu.extension.AIDLService
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 actual fun ExtensionButton() {
@@ -32,7 +35,7 @@ actual fun ExtensionButton() {
                 filled = true
             )
             Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = "Extension")
+            Text(text = stringResource(Res.string.profile_extension))
         }
     }
 }

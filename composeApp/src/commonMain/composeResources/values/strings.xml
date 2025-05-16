@@ -98,10 +98,11 @@
     <string name="profile_open_source_licenses">Open-Source licenses</string>
     <string name="profile_open_source_licenses_text">This is a list of libraries used in this project and their licenses.</string>
     <string name="profile_open_source_text">The project is open-source so everyone can review the code, improve it and contribute to it's development.</string>
-    <string name="profile_extension">Extensions</string>
-    <string name="profile_extension_text">The app supports extensions, enabling direct integration with any content provider. This allows users to watch movies and shows from supported platforms within the app.</string>
+    <string name="profile_extension_header">Extensions</string>
+    <string name="profile_extension_text">The app supports extensions, enabling direct integration with any content provider. This allows users to retrieve movies and shows from supported platforms within the app.</string>
     <string name="profile_owner">Developed by Jeff Retz</string>
     <string name="profile_github_repository">GitHub Repository</string>
+    <string name="profile_extension">Extension</string>
 
     <string name="show_air_date_format">MM.dd.yyyy</string>
     <string name="show_rating_placeholder">%1$d%</string>

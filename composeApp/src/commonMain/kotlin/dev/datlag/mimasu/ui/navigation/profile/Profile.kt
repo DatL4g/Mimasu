@@ -46,6 +46,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.profile_about_text
 import dev.datlag.mimasu.composeapp.generated.resources.profile_connect
 import dev.datlag.mimasu.composeapp.generated.resources.profile_connected
 import dev.datlag.mimasu.composeapp.generated.resources.profile_extension
+import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_header
 import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_text
 import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source
 import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source_text
@@ -255,7 +256,8 @@ fun Profile(
             AboutHeader(
                 modifier = Modifier
                     .fillParentMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp)
             )
         }
         item {
@@ -286,7 +288,7 @@ fun Profile(
         item {
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                text = stringResource(Res.string.profile_extension),
+                text = stringResource(Res.string.profile_extension_header),
                 style = Platform.typography().titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1
