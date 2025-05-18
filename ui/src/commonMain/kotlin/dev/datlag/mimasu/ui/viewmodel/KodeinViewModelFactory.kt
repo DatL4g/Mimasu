@@ -81,7 +81,11 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
             }
             modelClass typeOf ShowViewModel::class -> {
                 val tmdb = di.instance<TMDB>()
-                val model = ShowViewModel(detailsRepository = tmdb.details)
+                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper()
+                val model = ShowViewModel(
+                    detailsRepository = tmdb.details,
+                    firestoreWrapper = wrapper
+                )
 
                 (model as? T) ?: super.create(modelClass, extras)
             }

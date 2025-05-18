@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
 data class ShowData(
-    @SerialName(BOOKMARKED) val bookmarked: Boolean,
+    @SerialName(BOOKMARKED) val bookmarked: Boolean = false,
     @SerialName(TMDB_ID) val tmdbId: Int,
     @SerialName(IMDB_ID) val imdbId: String? = null,
     @SerialName(SEASON) val season: Int? = null,

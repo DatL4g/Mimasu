@@ -13,7 +13,7 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.Clock
-import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 
 /**
  * Wrapper for Firebase Firestore to simplify requests and lower usage.
@@ -62,7 +62,7 @@ data class FirebaseFirestoreWrapper(
         }
 
         val time = bookmarkedMoviesRequested.value
-        return if (time <= 0L || Clock.System.now().minus(1.days).epochSeconds > time) {
+        return if (time <= 0L || Clock.System.now().minus(cacheDuration).epochSeconds > time) {
             getOnlineData { db ->
                 request(db)
             }?.ifEmpty { null }?.also { bookmarkedMoviesRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
@@ -87,7 +87,7 @@ data class FirebaseFirestoreWrapper(
         }
 
         val time = bookmarkedShowsRequested.value
-        return if (time <= 0L || Clock.System.now().minus(1.days).epochSeconds > time) {
+        return if (time <= 0L || Clock.System.now().minus(cacheDuration).epochSeconds > time) {
             getOnlineData { db ->
                 request(db)
             }?.ifEmpty { null }?.also { bookmarkedShowsRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
@@ -136,8 +136,61 @@ data class FirebaseFirestoreWrapper(
         return getBookmarkedShows().any { it.tmdbId == tmdbId }
     }
 
+    suspend fun selectSeason(show: ShowData, db: FirebaseFirestore = firestore) {
+        val uid = auth.currentUser?.uid ?: return
+        val doc = db.collection(ShowData.COLLECTION)
+            .document(uid)
+            .collection(ShowData.GROUP)
+            .document(show.tmdbId.toString())
+
+        getOnlineData {
+            doc.set(show, merge = true) {
+                encodeDefaults = false
+            }
+        }
+    }
+
+    suspend fun getSeason(tmdbId: Int): Int? {
+        val uid = auth.currentUser?.uid ?: return null
+        suspend fun request(db: FirebaseFirestore): Int? {
+            return db.collection(ShowData.COLLECTION)
+                .document(uid)
+                .collection(ShowData.GROUP)
+                .document(tmdbId.toString())
+                .get()
+                .data<ShowData>().season
+        }
+
+        val time = seasonShowsRequested.value[tmdbId] ?: 0L
+        return if (time <= 0L || Clock.System.now().minus(cacheDuration).epochSeconds > time) {
+            getOnlineData { db ->
+                request(db)
+            }?.takeIf { it >= 0 }?.also {
+                val map = seasonShowsRequested.value
+                map[tmdbId] = Clock.System.now().epochSeconds
+
+                seasonShowsRequested.value = map
+            } ?: request(firestore)?.takeIf { it >= 0 }
+        } else {
+            getOfflineData { db ->
+                request(db)
+            }?.takeIf { it >= 0 } ?: getOnlineData { db ->
+                request(db)
+            }?.takeIf { it >= 0 }?.also {
+                val map = seasonShowsRequested.value
+                map[tmdbId] = Clock.System.now().epochSeconds
+
+                seasonShowsRequested.value = map
+            } ?: request(firestore)?.takeIf { it >= 0 }
+        }
+    }
+
     companion object {
+        private val cacheDuration = 12.hours
+
         private val bookmarkedMoviesRequested = atomic(0L)
         private val bookmarkedShowsRequested = atomic(0L)
+
+        private val seasonShowsRequested = atomic(hashMapOf<Int, Long>())
     }
 }

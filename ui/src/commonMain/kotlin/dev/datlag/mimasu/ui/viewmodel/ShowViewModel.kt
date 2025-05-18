@@ -2,6 +2,8 @@ package dev.datlag.mimasu.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
+import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
@@ -21,7 +23,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 class ShowViewModel(
-    val detailsRepository: DetailsRepository
+    val detailsRepository: DetailsRepository,
+    val firestoreWrapper: FirebaseFirestoreWrapper
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -38,7 +41,12 @@ class ShowViewModel(
                     emit(ShowState.Error(result.exceptionOrNull()))
                 } else {
                     emit(ShowState.Success(show.also {
-                        it.seasons.singleOrNull()?.let(::select)
+                        val selectedSeason = it.seasons.singleOrNull()
+                            ?: firestoreWrapper.getSeason(id)?.let { s ->
+                                it.seasons.elementAtOrNull(s)
+                            }
+
+                        selectedSeason?.let(::select)
                     }))
                 }
             }
@@ -65,6 +73,13 @@ class ShowViewModel(
             null -> return@transformLatest emit(SeasonState.Empty)
             else -> {
                 emit(SeasonState.Loading)
+
+                firestoreWrapper.selectSeason(
+                    ShowData(
+                        tmdbId = request.showId,
+                        season = request.seasonId
+                    )
+                )
 
                 val result = detailsRepository.showSeason(request.showId, request.seasonId)
                 val season = result.getOrNull()
