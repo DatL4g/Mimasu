@@ -132,6 +132,7 @@ data object MaterialSymbols {
     const val STEPPERS = "steppers"
     const val CHEVRON_RIGHT = "chevron_right"
     const val EXTENSION = "extension"
+    const val CHECK = "check"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -480,6 +481,7 @@ data object MaterialSymbols {
         name.equals(STEPPERS, ignoreCase = true) -> Icons.Rounded.MoreHoriz
         name.equals(CHEVRON_RIGHT, ignoreCase = true) -> Icons.Rounded.ChevronRight
         name.equals(EXTENSION, ignoreCase = true) -> Icons.Rounded.Extension
+        name.equals(CHECK, ignoreCase = true) -> Icons.Rounded.Check
         else -> null
     }
 

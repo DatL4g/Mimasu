@@ -37,7 +37,9 @@ class ShowViewModel(
                 return@transformLatest if (show == null) {
                     emit(ShowState.Error(result.exceptionOrNull()))
                 } else {
-                    emit(ShowState.Success(show))
+                    emit(ShowState.Success(show.also {
+                        it.seasons.singleOrNull()?.let(::select)
+                    }))
                 }
             }
         }

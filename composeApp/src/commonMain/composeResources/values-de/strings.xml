@@ -115,6 +115,7 @@
     <string name="show_watch">Ansehen</string>
     <string name="show_season_placeholder">Staffel %1$d%</string>
     <string name="show_season_next">Nächste</string>
+    <string name="show_season_select_info">Wähle die Staffel aus, die du gerade schaust oder an der du interessiert bist und bestätige, um die Details anzuzeigen.</string>
 
     <string name="show_status_returning">Wiederkehrend</string>
     <string name="show_status_planned">Geplant</string>

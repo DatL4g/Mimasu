@@ -115,6 +115,7 @@
     <string name="show_watch">Watch</string>
     <string name="show_season_placeholder">Season %1$d%</string>
     <string name="show_season_next">Next</string>
+    <string name="show_season_select_info">Select the season you are currently watching or your interested in, then confirm to see it's details.</string>
 
     <string name="show_status_returning">Returning</string>
     <string name="show_status_planned">Planned</string>
