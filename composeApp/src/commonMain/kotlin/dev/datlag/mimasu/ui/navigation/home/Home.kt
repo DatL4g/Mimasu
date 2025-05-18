@@ -43,6 +43,7 @@ import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
+import dev.datlag.mimasu.ui.ads.BannerAd
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.custom.MoviePager
@@ -244,6 +245,13 @@ fun Home(
                     }
                 }
             }
+        }
+        item {
+            BannerAd(
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
         }
         item {
             Column(

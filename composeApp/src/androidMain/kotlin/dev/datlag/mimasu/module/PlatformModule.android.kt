@@ -15,6 +15,7 @@ import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvide
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProviderAndroid
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderAndroid
+import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.ui.GoogleProvider
 import dev.datlag.tooling.scopeCatching
 import io.ktor.client.HttpClient
@@ -84,6 +85,9 @@ actual object PlatformModule {
         }
         bindSingleton<FirebaseGitHubAuthProvider> {
             FirebaseGitHubAuthProviderAndroid(firebaseAuthDataSource = firebaseDataSource())
+        }
+        bindSingleton<AdManager> {
+            AdManager(context = instance())
         }
     }
 

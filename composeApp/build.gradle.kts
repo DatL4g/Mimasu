@@ -121,6 +121,7 @@ kotlin {
             implementation(libs.android.startup)
             implementation(libs.splashscreen)
             implementation(libs.certificate.transparency.android)
+            implementation(libs.bundles.android.ads)
 
             implementation(project(":rive"))
             implementation(project(":extension"))

@@ -13,8 +13,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.extension.ExtensionInitializer
-import dev.datlag.mimasu.extension.MovieProvider
 import dev.datlag.mimasu.module.NetworkModule
+import dev.datlag.mimasu.ui.ads.AdConsentPage
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.theme.Font
@@ -23,7 +23,6 @@ import dev.datlag.tooling.compose.toTypography
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DI
 import org.kodein.di.DIAware
-import org.kodein.di.instanceOrNull
 import kotlin.reflect.safeCast
 
 class MainActivity : ComponentActivity() {
@@ -70,18 +69,20 @@ class MainActivity : ComponentActivity() {
                     PlatformText("Report Failure: $it")
                 },
                 content = {
-                    var logInResult by remember { mutableStateOf(false) }
+                    AdConsentPage {
+                        var logInResult by remember { mutableStateOf(false) }
 
-                    Navigation(
-                        isLoggedIn = logInResult,
-                        loginContent = {
-                            Login(
-                                onSuccess = {
-                                    logInResult = true
-                                }
-                            )
-                        }
-                    )
+                        Navigation(
+                            isLoggedIn = logInResult,
+                            loginContent = {
+                                Login(
+                                    onSuccess = {
+                                        logInResult = true
+                                    }
+                                )
+                            }
+                        )
+                    }
                 }
             )
         }

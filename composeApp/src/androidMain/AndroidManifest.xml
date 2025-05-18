@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CREDENTIAL_MANAGER_SET_ALLOWED_PROVIDERS" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
     <uses-feature
         android:name="android.hardware.wifi"
@@ -51,6 +52,14 @@
         <meta-data
             android:name="open_source_license"
             android:value="GNU GENERAL PUBLIC LICENSE Version 3" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
+            android:value="true"/>
         
         <provider
             android:authorities="${applicationId}.androidx-startup"
