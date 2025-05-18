@@ -34,4 +34,13 @@
         android:valueTo="0.5"
         android:repeatMode="reverse"
         android:repeatCount="1"/>
+
+    <objectAnimator
+        android:startOffset="3200"
+        android:duration="200"
+        android:propertyName="scaleY"
+        android:valueFrom="1"
+        android:valueTo="0.5"
+        android:repeatMode="reverse"
+        android:repeatCount="1"/>
 </set>

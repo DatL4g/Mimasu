@@ -11,4 +11,10 @@
     <target
         android:animation="@animator/face_animator"
         android:name="face" />
+    <target
+        android:animation="@animator/ear_animator"
+        android:name="ear_left" />
+    <target
+        android:animation="@animator/ear_animator"
+        android:name="ear_right" />
 </animated-vector>
