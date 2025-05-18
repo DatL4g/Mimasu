@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.sekret)
     alias(libs.plugins.atomicfu)
     alias(libs.plugins.about)
+    alias(libs.plugins.stacktrace.decoroutinator)
 }
 
 val artifact = "dev.datlag.mimasu"

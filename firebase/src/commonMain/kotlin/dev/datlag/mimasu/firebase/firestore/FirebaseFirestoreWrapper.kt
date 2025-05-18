@@ -150,7 +150,7 @@ data class FirebaseFirestoreWrapper(
         }
     }
 
-    suspend fun getSeason(tmdbId: Int): Int? {
+    suspend fun getSeason(tmdbId: Int, offlineOnly: Boolean = false): Int? {
         val uid = auth.currentUser?.uid ?: return null
         suspend fun request(db: FirebaseFirestore): Int? {
             return db.collection(ShowData.COLLECTION)
@@ -159,6 +159,12 @@ data class FirebaseFirestoreWrapper(
                 .document(tmdbId.toString())
                 .get()
                 .data<ShowData>().season
+        }
+
+        if (offlineOnly) {
+            return getOfflineData { db ->
+                request(db)
+            }
         }
 
         val time = seasonShowsRequested.value[tmdbId] ?: 0L

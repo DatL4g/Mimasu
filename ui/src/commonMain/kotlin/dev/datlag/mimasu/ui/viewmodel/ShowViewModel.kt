@@ -74,12 +74,19 @@ class ShowViewModel(
             else -> {
                 emit(SeasonState.Loading)
 
-                firestoreWrapper.selectSeason(
-                    ShowData(
-                        tmdbId = request.showId,
-                        season = request.seasonId
+                val savedSeason = firestoreWrapper.getSeason(
+                    tmdbId = request.showId,
+                    offlineOnly = true
+                )?.takeIf { it >= 0 }
+
+                if (savedSeason != request.seasonId) {
+                    firestoreWrapper.selectSeason(
+                        ShowData(
+                            tmdbId = request.showId,
+                            season = request.seasonId
+                        )
                     )
-                )
+                }
 
                 val result = detailsRepository.showSeason(request.showId, request.seasonId)
                 val season = result.getOrNull()
