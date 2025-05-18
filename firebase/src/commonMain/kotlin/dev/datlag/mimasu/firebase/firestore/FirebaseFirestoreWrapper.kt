@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.firebase.firestore
 
+import dev.datlag.tooling.async.scopeCatching
 import dev.datlag.tooling.async.suspendCatching
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
@@ -58,7 +59,11 @@ data class FirebaseFirestoreWrapper(
                     MovieData.BOOKMARKED equalTo true,
                     MovieData.TMDB_ID greaterThan 0
                 )
-            }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.map { it.data<MovieData>() }
+            }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.mapNotNull {
+                scopeCatching {
+                    it.data<MovieData?>()
+                }.getOrNull()
+            }
         }
 
         val time = bookmarkedMoviesRequested.value
@@ -83,7 +88,11 @@ data class FirebaseFirestoreWrapper(
                     ShowData.BOOKMARKED equalTo true,
                     ShowData.TMDB_ID greaterThan 0
                 )
-            }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.map { it.data<ShowData>() }
+            }.orderBy(MovieData.LAST_UPDATED, Direction.DESCENDING).get().documents.mapNotNull {
+                scopeCatching {
+                    it.data<ShowData?>()
+                }.getOrNull()
+            }
         }
 
         val time = bookmarkedShowsRequested.value
@@ -153,12 +162,15 @@ data class FirebaseFirestoreWrapper(
     suspend fun getSeason(tmdbId: Int, offlineOnly: Boolean = false): Int? {
         val uid = auth.currentUser?.uid ?: return null
         suspend fun request(db: FirebaseFirestore): Int? {
-            return db.collection(ShowData.COLLECTION)
+            val snapshot = db.collection(ShowData.COLLECTION)
                 .document(uid)
                 .collection(ShowData.GROUP)
                 .document(tmdbId.toString())
                 .get()
-                .data<ShowData>().season
+
+            return suspendCatching {
+                snapshot.data<ShowData?>()?.season
+            }.getOrNull()
         }
 
         if (offlineOnly) {

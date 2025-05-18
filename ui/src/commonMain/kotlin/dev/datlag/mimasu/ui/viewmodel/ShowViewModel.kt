@@ -44,7 +44,7 @@ class ShowViewModel(
                         val selectedSeason = it.seasons.singleOrNull()
                             ?: firestoreWrapper.getSeason(id)?.let { s ->
                                 it.seasons.elementAtOrNull(s)
-                            }
+                            } ?: it.seasons.filterNot { s -> s.seasonNumber <= 0 }.singleOrNull()
 
                         selectedSeason?.let(::select)
                     }))
