@@ -65,6 +65,7 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
             }
             modelClass typeOf AccountViewModel::class -> {
                 val service = di.instanceOrNull<FirebaseAuthService>() ?: FirebaseAuthService()
+                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper()
                 val dataSource = di.instanceOrNull<FirebaseAuthDataSource>() ?: FirebaseAuthDataSource(service)
                 val emailProvider = di.instanceOrNull<FirebaseEmailAuthProvider>() ?: FirebaseEmailAuthProvider(dataSource)
                 val googleProvider = di.instanceOrNull<FirebaseGoogleAuthProvider>() ?: di.instanceOrNull<GoogleProvider>()?.getOrNull()
@@ -72,6 +73,7 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
                 val model = AccountViewModel(
                     directDI = di,
                     service = service,
+                    firestoreWrapper = wrapper,
                     emailAuthProvider = emailProvider,
                     _googleAuthProvider = googleProvider,
                     gitHubAuthProvider = githubProvider

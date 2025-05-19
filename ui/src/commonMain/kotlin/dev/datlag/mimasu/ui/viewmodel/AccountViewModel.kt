@@ -14,6 +14,7 @@ import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
+import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
 import dev.datlag.mimasu.ui.GoogleProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,6 +38,7 @@ import org.kodein.di.providerOrNull
 class AccountViewModel(
     override val directDI: DirectDI,
     private val service: FirebaseAuthService,
+    private val firestoreWrapper: FirebaseFirestoreWrapper,
     private val emailAuthProvider: FirebaseEmailAuthProvider,
     private val _googleAuthProvider: FirebaseGoogleAuthProvider?,
     private val gitHubAuthProvider: FirebaseGitHubAuthProvider?
@@ -162,6 +164,13 @@ class AccountViewModel(
 
     fun signOut() = startLoginJob {
         service.signOut()
+    }
+
+    // ToDo("request github sponsorship")
+    suspend fun isPremiumUser(): Boolean {
+        return firestoreWrapper.getUserData().premium || currentUser?.github?.let { git ->
+            git.linked
+        } ?: false
     }
 
     private fun startLoginJob(block: suspend CoroutineScope.() -> Unit): Job? {

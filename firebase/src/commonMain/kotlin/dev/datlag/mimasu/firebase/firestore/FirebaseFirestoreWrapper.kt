@@ -33,22 +33,30 @@ data class FirebaseFirestoreWrapper(
     private val auth: FirebaseAuth
         get() = Firebase.auth(app)
 
-    suspend fun <T> getOfflineData(block: suspend (FirebaseFirestore) -> T): T? {
+    suspend fun <T> getOfflineData(
+        db: FirebaseFirestore = firestore,
+        block: suspend (FirebaseFirestore) -> T,
+        onFailure: suspend (FirebaseFirestore) -> T? = { null }
+    ): T? {
         return suspendCatching {
             networkMutex.withLock {
-                firestore.disableNetwork()
-                block(firestore)
+                db.disableNetwork()
+                block(db)
             }
-        }.getOrNull()
+        }.recoverCatching { onFailure(db) }.getOrNull()
     }
 
-    suspend fun <T> getOnlineData(block: suspend (FirebaseFirestore) -> T): T? {
+    suspend fun <T> getOnlineData(
+        db: FirebaseFirestore = firestore,
+        block: suspend (FirebaseFirestore) -> T,
+        onFailure: suspend (FirebaseFirestore) -> T? = { null }
+    ): T? {
         return suspendCatching {
             networkMutex.withLock {
-                firestore.enableNetwork()
-                block(firestore)
+                db.enableNetwork()
+                block(db)
             }
-        }.getOrNull()
+        }.recoverCatching { onFailure(db) }.getOrNull()
     }
 
     suspend fun getBookmarkedMovies(): List<MovieData> {
@@ -68,15 +76,33 @@ data class FirebaseFirestoreWrapper(
 
         val time = bookmarkedMoviesRequested.value
         return if (time <= 0L || Clock.System.now().minus(cacheDuration).epochSeconds > time) {
-            getOnlineData { db ->
-                request(db)
-            }?.ifEmpty { null }?.also { bookmarkedMoviesRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
+            getOnlineData(
+                block = { db ->
+                    request(db).ifEmpty { null }?.also { bookmarkedMoviesRequested.value = Clock.System.now().epochSeconds }
+                },
+                onFailure = { db ->
+                    getOfflineData(
+                        db = db,
+                        block = {
+                            request(it)
+                        }
+                    )
+                }
+            ).orEmpty()
         } else {
-            getOfflineData { db ->
-                request(db)
-            }?.ifEmpty { null } ?: getOnlineData { db ->
-                request(db)
-            }?.ifEmpty { null }?.also { bookmarkedMoviesRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
+            getOfflineData(
+                block = { db ->
+                    request(db)
+                },
+                onFailure = { db ->
+                    getOnlineData(
+                        db = db,
+                        block = {
+                            request(it)
+                        }
+                    )?.ifEmpty { null }?.also { bookmarkedMoviesRequested.value = Clock.System.now().epochSeconds }
+                }
+            ).orEmpty()
         }
     }
 
@@ -97,15 +123,33 @@ data class FirebaseFirestoreWrapper(
 
         val time = bookmarkedShowsRequested.value
         return if (time <= 0L || Clock.System.now().minus(cacheDuration).epochSeconds > time) {
-            getOnlineData { db ->
-                request(db)
-            }?.ifEmpty { null }?.also { bookmarkedShowsRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
+            getOnlineData(
+                block = { db ->
+                    request(db).ifEmpty { null }?.also { bookmarkedShowsRequested.value = Clock.System.now().epochSeconds }
+                },
+                onFailure = { db ->
+                    getOfflineData(
+                        db = db,
+                        block = {
+                            request(it)
+                        }
+                    )
+                }
+            ).orEmpty()
         } else {
-            getOfflineData { db ->
-                request(db)
-            }?.ifEmpty { null } ?: getOnlineData { db ->
-                request(db)
-            }?.ifEmpty { null }?.also { bookmarkedShowsRequested.value = Clock.System.now().epochSeconds } ?: request(firestore)
+            getOfflineData(
+                block = { db ->
+                    request(db)
+                },
+                onFailure = { db ->
+                    getOnlineData(
+                        db = db,
+                        block = {
+                            request(it)
+                        }
+                    )?.ifEmpty { null }?.also { bookmarkedShowsRequested.value = Clock.System.now().epochSeconds }
+                }
+            ).orEmpty()
         }
     }
 
@@ -116,11 +160,11 @@ data class FirebaseFirestoreWrapper(
             .collection(MovieData.GROUP)
             .document(movie.tmdbId.toString())
 
-        getOnlineData {
+        getOnlineData(db = db, block = {
             doc.set(movie, merge = true) {
                 encodeDefaults = false
             }
-        }
+        })
     }
 
     suspend fun bookmark(show: ShowData, db: FirebaseFirestore = firestore) {
@@ -130,11 +174,11 @@ data class FirebaseFirestoreWrapper(
             .collection(ShowData.GROUP)
             .document(show.tmdbId.toString())
 
-        getOnlineData {
+        getOnlineData(db = db, block = {
             doc.set(show, merge = true) {
                 encodeDefaults = false
             }
-        }
+        })
     }
 
     suspend fun isMovieBookmarked(tmdbId: Int): Boolean {
@@ -152,11 +196,11 @@ data class FirebaseFirestoreWrapper(
             .collection(ShowData.GROUP)
             .document(show.tmdbId.toString())
 
-        getOnlineData {
+        getOnlineData(db = db, block = {
             doc.set(show, merge = true) {
                 encodeDefaults = false
             }
-        }
+        })
     }
 
     suspend fun getSeason(tmdbId: Int, offlineOnly: Boolean = false): Int? {
@@ -174,32 +218,94 @@ data class FirebaseFirestoreWrapper(
         }
 
         if (offlineOnly) {
-            return getOfflineData { db ->
+            return getOfflineData(block = { db ->
                 request(db)
-            }
+            })
         }
 
         val time = seasonShowsRequested.value[tmdbId] ?: 0L
         return if (time <= 0L || Clock.System.now().minus(cacheDuration).epochSeconds > time) {
-            getOnlineData { db ->
-                request(db)
-            }?.takeIf { it >= 0 }?.also {
-                val map = seasonShowsRequested.value
-                map[tmdbId] = Clock.System.now().epochSeconds
+            getOnlineData(
+                block = { db ->
+                    request(db)?.takeIf { it >= 0 }?.also {
+                        val map = seasonShowsRequested.value
+                        map[tmdbId] = Clock.System.now().epochSeconds
 
-                seasonShowsRequested.value = map
-            } ?: request(firestore)?.takeIf { it >= 0 }
+                        seasonShowsRequested.value = map
+                    }
+                },
+                onFailure = { db ->
+                    getOfflineData(
+                        db = db,
+                        block = {
+                            request(it)
+                        }
+                    )
+                }
+            )?.takeIf { it >= 0 }
         } else {
-            getOfflineData { db ->
-                request(db)
-            }?.takeIf { it >= 0 } ?: getOnlineData { db ->
-                request(db)
-            }?.takeIf { it >= 0 }?.also {
-                val map = seasonShowsRequested.value
-                map[tmdbId] = Clock.System.now().epochSeconds
+            getOfflineData(
+                block = { db ->
+                    request(db)
+                },
+                onFailure = { db ->
+                    getOnlineData(
+                        db = db,
+                        block = {
+                            request(it)
+                        }
+                    )?.takeIf { it >= 0 }?.also {
+                        val map = seasonShowsRequested.value
+                        map[tmdbId] = Clock.System.now().epochSeconds
 
-                seasonShowsRequested.value = map
-            } ?: request(firestore)?.takeIf { it >= 0 }
+                        seasonShowsRequested.value = map
+                    }
+                }
+            )?.takeIf { it >= 0 }
+        }
+    }
+
+    suspend fun getUserData(): UserData {
+        val uid = auth.currentUser?.uid ?: return UserData.Default
+        suspend fun request(db: FirebaseFirestore): UserData? {
+            val snapshot = db.collection(UserData.COLLECTION)
+                .document(uid)
+                .get()
+
+            return suspendCatching {
+                snapshot.data<UserData?>()
+            }.getOrNull()
+        }
+
+        val time = userDataRequested.value
+        return if (time <= 0L || Clock.System.now().minus(cacheDuration).epochSeconds > time) {
+            getOnlineData(
+                block = { db ->
+                    request(db)?.also { userDataRequested.value = Clock.System.now().epochSeconds }
+                },
+                onFailure = { db ->
+                    getOfflineData(
+                        db = db,
+                        block = {
+                            request(it)
+                        }
+                    )
+                }
+            ) ?: UserData.Default
+        } else {
+            getOfflineData(
+                block = { db ->
+                    request(db)
+                },
+                onFailure = { db ->
+                    getOnlineData(
+                        db = db,
+                        block = {
+                            request(it)
+                        }
+                    )?.also { userDataRequested.value = Clock.System.now().epochSeconds }
+                }
+            ) ?: UserData.Default
         }
     }
 
@@ -210,5 +316,7 @@ data class FirebaseFirestoreWrapper(
         private val bookmarkedShowsRequested = atomic(0L)
 
         private val seasonShowsRequested = atomic(hashMapOf<Int, Long>())
+
+        private val userDataRequested = atomic(0L)
     }
 }

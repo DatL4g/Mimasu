@@ -50,42 +50,11 @@ data class User(
         }.firstNotNullOfOrNull { it.displayName?.ifBlank { null } }
     )
 ) {
-    val info = atomic<Info?>(null)
-    private val infoMutex = Mutex()
-
-    suspend fun info(app: FirebaseApp = Firebase.app): Info {
-        return info.value
-            ?: remoteInfo(app)?.also { info.value = it }
-            ?: info.value
-            ?: Info()
-    }
-
-    private suspend fun remoteInfo(app: FirebaseApp): Info? = suspendCatching {
-        infoMutex.withLock {
-            Firebase
-                .firestore(app)
-                .collection("user")
-                .document(firebase.uid)
-                .get()
-                .data(Info.serializer())
-        }
-    }.getOrNull()
-
     data class GitHub(
         val linked: Boolean,
         val uid: String?,
         val name: String?
     )
-
-    @Serializable
-    data class Info(
-        @SerialName("adult") val adult: Boolean = false,
-        @SerialName("premium") val premium: Boolean = false
-    ) {
-        companion object {
-            val Default = Info()
-        }
-    }
 
     companion object {
         internal fun emailToName(mail: String): String? {
