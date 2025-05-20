@@ -1,18 +1,17 @@
 package dev.datlag.mimasu.ui.navigation.profile.components
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.profile_extension
+import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_info
+import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_open
 import dev.datlag.mimasu.extension.AIDLService
-import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -28,14 +27,23 @@ actual fun ExtensionButton() {
                 AIDLService.openExtension(context)
             }
         ) {
-            MaterialSymbols(
-                modifier = Modifier.size(ButtonDefaults.IconSize),
-                name = MaterialSymbols.EXTENSION,
-                contentDescription = null,
-                filled = true
+            Text(text = stringResource(Res.string.profile_extension_open))
+        }
+    } else {
+        var dialog by remember { mutableStateOf(false) }
+
+        if (dialog) {
+            ExtensionInfoDialog(
+                onDismiss = { dialog = false }
             )
-            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = stringResource(Res.string.profile_extension))
+        }
+
+        Button(
+            onClick = {
+                dialog = !dialog
+            }
+        ) {
+            Text(text = stringResource(Res.string.profile_extension_info))
         }
     }
 }

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.rounded.Face6
 import androidx.compose.material.icons.rounded.Handshake
 import androidx.compose.material.icons.rounded.HelpOutline
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.LocalFlorist
@@ -135,6 +136,7 @@ data object MaterialSymbols {
     const val EXTENSION = "extension"
     const val CHECK = "check"
     const val HIDE_IMAGE = "hide_image"
+    const val INFO = "info"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -485,6 +487,7 @@ data object MaterialSymbols {
         name.equals(EXTENSION, ignoreCase = true) -> Icons.Rounded.Extension
         name.equals(CHECK, ignoreCase = true) -> Icons.Rounded.Check
         name.equals(HIDE_IMAGE, ignoreCase = true) -> Icons.Outlined.HideImage
+        name.equals(INFO, ignoreCase = true) -> Icons.Rounded.Info
         else -> null
     }
 

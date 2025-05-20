@@ -40,25 +40,15 @@ import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.github
 import dev.datlag.mimasu.composeapp.generated.resources.google
-import dev.datlag.mimasu.composeapp.generated.resources.home_people
-import dev.datlag.mimasu.composeapp.generated.resources.profile_about
-import dev.datlag.mimasu.composeapp.generated.resources.profile_about_text
 import dev.datlag.mimasu.composeapp.generated.resources.profile_connect
 import dev.datlag.mimasu.composeapp.generated.resources.profile_connected
-import dev.datlag.mimasu.composeapp.generated.resources.profile_extension
-import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_header
-import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_text
-import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source
-import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source_text
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_cancel
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_text
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_yes
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.navigation.profile.components.AboutHeader
-import dev.datlag.mimasu.ui.navigation.profile.components.LicensesSection
-import dev.datlag.mimasu.ui.navigation.profile.components.OwnerSection
-import dev.datlag.mimasu.ui.navigation.profile.components.RepositorySection
+import dev.datlag.mimasu.ui.navigation.profile.components.AboutDialog
+import dev.datlag.mimasu.ui.navigation.profile.components.ExtensionSection
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
@@ -132,6 +122,27 @@ fun Profile(
                     .padding(bottom = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
+                var aboutDialog by remember { mutableStateOf(false) }
+
+                if (aboutDialog) {
+                    AboutDialog(
+                        onDismiss = {
+                            aboutDialog = false
+                        }
+                    )
+                }
+
+                IconButton(
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    onClick = {
+                        aboutDialog = !aboutDialog
+                    }
+                ) {
+                    MaterialSymbols(
+                        name = MaterialSymbols.INFO,
+                        contentDescription = null
+                    )
+                }
                 AsyncImage(
                     modifier = Modifier
                         .size(100.dp)
@@ -253,72 +264,11 @@ fun Profile(
             }
         }
         item {
-            AboutHeader(
+            ExtensionSection(
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp)
-            )
-        }
-        item {
-            Text(
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                text = stringResource(Res.string.profile_about_text)
-            )
-        }
-        item {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                text = stringResource(Res.string.profile_open_source),
-                style = Platform.typography().titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1
-            )
-        }
-        item {
-            Text(
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                text = stringResource(Res.string.profile_open_source_text)
-            )
-        }
-        item {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                text = stringResource(Res.string.profile_extension_header),
-                style = Platform.typography().titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1
-            )
-        }
-        item {
-            Text(
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                text = stringResource(Res.string.profile_extension_text)
-            )
-        }
-        item {
-            LicensesSection(
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-        }
-        item {
-            OwnerSection(modifier = Modifier
-                .fillParentMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-        }
-        item {
-            RepositorySection(modifier = Modifier
-                .fillParentMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(bottom = 16.dp)
             )
         }
     }

@@ -108,6 +108,9 @@
     <string name="profile_owner">Developed by Jeff Retz</string>
     <string name="profile_github_repository">GitHub Repository</string>
     <string name="profile_extension">Extension</string>
+    <string name="profile_extension_open">Open</string>
+    <string name="profile_extension_info">More</string>
+    <string name="profile_extension_info_close">Close</string>
 
     <string name="show_air_date_format">MM.dd.yyyy</string>
     <string name="show_rating_placeholder">%1$d%</string>
