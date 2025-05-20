@@ -13,7 +13,6 @@ import com.jet.ads.common.initializers.AdsInitializer
 import dev.datlag.mimasu.AdActivity
 import dev.datlag.mimasu.common.findActivity
 import dev.datlag.tooling.Platform
-import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

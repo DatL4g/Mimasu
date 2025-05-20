@@ -81,6 +81,9 @@
     <string name="login_terms_of_service">Servicebedingungen</string>
     <string name="login_privacy_policy">Datenschutzbestimmungen</string>
     <string name="login_failure">Anmeldung fehlgeschlagen, überprüfe dass deine angegebenen Informationen korrekt sind oder versuche es später nochmal.</string>
+    <string name="login_rive_bunny_title">Ersteller und Eigentümer</string>
+    <string name="login_rive_bunny_text">Diese Animation wurde von %1$s auf Rive erstellt und ist unter CC-BY lizenziert.</string>
+    <string name="login_rive_bunny_license">Lizenz</string>
 
     <string name="github">GitHub</string>
     <string name="google">Google</string>
