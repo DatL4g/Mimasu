@@ -84,6 +84,8 @@
     <string name="login_rive_bunny_title">Creator and Owner</string>
     <string name="login_rive_bunny_text">This animation is created by %1$s on Rive and licensed under CC-BY.</string>
     <string name="login_rive_bunny_license">License</string>
+    <string name="login_rive_bunny_owner" translatable="false">trong.phanduc34</string>
+    <string name="login_rive_bunny_marketplace">Marketplace</string>
 
     <string name="github">GitHub</string>
     <string name="google">Google</string>

@@ -412,7 +412,7 @@ fun Login(onSuccess: () -> Unit) {
             }
 
             PlatformText(
-                modifier = Modifier.fillParentMaxWidth().padding(top = 16.dp),
+                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp),
                 text = agreement,
                 textAlign = TextAlign.Center
             )

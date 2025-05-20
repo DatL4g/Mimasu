@@ -4,6 +4,8 @@ import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
@@ -18,14 +20,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.AppInitializer
 import dev.datlag.mimasu.R
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.login_rive_bunny_license
+import dev.datlag.mimasu.composeapp.generated.resources.login_rive_bunny_marketplace
+import dev.datlag.mimasu.composeapp.generated.resources.login_rive_bunny_owner
 import dev.datlag.mimasu.composeapp.generated.resources.login_rive_bunny_text
 import dev.datlag.mimasu.composeapp.generated.resources.login_rive_bunny_title
 import dev.datlag.mimasu.core.Constants
@@ -71,21 +78,34 @@ actual fun LoginAppImage(
             state = tooltipState,
             tooltip = {
                 RichTooltip(
+                    caretSize = DpSize(32.dp, 16.dp),
                     title = {
                         Text(stringResource(Res.string.login_rive_bunny_title))
                     },
                     text = {
-                        Text(stringResource(Res.string.login_rive_bunny_text, Constants.RIVE_BUNNY_OWNER))
+                        Text(stringResource(Res.string.login_rive_bunny_text, stringResource(Res.string.login_rive_bunny_owner)))
                     },
                     action = {
                         val uriHandler = LocalUriHandler.current
 
-                        TextButton(
-                            onClick = {
-                                uriHandler.openUri(Constants.CREATIVE_COMMONS_4_LICENSE)
-                            }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(stringResource(Res.string.login_rive_bunny_license))
+                            TextButton(
+                                onClick = {
+                                    uriHandler.openUri(Constants.RIVE_BUNNY_LINK)
+                                }
+                            ) {
+                                Text(stringResource(Res.string.login_rive_bunny_marketplace))
+                            }
+                            TextButton(
+                                onClick = {
+                                    uriHandler.openUri(Constants.CREATIVE_COMMONS_4_LICENSE)
+                                }
+                            ) {
+                                Text(stringResource(Res.string.login_rive_bunny_license))
+                            }
                         }
                     }
                 )
