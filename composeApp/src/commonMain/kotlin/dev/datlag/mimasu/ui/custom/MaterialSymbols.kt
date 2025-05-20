@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
 import androidx.compose.material.icons.automirrored.rounded.Logout
+import androidx.compose.material.icons.outlined.HideImage
 import androidx.compose.material.icons.rounded.Apartment
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Bookmark
@@ -133,6 +134,7 @@ data object MaterialSymbols {
     const val CHEVRON_RIGHT = "chevron_right"
     const val EXTENSION = "extension"
     const val CHECK = "check"
+    const val HIDE_IMAGE = "hide_image"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -482,6 +484,7 @@ data object MaterialSymbols {
         name.equals(CHEVRON_RIGHT, ignoreCase = true) -> Icons.Rounded.ChevronRight
         name.equals(EXTENSION, ignoreCase = true) -> Icons.Rounded.Extension
         name.equals(CHECK, ignoreCase = true) -> Icons.Rounded.Check
+        name.equals(HIDE_IMAGE, ignoreCase = true) -> Icons.Outlined.HideImage
         else -> null
     }
 
