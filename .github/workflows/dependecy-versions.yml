@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - v1
       - master
 
 jobs:
