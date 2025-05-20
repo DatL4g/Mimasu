@@ -250,6 +250,7 @@ fun Home(
             BannerAd(
                 modifier = Modifier
                     .fillParentMaxWidth()
+                    .animateContentSize()
                     .padding(bottom = 16.dp)
             )
         }

@@ -1,7 +1,6 @@
 package dev.datlag.mimasu.module
 
 import android.content.Context
-import co.touchlab.kermit.Logger
 import com.appmattus.certificatetransparency.cache.AndroidDiskCache
 import com.appmattus.certificatetransparency.certificateTransparencyInterceptor
 import com.google.net.cronet.okhttptransport.CronetInterceptor
@@ -9,11 +8,8 @@ import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.common.cronetEngine
 import dev.datlag.mimasu.common.firebaseDataSource
-import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
-import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProviderAndroid
-import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderAndroid
 import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.ui.GoogleProvider
@@ -30,7 +26,6 @@ import org.kodein.di.DI
 import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.instanceOrNull
 
 actual object PlatformModule {
 

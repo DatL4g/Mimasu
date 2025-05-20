@@ -18,6 +18,7 @@ plugins {
     alias(libs.plugins.atomicfu)
     alias(libs.plugins.about)
     alias(libs.plugins.stacktrace.decoroutinator)
+    alias(libs.plugins.crashlytics)
 }
 
 val artifact = "dev.datlag.mimasu"
@@ -182,6 +183,16 @@ android {
     }
     androidResources {
         generateLocaleConfig = true
+    }
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                file("src/androidMain/proguard-rules.pro")
+            )
+        }
     }
 }
 

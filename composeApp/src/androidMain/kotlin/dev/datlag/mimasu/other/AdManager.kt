@@ -7,109 +7,124 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
-import com.jet.ads.common.controller.JetAdsAdsControlImpl
+import com.jet.ads.common.controller.JetAdsControl
 import com.jet.ads.common.initializers.AdsInitializeFactory
+import com.jet.ads.common.initializers.AdsInitializer
+import dev.datlag.mimasu.AdActivity
 import dev.datlag.mimasu.common.findActivity
+import dev.datlag.tooling.Platform
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class AdManager(private val context: Context) {
-
-    private var mobileAdsInitialized by atomic(false)
-    private var jetAdsInitialized by atomic(false)
+class AdManager(private val context: Context) : JetAdsControl {
 
     private val consentInfo = UserMessagingPlatform.getConsentInformation(context)
-    private val params = ConsentRequestParameters.Builder().build()
+    private val consentParams = ConsentRequestParameters.Builder().build()
 
     val privacyRequired: Boolean
         get() = consentInfo.privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED
 
-    private val consentToRequestAds: Boolean
+    val consentToRequestAds: Boolean
         get() = consentInfo.canRequestAds()
 
-    private val _canRequestAds = MutableStateFlow(consentToRequestAds && mobileAdsInitialized)
-    val canRequestAds = _canRequestAds.asStateFlow()
+    private val fallbackInitializer by lazy {
+        AdsInitializeFactory.admobInitializer()
+    }
 
-    val initializer = AdsInitializeFactory.admobInitializer()
+    val adsPermitted
+        get() = !Platform.isTelevision(context) && !Platform.isWatch(context)
+
+    private val _adsInitialized = MutableStateFlow(false)
+    val adsInitialized = _adsInitialized.asStateFlow()
+
+    private val _adsEnabled by lazy {
+        MutableStateFlow(adsInitialized.value)
+    }
+    private val adsEnabled by lazy {
+        _adsEnabled.asStateFlow()
+    }
 
     init {
-        if (!privacyRequired) {
-            initializeMobileAds()
+        if (adsPermitted) {
+            if (!privacyRequired || consentToRequestAds) {
+                initializeAds()
+            }
         }
     }
 
-    fun requestUpdate(
+    fun initializeAds(
         activity: Activity? = context.findActivity(),
-        onUpdated: () -> Unit,
-        onFailure: () -> Unit
+        force: Boolean = false
     ) {
-        val safeActivity = activity ?: context.findActivity() ?: return
+        if (adsPermitted) {
+            if (force || consentToRequestAds) {
+                initializeSdk()
 
-        consentInfo.requestConsentInfoUpdate(
-            safeActivity,
-            params,
-            { // success
-                onUpdated()
-            },
-            { failure ->
-                onFailure()
+                val safeActivity = activity ?: context.findActivity()
+                when {
+                    safeActivity is AdActivity -> safeActivity.initAds(this)
+                    safeActivity is ComponentActivity && safeActivity is AdsInitializer -> with(safeActivity as AdsInitializer) {
+                        safeActivity.initializeAds(this@AdManager)
+                    }
+                    safeActivity is ComponentActivity -> with(fallbackInitializer) {
+                        safeActivity.initializeAds(this@AdManager)
+                    }
+                }
             }
-        )
+        }
     }
 
-    fun showFormIfRequired(
+    fun requestConsentUpdate(activity: Activity? = context.findActivity()) {
+        if (adsPermitted) {
+            val safeActivity = activity ?: context.findActivity() ?: return
+
+            consentInfo.requestConsentInfoUpdate(
+                safeActivity,
+                consentParams,
+                { // success
+                    showConsentFormIfRequired(safeActivity) {
+                        initializeAds(safeActivity)
+                    }
+                },
+                { failure ->
+                    initializeAds(safeActivity, force = true)
+                }
+            )
+        }
+    }
+
+    private fun showConsentFormIfRequired(
         activity: Activity? = context.findActivity(),
         onDismiss: () -> Unit
     ) {
-        val safeActivity = activity ?: context.findActivity() ?: return
+        if (adsPermitted) {
+            val safeActivity = activity ?: context.findActivity() ?: return
 
-        UserMessagingPlatform.loadAndShowConsentFormIfRequired(safeActivity) {
-            onDismiss()
-        }
-    }
-
-    fun showPrivacyForm(
-        activity: Activity? = context.findActivity(),
-        onDismiss: () -> Unit
-    ) {
-        val safeActivity = activity ?: context.findActivity() ?: return
-
-        UserMessagingPlatform.showPrivacyOptionsForm(safeActivity) {
-            onDismiss()
-        }
-    }
-
-    fun initializeMobileAds(
-        activity: Activity? = context.findActivity(),
-        force: Boolean = false,
-        afterInitialize: () -> Unit = { }
-    ) {
-        if (consentToRequestAds || force) {
-            if (mobileAdsInitialized) {
-                if (jetAdsInitialized) with(initializer) {
-                    val safeActivity = (activity as? ComponentActivity) ?: context.findActivity() as? ComponentActivity
-                    safeActivity?.initializeAds()?.also {
-                        jetAdsInitialized = true
-                    }
-                }
-                return afterInitialize()
-            }
-
-            MobileAds.initialize(context) {
-                mobileAdsInitialized = true
-                _canRequestAds.update { consentToRequestAds && mobileAdsInitialized }
-                if (jetAdsInitialized) with(initializer) {
-                    val safeActivity = (activity as? ComponentActivity) ?: context.findActivity() as? ComponentActivity
-                    safeActivity?.initializeAds()?.also {
-                        jetAdsInitialized = true
-                    }
-                }
-                afterInitialize()
+            UserMessagingPlatform.loadAndShowConsentFormIfRequired(safeActivity) {
+                onDismiss()
             }
         }
     }
 
+    private fun initializeSdk() {
+        if (adsInitialized.value || !adsPermitted) {
+            return
+        }
 
+        MobileAds.initialize(context) {
+            _adsInitialized.update { true }
+            setAdsEnabled(true)
+        }
+    }
+
+    override fun isAdsEnabled(): StateFlow<Boolean> {
+        return adsEnabled
+    }
+
+    override fun setAdsEnabled(enabled: Boolean) {
+        _adsEnabled.update { enabled }
+    }
 }

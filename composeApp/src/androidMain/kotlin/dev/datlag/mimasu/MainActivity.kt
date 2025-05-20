@@ -2,7 +2,6 @@ package dev.datlag.mimasu
 
 import android.content.Context
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +13,7 @@ import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.module.NetworkModule
-import dev.datlag.mimasu.ui.ads.AdConsentPage
+import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.theme.Font
@@ -23,9 +22,10 @@ import dev.datlag.tooling.compose.toTypography
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DI
 import org.kodein.di.DIAware
+import org.kodein.di.instanceOrNull
 import kotlin.reflect.safeCast
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AdActivity() {
 
     private val di: DI?
         get() = applicationContext.safeCast<DIAware>()?.di
@@ -55,6 +55,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val di = this.di ?: return exit("Could not find dependency injection.")
+        val nullableAdManager by di.instanceOrNull<AdManager>()
+        (nullableAdManager ?: AdManager(this)).requestConsentUpdate(this)
 
         setContent {
             // ToDo("ignore font on TV")
@@ -69,20 +71,18 @@ class MainActivity : ComponentActivity() {
                     PlatformText("Report Failure: $it")
                 },
                 content = {
-                    AdConsentPage {
-                        var logInResult by remember { mutableStateOf(false) }
+                    var logInResult by remember { mutableStateOf(false) }
 
-                        Navigation(
-                            isLoggedIn = logInResult,
-                            loginContent = {
-                                Login(
-                                    onSuccess = {
-                                        logInResult = true
-                                    }
-                                )
-                            }
-                        )
-                    }
+                    Navigation(
+                        isLoggedIn = logInResult,
+                        loginContent = {
+                            Login(
+                                onSuccess = {
+                                    logInResult = true
+                                }
+                            )
+                        }
+                    )
                 }
             )
         }

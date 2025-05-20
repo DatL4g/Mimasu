@@ -24,6 +24,7 @@ compose-reload = "1.0.0-alpha08"
 connectivity = "1.1.3"
 constraint-layout = "0.4.0"
 coroutines = "1.10.2"
+crashlytics = "3.0.3"
 cronet = "18.1.0"
 cronet-okhttp = "0.1.0"
 datetime = "0.6.2"
@@ -88,6 +89,8 @@ android = { group = "androidx.core", name = "core-ktx", version.ref = "android-c
 android-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "android-annotation" }
 android-autofill = { group = "androidx.autofill", name = "autofill", version.ref = "android-autofill" }
 android-firebase = { group = "com.google.firebase", name = "firebase-bom", version.ref = "android-firebase" }
+android-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+android-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 android-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "android-startup" }
 ackpine = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "ackpine" }
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
@@ -205,6 +208,7 @@ compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "compose-report" }
 compose-reload = { id = "org.jetbrains.compose.hot-reload", version.ref = "compose-reload" }
+crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 konfig = { id = "com.codingfeline.buildkonfig", version.ref = "konfig" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
