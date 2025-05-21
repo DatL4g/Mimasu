@@ -48,6 +48,10 @@
     <string name="movie_countries">Länder: </string>
     <string name="movie_companies">Firmen: </string>
     <string name="movie_watch">Ansehen</string>
+    <string name="movie_justwatch_attribution">Diese Liste von verfügbaren Quellen wird von JustWatch bereitgestellt.</string>
+    <string name="movie_justwatch_flatrate">Flatrate</string>
+    <string name="movie_justwatch_buy">Kaufen</string>
+    <string name="movie_justwatch_rent">Ausleihen</string>
 
     <string name="currency_thousand">K</string>
     <string name="currency_million">Mio</string>

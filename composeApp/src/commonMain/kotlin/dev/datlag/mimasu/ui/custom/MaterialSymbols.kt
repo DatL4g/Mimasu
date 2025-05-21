@@ -34,6 +34,7 @@ import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Mail
 import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.Movie
+import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Password
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Person
@@ -137,6 +138,7 @@ data object MaterialSymbols {
     const val CHECK = "check"
     const val HIDE_IMAGE = "hide_image"
     const val INFO = "info"
+    const val OPEN_IN_BROWSER = "open_in_browser"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -488,6 +490,7 @@ data object MaterialSymbols {
         name.equals(CHECK, ignoreCase = true) -> Icons.Rounded.Check
         name.equals(HIDE_IMAGE, ignoreCase = true) -> Icons.Outlined.HideImage
         name.equals(INFO, ignoreCase = true) -> Icons.Rounded.Info
+        name.equals(OPEN_IN_BROWSER, ignoreCase = true) -> Icons.Rounded.OpenInBrowser
         else -> null
     }
 

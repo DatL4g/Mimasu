@@ -51,6 +51,7 @@ import dev.datlag.mimasu.tmdb.common.logos
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
+import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieWatchProviderFAB
 import dev.datlag.tolgee.stringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.async.suspendCatching
@@ -97,94 +98,9 @@ fun MovieDetail(
             )
         },
         floatingActionButton = {
-            val watchInfo = rememberMovieWatchInfo(
-                movie = movieState.getOrNull(),
-                initial = initial
+            MovieWatchProviderFAB(
+                movie = movieState.getOrNull()
             )
-
-            when {
-                watchInfo != null -> {
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            Logger.e(watchInfo.toString())
-                        },
-                        icon = {
-                            MaterialSymbols(
-                                name = MaterialSymbols.PLAY_ARROW,
-                                contentDescription = null,
-                                filled = true
-                            )
-                        },
-                        text = {
-                            Text(
-                                text = stringResource(Res.string.movie_watch),
-                                maxLines = 1
-                            )
-                        }
-                    )
-                }
-                else -> {
-                    movieState.getOrNull()?.watchProviders?.providerFor(Locale.current.region)?.let { provider ->
-                        val info = provider.flatrate.firstOrNull() ?: provider.buy.firstOrNull() ?: provider.rent.firstOrNull()
-                        val uriHandler = LocalUriHandler.current
-
-                        Box {
-                            ExtendedFloatingActionButton(
-                                onClick = {
-                                    provider.link?.let(uriHandler::openUri)
-                                },
-                                icon = {
-                                    var fallback by remember(info) { mutableStateOf(info?.hasLogo != true) }
-
-                                    if (fallback) {
-                                        MaterialSymbols(
-                                            name = MaterialSymbols.PLAY_ARROW,
-                                            contentDescription = null,
-                                            filled = true
-                                        )
-                                    } else {
-                                        AsyncImage(
-                                            modifier = Modifier.height(24.dp).clip(Platform.shapes().small),
-                                            model = info?.logo,
-                                            contentDescription = null,
-                                            placeholder = MaterialSymbols.rememberPainter(
-                                                name = MaterialSymbols.PLAY_ARROW,
-                                                filled = true
-                                            ),
-                                            error = rememberNestedImagePainter(
-                                                models = info.logos().drop(1),
-                                                contentScale = ContentScale.Inside,
-                                                onError = {
-                                                    fallback = true
-                                                }
-                                            ),
-                                            contentScale = ContentScale.Inside
-                                        )
-                                    }
-                                },
-                                text = {
-                                    Text(
-                                        text = info?.providerName?.ifBlank { null } ?: stringResource(Res.string.movie_watch),
-                                        maxLines = 1
-                                    )
-                                }
-                            )
-
-                            Badge(
-                                modifier = Modifier.align(Alignment.TopCenter).offset(y = (-8).dp),
-                                containerColor = Platform.colorScheme().secondary
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(12.dp),
-                                    painter = painterResource(Res.drawable.justwatch),
-                                    contentDescription = stringResource(Res.string.justwatch)
-                                )
-                                Text(text = stringResource(Res.string.justwatch))
-                            }
-                        }
-                    }
-                }
-            }
         }
     ) { padding ->
         when (val current = movieState) {

@@ -280,7 +280,7 @@ data class Movie(
         @SerialName("results") val results: Map<String, Providers> = emptyMap()
     ) {
 
-        fun providerFor(locale: String) = results[locale] ?: results[locale.uppercase()]
+        fun providerFor(locale: String) = (results[locale] ?: results[locale.uppercase()])?.takeUnless { it.isEmpty() }
 
         @Serializable
         data class Providers(
@@ -289,6 +289,14 @@ data class Movie(
             @SerialName("buy") val buy: Set<Info> = emptySet(),
             @SerialName("rent") val rent: Set<Info> = emptySet(),
         ) {
+
+            fun isEmpty(): Boolean {
+                return link.isNullOrEmpty() && flatrate.isEmpty() && buy.isEmpty() && rent.isEmpty()
+            }
+
+            fun hasProviders(): Boolean {
+                return flatrate.isNotEmpty() || buy.isNotEmpty() || rent.isNotEmpty()
+            }
 
             @Serializable
             data class Info(
