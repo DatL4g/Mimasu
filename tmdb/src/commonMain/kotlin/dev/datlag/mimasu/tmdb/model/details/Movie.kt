@@ -288,19 +288,25 @@ data class Movie(
             @SerialName("flatrate") val flatrate: Set<Info> = emptySet(),
             @SerialName("buy") val buy: Set<Info> = emptySet(),
             @SerialName("rent") val rent: Set<Info> = emptySet(),
+            @SerialName("free") val free: Set<Info> = emptySet(),
+            @SerialName("ads") val ads: Set<Info> = emptySet(),
         ) {
 
             fun isEmpty(): Boolean {
-                return link.isNullOrEmpty() && flatrate.isEmpty() && buy.isEmpty() && rent.isEmpty()
+                return link.isNullOrBlank() && !hasProviders()
             }
 
             fun hasProviders(): Boolean {
-                return flatrate.isNotEmpty() || buy.isNotEmpty() || rent.isNotEmpty()
+                return flatrate.isNotEmpty()
+                        || buy.isNotEmpty()
+                        || rent.isNotEmpty()
+                        || free.isNotEmpty()
+                        || ads.isNotEmpty()
             }
 
             @Serializable
             data class Info(
-                @SerialName("logo_path") override val logoSource: String?,
+                @SerialName("logo_path") override val logoSource: String? = null,
                 @SerialName("provider_id") val providerId: Int = 0,
                 @SerialName("provider_name") val providerName: String,
                 @SerialName("display_priority") val displayPriority: Int = 0

@@ -34,9 +34,11 @@ import dev.datlag.mimasu.common.header
 import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.justwatch
+import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_ads
 import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_attribution
 import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_buy
 import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_flatrate
+import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_free
 import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_rent
 import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source
 import dev.datlag.mimasu.tmdb.common.logos
@@ -107,6 +109,46 @@ fun MovieWatchProviderDialog(
                     text = stringResource(Res.string.movie_justwatch_attribution),
                     textAlign = TextAlign.Center,
                 )
+            }
+            watchProviders.free.ifEmpty { null }?.toImmutableList()?.let { free ->
+                header {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, bottom = 8.dp),
+                        text = stringResource(Res.string.movie_justwatch_free),
+                        style = Platform.typography().titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                items(free) { provider ->
+                    Provider(
+                        info = provider,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+            watchProviders.ads.ifEmpty { null }?.toImmutableList()?.let { ads ->
+                header {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, bottom = 8.dp),
+                        text = stringResource(Res.string.movie_justwatch_ads),
+                        style = Platform.typography().titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                items(ads) { provider ->
+                    Provider(
+                        info = provider,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
             watchProviders.flatrate.ifEmpty { null }?.toImmutableList()?.let { flatrate ->
                 header {

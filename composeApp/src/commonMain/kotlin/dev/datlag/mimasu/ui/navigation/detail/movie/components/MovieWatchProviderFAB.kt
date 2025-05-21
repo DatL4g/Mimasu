@@ -45,7 +45,9 @@ fun MovieWatchProviderFAB(
     if (regionProviders != null) {
         Box {
             val bestProvider = remember(regionProviders) {
-                regionProviders.flatrate.firstOrNull()
+                regionProviders.free.firstOrNull()
+                    ?: regionProviders.ads.firstOrNull()
+                    ?: regionProviders.flatrate.firstOrNull()
                     ?: regionProviders.buy.firstOrNull()
                     ?: regionProviders.rent.firstOrNull()
             }

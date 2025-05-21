@@ -52,6 +52,8 @@
     <string name="movie_justwatch_flatrate">Flatrate</string>
     <string name="movie_justwatch_buy">Kaufen</string>
     <string name="movie_justwatch_rent">Ausleihen</string>
+    <string name="movie_justwatch_free">Kostenlos</string>
+    <string name="movie_justwatch_ads">Werbung</string>
 
     <string name="currency_thousand">K</string>
     <string name="currency_million">Mio</string>
