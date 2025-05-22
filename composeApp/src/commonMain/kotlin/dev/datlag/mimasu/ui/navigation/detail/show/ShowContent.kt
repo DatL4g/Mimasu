@@ -45,20 +45,12 @@ fun ShowContent(
     hazeState: HazeState,
     listState: LazyListState,
     show: Show,
+    showSeason: Show.Season?,
+    seasonState: ShowViewModel.SeasonState,
     initial: TV?,
     padding: PaddingValues,
-    viewModel: ShowViewModel = kodeinViewModel<ShowViewModel>()
+    onSelectSeason: (Show.Season) -> Unit = {},
 ) {
-    val showSeason by viewModel.showSeason.collectAsStateWithLifecycle()
-    val initialSeasonState = remember(showSeason) {
-        if (showSeason == null) {
-            ShowViewModel.SeasonState.Empty
-        } else {
-            ShowViewModel.SeasonState.Loading
-        }
-    }
-    val seasonState by viewModel.season.collectAsStateWithLifecycle(initialSeasonState)
-
     LazyColumn(
         state = listState,
         modifier = Modifier
@@ -99,9 +91,7 @@ fun ShowContent(
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
-                onSelect = {
-                    viewModel.select(it)
-                }
+                onSelect = onSelectSeason
             )
         }
         item {

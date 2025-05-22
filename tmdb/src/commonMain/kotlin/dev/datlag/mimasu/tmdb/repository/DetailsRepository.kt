@@ -87,7 +87,11 @@ class DetailsRepository(
                     apiKey = apiKey,
                     id = id,
                     language = language,
-                    appendToResponse = null
+                    appendToResponse = listOf(
+                        APPEND_CREDITS,
+                        APPEND_EXTERNAL_IDS,
+                        WATCH_PROVIDERS
+                    ).joinToString(separator = ",")
                 )
 
                 response.body<Show>()
@@ -108,7 +112,9 @@ class DetailsRepository(
                     showId = showId,
                     seasonId = seasonId,
                     language = language,
-                    appendToResponse = null
+                    appendToResponse = listOf(
+                        WATCH_PROVIDERS
+                    ).joinToString(separator = ",")
                 )
 
                 response.body<Season>()

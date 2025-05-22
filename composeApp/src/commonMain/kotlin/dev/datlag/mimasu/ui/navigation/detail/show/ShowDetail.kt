@@ -28,6 +28,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.show_watch
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowToolbar
+import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowWatchProviderFAB
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import org.jetbrains.compose.resources.stringResource
@@ -40,6 +41,15 @@ fun ShowDetail(
     val showViewModel = kodeinViewModel<ShowViewModel>()
     val showState by showViewModel.show.collectAsStateWithLifecycle(ShowViewModel.ShowState.Loading)
     val initial by showViewModel.initialShow.collectAsStateWithLifecycle()
+    val showSeason by showViewModel.showSeason.collectAsStateWithLifecycle()
+    val initialSeasonState = remember(showSeason) {
+        if (showSeason == null) {
+            ShowViewModel.SeasonState.Empty
+        } else {
+            ShowViewModel.SeasonState.Loading
+        }
+    }
+    val seasonState by showViewModel.season.collectAsStateWithLifecycle(initialSeasonState)
 
     val appBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -69,18 +79,9 @@ fun ShowDetail(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { },
-                icon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.PLAY_ARROW,
-                        contentDescription = null,
-                        filled = true
-                    )
-                },
-                text = {
-                    Text(text = stringResource(Res.string.show_watch))
-                }
+            ShowWatchProviderFAB(
+                show = showState.getOrNull(),
+                season = seasonState.getOrNull()
             )
         }
     ) { padding ->
@@ -106,8 +107,13 @@ fun ShowDetail(
                 hazeState = haze,
                 listState = listState,
                 show = current.show,
+                showSeason = showSeason,
+                seasonState = seasonState,
                 initial = initial,
                 padding = padding,
+                onSelectSeason = {
+                    showViewModel.select(it)
+                }
             )
         }
     }

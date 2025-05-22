@@ -137,4 +137,10 @@
     <string name="show_status_in_production">In Production</string>
     <string name="show_status_ended">Ended</string>
     <string name="show_status_canceled">Canceled</string>
+    <string name="show_justwatch_attribution">This list of available sources is provided by JustWatch.</string>
+    <string name="show_justwatch_flatrate">Flatrate</string>
+    <string name="show_justwatch_buy">Buy</string>
+    <string name="show_justwatch_rent">Rent</string>
+    <string name="show_justwatch_free">Free</string>
+    <string name="show_justwatch_ads">Ads</string>
 </resources>

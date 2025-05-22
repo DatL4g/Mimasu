@@ -136,4 +136,10 @@
     <string name="show_status_in_production">In Produktion</string>
     <string name="show_status_ended">Beendet</string>
     <string name="show_status_canceled">Eingestellt</string>
+    <string name="show_justwatch_attribution">Diese Liste von verfügbaren Quellen wird von JustWatch bereitgestellt.</string>
+    <string name="show_justwatch_flatrate">Flatrate</string>
+    <string name="show_justwatch_buy">Kaufen</string>
+    <string name="show_justwatch_rent">Ausleihen</string>
+    <string name="show_justwatch_free">Kostenlos</string>
+    <string name="show_justwatch_ads">Werbung</string>
 </resources>

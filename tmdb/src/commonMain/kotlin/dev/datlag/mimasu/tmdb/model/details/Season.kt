@@ -2,6 +2,7 @@ package dev.datlag.mimasu.tmdb.model.details
 
 import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.mimasu.tmdb.model.HasPoster
+import dev.datlag.mimasu.tmdb.model.details.Show.WatchProviders
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -35,44 +36,5 @@ data class Season(
 
         @Transient
         val runtime = _runtime ?: 0
-    }
-
-    @Serializable
-    data class WatchProviders(
-        @SerialName("results") val results: Map<String, Providers> = emptyMap()
-    ) {
-
-        fun providerFor(locale: String) = (results[locale] ?: results[locale.uppercase()])?.takeUnless { it.isEmpty() }
-
-        @Serializable
-        data class Providers(
-            @SerialName("link") val link: String? = null,
-            @SerialName("flatrate") val flatrate: Set<Info> = emptySet(),
-            @SerialName("buy") val buy: Set<Info> = emptySet(),
-            @SerialName("ads") val ads: Set<Info> = emptySet(),
-            @SerialName("free") val free: Set<Info> = emptySet(),
-            @SerialName("rent") val rent: Set<Info> = emptySet(),
-        ) {
-
-            fun isEmpty(): Boolean {
-                return link.isNullOrBlank() && !hasProviders()
-            }
-
-            fun hasProviders(): Boolean {
-                return flatrate.isNotEmpty()
-                        || buy.isNotEmpty()
-                        || rent.isNotEmpty()
-                        || free.isNotEmpty()
-                        || ads.isNotEmpty()
-            }
-
-            @Serializable
-            data class Info(
-                @SerialName("logo_path") override val logoSource: String? = null,
-                @SerialName("provider_id") val providerId: Int = 0,
-                @SerialName("provider_name") val providerName: String,
-                @SerialName("display_priority") val displayPriority: Int = 0
-            ): HasLogo
-        }
     }
 }
