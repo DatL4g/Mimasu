@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisbanes.haze.HazeState
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.show_watch
+import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowToolbar
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowWatchProviderFAB
@@ -97,11 +98,11 @@ fun ShowDetail(
                 }
             }
             is ShowViewModel.ShowState.Error -> {
-                Box(
-                    modifier = Modifier.padding(padding)
-                ) {
-                    Text(text = "Loading Show failed: ${current.throwable}")
-                }
+                ErrorState(
+                    throwable = current.throwable,
+                    additionalInfo = "ShowDetail [ShowState]",
+                    modifier = Modifier.fillMaxSize().padding(padding)
+                )
             }
             is ShowViewModel.ShowState.Success -> ShowContent(
                 hazeState = haze,

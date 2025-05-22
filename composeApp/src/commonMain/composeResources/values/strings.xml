@@ -143,4 +143,7 @@
     <string name="show_justwatch_rent">Rent</string>
     <string name="show_justwatch_free">Free</string>
     <string name="show_justwatch_ads">Ads</string>
+
+    <string name="error_state_text">Something went wrong, please try again later.</string>
+    <string name="error_state_with_throwable_text">Something went wrong and got reported, please try again later.</string>
 </resources>

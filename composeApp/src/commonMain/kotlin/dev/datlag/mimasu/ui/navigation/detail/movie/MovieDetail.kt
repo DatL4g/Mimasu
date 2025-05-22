@@ -49,6 +49,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.justwatch
 import dev.datlag.mimasu.composeapp.generated.resources.movie_watch
 import dev.datlag.mimasu.tmdb.common.logos
 import dev.datlag.mimasu.tmdb.model.details.Movie
+import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieWatchProviderFAB
@@ -115,11 +116,11 @@ fun MovieDetail(
                 }
             }
             is MovieViewModel.State.Error -> {
-                Box(
-                    modifier = Modifier.padding(padding)
-                ) {
-                    Text(text = "Loading Movie failed: ${current.throwable}")
-                }
+                ErrorState(
+                    throwable = current.throwable,
+                    additionalInfo = "MovieDetail",
+                    modifier = Modifier.fillMaxSize().padding(padding)
+                )
             }
             is MovieViewModel.State.Success -> MovieContent(
                 hazeState = haze,

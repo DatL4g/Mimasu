@@ -18,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.clip
+import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.tooling.async.suspendCatching
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -53,11 +54,11 @@ fun PersonDetail(
                 }
             }
             is PersonViewModel.State.Error -> {
-                Box(
-                    modifier = Modifier.padding(padding)
-                ) {
-                    Text(text = "Loading Movie failed: ${current.throwable}")
-                }
+                ErrorState(
+                    throwable = current.throwable,
+                    additionalInfo = "PersonDetail",
+                    modifier = Modifier.fillMaxSize().padding(padding)
+                )
             }
             is PersonViewModel.State.Success -> {
                 PersonContent(

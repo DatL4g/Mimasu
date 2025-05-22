@@ -28,6 +28,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.navigation.detail.show.components.EpisodeItem
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowGenres
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowInfo
@@ -128,7 +129,11 @@ fun ShowContent(
                 }
             }
             is ShowViewModel.SeasonState.Error -> item {
-                Text(text = "Loading Season failed: ${current.throwable}")
+                ErrorState(
+                    throwable = current.throwable,
+                    additionalInfo = "ShowContent [SeasonState]",
+                    modifier = Modifier.fillParentMaxWidth()
+                )
             }
             is ShowViewModel.SeasonState.Success -> {
                 itemsIndexed(current.season.episodes.toImmutableList()) { index, episode ->

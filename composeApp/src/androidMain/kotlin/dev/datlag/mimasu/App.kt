@@ -2,6 +2,9 @@ package dev.datlag.mimasu
 
 import android.content.Context
 import androidx.multidex.MultiDexApplication
+import co.touchlab.kermit.ExperimentalKermitApi
+import co.touchlab.kermit.Logger
+import co.touchlab.kermit.crashlytics.CrashlyticsLogWriter
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
@@ -11,7 +14,6 @@ import com.appmattus.certificatetransparency.installCertificateTransparencyProvi
 import com.google.android.gms.net.CronetProviderInstaller
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.module.NetworkModule
-import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.compose.launchIO
 import dev.gitlive.firebase.Firebase
@@ -43,7 +45,7 @@ class App : MultiDexApplication(), DIAware {
         import(NetworkModule.di)
     }
 
-    @OptIn(DelicateCoilApi::class)
+    @OptIn(DelicateCoilApi::class, ExperimentalKermitApi::class)
     override fun onCreate() {
         super.onCreate()
 
@@ -74,6 +76,10 @@ class App : MultiDexApplication(), DIAware {
                     apiKey = apiKey
                 )
             )
+
+            if (!BuildConfig.DEBUG) {
+                Logger.setLogWriters(CrashlyticsLogWriter())
+            }
         } else {
             NetworkModule.initializeFailure()
             return

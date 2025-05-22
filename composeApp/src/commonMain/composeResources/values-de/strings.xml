@@ -142,4 +142,7 @@
     <string name="show_justwatch_rent">Ausleihen</string>
     <string name="show_justwatch_free">Kostenlos</string>
     <string name="show_justwatch_ads">Werbung</string>
+
+    <string name="error_state_text">Etwas ist schiefgelaufen, bitte versuche es später noch einmal.</string>
+    <string name="error_state_with_throwable_text">Etwas ist schiefgelaufen und wurde gemeldet, bitte versuche es später noch einmal.</string>
 </resources>

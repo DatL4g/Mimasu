@@ -124,6 +124,7 @@ kotlin {
             implementation(libs.splashscreen)
             implementation(libs.certificate.transparency.android)
             implementation(libs.bundles.android.ads)
+            implementation(libs.kermit.crashlytics)
 
             implementation(project(":rive"))
             implementation(project(":extension"))

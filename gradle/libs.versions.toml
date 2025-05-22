@@ -134,6 +134,7 @@ kache = { group = "com.mayakapps.kache", name = "kache", version.ref = "kache" }
 kase-change = { group = "net.pearx.kasechange", name = "kasechange", version.ref = "kase-change" }
 kast = { group = "dev.datlag.kast", name = "kast", version.ref = "kast" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
+kermit-crashlytics = { group = "co.touchlab", name = "kermit-crashlytics", version.ref = "kermit" }
 kmpalette = { group = "com.kmpalette", name = "kmpalette-core", version.ref = "kmpalette" }
 kodein = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
 kodein-compose = { group = "org.kodein.di", name = "kodein-di-framework-compose", version.ref = "kodein" }
