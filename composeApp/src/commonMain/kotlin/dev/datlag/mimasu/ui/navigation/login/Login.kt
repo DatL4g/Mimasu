@@ -32,6 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -87,11 +88,14 @@ import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_
 import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_number
 import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_special
 import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_uppercase
+import dev.datlag.mimasu.composeapp.generated.resources.login_password_reset_email_nothing_receiving
+import dev.datlag.mimasu.composeapp.generated.resources.login_password_reset_email_sent
 import dev.datlag.mimasu.composeapp.generated.resources.login_privacy_policy
 import dev.datlag.mimasu.composeapp.generated.resources.login_sign_in
 import dev.datlag.mimasu.composeapp.generated.resources.login_terms_of_service
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.ui.navigation.login.components.LoginPasswordCriteria
+import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformButton
 import dev.datlag.tooling.compose.platform.PlatformText
@@ -111,6 +115,7 @@ fun Login(onSuccess: () -> Unit) {
     val emailValid = remember(emailValue, emailHasError) {
         emailValue.isNotBlank() && !emailHasError
     }
+    val emailReadonly by accountViewModel.emailReadonly.collectAsStateWithLifecycle()
     val emailInteractionSource = remember { MutableInteractionSource() }
     val typingEmail by emailInteractionSource.collectIsFocusedAsState()
 
@@ -124,6 +129,12 @@ fun Login(onSuccess: () -> Unit) {
     }
     val passwordInteractionSource = remember { MutableInteractionSource() }
     val typingPassword by passwordInteractionSource.collectIsFocusedAsState()
+    val passwordResetCode by accountViewModel.passwordResetCode.collectAsStateWithLifecycle()
+    val passwordResetUi by accountViewModel.passwordResetUi.collectAsStateWithLifecycle()
+
+    LaunchedEffect(passwordResetCode) {
+        accountViewModel.verifyPasswordResetCode(passwordResetCode)
+    }
 
     val focusManager = LocalFocusManager.current
 
@@ -143,8 +154,6 @@ fun Login(onSuccess: () -> Unit) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-
                 LoginAppImage(
                     imageModifier = Modifier.size(200.dp).clip(CircleShape),
                     riveModifier = Modifier.fillMaxWidth(),
@@ -229,52 +238,64 @@ fun Login(onSuccess: () -> Unit) {
                 maxLines = 1,
                 singleLine = true,
                 isError = passwordHasError,
+                readOnly = emailReadonly,
                 interactionSource = passwordInteractionSource
             )
         }
-        item {
-            Row(
-                modifier = Modifier.fillParentMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End)
-            ) {
-                AnimatedVisibility(
-                    modifier = Modifier.weight(1F),
-                    visible = passwordValue.isNotEmpty(),
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
-                ) {
-                    Column {
-                        LoginPasswordCriteria(
-                            fulfilled = passwordErrorState?.hasLowercaseLetter == true,
-                            text = Res.string.login_password_criteria_lowercase
-                        )
-                        LoginPasswordCriteria(
-                            fulfilled = passwordErrorState?.hasUppercaseLetter == true,
-                            text = Res.string.login_password_criteria_uppercase
-                        )
-                        LoginPasswordCriteria(
-                            fulfilled = passwordErrorState?.hasNumber == true,
-                            text = Res.string.login_password_criteria_number
-                        )
-                        LoginPasswordCriteria(
-                            fulfilled = passwordErrorState?.hasSpecialChar == true,
-                            text = Res.string.login_password_criteria_special
-                        )
-                        LoginPasswordCriteria(
-                            fulfilled = passwordErrorState?.isLongEnough == true,
-                            text = Res.string.login_password_criteria_length_minimum
-                        )
-                    }
-                }
-                if (!Platform.rememberIsTv()) {
-                    TextButton(
-                        modifier = Modifier,
-                        onClick = {
+        if (!passwordResetUi) {
+            item {
+                var resetPasswordSent by remember { mutableStateOf(false) }
 
-                        },
-                        enabled = emailValid
+                Row(
+                    modifier = Modifier.fillParentMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End)
+                ) {
+                    if (resetPasswordSent) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = stringResource(Res.string.login_password_reset_email_sent))
+                            Text(text = stringResource(Res.string.login_password_reset_email_nothing_receiving))
+                        }
+                    }
+                    AnimatedVisibility(
+                        modifier = Modifier.weight(1F),
+                        visible = passwordValue.isNotEmpty() && !resetPasswordSent,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
                     ) {
-                        Text(text = stringResource(Res.string.login_forgot_password))
+                        Column {
+                            LoginPasswordCriteria(
+                                fulfilled = passwordErrorState?.hasLowercaseLetter == true,
+                                text = Res.string.login_password_criteria_lowercase
+                            )
+                            LoginPasswordCriteria(
+                                fulfilled = passwordErrorState?.hasUppercaseLetter == true,
+                                text = Res.string.login_password_criteria_uppercase
+                            )
+                            LoginPasswordCriteria(
+                                fulfilled = passwordErrorState?.hasNumber == true,
+                                text = Res.string.login_password_criteria_number
+                            )
+                            LoginPasswordCriteria(
+                                fulfilled = passwordErrorState?.hasSpecialChar == true,
+                                text = Res.string.login_password_criteria_special
+                            )
+                            LoginPasswordCriteria(
+                                fulfilled = passwordErrorState?.isLongEnough == true,
+                                text = Res.string.login_password_criteria_length_minimum
+                            )
+                        }
+                    }
+                    if (!Platform.rememberIsTv() && !resetPasswordSent) {
+                        TextButton(
+                            modifier = Modifier,
+                            onClick = {
+                                accountViewModel.resetPassword(emailValue)
+                                resetPasswordSent = true
+                            },
+                            enabled = emailValid && !resetPasswordSent
+                        ) {
+                            Text(text = stringResource(Res.string.login_forgot_password))
+                        }
                     }
                 }
             }
@@ -283,92 +304,107 @@ fun Login(onSuccess: () -> Unit) {
             PlatformButton(
                 modifier = Modifier.fillParentMaxWidth(),
                 onClick = {
-                    accountViewModel.emailSignIn(
-                        params = EmailAuthParams(
+                    if (passwordResetUi) {
+                        accountViewModel.changePassword(
+                            code = passwordResetCode,
                             email = emailValue,
-                            password = passwordValue
-                        ),
-                        onSuccess = {
-                            withMainContext {
-                                onSuccess()
+                            newPassword = passwordValue,
+                            onSuccess = {
+                                withMainContext {
+                                    onSuccess()
+                                }
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        accountViewModel.emailSignIn(
+                            params = EmailAuthParams(
+                                email = emailValue,
+                                password = passwordValue
+                            ),
+                            onSuccess = {
+                                withMainContext {
+                                    onSuccess()
+                                }
+                            }
+                        )
+                    }
                 },
                 enabled = emailValid && passwordValid
             ) {
                 PlatformText(text = stringResource(Res.string.login_sign_in))
             }
         }
-        item {
-            if (accountViewModel.hasGitHubProvider || accountViewModel.hasGoogleProvider) {
-                Row(
-                    modifier = Modifier.fillParentMaxWidth().padding(vertical = 8.dp),
+        if (!passwordResetUi) {
+            item {
+                if (accountViewModel.hasGitHubProvider || accountViewModel.hasGoogleProvider) {
+                    Row(
+                        modifier = Modifier.fillParentMaxWidth().padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        HorizontalDivider(
+                            modifier = Modifier.weight(1F)
+                        )
+                        PlatformText(text = stringResource(Res.string.login_or_login_with))
+                        HorizontalDivider(
+                            modifier = Modifier.weight(1F)
+                        )
+                    }
+                }
+            }
+            item {
+                FlowRow(
+                    modifier = Modifier.fillParentMaxWidth(),
+                    maxItemsInEachRow = 2,
                     horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
                 ) {
-                    HorizontalDivider(
-                        modifier = Modifier.weight(1F)
-                    )
-                    PlatformText(text = stringResource(Res.string.login_or_login_with))
-                    HorizontalDivider(
-                        modifier = Modifier.weight(1F)
-                    )
+                    if (accountViewModel.hasGitHubProvider) {
+                        GitHubButton(
+                            modifier = Modifier.weight(1F),
+                            onClick = { params ->
+                                accountViewModel.githubSignIn(
+                                    params = params,
+                                    onSuccess = {
+                                        withMainContext {
+                                            onSuccess()
+                                        }
+                                    }
+                                )
+                            },
+                            text = stringResource(Res.string.github)
+                        )
+                    }
+                    if (accountViewModel.hasGoogleProvider) {
+                        GoogleButton(
+                            modifier = Modifier.weight(1F),
+                            onClick = {
+                                accountViewModel.googleSignIn(
+                                    onSuccess = {
+                                        withMainContext {
+                                            onSuccess()
+                                        }
+                                    }
+                                )
+                            },
+                            text = stringResource(Res.string.google)
+                        )
+                    }
                 }
             }
-        }
-        item {
-            FlowRow(
-                modifier = Modifier.fillParentMaxWidth(),
-                maxItemsInEachRow = 2,
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
-            ) {
-                if (accountViewModel.hasGitHubProvider) {
-                    GitHubButton(
-                        modifier = Modifier.weight(1F),
-                        onClick = { params ->
-                            accountViewModel.githubSignIn(
-                                params = params,
-                                onSuccess = {
-                                    withMainContext {
-                                        onSuccess()
-                                    }
-                                }
-                            )
-                        },
-                        text = stringResource(Res.string.github)
-                    )
-                }
-                if (accountViewModel.hasGoogleProvider) {
-                    GoogleButton(
-                        modifier = Modifier.weight(1F),
-                        onClick = {
-                            accountViewModel.googleSignIn(
-                                onSuccess = {
-                                    withMainContext {
-                                        onSuccess()
-                                    }
-                                }
-                            )
-                        },
-                        text = stringResource(Res.string.google)
-                    )
-                }
-            }
-        }
-        item {
-            val loginResult by accountViewModel.loginResult.collectAsStateWithLifecycle()
+            item {
+                val loginResult by accountViewModel.loginResult.collectAsStateWithLifecycle()
 
-            AnimatedVisibility(
-                modifier = Modifier.fillParentMaxWidth(),
-                visible = loginResult == false
-            ) {
-                PlatformText(
-                    text = stringResource(Res.string.login_failure),
-                    color = Platform.colorScheme().error,
-                    textAlign = TextAlign.Center
-                )
+                AnimatedVisibility(
+                    modifier = Modifier.fillParentMaxWidth(),
+                    visible = loginResult == false
+                ) {
+                    PlatformText(
+                        text = stringResource(Res.string.login_failure),
+                        color = Platform.colorScheme().error,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
         item {

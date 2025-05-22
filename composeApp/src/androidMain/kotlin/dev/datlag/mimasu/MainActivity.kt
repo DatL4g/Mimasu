@@ -1,6 +1,7 @@
 package dev.datlag.mimasu
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +18,8 @@ import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.theme.Font
+import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
+import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.toTypography
 import dev.datlag.tooling.safeCast
@@ -86,12 +89,38 @@ class MainActivity : AdActivity() {
                 }
             )
         }
+
+        handleIntent(intent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         ExtensionInitializer.nullableMovieProvider()?.unbind(this)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        val action = intent?.action?.ifBlank { null }
+
+        if (Intent.ACTION_VIEW == action) {
+            val data = intent.data
+
+            if (data != null) {
+                val oobCode = data.getQueryParameter("oobCode")?.ifBlank { null }
+                val mode = data.getQueryParameter("mode")?.ifBlank { null }
+
+                if (mode.equals("resetPassword", ignoreCase = true) && !oobCode.isNullOrBlank()) {
+                    AccountViewModel.setResetCode(oobCode)
+                }
+            }
+        }
+        setIntent(Intent())
     }
 
 }

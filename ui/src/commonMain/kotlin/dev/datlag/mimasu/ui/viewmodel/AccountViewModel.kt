@@ -16,6 +16,7 @@ import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
 import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
 import dev.datlag.mimasu.ui.GoogleProvider
+import dev.datlag.tooling.async.suspendCatching
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -46,6 +47,9 @@ class AccountViewModel(
 
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
+
+    private val _emailReadonly = MutableStateFlow(false)
+    val emailReadonly = _emailReadonly.asStateFlow()
 
     private val emailAddressRegex = Regex(
         "[a-zA-Z0-9+._%\\-]{1,256}@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+"
@@ -87,6 +91,10 @@ class AccountViewModel(
             null
         }
     }
+
+    val passwordResetCode = Companion.passwordResetCode
+    private val _passwordResetUi = MutableStateFlow(false)
+    val passwordResetUi = _passwordResetUi.asStateFlow()
 
     fun updatePassword(value: String) {
         _password.update { value.trim() }
@@ -166,11 +174,50 @@ class AccountViewModel(
         service.signOut()
     }
 
-    // ToDo("request github sponsorship")
-    suspend fun isPremiumUser(): Boolean {
-        return firestoreWrapper.getUserData().premium || currentUser?.github?.let { git ->
-            git.linked
-        } ?: false
+    fun resetPassword(email: String) = startLoginJob {
+        suspendCatching {
+            service.sendPasswordResetEmail(email)
+        }
+    }
+
+    fun verifyPasswordResetCode(code: String?) = startLoginJob {
+        val resetEmail = code?.ifBlank { null }?.let {
+            suspendCatching {
+                service.verifyPasswordResetCode(code)
+            }.getOrNull()?.ifBlank { null }
+        }
+
+        if (resetEmail.isNullOrBlank()) {
+            _emailReadonly.update { false }
+            _passwordResetUi.update { false }
+        } else {
+            _emailReadonly.update { true }
+            _email.update { resetEmail }
+            _passwordResetUi.update { true }
+        }
+    }
+
+    fun changePassword(
+        code: String?,
+        email: String,
+        newPassword: String,
+        onSuccess: suspend CoroutineScope.() -> Unit
+    ) = startLoginJob {
+        if (code.isNullOrBlank()) {
+            return@startLoginJob
+        }
+
+        suspendCatching {
+            service.changePassword(code, newPassword)
+        }.onSuccess {
+            emailSignIn(
+                params = EmailAuthParams(
+                    email = email,
+                    password = newPassword
+                ),
+                onSuccess = { onSuccess() }
+            )
+        }
     }
 
     private fun startLoginJob(block: suspend CoroutineScope.() -> Unit): Job? {
@@ -211,6 +258,10 @@ class AccountViewModel(
 
     companion object : ViewModelStoreOwner {
         override val viewModelStore: ViewModelStore = ViewModelStore()
+
+        private val passwordResetCode = MutableStateFlow<String?>(null)
+
+        fun setResetCode(code: String?) = passwordResetCode.update { code?.ifBlank { null } }
     }
 }
 

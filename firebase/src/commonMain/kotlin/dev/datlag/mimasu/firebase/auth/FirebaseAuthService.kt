@@ -3,6 +3,8 @@ package dev.datlag.mimasu.firebase.auth
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.app
+import dev.gitlive.firebase.auth.ActionCodeSettings
+import dev.gitlive.firebase.auth.AndroidPackageName
 import dev.gitlive.firebase.auth.AuthCredential
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
@@ -50,5 +52,24 @@ data class FirebaseAuthService(
 
     suspend fun signOut() {
         auth.signOut()
+    }
+
+    suspend fun sendPasswordResetEmail(email: String) {
+        auth.sendPasswordResetEmail(email, ActionCodeSettings(
+            url = "https://mimasu.datlag.dev",
+            androidPackageName = AndroidPackageName(
+                packageName = "dev.datlag.mimasu",
+                installIfNotAvailable = true
+            ),
+            canHandleCodeInApp = true
+        ))
+    }
+
+    suspend fun verifyPasswordResetCode(code: String): String {
+        return auth.verifyPasswordResetCode(code)
+    }
+
+    suspend fun changePassword(code: String, newPassword: String) {
+        return auth.confirmPasswordReset(code, newPassword)
     }
 }
