@@ -14,6 +14,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jet.ads.admob.AdMobTestIds
 import com.jet.ads.admob.banner.AdaptiveBanner
 import com.jet.ads.common.callbacks.BannerCallBack
+import dev.datlag.mimasu.BuildConfig
+import dev.datlag.mimasu.BuildKonfig
+import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.common.findActivity
 import dev.datlag.mimasu.other.AdManager
 import org.kodein.di.compose.localDI
@@ -22,6 +25,13 @@ import kotlin.getValue
 
 @Composable
 actual fun BannerAd(modifier: Modifier) = with(localDI()) {
+    val bannerId = remember {
+        if (BuildConfig.DEBUG) {
+            AdMobTestIds.ADAPTIVE_BANNER
+        } else {
+            Sekret.admobHomeBanner(BuildKonfig.packageName)?.ifBlank { null }
+        }
+    } ?: return
     val nullableAdManager by instanceOrNull<AdManager>()
     val context = LocalContext.current
     val activity = LocalActivity.current ?: context.findActivity()
@@ -35,7 +45,7 @@ actual fun BannerAd(modifier: Modifier) = with(localDI()) {
 
     if (displayAd && adsInitialized) {
         AdaptiveBanner(
-            adUnit = AdMobTestIds.ADAPTIVE_BANNER,
+            adUnit = bannerId,
             modifier = modifier,
             safeTopMarginDp = 0.dp,
             bannerCallBack = BannerCallBack(

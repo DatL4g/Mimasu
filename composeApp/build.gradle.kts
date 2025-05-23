@@ -5,6 +5,10 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.mikepenz.aboutlibraries.plugin.DuplicateMode
 import com.mikepenz.aboutlibraries.plugin.DuplicateRule
+import dev.datlag.tooling.existsSafely
+import dev.datlag.tooling.scopeCatching
+import dev.datlag.tooling.systemEnv
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -22,6 +26,7 @@ plugins {
 }
 
 val artifact = "dev.datlag.mimasu"
+val ADMOB_ANDROID_TESTING = "ca-app-pub-3940256099942544~3347511713"
 group = artifact
 
 composeCompiler {
@@ -189,10 +194,14 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            manifestPlaceholders["admob_app_id"] = getAdmobAppId() ?: ADMOB_ANDROID_TESTING
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 file("src/androidMain/proguard-rules.pro")
             )
+        }
+        debug {
+            manifestPlaceholders["admob_app_id"] = ADMOB_ANDROID_TESTING
         }
     }
 }
@@ -225,6 +234,8 @@ buildkonfig {
 sekret {
     properties {
         enabled.set(true)
+
+        propertiesFile.set(project.layout.projectDirectory.file("sekret.properties"))
     }
 }
 
@@ -241,4 +252,25 @@ aboutLibraries {
         prettyPrint.set(true)
         outputPath.set(project.layout.projectDirectory.file("src/commonMain/composeResources/files/aboutlibraries.json"))
     }
+}
+
+private fun getAdmobAppId(): String? {
+    var propFile = rootProject.file("local.properties")
+    if (!propFile.existsSafely()) {
+        propFile = project.file("local.properties")
+    }
+
+    if (propFile.existsSafely()) {
+        val props = Properties()
+
+        scopeCatching {
+            propFile.inputStream().use {
+                props.load(it)
+            }
+        }.onSuccess {
+            return props.getProperty("admob.app.id")?.ifBlank { null } ?: systemEnv("ADMOB_APP_ID")?.ifBlank { null }
+        }
+    }
+
+    return systemEnv("ADMOB_APP_ID")?.ifBlank { null }
 }
