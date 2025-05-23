@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
 import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.outlined.HideImage
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Apartment
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Bookmark
@@ -139,6 +140,7 @@ data object MaterialSymbols {
     const val HIDE_IMAGE = "hide_image"
     const val INFO = "info"
     const val OPEN_IN_BROWSER = "open_in_browser"
+    const val ACCOUNT_CIRCLE = "account_circle"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -491,6 +493,7 @@ data object MaterialSymbols {
         name.equals(HIDE_IMAGE, ignoreCase = true) -> Icons.Outlined.HideImage
         name.equals(INFO, ignoreCase = true) -> Icons.Rounded.Info
         name.equals(OPEN_IN_BROWSER, ignoreCase = true) -> Icons.Rounded.OpenInBrowser
+        name.equals(ACCOUNT_CIRCLE, ignoreCase = true) -> Icons.Rounded.AccountCircle
         else -> null
     }
 

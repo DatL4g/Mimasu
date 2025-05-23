@@ -123,6 +123,7 @@ fun Profile(
                 contentAlignment = Alignment.Center
             ) {
                 var aboutDialog by remember { mutableStateOf(false) }
+                var fallback by remember { mutableStateOf(false) }
 
                 if (aboutDialog) {
                     AboutDialog(
@@ -143,18 +144,38 @@ fun Profile(
                         contentDescription = null
                     )
                 }
-                AsyncImage(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape),
-                    model = user?.profilePictures?.firstOrNull(),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null,
-                    error = rememberNestedImagePainter(
-                        models = user?.profilePictures.orEmpty().drop(1),
-                        contentScale = ContentScale.Crop
+                if (fallback) {
+                    MaterialSymbols(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape),
+                        name = MaterialSymbols.ACCOUNT_CIRCLE,
+                        contentDescription = null,
+                        filled = true
                     )
-                )
+                } else {
+                    AsyncImage(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape),
+                        model = user?.profilePictures?.firstOrNull(),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                        error = rememberNestedImagePainter(
+                            models = user?.profilePictures.orEmpty().drop(1),
+                            contentScale = ContentScale.Crop,
+                            onError = {
+                                fallback = true
+                            },
+                            onSuccess = {
+                                fallback = false
+                            }
+                        ),
+                        onSuccess = {
+                            fallback = false
+                        }
+                    )
+                }
                 AnimatedVisibility(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     visible = user != null
