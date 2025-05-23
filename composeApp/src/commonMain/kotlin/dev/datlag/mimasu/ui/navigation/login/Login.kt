@@ -94,7 +94,13 @@ import dev.datlag.mimasu.composeapp.generated.resources.login_privacy_policy
 import dev.datlag.mimasu.composeapp.generated.resources.login_sign_in
 import dev.datlag.mimasu.composeapp.generated.resources.login_terms_of_service
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
+import dev.datlag.mimasu.ui.navigation.login.components.LoginAgreement
 import dev.datlag.mimasu.ui.navigation.login.components.LoginPasswordCriteria
+import dev.datlag.mimasu.ui.navigation.login.components.LoginPasswordCriteriaSection
+import dev.datlag.mimasu.ui.navigation.login.components.LoginResult
+import dev.datlag.mimasu.ui.navigation.login.components.LoginSignInButton
+import dev.datlag.mimasu.ui.navigation.login.components.LoginSocialProvider
+import dev.datlag.mimasu.ui.navigation.login.components.LoginSocialProviderDivider
 import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformButton
@@ -104,6 +110,7 @@ import dev.datlag.tooling.compose.platform.rememberIsTv
 import dev.datlag.tooling.compose.withMainContext
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.min
+import kotlin.onSuccess
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -242,215 +249,90 @@ fun Login(onSuccess: () -> Unit) {
                 interactionSource = passwordInteractionSource
             )
         }
-        if (!passwordResetUi) {
-            item {
-                var resetPasswordSent by remember { mutableStateOf(false) }
-
-                Row(
-                    modifier = Modifier.fillParentMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End)
-                ) {
-                    if (resetPasswordSent) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Text(text = stringResource(Res.string.login_password_reset_email_sent))
-                            Text(text = stringResource(Res.string.login_password_reset_email_nothing_receiving))
-                        }
-                    }
-                    AnimatedVisibility(
-                        modifier = Modifier.weight(1F),
-                        visible = passwordValue.isNotEmpty() && !resetPasswordSent,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
-                    ) {
-                        Column {
-                            LoginPasswordCriteria(
-                                fulfilled = passwordErrorState?.hasLowercaseLetter == true,
-                                text = Res.string.login_password_criteria_lowercase
-                            )
-                            LoginPasswordCriteria(
-                                fulfilled = passwordErrorState?.hasUppercaseLetter == true,
-                                text = Res.string.login_password_criteria_uppercase
-                            )
-                            LoginPasswordCriteria(
-                                fulfilled = passwordErrorState?.hasNumber == true,
-                                text = Res.string.login_password_criteria_number
-                            )
-                            LoginPasswordCriteria(
-                                fulfilled = passwordErrorState?.hasSpecialChar == true,
-                                text = Res.string.login_password_criteria_special
-                            )
-                            LoginPasswordCriteria(
-                                fulfilled = passwordErrorState?.isLongEnough == true,
-                                text = Res.string.login_password_criteria_length_minimum
-                            )
-                        }
-                    }
-                    if (!Platform.rememberIsTv() && !resetPasswordSent) {
-                        TextButton(
-                            modifier = Modifier,
-                            onClick = {
-                                accountViewModel.resetPassword(emailValue)
-                                resetPasswordSent = true
-                            },
-                            enabled = emailValid && !resetPasswordSent
-                        ) {
-                            Text(text = stringResource(Res.string.login_forgot_password))
-                        }
-                    }
+        item {
+            LoginPasswordCriteriaSection(
+                emailValid = emailValid,
+                criteriaVisible = passwordValue.isNotEmpty(),
+                passwordErrorState = passwordErrorState,
+                modifier = Modifier.fillParentMaxWidth(),
+                onPasswordReset = {
+                    accountViewModel.resetPassword(emailValue)
                 }
-            }
+            )
         }
         item {
-            PlatformButton(
+            LoginSignInButton(
+                enabled = emailValid && passwordValid,
+                passwordReset = passwordResetUi,
                 modifier = Modifier.fillParentMaxWidth(),
-                onClick = {
-                    if (passwordResetUi) {
-                        accountViewModel.changePassword(
-                            code = passwordResetCode,
+                onSignIn = {
+                    accountViewModel.emailSignIn(
+                        params = EmailAuthParams(
                             email = emailValue,
-                            newPassword = passwordValue,
-                            onSuccess = {
-                                withMainContext {
-                                    onSuccess()
-                                }
+                            password = passwordValue
+                        ),
+                        onSuccess = {
+                            withMainContext {
+                                onSuccess()
                             }
-                        )
-                    } else {
-                        accountViewModel.emailSignIn(
-                            params = EmailAuthParams(
-                                email = emailValue,
-                                password = passwordValue
-                            ),
-                            onSuccess = {
-                                withMainContext {
-                                    onSuccess()
-                                }
-                            }
-                        )
-                    }
+                        }
+                    )
                 },
-                enabled = emailValid && passwordValid
-            ) {
-                PlatformText(text = stringResource(Res.string.login_sign_in))
-            }
+                onPasswordReset = {
+                    accountViewModel.changePassword(
+                        code = passwordResetCode,
+                        email = emailValue,
+                        newPassword = passwordValue,
+                        onSuccess = {
+                            withMainContext {
+                                onSuccess()
+                            }
+                        }
+                    )
+                }
+            )
         }
         if (!passwordResetUi) {
             item {
-                if (accountViewModel.hasGitHubProvider || accountViewModel.hasGoogleProvider) {
-                    Row(
-                        modifier = Modifier.fillParentMaxWidth().padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        HorizontalDivider(
-                            modifier = Modifier.weight(1F)
-                        )
-                        PlatformText(text = stringResource(Res.string.login_or_login_with))
-                        HorizontalDivider(
-                            modifier = Modifier.weight(1F)
-                        )
-                    }
-                }
+                LoginSocialProviderDivider(
+                    hasGitHubProvider = accountViewModel.hasGitHubProvider,
+                    hasGoogleProvider = accountViewModel.hasGoogleProvider,
+                    modifier = Modifier.fillParentMaxWidth().padding(vertical = 8.dp)
+                )
             }
             item {
-                FlowRow(
+                LoginSocialProvider(
+                    hasGitHubProvider = accountViewModel.hasGitHubProvider,
+                    hasGoogleProvider = accountViewModel.hasGoogleProvider,
                     modifier = Modifier.fillParentMaxWidth(),
-                    maxItemsInEachRow = 2,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-                    verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
-                ) {
-                    if (accountViewModel.hasGitHubProvider) {
-                        GitHubButton(
-                            modifier = Modifier.weight(1F),
-                            onClick = { params ->
-                                accountViewModel.githubSignIn(
-                                    params = params,
-                                    onSuccess = {
-                                        withMainContext {
-                                            onSuccess()
-                                        }
-                                    }
-                                )
-                            },
-                            text = stringResource(Res.string.github)
-                        )
+                    onGitHubClicked = { params ->
+                        accountViewModel.githubSignIn(params) {
+                            withMainContext {
+                                onSuccess()
+                            }
+                        }
+                    },
+                    onGoogleClicked = {
+                        accountViewModel.googleSignIn {
+                            withMainContext {
+                                onSuccess()
+                            }
+                        }
                     }
-                    if (accountViewModel.hasGoogleProvider) {
-                        GoogleButton(
-                            modifier = Modifier.weight(1F),
-                            onClick = {
-                                accountViewModel.googleSignIn(
-                                    onSuccess = {
-                                        withMainContext {
-                                            onSuccess()
-                                        }
-                                    }
-                                )
-                            },
-                            text = stringResource(Res.string.google)
-                        )
-                    }
-                }
+                )
             }
             item {
                 val loginResult by accountViewModel.loginResult.collectAsStateWithLifecycle()
 
-                AnimatedVisibility(
-                    modifier = Modifier.fillParentMaxWidth(),
-                    visible = loginResult == false
-                ) {
-                    PlatformText(
-                        text = stringResource(Res.string.login_failure),
-                        color = Platform.colorScheme().error,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                LoginResult(
+                    failure = loginResult == false,
+                    modifier = Modifier.fillParentMaxWidth()
+                )
             }
         }
         item {
-            val uriHandler = LocalUriHandler.current
-            val rawAgreement = stringResource(Res.string.login_agreement)
-            val terms = stringResource(Res.string.login_terms_of_service)
-            val privacy = stringResource(Res.string.login_privacy_policy)
-            val agreement = remember(rawAgreement, terms, privacy) {
-                buildAnnotatedString {
-                    val termsIndex = rawAgreement.indexOf("{terms}")
-                    val termsAgreement = rawAgreement.replace("{terms}", terms)
-                    val privacyIndex = termsAgreement.indexOf("{privacy}")
-                    val agreement = termsAgreement.replace("{privacy}", privacy)
-
-                    append(agreement)
-
-                    if (termsIndex >= 0) {
-                        addLink(clickable = LinkAnnotation.Clickable(
-                            tag = "TERMS",
-                            styles = TextLinkStyles(style = SpanStyle(textDecoration = TextDecoration.Underline)),
-                            linkInteractionListener = object : LinkInteractionListener {
-                                override fun onClick(link: LinkAnnotation) {
-                                    uriHandler.openUri("https://github.com/DatL4g/Mimasu")
-                                }
-                            }
-                        ), start = termsIndex, end = min(termsIndex + terms.length, agreement.length))
-                    }
-
-                    if (privacyIndex >= 0) {
-                        addLink(clickable = LinkAnnotation.Clickable(
-                            tag = "PRIVACY",
-                            styles = TextLinkStyles(style = SpanStyle(textDecoration = TextDecoration.Underline)),
-                            linkInteractionListener = object : LinkInteractionListener {
-                                override fun onClick(link: LinkAnnotation) {
-                                    uriHandler.openUri("https://github.com/DatL4g/Mimasu")
-                                }
-                            }
-                        ), start = privacyIndex, end = min(privacyIndex + privacy.length, agreement.length))
-                    }
-                }
-            }
-
-            PlatformText(
-                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp),
-                text = agreement,
-                textAlign = TextAlign.Center
+            LoginAgreement(
+                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp)
             )
         }
     }
