@@ -23,6 +23,7 @@ plugins {
     alias(libs.plugins.about)
     alias(libs.plugins.stacktrace.decoroutinator)
     alias(libs.plugins.crashlytics)
+    alias(libs.plugins.google.services)
 }
 
 val artifact = "dev.datlag.mimasu"
@@ -235,6 +236,7 @@ sekret {
     properties {
         enabled.set(true)
 
+        googleServicesFile.set(project.layout.projectDirectory.file("google-services.json"))
         propertiesFile.set(project.layout.projectDirectory.file("sekret.properties"))
     }
 }
