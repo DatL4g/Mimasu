@@ -15,6 +15,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.login_agreement
 import dev.datlag.mimasu.composeapp.generated.resources.login_privacy_policy
 import dev.datlag.mimasu.composeapp.generated.resources.login_terms_of_service
+import dev.datlag.mimasu.core.Constants
 import dev.datlag.tooling.compose.platform.PlatformText
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.min
@@ -42,7 +43,7 @@ fun LoginAgreement(
                     styles = TextLinkStyles(style = SpanStyle(textDecoration = TextDecoration.Underline)),
                     linkInteractionListener = object : LinkInteractionListener {
                         override fun onClick(link: LinkAnnotation) {
-                            uriHandler.openUri("https://github.com/DatL4g/Mimasu")
+                            uriHandler.openUri(Constants.TERMS_CONDITIONS)
                         }
                     }
                 ), start = termsIndex, end = min(termsIndex + terms.length, agreement.length))
@@ -54,7 +55,7 @@ fun LoginAgreement(
                     styles = TextLinkStyles(style = SpanStyle(textDecoration = TextDecoration.Underline)),
                     linkInteractionListener = object : LinkInteractionListener {
                         override fun onClick(link: LinkAnnotation) {
-                            uriHandler.openUri("https://github.com/DatL4g/Mimasu")
+                            uriHandler.openUri(Constants.PRIVACY_POLICY)
                         }
                     }
                 ), start = privacyIndex, end = min(privacyIndex + privacy.length, agreement.length))
