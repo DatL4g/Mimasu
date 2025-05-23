@@ -60,6 +60,7 @@ navigation = "2.9.0-beta02"
 okhttp = "4.12.0"
 osdetector = "1.7.3"
 paging = "3.3.6"
+performance = "1.4.2"
 placeholder = "1.0.11"
 play-services = "21.3.0"
 rive = "10.1.4"
@@ -91,6 +92,7 @@ android-autofill = { group = "androidx.autofill", name = "autofill", version.ref
 android-firebase = { group = "com.google.firebase", name = "firebase-bom", version.ref = "android-firebase" }
 android-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 android-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+android-firebase-performance = { module = "com.google.firebase:firebase-perf" }
 android-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "android-startup" }
 ackpine = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "ackpine" }
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
@@ -216,6 +218,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 osdetector = { id = "com.google.osdetector", version.ref = "osdetector" }
+performance = { id = "com.google.firebase.firebase-perf", version.ref = "performance" }
 tolgee = { id = "dev.datlag.tolgee", version.ref = "tolgee" }
 sekret = { id = "dev.datlag.sekret", version.ref = "sekret" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -42,6 +42,7 @@ kotlin {
             api(project.dependencies.platform(libs.android.firebase))
             api(libs.android.firebase.analytics)
             api(libs.android.firebase.crashlytics)
+            api(libs.android.firebase.performance)
         }
     }
 }
