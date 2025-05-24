@@ -6,15 +6,15 @@ import kotlin.reflect.KClass
 
 data object BoolStringConverter : Converter.Factory {
 
-    private fun asBoolean(value: String): Boolean = when {
+    private fun asStringBoolean(value: String): Boolean = when {
         value.equals("true", ignoreCase = true) -> true
         value == "1" -> true
-        else -> false
+        else -> value.toBoolean()
     }
 
     fun asBoolean(any: Any): Boolean = when {
         any is Boolean -> any
-        else -> asBoolean(value = any.toString())
+        else -> asStringBoolean(value = any.toString())
     }
 
     fun asString(value: Boolean): String = if (value) {

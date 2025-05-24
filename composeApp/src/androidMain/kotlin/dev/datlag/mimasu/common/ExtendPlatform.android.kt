@@ -3,15 +3,16 @@ package dev.datlag.mimasu.common
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.provider.Settings
 import android.view.Window
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import app.rive.runtime.kotlin.core.RendererType
 import app.rive.runtime.kotlin.core.Rive
-import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.module.PlatformModule
+import dev.datlag.mimasu.other.ArchUtils
 import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.LocalDate
@@ -76,10 +77,23 @@ actual fun rememberGitHubAuthParams(): GitHubAuthParams? {
     } ?: context.findActivity()
 }
 
+fun Context.isRunningInTestLab(): Boolean {
+    val testLabSetting = Settings.System.getString(contentResolver, "firebase.test.lab") ?: return false
+    return when {
+        testLabSetting.equals("true", ignoreCase = true) -> true
+        testLabSetting == "1" -> true
+        else -> testLabSetting.toBoolean()
+    }
+}
+
 fun Rive.initSafely(
     context: Context,
     defaultRenderer: RendererType = defaultRendererType
 ): Boolean {
+    if (context.isRunningInTestLab() || !ArchUtils.supportsRive()) {
+        return false
+    }
+
     val riveClass = "app.rive.runtime.kotlin.core.Rive"
     val libName = scopeCatching {
         val clazz = Class.forName(riveClass)
