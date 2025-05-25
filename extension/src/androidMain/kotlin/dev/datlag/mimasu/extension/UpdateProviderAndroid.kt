@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class UpdateProviderAndroid(context: Context) : UpdateProvider {
 
-    private val service = UpdateService(context).also { service ->
+    private var service = UpdateService(context).also { service ->
         AIDLService.bind(context, service, AIDLService.EXTENSION_PACKAGE)
     }
 
@@ -15,5 +15,13 @@ class UpdateProviderAndroid(context: Context) : UpdateProvider {
 
     fun unbind(context: Context): Boolean {
         return AIDLService.unbind(context, service)
+    }
+
+    fun rebind(context: Context) {
+        unbind(context)
+
+        service = UpdateService(context).also { service ->
+            AIDLService.bind(context, service, AIDLService.EXTENSION_PACKAGE)
+        }
     }
 }

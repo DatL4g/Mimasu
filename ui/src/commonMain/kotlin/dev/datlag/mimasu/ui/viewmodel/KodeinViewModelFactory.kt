@@ -101,10 +101,16 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
 
                 (model as? T) ?: super.create(modelClass, extras)
             }
-            else -> super.create(modelClass, extras)
+            else -> platformKodeinViewModelFactory(di, modelClass, extras) ?: super.create(modelClass, extras)
         }
     }
 }
+
+expect fun <T : ViewModel> platformKodeinViewModelFactory(
+    di: DirectDI,
+    modelClass: KClass<T>,
+    extras: CreationExtras
+): T?
 
 @Composable
 inline fun <reified VM : ViewModel> kodeinViewModel(

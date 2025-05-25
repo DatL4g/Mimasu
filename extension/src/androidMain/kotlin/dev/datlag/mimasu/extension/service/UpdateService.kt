@@ -28,7 +28,9 @@ class UpdateService(context: Context) : AIDLService<IUpdateProvider>(context) {
         })
     }
 
-    override fun onDisconnected() { }
+    override fun onDisconnected() {
+        _update.update { null }
+    }
 
     companion object {
         internal const val ACTION = "dev.datlag.mimasu.extension.IUpdateProvider"

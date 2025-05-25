@@ -27,6 +27,7 @@ kotlin {
             implementation(libs.tooling)
             implementation(libs.collection)
             implementation(libs.kermit)
+            implementation(libs.ktor)
             implementation(project(":core"))
 
             api(project(":tmdb"))
@@ -39,6 +40,9 @@ kotlin {
 
         androidMain.dependencies {
             api(libs.paging.compose)
+            implementation(libs.bundles.ackpine)
+
+            implementation(project(":extension"))
         }
 
         val pagingCommonMain by creating {

@@ -52,5 +52,10 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
             nullableMovieProvider()?.unbind(context)
             nullableUpdateProvider()?.unbind(context)
         }
+
+        fun rebindAll(context: Context) {
+            nullableMovieProvider()?.rebind(context)
+            nullableUpdateProvider()?.rebind(context)
+        }
     }
 }

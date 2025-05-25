@@ -11,16 +11,12 @@ import kotlinx.coroutines.coroutineScope
 
 class MovieProvider(context: Context) {
 
-    private val extensionPackages = AIDLService.extensions(
+    private var extensionPackages = AIDLService.extensions(
         packageManager = context.packageManager,
         action = MovieInfoService.ACTION
     )
 
-    private val services = extensionPackages.map { packageName ->
-        MovieInfoService(context).also { service ->
-            AIDLService.bind(context, service, packageName)
-        }
-    }
+    private var services = bind(context)
 
     private val boundServices: List<MovieInfoService>
         get() = services.filter { it.isBound }
@@ -29,6 +25,22 @@ class MovieProvider(context: Context) {
         return boundServices.map {
             AIDLService.unbind(context, it)
         }.all { it }
+    }
+
+    private fun bind(context: Context) = extensionPackages.map { packageName ->
+        MovieInfoService(context).also { service ->
+            AIDLService.bind(context, service, packageName)
+        }
+    }
+
+    fun rebind(context: Context) {
+        unbind(context)
+
+        extensionPackages = AIDLService.extensions(
+            packageManager = context.packageManager,
+            action = MovieInfoService.ACTION
+        )
+        services = bind(context)
     }
 
     suspend fun requestInfo(request: Request): List<WatchInfo> = coroutineScope {

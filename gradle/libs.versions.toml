@@ -1,7 +1,7 @@
 [versions]
 app = "1.0.1"
 about = "12.1.2"
-ackpine = "0.11.1"
+ackpine = "0.12.2"
 activity = "1.10.1"
 adaptive = "1.1.1"
 admob = "24.3.0"
@@ -94,7 +94,8 @@ android-firebase-analytics = { module = "com.google.firebase:firebase-analytics"
 android-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 android-firebase-performance = { module = "com.google.firebase:firebase-perf" }
 android-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "android-startup" }
-ackpine = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "ackpine" }
+ackpine = { group = "ru.solrudev.ackpine", name = "ackpine-core", version.ref = "ackpine" }
+ackpine-ktx = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "ackpine" }
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
@@ -196,9 +197,10 @@ windowsize = { group = "dev.chrisbanes.material3", name = "material3-window-size
 youtube-player = { group = "io.github.khubaibkhan4", name = "mediaplayer-kmp", version.ref = "youtube-player" }
 
 [bundles]
+ackpine = [ "ackpine", "ackpine-ktx" ]
 android-ads = [ "admob", "ump", "jetads" ]
-google-auth = [ "google-credentials", "google-credentials-play-service", "google-identity", "google-play-service" ]
 android-media = [ "media3", "media3-dash", "media3-hls", "media3-rtsp", "media3-session", "media3-smooth", "media3-ui", "media3-cast", "media3-cronet" ]
+google-auth = [ "google-credentials", "google-credentials-play-service", "google-identity", "google-play-service" ]
 
 [plugins]
 about = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about" }

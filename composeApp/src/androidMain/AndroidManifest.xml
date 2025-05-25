@@ -80,6 +80,10 @@
 
             <meta-data android:name="dev.datlag.mimasu.extension.ExtensionInitializer"
                 android:value="androidx.startup" />
+
+            <meta-data
+                android:name="ru.solrudev.ackpine.AckpineInitializer"
+                tools:node="remove" />
         </provider>
 
         <provider
