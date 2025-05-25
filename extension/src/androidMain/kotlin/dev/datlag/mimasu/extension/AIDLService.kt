@@ -123,7 +123,7 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
 
     companion object {
 
-        private const val EXTENSION_PACKAGE = "dev.datlag.mimasu.extension"
+        internal const val EXTENSION_PACKAGE = "dev.datlag.mimasu.extension"
 
         /**
          * Get all available packageNames implementing the action.

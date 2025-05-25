@@ -11,6 +11,7 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
 
     override fun create(context: Context): State {
         return State(
+            updateProvider = UpdateProviderAndroid(context),
             movieProvider = MovieProvider(context)
         ).also { result ->
             state.update { result }
@@ -22,11 +23,19 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
     }
 
     data class State(
+        val updateProvider: UpdateProviderAndroid,
         val movieProvider: MovieProvider
     )
 
     companion object {
         private val state = atomic<State?>(null)
+
+        fun getUpdateProvider(context: Context): UpdateProvider {
+            return state.value?.updateProvider ?: androidx.startup.AppInitializer
+                .getInstance(context)
+                .initializeComponent(ExtensionInitializer::class.java)
+                .updateProvider
+        }
 
         fun getMovieProvider(context: Context): MovieProvider {
             return state.value?.movieProvider ?: androidx.startup.AppInitializer
@@ -36,5 +45,12 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
         }
 
         fun nullableMovieProvider(): MovieProvider? = state.value?.movieProvider
+
+        fun nullableUpdateProvider(): UpdateProviderAndroid? = state.value?.updateProvider
+
+        fun unbindAll(context: Context) {
+            nullableMovieProvider()?.unbind(context)
+            nullableUpdateProvider()?.unbind(context)
+        }
     }
 }

@@ -51,6 +51,7 @@ import dev.datlag.mimasu.ui.custom.PagerWormIndicator
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.mimasu.ui.custom.PersonCard
 import dev.datlag.mimasu.ui.custom.ShowPager
+import dev.datlag.mimasu.ui.navigation.home.components.ExtensionUpdate
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
@@ -72,6 +73,11 @@ fun Home(
         modifier = Modifier.fillMaxSize(),
         contentPadding = WindowInsets.statusBars.asPaddingValues()
     ) {
+        item {
+            ExtensionUpdate(
+                modifier = Modifier.fillParentMaxWidth().padding(16.dp)
+            )
+        }
         item {
             val hasBookmarks by firebaseViewModel.hasBookmarkedShows.collectAsStateWithLifecycle(false)
 

@@ -96,7 +96,7 @@ class MainActivity : AdActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        ExtensionInitializer.nullableMovieProvider()?.unbind(this)
+        ExtensionInitializer.unbindAll(this)
     }
 
     override fun onNewIntent(intent: Intent) {

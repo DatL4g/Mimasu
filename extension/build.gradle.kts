@@ -25,9 +25,11 @@ kotlin {
             implementation(libs.stdlib)
             implementation(libs.coroutines)
             implementation(libs.serialization)
+            implementation(libs.serialization.protobuf)
             implementation(libs.kase.change)
             implementation(libs.tooling)
             implementation(libs.android.annotation)
+            implementation(libs.kermit)
 
             implementation(project(":core"))
         }

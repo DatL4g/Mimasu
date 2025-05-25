@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Event
@@ -141,6 +142,7 @@ data object MaterialSymbols {
     const val INFO = "info"
     const val OPEN_IN_BROWSER = "open_in_browser"
     const val ACCOUNT_CIRCLE = "account_circle"
+    const val DOWNLOAD = "download"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -494,6 +496,7 @@ data object MaterialSymbols {
         name.equals(INFO, ignoreCase = true) -> Icons.Rounded.Info
         name.equals(OPEN_IN_BROWSER, ignoreCase = true) -> Icons.Rounded.OpenInBrowser
         name.equals(ACCOUNT_CIRCLE, ignoreCase = true) -> Icons.Rounded.AccountCircle
+        name.equals(DOWNLOAD, ignoreCase = true) -> Icons.Rounded.Download
         else -> null
     }
 

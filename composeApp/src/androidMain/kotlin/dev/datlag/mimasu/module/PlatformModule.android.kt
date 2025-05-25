@@ -34,6 +34,8 @@ actual object PlatformModule {
     private const val TAG_CERT_TRANSPARENT = "CERTIFICATE_TRANSPARENCY"
 
     actual val di: DI.Module = DI.Module(NAME) {
+        import(ExtensionModule.di)
+
         bindSingleton<Cronet> {
             scopeCatching {
                 CronetEngine.Builder(instance<Context>())
