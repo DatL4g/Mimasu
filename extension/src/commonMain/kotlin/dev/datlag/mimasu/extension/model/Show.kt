@@ -8,7 +8,7 @@ import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
 
 @Serializable
-sealed interface Movie {
+sealed interface Show {
 
     @Serializable
     data class Request(
@@ -17,9 +17,13 @@ sealed interface Movie {
         val wikidataId: String? = null,
         val title: String? = null,
         val originalTitle: String? = null,
-        val runtimeInMinutes: Int? = null,
-        val releaseYear: Int? = null,
-    ) : Movie {
+        val firstReleaseYear: Int? = null,
+        val numberOfNormalSeasons: Int? = null,
+        val hasSpecialSeason: Boolean? = null,
+        val season: Int? = null,
+        val episodeNumber: Int? = null,
+        val episodeTitle: String? = null,
+    ) : Show {
 
         @OptIn(ExperimentalSerializationApi::class)
         fun toByteArray(): ByteArray {
@@ -28,19 +32,18 @@ sealed interface Movie {
     }
 
     @Serializable
-    @OptIn(ExperimentalSerializationApi::class)
     data class Response(
         val recapRange: Skipable? = null,
         val introRange: Skipable? = null,
         val outroRange: Skipable? = null,
         val previewRange: Skipable? = null,
         val sources: Map<String, List<String>> = emptyMap()
-    ) : Movie {
+    ) : Show {
 
         @Serializable
         data class Skipable(
             val start: Long? = null,
-            val end: Long? = null,
+            val end: Long? = null
         )
 
         companion object {

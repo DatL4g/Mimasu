@@ -26,7 +26,8 @@ actual fun rememberMovieWatchInfo(
             wikidataId = movie?.externalIDs?.wikidataId?.ifBlank { null },
             title = movie?.title?.ifBlank { null } ?: initial?.title?.ifBlank { null },
             originalTitle = movie?.originalTitle?.ifBlank { null } ?: initial?.originalTitle?.ifBlank { null },
-            runtimeInMinutes = movie?.runtime
+            runtimeInMinutes = movie?.runtime,
+            releaseYear = movie?.releaseLocalDate?.year ?: initial?.releaseYear
         )
     }
 
