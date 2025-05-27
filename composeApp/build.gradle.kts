@@ -106,6 +106,7 @@ kotlin {
             implementation(libs.haze.materials)
             implementation(libs.about)
 
+            implementation(project(":extension"))
             implementation(project(":core"))
             implementation(project(":ui"))
         }
@@ -134,7 +135,6 @@ kotlin {
             implementation(libs.kermit.crashlytics)
 
             implementation(project(":rive"))
-            implementation(project(":extension"))
         }
 
         jvmMain.dependencies {

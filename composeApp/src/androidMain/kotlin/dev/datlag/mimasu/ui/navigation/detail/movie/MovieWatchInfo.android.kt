@@ -5,91 +5,34 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import dev.datlag.mimasu.extension.ExtensionInitializer
-import dev.datlag.mimasu.extension.movie.Request
 import dev.datlag.mimasu.tmdb.model.details.Movie
+import dev.datlag.mimasu.extension.model.Movie as Extension
 
 @Composable
 actual fun rememberMovieWatchInfo(
     movie: Movie?,
     initial: dev.datlag.mimasu.tmdb.model.Movie?
-): MovieWatchInfo? {
+): Extension.Response? {
     if (movie == null && initial == null) return null
 
     val context = LocalContext.current
     val movieProvider = remember(context) {
         ExtensionInitializer.getMovieProvider(context)
     }
-    val tmdbId = remember(movie, initial) {
-        movie?.id?.takeIf { it > 0 } ?: initial?.id ?: 0
-    }
-    val imdbId = remember(movie) {
-        movie?.imdbId?.ifBlank { null }
-    }
-    val wikidataId = remember(movie) {
-        movie?.externalIDs?.wikidataId?.ifBlank { null }
-    }
-    val title = remember(movie, initial) {
-        movie?.title?.ifBlank { null } ?: initial?.title?.ifBlank { null }
-    }
-    val originalTitle = remember(movie, initial) {
-        movie?.originalTitle?.ifBlank { null } ?: initial?.originalTitle?.ifBlank { null }
-    }
-    val runtime = remember(movie) {
-        movie?.runtime ?: 0
-    }
-
-    return produceState<MovieWatchInfo?>(initialValue = null, tmdbId, imdbId, wikidataId, title, originalTitle, runtime) {
-        val allWatchInfo = movieProvider.requestInfo(object : Request.Stub() {
-            override fun getTmdbId(): Int {
-                return tmdbId
-            }
-
-            override fun getImdbId(): String? {
-                return imdbId
-            }
-
-            override fun getWikidataId(): String? {
-                return wikidataId
-            }
-
-            override fun getTitle(): String? {
-                return title
-            }
-
-            override fun getOriginalTitle(): String? {
-                return originalTitle
-            }
-
-            override fun getRuntimeInMinutes(): Int {
-                return runtime
-            }
-        })
-
-        val grouped = allWatchInfo.flatMap { watchInfo ->
-            val sources = watchInfo.sources
-            watchInfo.languageSourceMapping.mapNotNull { (language, indexString) ->
-                if (language.isNullOrBlank()) {
-                    return@mapNotNull null
-                }
-                val index = indexString.toIntOrNull()?.takeIf { it in sources.indices } ?: return@mapNotNull null
-                sources[index]?.let { language to it }
-            }
-        }.groupBy(
-            keySelector = { it.first },
-            valueTransform = { it.second }
+    val request = remember(movie, initial) {
+        Extension.Request(
+            tmdbId = movie?.id?.takeIf { it > 0 } ?: initial?.id,
+            imdbId = movie?.imdbId?.ifBlank { null },
+            wikidataId = movie?.externalIDs?.wikidataId?.ifBlank { null },
+            title = movie?.title?.ifBlank { null } ?: initial?.title?.ifBlank { null },
+            originalTitle = movie?.originalTitle?.ifBlank { null } ?: initial?.originalTitle?.ifBlank { null },
+            runtimeInMinutes = movie?.runtime
         )
+    }
 
-        value = if (grouped.isEmpty()) {
-            null
-        } else {
-            MovieWatchInfo(
-                grouped.map { (language, sources) ->
-                    MovieWatchInfo.Source(
-                        language = language,
-                        sources = sources
-                    )
-                }
-            )
-        }
+    return produceState<Extension.Response?>(initialValue = null, request) {
+        val allWatchInfo = movieProvider.requestInfo(request)
+
+        value = allWatchInfo.firstOrNull()
     }.value
 }

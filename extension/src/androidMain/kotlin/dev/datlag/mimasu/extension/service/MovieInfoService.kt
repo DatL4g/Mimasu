@@ -4,9 +4,8 @@ import android.content.Context
 import android.os.IBinder
 import dev.datlag.mimasu.extension.AIDLService
 import dev.datlag.mimasu.extension.IMovieInfoProvider
+import dev.datlag.mimasu.extension.model.Movie
 import dev.datlag.mimasu.extension.movie.Callback
-import dev.datlag.mimasu.extension.movie.Request
-import dev.datlag.mimasu.extension.movie.WatchInfo
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.seconds
@@ -22,7 +21,7 @@ internal class MovieInfoService(context: Context) : AIDLService<IMovieInfoProvid
 
     override fun onDisconnected() { }
 
-    suspend fun requestInfo(request: Request): WatchInfo = withTimeout(10.seconds) {
+    suspend fun requestInfo(bytes: ByteArray): Movie.Response = withTimeout(10.seconds) {
         suspendCancellableCoroutine { continuation ->
             if (!isBound) {
                 continuation.cancel()
@@ -32,11 +31,13 @@ internal class MovieInfoService(context: Context) : AIDLService<IMovieInfoProvid
                 continuation.cancel()
                 return@suspendCancellableCoroutine
             }
-            connection.requestInfo(request, object : Callback.Stub() {
-                override fun onResult(watchInfo: WatchInfo?) {
-                    continuation.resumeWith(when (watchInfo) {
-                        null -> Result.failure(NullPointerException())
-                        else -> Result.success(watchInfo)
+            connection.requestInfo(bytes, object : Callback.Stub() {
+                override fun onResult(info: ByteArray?) {
+                    val response = Movie.Response(info)
+
+                    continuation.resumeWith(when (response) {
+                        null -> Result.failure(IllegalStateException())
+                        else -> Result.success(response)
                     })
                 }
             })

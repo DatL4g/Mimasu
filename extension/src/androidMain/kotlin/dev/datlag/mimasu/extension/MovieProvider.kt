@@ -1,8 +1,7 @@
 package dev.datlag.mimasu.extension
 
 import android.content.Context
-import dev.datlag.mimasu.extension.movie.Request
-import dev.datlag.mimasu.extension.movie.WatchInfo
+import dev.datlag.mimasu.extension.model.Movie
 import dev.datlag.mimasu.extension.service.MovieInfoService
 import dev.datlag.tooling.async.suspendCatching
 import kotlinx.coroutines.async
@@ -43,10 +42,12 @@ class MovieProvider(context: Context) {
         services = bind(context)
     }
 
-    suspend fun requestInfo(request: Request): List<WatchInfo> = coroutineScope {
+    suspend fun requestInfo(request: Movie.Request): List<Movie.Response> = coroutineScope {
+        val bytes = request.toByteArray()
+
         return@coroutineScope boundServices.map { async {
             suspendCatching {
-                it.requestInfo(request)
+                it.requestInfo(bytes)
             }.getOrNull()
         } }.awaitAll().filterNotNull()
     }
