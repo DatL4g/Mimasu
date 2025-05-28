@@ -76,8 +76,6 @@ actual fun ExtensionUpdate(
 
                     LaunchedEffect(state) {
                         if (state is ExtensionUpdateViewModel.State.Install.Success) {
-                            ExtensionInitializer.rebindAll(context)
-
                             extensionUpdateViewModel.clearState()
                         }
                     }
