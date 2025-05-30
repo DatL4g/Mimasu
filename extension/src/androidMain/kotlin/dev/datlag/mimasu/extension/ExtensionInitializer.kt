@@ -12,7 +12,8 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
     override fun create(context: Context): State {
         return State(
             updateProvider = UpdateProviderAndroid(context),
-            movieProvider = MovieProvider(context)
+            movieProvider = MovieProviderAndroid(context),
+            showProviderAndroid = ShowProviderAndroid(context)
         ).also { result ->
             state.update { result }
         }
@@ -24,7 +25,8 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
 
     data class State(
         val updateProvider: UpdateProviderAndroid,
-        val movieProvider: MovieProvider
+        val movieProvider: MovieProviderAndroid,
+        val showProviderAndroid: ShowProviderAndroid
     )
 
     companion object {
@@ -37,25 +39,36 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
                 .updateProvider
         }
 
-        fun getMovieProvider(context: Context): MovieProvider {
+        fun getMovieProvider(context: Context): MovieProviderAndroid {
             return state.value?.movieProvider ?: androidx.startup.AppInitializer
                 .getInstance(context)
                 .initializeComponent(ExtensionInitializer::class.java)
                 .movieProvider
         }
 
-        fun nullableMovieProvider(): MovieProvider? = state.value?.movieProvider
+        fun getShowProvider(context: Context): ShowProviderAndroid {
+            return state.value?.showProviderAndroid ?: androidx.startup.AppInitializer
+                .getInstance(context)
+                .initializeComponent(ExtensionInitializer::class.java)
+                .showProviderAndroid
+        }
+
+        fun nullableMovieProvider(): MovieProviderAndroid? = state.value?.movieProvider
 
         fun nullableUpdateProvider(): UpdateProviderAndroid? = state.value?.updateProvider
+
+        fun nullableShowProvider(): ShowProviderAndroid? = state.value?.showProviderAndroid
 
         fun unbindAll(context: Context) {
             nullableMovieProvider()?.unbind(context)
             nullableUpdateProvider()?.unbind(context)
+            nullableShowProvider()?.unbind(context)
         }
 
         fun rebindAll(context: Context) {
             nullableMovieProvider()?.rebind(context)
             nullableUpdateProvider()?.rebind(context)
+            nullableShowProvider()?.rebind(context)
         }
     }
 }

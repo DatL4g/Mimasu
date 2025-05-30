@@ -3,25 +3,23 @@ package dev.datlag.mimasu.extension.service
 import android.content.Context
 import android.os.IBinder
 import dev.datlag.mimasu.extension.AIDLService
-import dev.datlag.mimasu.extension.IMovieInfoProvider
-import dev.datlag.mimasu.extension.model.Movie
-import dev.datlag.mimasu.extension.movie.Callback
+import dev.datlag.mimasu.extension.IShowInfoProvider
+import dev.datlag.mimasu.extension.model.Show
+import dev.datlag.mimasu.extension.show.Callback
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withTimeout
-import kotlin.time.Duration.Companion.seconds
 
-internal class MovieInfoService(context: Context) : AIDLService<IMovieInfoProvider>(context) {
+internal class ShowService(context: Context) : AIDLService<IShowInfoProvider>(context) {
     override val connectionAction: String = ACTION
 
-    override fun bind(service: IBinder?): IMovieInfoProvider? {
-        return IMovieInfoProvider.Stub.asInterface(service)
+    override fun bind(service: IBinder?): IShowInfoProvider? {
+        return IShowInfoProvider.Stub.asInterface(service)
     }
 
-    override fun onConnected(service: IMovieInfoProvider) { }
+    override fun onConnected(service: IShowInfoProvider) { }
 
     override fun onDisconnected() { }
 
-    suspend fun requestInfo(bytes: ByteArray): Movie.Response = suspendCancellableCoroutine { continuation ->
+    suspend fun requestInfo(bytes: ByteArray): Show.Response = suspendCancellableCoroutine { continuation ->
         if (!isBound) {
             continuation.cancel()
             return@suspendCancellableCoroutine
@@ -32,7 +30,7 @@ internal class MovieInfoService(context: Context) : AIDLService<IMovieInfoProvid
         }
         connection.requestInfo(bytes, object : Callback.Stub() {
             override fun onResult(info: ByteArray?) {
-                val response = Movie.Response(info)
+                val response = Show.Response(info)
 
                 continuation.resumeWith(when (response) {
                     null -> Result.failure(IllegalStateException())
@@ -43,6 +41,6 @@ internal class MovieInfoService(context: Context) : AIDLService<IMovieInfoProvid
     }
 
     companion object {
-        internal const val ACTION = "dev.datlag.mimasu.extension.IMovieInfoProvider"
+        internal const val ACTION = "dev.datlag.mimasu.extension.IShowInfoProvider"
     }
 }

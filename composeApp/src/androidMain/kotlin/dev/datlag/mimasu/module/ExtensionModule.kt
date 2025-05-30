@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.module
 
 import dev.datlag.mimasu.extension.ExtensionInitializer
+import dev.datlag.mimasu.extension.MovieProvider
 import dev.datlag.mimasu.extension.UpdateProvider
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
@@ -13,6 +14,9 @@ object ExtensionModule {
     val di: DI.Module = DI.Module(NAME) {
         bindSingleton<UpdateProvider> {
             ExtensionInitializer.getUpdateProvider(context = instance())
+        }
+        bindSingleton<MovieProvider> {
+            ExtensionInitializer.getMovieProvider(context = instance())
         }
     }
 }

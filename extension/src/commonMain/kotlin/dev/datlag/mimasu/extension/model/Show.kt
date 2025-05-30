@@ -18,7 +18,7 @@ sealed interface Show {
         val title: String? = null,
         val originalTitle: String? = null,
         val firstReleaseYear: Int? = null,
-        val isAnime: Boolean? = null,
+        val isAnimation: Boolean? = null,
         val numberOfNormalSeasons: Int? = null,
         val hasSpecialSeason: Boolean? = null,
         val season: Int? = null,

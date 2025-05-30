@@ -1,23 +1,23 @@
 package dev.datlag.mimasu.extension
 
 import android.content.Context
-import dev.datlag.mimasu.extension.model.Movie
-import dev.datlag.mimasu.extension.service.MovieInfoService
+import dev.datlag.mimasu.extension.model.Show
+import dev.datlag.mimasu.extension.service.ShowService
 import dev.datlag.tooling.async.suspendCatching
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
-class MovieProvider(context: Context) {
+class ShowProviderAndroid(context: Context) : ShowProvider {
 
     private var extensionPackages = AIDLService.extensions(
         packageManager = context.packageManager,
-        action = MovieInfoService.ACTION
+        action = ShowService.ACTION
     )
 
     private var services = bind(context)
 
-    private val boundServices: List<MovieInfoService>
+    private val boundServices: List<ShowService>
         get() = services.filter { it.isBound }
 
     fun unbind(context: Context): Boolean {
@@ -27,7 +27,7 @@ class MovieProvider(context: Context) {
     }
 
     private fun bind(context: Context) = extensionPackages.map { packageName ->
-        MovieInfoService(context).also { service ->
+        ShowService(context).also { service ->
             AIDLService.bind(context, service, packageName)
         }
     }
@@ -37,12 +37,12 @@ class MovieProvider(context: Context) {
 
         extensionPackages = AIDLService.extensions(
             packageManager = context.packageManager,
-            action = MovieInfoService.ACTION
+            action = ShowService.ACTION
         )
         services = bind(context)
     }
 
-    suspend fun requestInfo(request: Movie.Request): List<Movie.Response> = coroutineScope {
+    override suspend fun requestInfo(request: Show.Request): List<Show.Response> = coroutineScope {
         val bytes = request.toByteArray()
 
         return@coroutineScope boundServices.map { async {
@@ -51,5 +51,4 @@ class MovieProvider(context: Context) {
             }.getOrNull()
         } }.awaitAll().filterNotNull()
     }
-
 }

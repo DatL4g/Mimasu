@@ -99,9 +99,18 @@ fun MovieDetail(
             )
         },
         floatingActionButton = {
-            MovieWatchProviderFAB(
-                movie = movieState.getOrNull()
+            val movieInfo = rememberMovieWatchInfo(
+                movie = movieState.getOrNull(),
+                initial = initial
             )
+
+            if (movieInfo == null) {
+                MovieWatchProviderFAB(
+                    movie = movieState.getOrNull()
+                )
+            } else {
+                Text(text = movieInfo.sources.keys.firstOrNull() ?: "Got Info but no sources")
+            }
         }
     ) { padding ->
         when (val current = movieState) {
