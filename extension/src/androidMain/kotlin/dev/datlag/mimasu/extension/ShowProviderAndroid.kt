@@ -10,10 +10,10 @@ import kotlinx.coroutines.coroutineScope
 
 class ShowProviderAndroid(context: Context) : ShowProvider {
 
-    private var extensionPackages = AIDLService.extensions(
+    private var extensionPackages = emptySet<String>() /*AIDLService.extensions(
         packageManager = context.packageManager,
         action = ShowService.ACTION
-    )
+    )*/
 
     private var services = bind(context)
 

@@ -10,10 +10,10 @@ import kotlinx.coroutines.coroutineScope
 
 class MovieProviderAndroid(context: Context) : MovieProvider {
 
-    private var extensionPackages = AIDLService.extensions(
+    private var extensionPackages = emptySet<String>() /*AIDLService.extensions(
         packageManager = context.packageManager,
         action = MovieInfoService.ACTION
-    )
+    )*/
 
     private var services = bind(context)
 
