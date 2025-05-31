@@ -4,4 +4,8 @@ Struggling to find your next movie night pick? Welcome to Mimasu (みます), yo
 
 Powered by The Movie Database (TMDB), Mimasu helps you stay up-to-date with the latest entertainment. Browse through trending movies, discover popular TV series, and explore detailed information to find exactly what you're looking for.
 
-![Google Play](https://playbadges.pavi2410.me/badge/full?id=dev.datlag.mimasu)
+## Google Play
+
+Get it on [Google Play](https://play.google.com/store/apps/details?id=dev.datlag.mimasu) now.
+
+[![Google Play](https://playbadges.pavi2410.me/badge/full?id=dev.datlag.mimasu)](https://play.google.com/store/apps/details?id=dev.datlag.mimasu)
