@@ -4,8 +4,7 @@ import android.content.Context
 import android.os.IBinder
 import dev.datlag.mimasu.extension.AIDLService
 import dev.datlag.mimasu.extension.IShowInfoProvider
-import dev.datlag.mimasu.extension.model.Show
-import dev.datlag.mimasu.extension.show.Callback
+import dev.datlag.mimasu.extension.show.ShowCallback
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 internal class ShowService(context: Context) : AIDLService<IShowInfoProvider>(context) {
@@ -19,7 +18,7 @@ internal class ShowService(context: Context) : AIDLService<IShowInfoProvider>(co
 
     override fun onDisconnected() { }
 
-    suspend fun requestInfo(bytes: ByteArray): Show.Response = suspendCancellableCoroutine { continuation ->
+    suspend fun requestInfo(bytes: ByteArray): Int = suspendCancellableCoroutine { continuation ->
         if (!isBound) {
             continuation.cancel()
             return@suspendCancellableCoroutine
@@ -28,14 +27,9 @@ internal class ShowService(context: Context) : AIDLService<IShowInfoProvider>(co
             continuation.cancel()
             return@suspendCancellableCoroutine
         }
-        connection.requestInfo(bytes, object : Callback.Stub() {
-            override fun onResult(info: ByteArray?) {
-                val response = Show.Response(info)
-
-                continuation.resumeWith(when (response) {
-                    null -> Result.failure(IllegalStateException())
-                    else -> Result.success(response)
-                })
+        connection.requestShowId(bytes, object : ShowCallback.Stub() {
+            override fun onResult(id: Int) {
+                continuation.resumeWith(Result.success(id))
             }
         })
     }

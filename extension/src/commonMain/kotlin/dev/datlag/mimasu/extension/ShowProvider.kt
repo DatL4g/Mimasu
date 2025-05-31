@@ -4,5 +4,5 @@ import dev.datlag.mimasu.extension.model.Show
 
 interface ShowProvider {
 
-    suspend fun requestInfo(request: Show.Request): List<Show.Response>
+    suspend fun requestInfo(request: Show.Request): List<Show.Identifier>
 }

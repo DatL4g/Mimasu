@@ -33,6 +33,12 @@ sealed interface Show {
     }
 
     @Serializable
+    data class Identifier(
+        val id: Int,
+        val identification: String?
+    )
+
+    @Serializable
     data class Response(
         val recapRange: Skipable? = null,
         val introRange: Skipable? = null,

@@ -46,6 +46,9 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
     val boundAppInfo: AppInfo?
         get() = appInfo.value
 
+    val appPackageName: String?
+        get() = boundAppInfo?.packageName?.ifBlank { null }
+
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
         val bound = bind(service).also {
             this._service.value = it

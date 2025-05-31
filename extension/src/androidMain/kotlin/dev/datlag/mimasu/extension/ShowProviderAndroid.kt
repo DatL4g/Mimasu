@@ -42,13 +42,15 @@ class ShowProviderAndroid(context: Context) : ShowProvider {
         services = bind(context)
     }
 
-    override suspend fun requestInfo(request: Show.Request): List<Show.Response> = coroutineScope {
+    override suspend fun requestInfo(request: Show.Request): List<Show.Identifier> = coroutineScope {
         val bytes = request.toByteArray()
 
         return@coroutineScope boundServices.map { async {
             suspendCatching {
                 it.requestInfo(bytes)
-            }.getOrNull()
+            }.getOrNull()?.let { id ->
+                Show.Identifier(id, it.appPackageName)
+            }
         } }.awaitAll().filterNotNull()
     }
 }
