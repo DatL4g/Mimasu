@@ -7,5 +7,5 @@ interface IShowInfoProvider {
     const int VERSION = 1;
 
     void requestShowId(in byte[] request, in ShowCallback callback);
-    void requestEpisode(in int showId, in EpisodeCallback callback);
+    void requestEpisode(in int showId, in byte[] request, in EpisodeCallback callback);
 }

@@ -22,8 +22,6 @@ sealed interface Show {
         val numberOfNormalSeasons: Int? = null,
         val hasSpecialSeason: Boolean? = null,
         val season: Int? = null,
-        val episodeNumber: Int? = null,
-        val episodeTitle: String? = null,
     ) : Show {
 
         @OptIn(ExperimentalSerializationApi::class)
@@ -33,10 +31,19 @@ sealed interface Show {
     }
 
     @Serializable
-    data class Identifier(
-        val id: Int,
-        val identification: String?
-    )
+    data class EpisodeRequest(
+        val episodeNumber: Int? = null,
+        val episodeTitle: String? = null,
+        val numberOfNormalSeasons: Int? = null,
+        val hasSpecialSeason: Boolean? = null,
+        val season: Int? = null,
+    ) : Show {
+
+        @OptIn(ExperimentalSerializationApi::class)
+        fun toByteArray(): ByteArray {
+            return protobuf.encodeToByteArray(this)
+        }
+    }
 
     @Serializable
     data class Response(

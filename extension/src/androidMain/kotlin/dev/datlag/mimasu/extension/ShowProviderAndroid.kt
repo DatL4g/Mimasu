@@ -42,15 +42,23 @@ class ShowProviderAndroid(context: Context) : ShowProvider {
         services = bind(context)
     }
 
-    override suspend fun requestInfo(request: Show.Request): List<Show.Identifier> = coroutineScope {
+    override suspend fun requestId(request: Show.Request): Boolean = coroutineScope {
         val bytes = request.toByteArray()
 
         return@coroutineScope boundServices.map { async {
             suspendCatching {
-                it.requestInfo(bytes)
-            }.getOrNull()?.let { id ->
-                Show.Identifier(id, it.appPackageName)
-            }
-        } }.awaitAll().filterNotNull()
+                it.requestId(request.tmdbId, bytes)
+            }.getOrNull()
+        } }.awaitAll().filterNotNull().any { it }
+    }
+
+    override suspend fun requestEpisode(tmdbId: Int, request: Show.EpisodeRequest): Show.Response? = coroutineScope {
+        val bytes = request.toByteArray()
+
+        return@coroutineScope boundServices.map { async {
+            suspendCatching {
+                it.requestEpisode(tmdbId, bytes)
+            }.getOrNull()
+        } }.awaitAll().filterNotNull().firstOrNull()
     }
 }

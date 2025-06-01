@@ -29,6 +29,7 @@ import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeWatchInfo
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
@@ -38,9 +39,20 @@ import kotlin.time.toDuration
 
 @Composable
 fun EpisodeItem(
+    tmdbId: Int?,
     episode: Season.Episode,
+    showAvailability: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val watchInfo = if (showAvailability) {
+        rememberEpisodeWatchInfo(
+            tmdbId = tmdbId,
+            episode = episode
+        )
+    } else {
+        null
+    }
+
     ElevatedCard(
         modifier = modifier,
         onClick = { },

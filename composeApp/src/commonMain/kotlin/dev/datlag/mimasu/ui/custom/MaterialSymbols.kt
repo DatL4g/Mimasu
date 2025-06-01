@@ -149,6 +149,8 @@ data object MaterialSymbols {
 
     private val defaultNonFilledFont = atomic<IconFont?>(null)
     private val defaultFilledFont = atomic<IconFont?>(null)
+    private var defaultNonFilledRecomposed by atomic<Boolean>(false)
+    private var defaultFilledRecomposed by atomic<Boolean>(false)
 
     private var _GoogleGLogo: ImageVector? = null
     private var _Github: ImageVector? = null

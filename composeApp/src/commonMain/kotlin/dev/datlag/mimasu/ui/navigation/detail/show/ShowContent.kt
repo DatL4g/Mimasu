@@ -49,6 +49,7 @@ fun ShowContent(
     showSeason: Show.Season?,
     seasonState: ShowViewModel.SeasonState,
     initial: TV?,
+    showAvailability: Boolean,
     padding: PaddingValues,
     onSelectSeason: (Show.Season) -> Unit = {},
 ) {
@@ -138,7 +139,9 @@ fun ShowContent(
             is ShowViewModel.SeasonState.Success -> {
                 itemsIndexed(current.season.episodes.toImmutableList()) { index, episode ->
                     EpisodeItem(
+                        tmdbId = show.id.takeIf { it > 0 } ?: initial?.id,
                         episode = episode,
+                        showAvailability = showAvailability,
                         modifier = Modifier.fillParentMaxWidth().ifTrue(index >= current.season.episodes.size - 1) {
                             padding(bottom = 16.dp)
                         },

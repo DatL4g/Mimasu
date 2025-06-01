@@ -58,6 +58,10 @@ fun ShowDetail(
     )
     val haze = remember { HazeState() }
     val listState = rememberLazyListState()
+    val showAvailability = rememberShowAvailability(
+        show = showState.getOrNull(),
+        initial = initial
+    )
 
     BackHandler(enabled = true) {
         onBack()
@@ -111,6 +115,7 @@ fun ShowDetail(
                 showSeason = showSeason,
                 seasonState = seasonState,
                 initial = initial,
+                showAvailability = showAvailability,
                 padding = padding,
                 onSelectSeason = {
                     showViewModel.select(it)
