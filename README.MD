@@ -1,34 +1,11 @@
-# Compose Multiplatform Application
+# Mimasu
 
-## Before running!
- - check your system with [KDoctor](https://github.com/Kotlin/kdoctor)
- - install JDK 17 or higher on your machine
- - add `local.properties` file to the project root and set a path to Android SDK there
+Struggling to find your next movie night pick? Welcome to Mimasu (みます), your sleek and simple guide to the world of film and television!
 
-### Android
-To run the application on android device/emulator:  
- - open project in Android Studio and run imported android run configuration
+Powered by The Movie Database (TMDB), Mimasu helps you stay up-to-date with the latest entertainment. Browse through trending movies, discover popular TV series, and explore detailed information to find exactly what you're looking for.
 
-To build the application bundle:
- - run `./gradlew :composeApp:assembleDebug`
- - find `.apk` file in `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
-Run android UI tests on the connected device: `./gradlew :composeApp:connectedDebugAndroidTest`
+## Google Play
 
-### Desktop
-Run the desktop application: `./gradlew :composeApp:run`
-Run desktop UI tests: `./gradlew :composeApp:jvmTest`
+Get it on [Google Play](https://play.google.com/store/apps/details?id=dev.datlag.mimasu) now.
 
-### iOS
-To run the application on iPhone device/simulator:
- - Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
- - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
-Run iOS simulator UI tests: `./gradlew :composeApp:iosSimulatorArm64Test`
-
-### JS Browser (Experimental)
-Run the browser application: `./gradlew :composeApp:jsBrowserDevelopmentRun --continue`
-Run browser UI tests: `./gradlew :composeApp:jsBrowserTest`
-
-### Wasm Browser (Alpha)
-Run the browser application: `./gradlew :composeApp:wasmJsBrowserDevelopmentRun --continue`
-Run browser UI tests: `./gradlew :composeApp:wasmJsBrowserTest`
-
+[![Google Play](https://playbadges.pavi2410.me/badge/full?id=dev.datlag.mimasu)](https://play.google.com/store/apps/details?id=dev.datlag.mimasu)
