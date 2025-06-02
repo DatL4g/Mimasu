@@ -134,6 +134,9 @@ kotlin {
             implementation(libs.bundles.android.ads)
             implementation(libs.kermit.crashlytics)
 
+            implementation("androidx.compose.material3:material3:1.4.0-alpha15")
+            implementation(libs.bundles.android.media)
+
             implementation(project(":rive"))
         }
 

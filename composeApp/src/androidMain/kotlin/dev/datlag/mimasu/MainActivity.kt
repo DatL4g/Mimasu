@@ -5,6 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialExpressiveTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.expressiveLightColorScheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -20,7 +24,10 @@ import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
+import dev.datlag.tooling.compose.platform.colorScheme
+import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.compose.toTypography
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DI
@@ -41,6 +48,7 @@ class MainActivity : AdActivity() {
         super.attachBaseContext(newBase)
     }
 
+    @OptIn(ExperimentalMaterial3ExpressiveApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         fun exit(reason: String?) {
             reason?.let { Logger.e(messageString = it) }
@@ -74,18 +82,23 @@ class MainActivity : AdActivity() {
                     PlatformText("Report Failure: $it")
                 },
                 content = {
-                    var logInResult by remember { mutableStateOf(false) }
+                    MaterialExpressiveTheme(
+                        colorScheme = Platform.colorScheme(),
+                        typography = Platform.typography()
+                    ) {
+                        var logInResult by remember { mutableStateOf(false) }
 
-                    Navigation(
-                        isLoggedIn = logInResult,
-                        loginContent = {
-                            Login(
-                                onSuccess = {
-                                    logInResult = true
-                                }
-                            )
-                        }
-                    )
+                        Navigation(
+                            isLoggedIn = logInResult,
+                            loginContent = {
+                                Login(
+                                    onSuccess = {
+                                        logInResult = true
+                                    }
+                                )
+                            }
+                        )
+                    }
                 }
             )
         }
