@@ -36,7 +36,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MovieWatchProviderFAB(
-    movie: Movie?
+    movie: Movie?,
+    onWatchClick: () -> Unit
 ) {
     val regionProviders = remember(movie?.id, movie?.watchProviders) {
         movie?.watchProviders?.providerFor(Locale.current.region)
@@ -67,7 +68,8 @@ fun MovieWatchProviderFAB(
             ExtendedFloatingActionButton(
                 onClick = {
                     if (regionProviders.hasProviders()) {
-                        dialog = !dialog
+                        onWatchClick()
+                        // dialog = !dialog
                     } else {
                         openLink?.let(uriHandler::openUri)
                     }

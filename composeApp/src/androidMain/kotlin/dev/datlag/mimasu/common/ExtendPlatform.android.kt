@@ -8,11 +8,13 @@ import android.view.Window
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.window.DialogProperties
 import app.rive.runtime.kotlin.core.RendererType
 import app.rive.runtime.kotlin.core.Rive
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.module.PlatformModule
 import dev.datlag.mimasu.other.ArchUtils
+import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.LocalDate
@@ -117,4 +119,13 @@ fun Rive.initSafely(
         init(context, defaultRenderer)
         false
     }
+}
+
+actual fun Navigation.Video.dialogProperties(): DialogProperties {
+    return DialogProperties(
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        usePlatformDefaultWidth = false,
+        decorFitsSystemWindows = false
+    )
 }

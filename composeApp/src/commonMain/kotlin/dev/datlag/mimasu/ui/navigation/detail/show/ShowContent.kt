@@ -137,6 +137,9 @@ fun ShowContent(
                 )
             }
             is ShowViewModel.SeasonState.Success -> {
+                item {
+                    Text("Show available: $showAvailability")
+                }
                 itemsIndexed(current.season.episodes.toImmutableList()) { index, episode ->
                     EpisodeItem(
                         tmdbId = show.id.takeIf { it > 0 } ?: initial?.id,

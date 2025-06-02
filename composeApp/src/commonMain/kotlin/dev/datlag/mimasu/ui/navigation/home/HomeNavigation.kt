@@ -47,7 +47,9 @@ fun NavigationSuiteScope.homeItem(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun HomeNavigation() {
+fun HomeNavigation(
+    navigateToVideo: () -> Unit
+) {
     val controller = rememberListDetailController<Any, Navigation.Home.Detail, Navigation.Home.Extra>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
     val extraNavigation by controller.extraValue.collectAsStateWithLifecycle()
@@ -86,7 +88,8 @@ fun HomeNavigation() {
                                 PersonViewModel.updateFrom(it)
 
                                 controller.navigateToExtra(Navigation.Home.Extra.Person)
-                            }
+                            },
+                            onWatchClick = navigateToVideo
                         )
                     }
                 }

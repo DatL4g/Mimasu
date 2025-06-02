@@ -65,7 +65,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun MovieDetail(
     onBack: () -> Unit,
-    onCastClick: (Movie.Credits.Cast) -> Unit
+    onCastClick: (Movie.Credits.Cast) -> Unit,
+    onWatchClick: () -> Unit = {}
 ) {
     val movieViewModel = kodeinViewModel<MovieViewModel>()
     val movieState by movieViewModel.movie.collectAsStateWithLifecycle(MovieViewModel.State.Loading)
@@ -105,7 +106,8 @@ fun MovieDetail(
             )*/
 
             MovieWatchProviderFAB(
-                movie = movieState.getOrNull()
+                movie = movieState.getOrNull(),
+                onWatchClick = onWatchClick
             )
         }
     ) { padding ->

@@ -1,7 +1,9 @@
 package dev.datlag.mimasu.common
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.window.DialogProperties
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
+import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.Platform.isIOS
 import dev.datlag.tooling.Platform.isMacOS
@@ -35,3 +37,5 @@ fun LocalDate?.formatMedium(
 
 @Composable
 expect fun rememberGitHubAuthParams(): GitHubAuthParams?
+
+expect fun Navigation.Video.dialogProperties(): DialogProperties

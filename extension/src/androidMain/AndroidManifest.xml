@@ -4,11 +4,11 @@
         <intent>
             <action android:name="dev.datlag.mimasu.extension.IUpdateProvider" />
         </intent>
-        <!--<intent>
+        <intent>
             <action android:name="dev.datlag.mimasu.extension.IMovieInfoProvider" />
         </intent>
         <intent>
             <action android:name="dev.datlag.mimasu.extension.IShowInfoProvider" />
-        </intent>-->
+        </intent>
     </queries>
 </manifest>

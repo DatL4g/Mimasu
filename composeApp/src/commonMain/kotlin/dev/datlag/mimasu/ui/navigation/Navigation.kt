@@ -8,12 +8,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import dev.datlag.mimasu.common.dialogProperties
 import dev.datlag.mimasu.ui.navigation.home.HomeNavigation
 import dev.datlag.mimasu.ui.navigation.home.homeItem
 import dev.datlag.mimasu.ui.navigation.movies.MoviesNavigation
@@ -24,6 +27,7 @@ import dev.datlag.mimasu.ui.navigation.search.SearchNavigation
 import dev.datlag.mimasu.ui.navigation.search.searchItem
 import dev.datlag.mimasu.ui.navigation.series.SeriesNavigation
 import dev.datlag.mimasu.ui.navigation.series.seriesItem
+import dev.datlag.mimasu.ui.navigation.video.VideoScreen
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import kotlinx.serialization.Serializable
 
@@ -109,6 +113,9 @@ object Navigation {
             data object Person : Extra
         }
     }
+
+    @Serializable
+    data object Video
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -198,13 +205,28 @@ fun Navigation(
                     MoviesNavigation()
                 }
                 composable<Navigation.Home> {
-                    HomeNavigation()
+                    HomeNavigation(
+                        navigateToVideo = {
+                            controller.navigate(Navigation.Video) {
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
                 composable<Navigation.Series> {
                     SeriesNavigation()
                 }
                 composable<Navigation.Search> {
                     SearchNavigation()
+                }
+                dialog<Navigation.Video>(
+                    dialogProperties = Navigation.Video.dialogProperties()
+                ) {
+                    VideoScreen(
+                        onBack = {
+                            controller.popBackStack()
+                        }
+                    )
                 }
             }
         }
