@@ -33,6 +33,7 @@ actual fun rememberShowAvailability(
             title = show?.name?.ifBlank { null } ?: initial?.name?.ifBlank { null },
             originalTitle = show?.originalName?.ifBlank { null } ?: initial?.originalName?.ifBlank { null },
             firstReleaseYear = show?.firstAirLocalDate?.year ?: initial?.firstAirLocalDate?.year,
+            isAnimation = show?.genres?.any { it.id == 16 } ?: initial?.genreIds?.any { it == 16 }
         )
     }
 

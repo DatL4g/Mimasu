@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
 import androidx.compose.material.icons.automirrored.rounded.Logout
+import androidx.compose.material.icons.automirrored.rounded.VolumeDown
+import androidx.compose.material.icons.automirrored.rounded.VolumeMute
+import androidx.compose.material.icons.automirrored.rounded.VolumeOff
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.outlined.HideImage
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Apartment
@@ -31,6 +35,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.LocalFlorist
 import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Mail
@@ -143,6 +148,11 @@ data object MaterialSymbols {
     const val OPEN_IN_BROWSER = "open_in_browser"
     const val ACCOUNT_CIRCLE = "account_circle"
     const val DOWNLOAD = "download"
+    const val VOLUME_UP = "volume_up"
+    const val VOLUME_DOWN = "volume_down"
+    const val VOLUME_MUTE = "volume_mute"
+    const val VOLUME_OFF = "volume_off"
+    const val LIGHT_MODE = "light_mode"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -499,6 +509,13 @@ data object MaterialSymbols {
         name.equals(OPEN_IN_BROWSER, ignoreCase = true) -> Icons.Rounded.OpenInBrowser
         name.equals(ACCOUNT_CIRCLE, ignoreCase = true) -> Icons.Rounded.AccountCircle
         name.equals(DOWNLOAD, ignoreCase = true) -> Icons.Rounded.Download
+
+        name.equals(VOLUME_UP, ignoreCase = true) -> Icons.AutoMirrored.Rounded.VolumeUp
+        name.equals(VOLUME_DOWN, ignoreCase = true) -> Icons.AutoMirrored.Rounded.VolumeDown
+        name.equals(VOLUME_MUTE, ignoreCase = true) -> Icons.AutoMirrored.Rounded.VolumeMute
+        name.equals(VOLUME_OFF, ignoreCase = true) -> Icons.AutoMirrored.Rounded.VolumeOff
+
+        name.equals(LIGHT_MODE, ignoreCase = true) -> Icons.Rounded.LightMode
         else -> null
     }
 

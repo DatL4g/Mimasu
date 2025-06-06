@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.video
+package dev.datlag.mimasu.ui.navigation.video.states
 
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable

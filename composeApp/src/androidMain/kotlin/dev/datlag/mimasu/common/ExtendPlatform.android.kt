@@ -5,10 +5,14 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.provider.Settings
 import android.view.Window
+import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.DialogProperties
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.cache.Cache
 import app.rive.runtime.kotlin.core.RendererType
 import app.rive.runtime.kotlin.core.Rive
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
@@ -23,6 +27,7 @@ import kotlinx.datetime.toJavaLocalDate
 import org.chromium.net.CronetEngine
 import org.kodein.di.DIAware
 import org.kodein.di.DirectDI
+import org.kodein.di.instance
 import org.kodein.di.instanceOrNull
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -41,6 +46,7 @@ tailrec fun Context.findWindow(): Window? = when (this) {
     else -> null
 }
 
+@OptIn(UnstableApi::class)
 fun DIAware.cronetEngine(): CronetEngine? {
     val instance by this.instanceOrNull<PlatformModule.Cronet>()
     return instance?.engine
@@ -48,6 +54,17 @@ fun DIAware.cronetEngine(): CronetEngine? {
 
 fun DirectDI.cronetEngine(): CronetEngine? {
     return this.instanceOrNull<PlatformModule.Cronet>()?.engine
+}
+
+@OptIn(UnstableApi::class)
+fun DIAware.videoCache(): Cache {
+    val instance by this.instance<Cache>()
+    return instance
+}
+
+@OptIn(UnstableApi::class)
+fun DirectDI.videoCache(): Cache {
+    return this.instance<Cache>()
 }
 
 @Composable

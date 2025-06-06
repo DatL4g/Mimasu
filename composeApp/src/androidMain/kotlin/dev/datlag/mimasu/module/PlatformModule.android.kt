@@ -1,6 +1,10 @@
 package dev.datlag.mimasu.module
 
 import android.content.Context
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.cache.Cache
+import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
+import androidx.media3.datasource.cache.SimpleCache
 import com.appmattus.certificatetransparency.cache.AndroidDiskCache
 import com.appmattus.certificatetransparency.certificateTransparencyInterceptor
 import com.google.net.cronet.okhttptransport.CronetInterceptor
@@ -21,12 +25,14 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import okhttp3.Interceptor
+import okio.FileSystem
 import org.chromium.net.CronetEngine
 import org.kodein.di.DI
 import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
+@UnstableApi
 actual object PlatformModule {
 
     private const val NAME = "AndroidPlatformModule"
@@ -35,6 +41,7 @@ actual object PlatformModule {
 
     actual val di: DI.Module = DI.Module(NAME) {
         import(ExtensionModule.di)
+        import(VideoModule.di)
 
         bindSingleton<Cronet> {
             scopeCatching {

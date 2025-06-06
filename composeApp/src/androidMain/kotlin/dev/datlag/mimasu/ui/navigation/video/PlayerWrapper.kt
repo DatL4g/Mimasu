@@ -6,6 +6,10 @@ import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.TextureView
+import androidx.annotation.OptIn
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.media3.cast.CastPlayer
 import androidx.media3.cast.DefaultMediaItemConverter
 import androidx.media3.cast.SessionAvailabilityListener
@@ -43,11 +47,14 @@ import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_DETECT_AC
 import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
+import dev.datlag.mimasu.common.cronetEngine
+import dev.datlag.mimasu.common.videoCache
 import dev.datlag.tooling.scopeCatching
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.chromium.net.CronetEngine
+import org.kodein.di.compose.localDI
 import java.util.concurrent.Executors
 
 // ToDo("Kast")
@@ -161,6 +168,7 @@ class PlayerWrapper(
             super.onRenderedFirstFrame()
 
             castSupported = true
+            firstFrameListener?.invoke()
         }
     }
 
@@ -173,6 +181,8 @@ class PlayerWrapper(
             localPlayer.videoScalingMode = value
         }
 
+    private var firstFrameListener: FirstFrame? = null
+
     init {
         castPlayer?.addListener(this)
         localPlayer.addListener(localPlayerListener)
@@ -182,6 +192,10 @@ class PlayerWrapper(
 
         castPlayer?.playWhenReady = true
         localPlayer.playWhenReady = true
+    }
+
+    fun onFirstFrame(listener: FirstFrame) = apply {
+        firstFrameListener = listener
     }
 
     override fun onCastSessionAvailable() {
@@ -751,4 +765,27 @@ class PlayerWrapper(
             this
         }
     }
+
+    fun interface FirstFrame {
+        operator fun invoke()
+    }
+}
+
+@OptIn(UnstableApi::class)
+@Composable
+fun rememberPlayerWrapper(
+    context: Context = LocalContext.current,
+    castContext: CastContext? = null,
+    cronetEngine: CronetEngine? = localDI().cronetEngine(),
+    cache: Cache = localDI().videoCache()
+): PlayerWrapper {
+    val wrapper = remember(context, castContext, cronetEngine, cache) {
+        PlayerWrapper(
+            context = context,
+            castContext = castContext,
+            cronetEngine = cronetEngine,
+            cache = cache
+        )
+    }
+    return wrapper
 }
