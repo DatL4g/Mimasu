@@ -47,6 +47,7 @@ actual fun rememberShowAvailability(
 @Composable
 actual fun rememberEpisodeWatchInfo(
     tmdbId: Int?,
+    seasonNumber: Int?,
     episode: Season.Episode
 ): Extension.Response? = with(localDI()) {
     if (tmdbId == null) return null
@@ -59,7 +60,8 @@ actual fun rememberEpisodeWatchInfo(
     val request = remember(tmdbId, episode) {
         Extension.EpisodeRequest(
             episodeNumber = episode.episodeNumber,
-            episodeTitle = episode.name
+            episodeTitle = episode.name,
+            season = seasonNumber
         )
     }
 

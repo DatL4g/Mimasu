@@ -10,4 +10,8 @@ import dev.datlag.mimasu.extension.model.Show as Extension
 expect fun rememberShowAvailability(show: Show?, initial: TV?): Boolean
 
 @Composable
-expect fun rememberEpisodeWatchInfo(tmdbId: Int?, episode: Season.Episode): Extension.Response?
+expect fun rememberEpisodeWatchInfo(
+    tmdbId: Int?,
+    seasonNumber: Int?,
+    episode: Season.Episode,
+): Extension.Response?

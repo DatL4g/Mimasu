@@ -41,12 +41,14 @@ import kotlin.time.toDuration
 fun EpisodeItem(
     tmdbId: Int?,
     episode: Season.Episode,
+    seasonNumber: Int?,
     showAvailability: Boolean,
     modifier: Modifier = Modifier
 ) {
     val watchInfo = if (showAvailability) {
         rememberEpisodeWatchInfo(
             tmdbId = tmdbId,
+            seasonNumber = seasonNumber,
             episode = episode
         )
     } else {
