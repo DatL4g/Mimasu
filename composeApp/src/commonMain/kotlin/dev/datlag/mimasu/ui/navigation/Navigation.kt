@@ -28,6 +28,7 @@ import dev.datlag.mimasu.ui.navigation.search.searchItem
 import dev.datlag.mimasu.ui.navigation.series.SeriesNavigation
 import dev.datlag.mimasu.ui.navigation.series.seriesItem
 import dev.datlag.mimasu.ui.navigation.video.VideoScreen
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import kotlinx.serialization.Serializable
 
@@ -207,6 +208,8 @@ fun Navigation(
                 composable<Navigation.Home> {
                     HomeNavigation(
                         navigateToVideo = {
+                            VideoViewModel.updateSources(it.sources["de"] ?: emptyList())
+
                             controller.navigate(Navigation.Video) {
                                 launchSingleTop = true
                             }
@@ -214,10 +217,26 @@ fun Navigation(
                     )
                 }
                 composable<Navigation.Series> {
-                    SeriesNavigation()
+                    SeriesNavigation(
+                        navigateToVideo = {
+                            VideoViewModel.updateSources(it.sources["de"] ?: emptyList())
+
+                            controller.navigate(Navigation.Video) {
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
                 composable<Navigation.Search> {
-                    SearchNavigation()
+                    SearchNavigation(
+                        navigateToVideo = {
+                            VideoViewModel.updateSources(it.sources["de"] ?: emptyList())
+
+                            controller.navigate(Navigation.Video) {
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
                 dialog<Navigation.Video>(
                     dialogProperties = Navigation.Video.dialogProperties()

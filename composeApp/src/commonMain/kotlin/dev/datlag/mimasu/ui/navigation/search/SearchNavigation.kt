@@ -21,6 +21,7 @@ import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import org.jetbrains.compose.resources.stringResource
+import dev.datlag.mimasu.extension.model.Show as Extension
 
 fun NavigationSuiteScope.searchItem(
     selected: Boolean,
@@ -47,7 +48,9 @@ fun NavigationSuiteScope.searchItem(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun SearchNavigation() {
+fun SearchNavigation(
+    navigateToVideo: (Extension.Response) -> Unit
+) {
     val controller = rememberListDetailController<Any, Navigation.Search.Detail, Navigation.Search.Extra>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
     val extraNavigation by controller.extraValue.collectAsStateWithLifecycle()
@@ -95,7 +98,8 @@ fun SearchNavigation() {
                         ShowDetail(
                             onBack = {
                                 controller.navigateBack()
-                            }
+                            },
+                            onStream = navigateToVideo
                         )
                     }
                     else -> controller.navigateBack()

@@ -71,3 +71,41 @@ actual fun rememberEpisodeWatchInfo(
         value = watchInfo
     }.value
 }
+
+@Composable
+actual fun rememberEpisodeStreamState(
+    tmdbId: Int?,
+    seasonNumber: Int?,
+    episode: Season.Episode,
+): EpisodeStreamState? = with(localDI()) {
+    if (tmdbId == null) return null
+
+    val context = LocalContext.current
+    val singletonProvider by instanceOrNull<ShowProvider>()
+    val showProvider = singletonProvider ?: remember(context) {
+        ExtensionInitializer.getShowProvider(context)
+    }
+    val request = remember(tmdbId, episode) {
+        Extension.EpisodeRequest(
+            episodeNumber = episode.episodeNumber,
+            episodeTitle = episode.name,
+            season = seasonNumber
+        )
+    }
+
+    return EpisodeStreamState(
+        provider = showProvider,
+        tmdbId = tmdbId,
+        request = request
+    )
+}
+
+actual class EpisodeStreamState(
+    private val provider: ShowProvider,
+    private val tmdbId: Int,
+    private val request: Extension.EpisodeRequest
+) {
+    actual suspend fun getStream(): Extension.Response? {
+        return provider.requestStream(tmdbId, request)
+    }
+}

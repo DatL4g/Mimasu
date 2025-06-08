@@ -32,6 +32,7 @@ import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowSeason
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.tooling.compose.ifTrue
 import kotlinx.collections.immutable.toImmutableList
+import dev.datlag.mimasu.extension.model.Show as Extension
 
 @Composable
 fun ShowContent(
@@ -44,6 +45,7 @@ fun ShowContent(
     showAvailability: Boolean,
     padding: PaddingValues,
     onSelectSeason: (Show.Season) -> Unit = {},
+    onStream: (Extension.Response) -> Unit
 ) {
     LazyColumn(
         state = listState,
@@ -141,6 +143,7 @@ fun ShowContent(
                         modifier = Modifier.fillParentMaxWidth().ifTrue(index >= seasonState.season.episodes.size - 1) {
                             padding(bottom = 16.dp)
                         },
+                        onStream = onStream
                     )
                 }
             }

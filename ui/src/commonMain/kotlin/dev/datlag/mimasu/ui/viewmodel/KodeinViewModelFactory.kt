@@ -101,6 +101,11 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
 
                 (model as? T) ?: super.create(modelClass, extras)
             }
+            modelClass typeOf VideoViewModel::class -> {
+                val model = VideoViewModel()
+
+                (model as? T) ?: super.create(modelClass, extras)
+            }
             else -> platformKodeinViewModelFactory(di, modelClass, extras) ?: super.create(modelClass, extras)
         }
     }

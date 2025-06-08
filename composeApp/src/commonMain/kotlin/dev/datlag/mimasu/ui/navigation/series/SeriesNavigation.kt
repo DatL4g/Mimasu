@@ -18,6 +18,7 @@ import dev.datlag.mimasu.ui.navigation.detail.show.ShowDetail
 import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import org.jetbrains.compose.resources.stringResource
+import dev.datlag.mimasu.extension.model.Show as Extension
 
 fun NavigationSuiteScope.seriesItem(
     selected: Boolean,
@@ -44,7 +45,9 @@ fun NavigationSuiteScope.seriesItem(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun SeriesNavigation() {
+fun SeriesNavigation(
+    navigateToVideo: (Extension.Response) -> Unit
+) {
     val controller = rememberListDetailController<Any, Navigation.Series.Detail, Nothing>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
 
@@ -67,7 +70,8 @@ fun SeriesNavigation() {
                         ShowDetail(
                             onBack = {
                                 controller.navigateBack()
-                            }
+                            },
+                            onStream = navigateToVideo
                         )
                     }
                     else -> controller.navigateBack()

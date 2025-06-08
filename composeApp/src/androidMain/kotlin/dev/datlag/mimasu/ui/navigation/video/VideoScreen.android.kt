@@ -37,12 +37,15 @@ import dev.datlag.mimasu.ui.navigation.video.components.TopControls
 import dev.datlag.mimasu.ui.navigation.video.components.VolumeBrightnessControl
 import dev.datlag.mimasu.ui.navigation.video.states.rememberControlsState
 import dev.datlag.mimasu.ui.navigation.video.states.rememberPresentationState
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
+import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import kotlin.math.max
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 actual fun VideoScreen(onBack: () -> Unit) {
+    val videoViewModel = kodeinViewModel<VideoViewModel>()
     val windowController = rememberWindowController()
     val playerWrapper = rememberPlayerWrapper()
     val presentationState = rememberPresentationState(playerWrapper)
@@ -62,9 +65,10 @@ actual fun VideoScreen(onBack: () -> Unit) {
         mutableFloatStateOf(1F)
     }
 
+    val sources by videoViewModel.sources.collectAsStateWithLifecycle()
     val mediaItem = remember {
         MediaItem.Builder()
-            .setUri("https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8")
+            .setUri(sources.firstOrNull())
             //.setUri("https://stream.mux.com/HDGj01zK01esWsWf9WJj5t5yuXQZJFF6bo.m3u8")
             .build()
     }

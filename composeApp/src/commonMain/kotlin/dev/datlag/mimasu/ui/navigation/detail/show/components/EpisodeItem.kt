@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,18 +25,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import coil3.compose.AsyncImage
 import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeStreamState
 import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeWatchInfo
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
+import dev.datlag.tooling.compose.withMainContext
+import kotlinx.coroutines.launch
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+import dev.datlag.mimasu.extension.model.Show as Extension
 
 @Composable
 fun EpisodeItem(
@@ -43,7 +49,8 @@ fun EpisodeItem(
     episode: Season.Episode,
     seasonNumber: Int?,
     showAvailability: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onStream: (Extension.Response) -> Unit
 ) {
     val available = if (showAvailability) {
         rememberEpisodeWatchInfo(
@@ -54,10 +61,28 @@ fun EpisodeItem(
     } else {
         false
     }
+    val streamState = if (available) {
+        rememberEpisodeStreamState(
+            tmdbId = tmdbId,
+            seasonNumber = seasonNumber,
+            episode = episode
+        )
+    } else {
+        null
+    }
+    val scope = rememberCoroutineScope()
 
     ElevatedCard(
         modifier = modifier,
-        onClick = { },
+        onClick = {
+            scope.launch {
+                val stream = streamState?.getStream() ?: return@launch
+
+                withMainContext {
+                    onStream(stream)
+                }
+            }
+        },
         colors = CardDefaults.elevatedCardColors(
             containerColor = Platform.colorScheme().background,
             contentColor = Platform.colorScheme().onBackground

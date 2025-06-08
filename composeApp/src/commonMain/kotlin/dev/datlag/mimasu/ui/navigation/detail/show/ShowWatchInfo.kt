@@ -15,3 +15,14 @@ expect fun rememberEpisodeWatchInfo(
     seasonNumber: Int?,
     episode: Season.Episode,
 ): Boolean
+
+@Composable
+expect fun rememberEpisodeStreamState(
+    tmdbId: Int?,
+    seasonNumber: Int?,
+    episode: Season.Episode,
+): EpisodeStreamState?
+
+expect class EpisodeStreamState {
+    suspend fun getStream(): Extension.Response?
+}
