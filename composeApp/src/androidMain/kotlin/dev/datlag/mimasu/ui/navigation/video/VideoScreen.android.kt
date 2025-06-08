@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.navigation.video
 
 import android.view.WindowManager
 import androidx.compose.foundation.AndroidExternalSurface
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -41,11 +42,15 @@ import dev.datlag.mimasu.common.detectPinchGestures
 import dev.datlag.mimasu.common.hazeEffect
 import dev.datlag.mimasu.common.merge
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.navigation.video.components.BottomControls
+import dev.datlag.mimasu.ui.navigation.video.components.CenterControls
 import dev.datlag.mimasu.ui.navigation.video.components.ExtraControls
 import dev.datlag.mimasu.ui.navigation.video.components.TopControls
 import dev.datlag.mimasu.ui.navigation.video.components.VolumeBrightnessControl
 import dev.datlag.mimasu.ui.navigation.video.states.rememberControlsState
+import dev.datlag.mimasu.ui.navigation.video.states.rememberPlayPauseButtonState
 import dev.datlag.mimasu.ui.navigation.video.states.rememberPresentationState
+import dev.datlag.mimasu.ui.navigation.video.states.rememberProgressState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import kotlin.math.max
@@ -59,6 +64,8 @@ actual fun VideoScreen(onBack: () -> Unit) {
     val playerWrapper = rememberPlayerWrapper()
     val presentationState = rememberPresentationState(playerWrapper)
     val controlsState = rememberControlsState()
+    val progressState = rememberProgressState(playerWrapper)
+    val playPauseState = rememberPlayPauseButtonState(playerWrapper)
     val isCasting by playerWrapper.usingCastPlayer.collectAsStateWithLifecycle()
     val videoSize by presentationState.videoSizeDp.collectAsStateWithLifecycle()
     val aspectRatio = remember(videoSize) {
@@ -110,7 +117,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(Color.Black),
         containerColor = Color.Black,
         contentColor = Color.White,
         topBar = {
@@ -119,11 +126,19 @@ actual fun VideoScreen(onBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 onBack = onBack
             )
+        },
+        bottomBar = {
+            BottomControls(
+                controlsState = controlsState,
+                state = progressState,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     ) { contentPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.Black)
                 .pointerInput(Unit) {
                     detectPinchGestures(
                         pass = PointerEventPass.Initial,
@@ -171,6 +186,15 @@ actual fun VideoScreen(onBack: () -> Unit) {
                 hazeState = hazeState,
                 contentPadding = contentPadding.merge(PaddingValues(top = 16.dp)),
                 modifier = Modifier.matchParentSize()
+            )
+
+            CenterControls(
+                controlsState = controlsState,
+                state = playPauseState,
+                hazeState = hazeState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
             )
 
             ExtraControls(

@@ -43,6 +43,7 @@ import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.Movie
 import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Password
+import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonPinCircle
@@ -155,6 +156,7 @@ data object MaterialSymbols {
     const val VOLUME_OFF = "volume_off"
     const val LIGHT_MODE = "light_mode"
     const val TRANSLATE = "translate"
+    const val PAUSE = "pause"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -519,6 +521,7 @@ data object MaterialSymbols {
 
         name.equals(LIGHT_MODE, ignoreCase = true) -> Icons.Rounded.LightMode
         name.equals(TRANSLATE, ignoreCase = true) -> Icons.Rounded.Translate
+        name.equals(PAUSE, ignoreCase = true) -> Icons.Rounded.Pause
         else -> null
     }
 
