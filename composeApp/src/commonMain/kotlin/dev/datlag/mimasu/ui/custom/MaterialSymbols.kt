@@ -53,6 +53,7 @@ import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Today
+import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.material.icons.rounded.Visibility
@@ -153,6 +154,7 @@ data object MaterialSymbols {
     const val VOLUME_MUTE = "volume_mute"
     const val VOLUME_OFF = "volume_off"
     const val LIGHT_MODE = "light_mode"
+    const val TRANSLATE = "translate"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -516,6 +518,7 @@ data object MaterialSymbols {
         name.equals(VOLUME_OFF, ignoreCase = true) -> Icons.AutoMirrored.Rounded.VolumeOff
 
         name.equals(LIGHT_MODE, ignoreCase = true) -> Icons.Rounded.LightMode
+        name.equals(TRANSLATE, ignoreCase = true) -> Icons.Rounded.Translate
         else -> null
     }
 

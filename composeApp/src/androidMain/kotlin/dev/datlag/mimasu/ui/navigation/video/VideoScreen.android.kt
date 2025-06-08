@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -20,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
@@ -29,10 +33,15 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
+import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
 import dev.datlag.mimasu.common.detectPinchGestures
+import dev.datlag.mimasu.common.hazeEffect
 import dev.datlag.mimasu.common.merge
+import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.navigation.video.components.ExtraControls
 import dev.datlag.mimasu.ui.navigation.video.components.TopControls
 import dev.datlag.mimasu.ui.navigation.video.components.VolumeBrightnessControl
 import dev.datlag.mimasu.ui.navigation.video.states.rememberControlsState
@@ -65,12 +74,14 @@ actual fun VideoScreen(onBack: () -> Unit) {
         mutableFloatStateOf(1F)
     }
 
-    val sources by videoViewModel.sources.collectAsStateWithLifecycle()
-    val mediaItem = remember {
-        MediaItem.Builder()
-            .setUri(sources.firstOrNull())
-            //.setUri("https://stream.mux.com/HDGj01zK01esWsWf9WJj5t5yuXQZJFF6bo.m3u8")
-            .build()
+    val sources by videoViewModel.selectedSource.collectAsStateWithLifecycle(emptyList())
+    val selectedLanguage by videoViewModel.selectedLanguage.collectAsStateWithLifecycle()
+    val mediaItem = remember(sources) {
+        sources.firstOrNull()?.let {
+            MediaItem.Builder()
+                .setUri(it)
+                .build()
+        }
     }
 
     LaunchedEffect(playerWrapper) {
@@ -82,8 +93,10 @@ actual fun VideoScreen(onBack: () -> Unit) {
     }
 
     LaunchedEffect(playerWrapper, mediaItem) {
-        playerWrapper.setMediaItem(mediaItem)
-        playerWrapper.prepare()
+        if (mediaItem != null) {
+            playerWrapper.setMediaItem(mediaItem)
+            playerWrapper.prepare()
+        }
     }
 
     DisposableEffect(playerWrapper) {
@@ -158,6 +171,16 @@ actual fun VideoScreen(onBack: () -> Unit) {
                 hazeState = hazeState,
                 contentPadding = contentPadding.merge(PaddingValues(top = 16.dp)),
                 modifier = Modifier.matchParentSize()
+            )
+
+            ExtraControls(
+                controlsState = controlsState,
+                hazeState = hazeState,
+                player = playerWrapper,
+                viewModel = videoViewModel,
+                modifier = Modifier
+                    .padding(bottom = contentPadding.calculateBottomPadding())
+                    .align(Alignment.BottomCenter)
             )
         }
     }

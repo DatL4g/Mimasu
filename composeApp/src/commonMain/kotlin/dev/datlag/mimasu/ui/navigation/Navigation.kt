@@ -208,7 +208,7 @@ fun Navigation(
                 composable<Navigation.Home> {
                     HomeNavigation(
                         navigateToVideo = {
-                            VideoViewModel.updateSources(it.sources["de"] ?: emptyList())
+                            VideoViewModel.updateSources(it.sources)
 
                             controller.navigate(Navigation.Video) {
                                 launchSingleTop = true
@@ -219,7 +219,7 @@ fun Navigation(
                 composable<Navigation.Series> {
                     SeriesNavigation(
                         navigateToVideo = {
-                            VideoViewModel.updateSources(it.sources["de"] ?: emptyList())
+                            VideoViewModel.updateSources(it.sources)
 
                             controller.navigate(Navigation.Video) {
                                 launchSingleTop = true
@@ -230,7 +230,7 @@ fun Navigation(
                 composable<Navigation.Search> {
                     SearchNavigation(
                         navigateToVideo = {
-                            VideoViewModel.updateSources(it.sources["de"] ?: emptyList())
+                            VideoViewModel.updateSources(it.sources)
 
                             controller.navigate(Navigation.Video) {
                                 launchSingleTop = true
