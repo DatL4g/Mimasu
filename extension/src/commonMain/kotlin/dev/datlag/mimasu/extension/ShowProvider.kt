@@ -5,5 +5,6 @@ import dev.datlag.mimasu.extension.model.Show
 interface ShowProvider {
 
     suspend fun requestId(request: Show.Request): Boolean
-    suspend fun requestEpisode(tmdbId: Int, request: Show.EpisodeRequest): Show.Response?
+    suspend fun requestEpisode(tmdbId: Int, request: Show.EpisodeRequest): Boolean
+    suspend fun requestStream(tmdbId: Int, request: Show.EpisodeRequest): Show.Response?
 }

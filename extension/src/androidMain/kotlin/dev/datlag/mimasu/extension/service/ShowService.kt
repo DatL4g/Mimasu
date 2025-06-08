@@ -7,6 +7,7 @@ import dev.datlag.mimasu.extension.IShowInfoProvider
 import dev.datlag.mimasu.extension.model.Show
 import dev.datlag.mimasu.extension.show.EpisodeCallback
 import dev.datlag.mimasu.extension.show.ShowCallback
+import dev.datlag.mimasu.extension.show.StreamCallback
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -42,7 +43,7 @@ internal class ShowService(context: Context) : AIDLService<IShowInfoProvider>(co
         })
     }
 
-    suspend fun requestEpisode(tmdbId: Int, bytes: ByteArray): Show.Response = suspendCancellableCoroutine { continuation ->
+    suspend fun requestEpisode(tmdbId: Int, bytes: ByteArray): Boolean = suspendCancellableCoroutine { continuation ->
         if (!isBound) {
             continuation.cancel()
             return@suspendCancellableCoroutine
@@ -51,16 +52,36 @@ internal class ShowService(context: Context) : AIDLService<IShowInfoProvider>(co
             continuation.cancel()
             return@suspendCancellableCoroutine
         }
-        val id = mappedIds[tmdbId] ?: run {
+        val showId = mappedIds[tmdbId] ?: run {
             continuation.cancel()
             return@suspendCancellableCoroutine
         }
-        connection.requestEpisode(id, bytes, object : EpisodeCallback.Stub() {
+        connection.requestEpisodeAvailability(showId, bytes, object : EpisodeCallback.Stub() {
+            override fun onResult(available: Boolean) {
+                continuation.resumeWith(Result.success(available))
+            }
+        })
+    }
+
+    suspend fun requestStream(tmdbId: Int, bytes: ByteArray): Show.Response? = suspendCancellableCoroutine { continuation ->
+        if (!isBound) {
+            continuation.cancel()
+            return@suspendCancellableCoroutine
+        }
+        val connection = service ?: run {
+            continuation.cancel()
+            return@suspendCancellableCoroutine
+        }
+        val showId = mappedIds[tmdbId] ?: run {
+            continuation.cancel()
+            return@suspendCancellableCoroutine
+        }
+        connection.requestStream(showId, bytes, object : StreamCallback.Stub() {
             override fun onResult(info: ByteArray?) {
                 val response = Show.Response(info)
 
                 continuation.resumeWith(when (response) {
-                    null -> Result.failure(IllegalStateException())
+                    null -> Result.failure(IllegalArgumentException())
                     else -> Result.success(response)
                 })
             }

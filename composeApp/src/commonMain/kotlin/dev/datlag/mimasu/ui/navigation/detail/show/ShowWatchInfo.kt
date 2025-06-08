@@ -14,4 +14,4 @@ expect fun rememberEpisodeWatchInfo(
     tmdbId: Int?,
     seasonNumber: Int?,
     episode: Season.Episode,
-): Extension.Response?
+): Boolean

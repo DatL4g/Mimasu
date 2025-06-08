@@ -54,6 +54,18 @@ sealed interface Show {
         val sources: Map<String, List<String>> = emptyMap()
     ) : Show {
 
+        operator fun plus(other: Response): Response = this.copy(
+            recapRange = this.recapRange ?: other.recapRange,
+            introRange = this.introRange ?: other.introRange,
+            outroRange = this.outroRange ?: other.outroRange,
+            previewRange = this.previewRange ?: other.previewRange,
+            sources = this.sources + other.sources
+        )
+
+        fun isEmpty(): Boolean {
+            return sources.isEmpty()
+        }
+
         @Serializable
         data class Skipable(
             val start: Long? = null,

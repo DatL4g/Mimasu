@@ -52,13 +52,25 @@ class ShowProviderAndroid(context: Context) : ShowProvider {
         } }.awaitAll().filterNotNull().any { it }
     }
 
-    override suspend fun requestEpisode(tmdbId: Int, request: Show.EpisodeRequest): Show.Response? = coroutineScope {
+    override suspend fun requestEpisode(tmdbId: Int, request: Show.EpisodeRequest): Boolean = coroutineScope {
         val bytes = request.toByteArray()
 
         return@coroutineScope boundServices.map { async {
             suspendCatching {
                 it.requestEpisode(tmdbId, bytes)
             }.getOrNull()
-        } }.awaitAll().filterNotNull().firstOrNull()
+        } }.awaitAll().filterNotNull().any { it }
+    }
+
+    override suspend fun requestStream(tmdbId: Int, request: Show.EpisodeRequest): Show.Response? = coroutineScope {
+        val bytes = request.toByteArray()
+
+        return@coroutineScope boundServices.map { async {
+            suspendCatching {
+                it.requestStream(tmdbId, bytes)
+            }.getOrNull()
+        } }.awaitAll().filterNotNull().fold(Show.Response()) { left, right ->
+            left + right
+        }.takeUnless { it.isEmpty() }
     }
 }

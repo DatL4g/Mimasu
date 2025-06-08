@@ -49,8 +49,8 @@ actual fun rememberEpisodeWatchInfo(
     tmdbId: Int?,
     seasonNumber: Int?,
     episode: Season.Episode
-): Extension.Response? = with(localDI()) {
-    if (tmdbId == null) return null
+): Boolean = with(localDI()) {
+    if (tmdbId == null) return false
 
     val context = LocalContext.current
     val singletonProvider by instanceOrNull<ShowProvider>()
@@ -65,7 +65,7 @@ actual fun rememberEpisodeWatchInfo(
         )
     }
 
-    return produceState<Extension.Response?>(initialValue = null) {
+    return produceState<Boolean>(initialValue = false) {
         val watchInfo = showProvider.requestEpisode(tmdbId, request)
 
         value = watchInfo

@@ -45,14 +45,14 @@ fun EpisodeItem(
     showAvailability: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val watchInfo = if (showAvailability) {
+    val available = if (showAvailability) {
         rememberEpisodeWatchInfo(
             tmdbId = tmdbId,
             seasonNumber = seasonNumber,
             episode = episode
         )
     } else {
-        null
+        false
     }
 
     ElevatedCard(
@@ -62,6 +62,7 @@ fun EpisodeItem(
             containerColor = Platform.colorScheme().background,
             contentColor = Platform.colorScheme().onBackground
         ),
+        enabled = available,
         elevation = CardDefaults.elevatedCardElevation(0.dp, 0.dp, 0.dp, 0.dp, 0.dp, 0.dp)
     ) {
         Row(
