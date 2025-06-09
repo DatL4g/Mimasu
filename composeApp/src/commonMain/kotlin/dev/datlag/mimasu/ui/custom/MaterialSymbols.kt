@@ -53,6 +53,7 @@ import androidx.compose.material.icons.rounded.RequestQuote
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material.icons.rounded.Tune
@@ -157,6 +158,13 @@ data object MaterialSymbols {
     const val LIGHT_MODE = "light_mode"
     const val TRANSLATE = "translate"
     const val PAUSE = "pause"
+    const val SPEED_ZERO_FIVE = "speed_0_5x"
+    const val SPEED_ZERO_SEVEN_FIVE = "speed_0_75"
+    const val SPEED_ONE_TWO_FIVE = "speed_1_25"
+    const val SPEED_ONE_FIVE = "speed_1_5"
+    const val SPEED_ONE_SEVEN_FIVE = "speed_1_75"
+    const val SPEED_TWO = "speed_2x"
+    const val SPEED = "speed"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -522,6 +530,14 @@ data object MaterialSymbols {
         name.equals(LIGHT_MODE, ignoreCase = true) -> Icons.Rounded.LightMode
         name.equals(TRANSLATE, ignoreCase = true) -> Icons.Rounded.Translate
         name.equals(PAUSE, ignoreCase = true) -> Icons.Rounded.Pause
+
+        name.equals(SPEED, ignoreCase = true) -> Icons.Rounded.Speed
+        name.equals(SPEED_TWO, ignoreCase = true) -> Icons.Rounded.Speed
+        name.equals(SPEED_ONE_SEVEN_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
+        name.equals(SPEED_ONE_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
+        name.equals(SPEED_ONE_TWO_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
+        name.equals(SPEED_ZERO_SEVEN_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
+        name.equals(SPEED_ZERO_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
         else -> null
     }
 

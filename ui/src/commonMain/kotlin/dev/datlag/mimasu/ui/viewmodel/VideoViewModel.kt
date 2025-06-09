@@ -16,22 +16,28 @@ import kotlinx.coroutines.flow.updateAndGet
 class VideoViewModel : ViewModel() {
 
     private val sources = Companion.sources
-    val allLanguages = sources.map { it.keys }.stateIn(
+    val allInfo = sources.map { it.keys }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = sources.value.keys
     )
-    val selectedLanguage = Companion.selectedLanguage
+    val selectedInfo = Companion.selectedInfo
 
-    val selectedSource = combine(sources, selectedLanguage) { allSources, language ->
-        allSources[language]?.ifEmpty { null } ?: language?.let {
-            getBestLanguageMatch(it, allSources.keys)
-        }?.let { allSources[it]?.ifEmpty { null } } ?: emptyList()
+    val selectedSource = combine(sources, selectedInfo) { allSources, info ->
+        allSources[info] ?: info?.locale?.let {
+            getBestLanguageMatch(it, allSources.keys.mapNotNull { k -> k.locale })
+        }?.let {
+            allSources.firstNotNullOfOrNull { (k, v) ->
+                if (k.locale.equals(it, ignoreCase = true)) {
+                    v.ifEmpty { null }
+                } else {
+                    null
+                }
+            }
+        } ?: emptyList()
     }
 
-    fun selectLanguage(lang: String) = _selectedLanguage.update {
-        getBestLanguageMatch(lang, sources.value.keys)
-    }
+    fun selectInfo(info: SourceInfo) = _selectedInfo.update { info }
 
     override fun onCleared() {
         super.onCleared()
@@ -40,26 +46,48 @@ class VideoViewModel : ViewModel() {
         clear()
     }
 
+    data class SourceInfo(
+        val sourceTitle: String?,
+        val sourceKey: String?,
+        val locale: String?
+    )
+
     companion object {
-        private val _sources: MutableStateFlow<Map<String, Collection<String>>> = MutableStateFlow(
+        private val _sources: MutableStateFlow<Map<SourceInfo, Collection<String>>> = MutableStateFlow(
             emptyMap()
         )
         val sources = _sources.asStateFlow()
 
-        private val _selectedLanguage = MutableStateFlow<String?>(null)
-        private val selectedLanguage = _selectedLanguage.asStateFlow()
+        private val _selectedInfo = MutableStateFlow<SourceInfo?>(null)
+        private val selectedInfo = _selectedInfo.asStateFlow()
 
-        fun updateSources(list: Map<String, Collection<String>>) = _sources.updateAndGet {
-            list.filterNot { (_, value) ->
-                value.isEmpty()
+        fun updateSources(list: Map<SourceInfo, Collection<String>>): Boolean {
+            return _sources.updateAndGet {
+                list.filterNot { (_, value) ->
+                    value.isEmpty()
+                }
+            }.let { updated ->
+                val bestLocale = getBestLanguageMatch(
+                    Locale.current.language,
+                    updated.keys.mapNotNull { it.locale?.ifBlank { null } }
+                )
+                val selected = _selectedInfo.updateAndGet {
+                    updated.firstNotNullOfOrNull { (k, v) ->
+                        if (k.locale.equals(bestLocale, ignoreCase = true)) {
+                            k
+                        } else {
+                            null
+                        }
+                    }
+                }
+
+                selected != null
             }
-        }.also { updated ->
-            _selectedLanguage.update { getBestLanguageMatch(Locale.current.language, updated.keys) }
         }
 
         fun clear() {
             _sources.update { emptyMap() }
-            _selectedLanguage.update { null }
+            _selectedInfo.update { null }
         }
 
         private fun getBestLanguageMatch(

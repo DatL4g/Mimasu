@@ -25,19 +25,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import co.touchlab.kermit.Logger
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeStreamState
-import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeWatchInfo
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.compose.withMainContext
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -52,16 +52,7 @@ fun EpisodeItem(
     modifier: Modifier = Modifier,
     onStream: (Extension.Response) -> Unit
 ) {
-    val available = if (showAvailability) {
-        rememberEpisodeWatchInfo(
-            tmdbId = tmdbId,
-            seasonNumber = seasonNumber,
-            episode = episode
-        )
-    } else {
-        false
-    }
-    val streamState = if (available) {
+    val episodeStreamState = if (showAvailability) {
         rememberEpisodeStreamState(
             tmdbId = tmdbId,
             seasonNumber = seasonNumber,
@@ -71,12 +62,15 @@ fun EpisodeItem(
         null
     }
     val scope = rememberCoroutineScope()
+    val available by remember(episodeStreamState) {
+        episodeStreamState?.available ?: flowOf(null)
+    }.collectAsStateWithLifecycle(null)
 
     ElevatedCard(
         modifier = modifier,
         onClick = {
             scope.launch {
-                val stream = streamState?.getStream() ?: return@launch
+                val stream = episodeStreamState?.getStream() ?: return@launch
 
                 withMainContext {
                     onStream(stream)
@@ -87,7 +81,7 @@ fun EpisodeItem(
             containerColor = Platform.colorScheme().background,
             contentColor = Platform.colorScheme().onBackground
         ),
-        enabled = available,
+        enabled = available ?: true,
         elevation = CardDefaults.elevatedCardElevation(0.dp, 0.dp, 0.dp, 0.dp, 0.dp, 0.dp)
     ) {
         Row(

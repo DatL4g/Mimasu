@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,7 +22,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.state.rememberPlaybackSpeedState
+import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
+import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.localContentColor
 import kotlinx.collections.immutable.ImmutableCollection
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
@@ -32,25 +37,34 @@ fun PlaybackSpeedButton(
     controlsState: ControlsState,
     player: Player,
     modifier: Modifier = Modifier,
-    color: Color = Color.Unspecified,
+    color: Color = Platform.localContentColor(),
     speedSelection: ImmutableCollection<Float> = persistentSetOf(0.5F, 0.75F, 1.0F, 1.25F, 1.5F, 1.75F, 2.0F)
 ) {
     val state = rememberPlaybackSpeedState(player)
     var dialog by remember { mutableStateOf(false) }
 
-    TextButton(
+    IconButton(
         onClick = {
             dialog = !dialog
             controlsState.showControls(1.minutes)
         },
         modifier = modifier,
-        enabled = state.isEnabled,
-        colors = ButtonDefaults.textButtonColors(
+        enabled = speedSelection.isNotEmpty() && state.isEnabled,
+        colors = IconButtonDefaults.iconButtonColors(
             contentColor = color
         )
     ) {
-        Text(
-            text = "%.1fx".format(state.playbackSpeed),
+        MaterialSymbols(
+            name = when (state.playbackSpeed) {
+                0.5F -> MaterialSymbols.SPEED_ZERO_FIVE
+                0.75F -> MaterialSymbols.SPEED_ZERO_SEVEN_FIVE
+                1.25F -> MaterialSymbols.SPEED_ONE_TWO_FIVE
+                1.5F -> MaterialSymbols.SPEED_ONE_FIVE
+                1.75F -> MaterialSymbols.SPEED_ONE_SEVEN_FIVE
+                2F -> MaterialSymbols.SPEED_TWO
+                else -> MaterialSymbols.SPEED
+            },
+            contentDescription = null
         )
     }
 

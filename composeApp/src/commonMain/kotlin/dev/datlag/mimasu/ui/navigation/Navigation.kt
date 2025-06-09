@@ -208,10 +208,20 @@ fun Navigation(
                 composable<Navigation.Home> {
                     HomeNavigation(
                         navigateToVideo = {
-                            VideoViewModel.updateSources(it.sources)
+                            val navigationAllowed = VideoViewModel.updateSources(it.sources.map { (k, v) ->
+                                VideoViewModel.SourceInfo(
+                                    sourceTitle = k.sourceTitle?.ifBlank { null },
+                                    sourceKey = k.sourceKey?.ifBlank { null },
+                                    locale = k.locale?.ifBlank { null }
+                                ) to v
+                            }.toMap())
 
-                            controller.navigate(Navigation.Video) {
-                                launchSingleTop = true
+                            if (navigationAllowed) {
+                                controller.navigate(Navigation.Video) {
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                VideoViewModel.clear()
                             }
                         }
                     )
@@ -219,10 +229,20 @@ fun Navigation(
                 composable<Navigation.Series> {
                     SeriesNavigation(
                         navigateToVideo = {
-                            VideoViewModel.updateSources(it.sources)
+                            val navigationAllowed = VideoViewModel.updateSources(it.sources.map { (k, v) ->
+                                VideoViewModel.SourceInfo(
+                                    sourceTitle = k.sourceTitle?.ifBlank { null },
+                                    sourceKey = k.sourceKey?.ifBlank { null },
+                                    locale = k.locale?.ifBlank { null }
+                                ) to v
+                            }.toMap())
 
-                            controller.navigate(Navigation.Video) {
-                                launchSingleTop = true
+                            if (navigationAllowed) {
+                                controller.navigate(Navigation.Video) {
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                VideoViewModel.clear()
                             }
                         }
                     )
@@ -230,10 +250,20 @@ fun Navigation(
                 composable<Navigation.Search> {
                     SearchNavigation(
                         navigateToVideo = {
-                            VideoViewModel.updateSources(it.sources)
+                            val navigationAllowed = VideoViewModel.updateSources(it.sources.map { (k, v) ->
+                                VideoViewModel.SourceInfo(
+                                    sourceTitle = k.sourceTitle?.ifBlank { null },
+                                    sourceKey = k.sourceKey?.ifBlank { null },
+                                    locale = k.locale?.ifBlank { null }
+                                ) to v
+                            }.toMap())
 
-                            controller.navigate(Navigation.Video) {
-                                launchSingleTop = true
+                            if (navigationAllowed) {
+                                controller.navigate(Navigation.Video) {
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                VideoViewModel.clear()
                             }
                         }
                     )

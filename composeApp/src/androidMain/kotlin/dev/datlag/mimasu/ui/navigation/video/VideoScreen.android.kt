@@ -82,7 +82,6 @@ actual fun VideoScreen(onBack: () -> Unit) {
     }
 
     val sources by videoViewModel.selectedSource.collectAsStateWithLifecycle(emptyList())
-    val selectedLanguage by videoViewModel.selectedLanguage.collectAsStateWithLifecycle()
     val mediaItem = remember(sources) {
         sources.firstOrNull()?.let {
             MediaItem.Builder()

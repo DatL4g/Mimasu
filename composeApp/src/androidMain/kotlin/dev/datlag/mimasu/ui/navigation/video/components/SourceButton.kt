@@ -36,8 +36,8 @@ fun SourceButton(
     modifier: Modifier = Modifier,
     color: Color = Platform.localContentColor()
 ) {
-    val sources by viewModel.allLanguages.collectAsStateWithLifecycle()
-    val selectedLanguage by viewModel.selectedLanguage.collectAsStateWithLifecycle()
+    val sources by viewModel.allInfo.collectAsStateWithLifecycle()
+    val selectedInfo by viewModel.selectedInfo.collectAsStateWithLifecycle()
 
     var dialog by remember { mutableStateOf(false) }
 
@@ -60,13 +60,13 @@ fun SourceButton(
 
     if (dialog) {
         SourceBottomSheet(
-            current = selectedLanguage,
+            current = selectedInfo,
             choices = sources.toPersistentSet(),
             onDismissRequest = {
                 dialog = false
                 controlsState.showControls()
             },
-            onSelectChoice = viewModel::selectLanguage
+            onSelectChoice = viewModel::selectInfo
         )
     }
 }
@@ -74,10 +74,10 @@ fun SourceButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SourceBottomSheet(
-    current: String?,
-    choices: ImmutableCollection<String>,
+    current: VideoViewModel.SourceInfo?,
+    choices: ImmutableCollection<VideoViewModel.SourceInfo>,
     onDismissRequest: () -> Unit,
-    onSelectChoice: (String) -> Unit
+    onSelectChoice: (VideoViewModel.SourceInfo) -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest
@@ -85,20 +85,20 @@ private fun SourceBottomSheet(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            items(choices.toImmutableList()) { lang ->
+            items(choices.toImmutableList()) { info ->
                 TextButton(
                     modifier = Modifier.fillParentMaxWidth(),
                     onClick = {
-                        onSelectChoice(lang)
+                        onSelectChoice(info)
                         onDismissRequest()
                     }
                 ) {
-                    val selected = remember(lang, current) {
-                        lang.equals(current, ignoreCase = true)
+                    val selected = remember(info, current) {
+                        info == current
                     }
 
                     Text(
-                        text = lang,
+                        text = "${info.sourceTitle}: ${info.locale}",
                         fontWeight = if (selected) {
                             FontWeight.Bold
                         } else {
