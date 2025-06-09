@@ -31,6 +31,7 @@ import dev.datlag.mimasu.ui.navigation.video.VideoScreen
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import kotlinx.serialization.Serializable
+import dev.datlag.mimasu.ui.ads.rememberAdManager
 
 object Navigation {
 
@@ -134,6 +135,8 @@ fun Navigation(
     } else {
         val controller = rememberNavController()
         val backStack by controller.currentBackStackEntryAsState()
+        val rewardAdManager = rememberAdManager()
+        val userData by accountViewModel.userData.collectAsStateWithLifecycle()
 
         NavigationSuiteScaffold(
             navigationSuiteItems = {
@@ -217,8 +220,16 @@ fun Navigation(
                             }.toMap())
 
                             if (navigationAllowed) {
-                                controller.navigate(Navigation.Video) {
-                                    launchSingleTop = true
+                                if (userData?.premium == true) {
+                                    controller.navigate(Navigation.Video) {
+                                        launchSingleTop = true
+                                    }
+                                } else {
+                                    rewardAdManager.showRewardAd {
+                                        controller.navigate(Navigation.Video) {
+                                            launchSingleTop = true
+                                        }
+                                    }
                                 }
                             } else {
                                 VideoViewModel.clear()
@@ -238,8 +249,16 @@ fun Navigation(
                             }.toMap())
 
                             if (navigationAllowed) {
-                                controller.navigate(Navigation.Video) {
-                                    launchSingleTop = true
+                                if (userData?.premium == true) {
+                                    controller.navigate(Navigation.Video) {
+                                        launchSingleTop = true
+                                    }
+                                } else {
+                                    rewardAdManager.showRewardAd {
+                                        controller.navigate(Navigation.Video) {
+                                            launchSingleTop = true
+                                        }
+                                    }
                                 }
                             } else {
                                 VideoViewModel.clear()
@@ -259,8 +278,16 @@ fun Navigation(
                             }.toMap())
 
                             if (navigationAllowed) {
-                                controller.navigate(Navigation.Video) {
-                                    launchSingleTop = true
+                                if (userData?.premium == true) {
+                                    controller.navigate(Navigation.Video) {
+                                        launchSingleTop = true
+                                    }
+                                } else {
+                                    rewardAdManager.showRewardAd {
+                                        controller.navigate(Navigation.Video) {
+                                            launchSingleTop = true
+                                        }
+                                    }
                                 }
                             } else {
                                 VideoViewModel.clear()

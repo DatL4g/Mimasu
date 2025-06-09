@@ -3,6 +3,7 @@ package dev.datlag.mimasu.ui.viewmodel
 import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,7 +14,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 
-class VideoViewModel : ViewModel() {
+class VideoViewModel(
+    val firestoreWrapper: FirebaseFirestoreWrapper,
+) : ViewModel() {
 
     private val sources = Companion.sources
     val allInfo = sources.map { it.keys }.stateIn(

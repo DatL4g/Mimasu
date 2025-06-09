@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -104,6 +105,18 @@ class AccountViewModel(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = currentUser
+    )
+
+    val userData = user.transformLatest { user ->
+        if (user == null) {
+            return@transformLatest emit(null)
+        } else {
+            return@transformLatest emit(firestoreWrapper.getUserData())
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = null
     )
 
     val currentUser: User?

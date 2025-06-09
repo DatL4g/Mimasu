@@ -102,7 +102,8 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
                 (model as? T) ?: super.create(modelClass, extras)
             }
             modelClass typeOf VideoViewModel::class -> {
-                val model = VideoViewModel()
+                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper()
+                val model = VideoViewModel(wrapper)
 
                 (model as? T) ?: super.create(modelClass, extras)
             }
