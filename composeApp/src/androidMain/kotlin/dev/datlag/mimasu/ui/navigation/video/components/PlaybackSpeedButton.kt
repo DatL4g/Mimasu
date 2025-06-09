@@ -108,7 +108,7 @@ private fun SpeedBottomSheet(
                     }
 
                     Text(
-                        text = "%.1fx".format(speed),
+                        text = "%.2fx".format(speed),
                         fontWeight = if (selected) {
                             FontWeight.Bold
                         } else {

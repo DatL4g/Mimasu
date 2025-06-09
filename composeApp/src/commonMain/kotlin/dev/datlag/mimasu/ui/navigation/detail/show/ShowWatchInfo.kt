@@ -18,7 +18,7 @@ expect fun rememberEpisodeStreamState(
 ): EpisodeStreamState?
 
 expect class EpisodeStreamState {
-    val available: StateFlow<Boolean>
+    val available: StateFlow<Boolean?>
 
     suspend fun getStream(): Extension.Response?
 }

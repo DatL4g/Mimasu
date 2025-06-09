@@ -90,8 +90,8 @@ actual class EpisodeStreamState(
     private val tmdbId: Int,
     private val request: Extension.EpisodeRequest
 ) {
-    private val _available = MutableStateFlow(false)
-    val available = _available.asStateFlow()
+    private val _available = MutableStateFlow<Boolean?>(null)
+    actual val available = _available.asStateFlow()
 
     actual suspend fun getStream(): Extension.Response? {
         return provider.requestStream(tmdbId, request)
