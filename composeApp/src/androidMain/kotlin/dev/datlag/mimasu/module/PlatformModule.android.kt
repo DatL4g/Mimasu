@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.module
 
 import android.content.Context
+import android.os.Build
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
@@ -62,7 +63,9 @@ actual object PlatformModule {
             HttpClient(OkHttp) {
                 followRedirects = true
                 engine {
-                    addNetworkInterceptor(instance(TAG_CERT_TRANSPARENT))
+                    if (Build.VERSION.SDK_INT < 36) {
+                        addNetworkInterceptor(instance(TAG_CERT_TRANSPARENT))
+                    }
                     // Add the Cronet interceptor last, otherwise the subsequent interceptors will be skipped.
                     cronetEngine()?.let {
                         addInterceptor(

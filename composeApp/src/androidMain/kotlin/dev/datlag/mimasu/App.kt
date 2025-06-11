@@ -1,6 +1,7 @@
 package dev.datlag.mimasu
 
 import android.content.Context
+import android.os.Build
 import androidx.multidex.MultiDexApplication
 import co.touchlab.kermit.ExperimentalKermitApi
 import co.touchlab.kermit.Logger
@@ -49,9 +50,11 @@ class App : MultiDexApplication(), DIAware {
     override fun onCreate() {
         super.onCreate()
 
-        installCertificateTransparencyProvider {
-            logger = BasicAndroidCTLogger(BuildConfig.DEBUG)
-            diskCache = AndroidDiskCache(applicationContext)
+        if (Build.VERSION.SDK_INT < 36) {
+            installCertificateTransparencyProvider {
+                logger = BasicAndroidCTLogger(BuildConfig.DEBUG)
+                diskCache = AndroidDiskCache(applicationContext)
+            }
         }
 
         val imageLoader by di.instanceOrNull<ImageLoader>()
