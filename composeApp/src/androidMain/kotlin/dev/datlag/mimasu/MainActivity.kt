@@ -23,6 +23,7 @@ import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
+import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
@@ -143,7 +144,7 @@ class MainActivity : AdActivity() {
                 val mode = data.getQueryParameter("mode")?.ifBlank { null }
 
                 if (mode.equals("resetPassword", ignoreCase = true) && !oobCode.isNullOrBlank()) {
-                    AccountViewModel.setResetCode(oobCode)
+                    LoginViewModel.setResetCode(oobCode)
                 }
             }
         }

@@ -12,6 +12,7 @@ import coil3.svg.SvgDecoder
 import dev.datlag.mimasu.core.now
 import dev.datlag.mimasu.core.toEpochMilliseconds
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
+import dev.datlag.mimasu.firebase.auth.api.DisposableDebounce
 import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.tmdb.TMDB
@@ -100,6 +101,11 @@ data object NetworkModule {
         }
         bindSingleton<FirebaseAuthDataSource> {
             FirebaseAuthDataSource(firebaseAuthService = instance())
+        }
+        bindSingleton<DisposableDebounce> {
+            DisposableDebounce.create(
+                client = instance()
+            )
         }
     }
 

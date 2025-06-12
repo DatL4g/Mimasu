@@ -26,6 +26,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_
 import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_special
 import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_uppercase
 import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
+import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.rememberIsTv
 import org.jetbrains.compose.resources.stringResource
@@ -34,7 +35,7 @@ import org.jetbrains.compose.resources.stringResource
 fun LoginPasswordCriteriaSection(
     emailValid: Boolean,
     criteriaVisible: Boolean,
-    passwordErrorState: AccountViewModel.PasswordErrorState?,
+    passwordErrorState: LoginViewModel.PasswordErrorState?,
     modifier: Modifier = Modifier,
     onPasswordReset: () -> Unit
 ) {

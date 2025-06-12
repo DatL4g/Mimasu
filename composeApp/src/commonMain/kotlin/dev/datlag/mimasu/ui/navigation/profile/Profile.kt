@@ -50,6 +50,7 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.profile.components.AboutDialog
 import dev.datlag.mimasu.ui.navigation.profile.components.ExtensionSection
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
+import dev.datlag.mimasu.ui.viewmodel.loginViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.typography
@@ -61,6 +62,7 @@ fun Profile(
     onLogout: () -> Unit,
 ) {
     val accountViewModel = accountViewModel()
+    val loginViewModel = loginViewModel()
     val user by accountViewModel.user.collectAsStateWithLifecycle()
 
     var showSignOutDialog by remember { mutableStateOf(false) }
@@ -86,7 +88,7 @@ fun Profile(
                 Button(
                     onClick = {
                         showSignOutDialog = false
-                        accountViewModel.signOut()?.invokeOnCompletion {
+                        loginViewModel.signOut()?.invokeOnCompletion {
                             onLogout()
                         }
                     },
@@ -207,7 +209,7 @@ fun Profile(
                 softWrap = true
             )
         }
-        if (accountViewModel.hasGoogleProvider) {
+        if (loginViewModel.hasGoogleProvider) {
             item {
                 Row(
                     modifier = Modifier
@@ -229,7 +231,7 @@ fun Profile(
                     Spacer(modifier = Modifier.weight(1F))
                     Button(
                         onClick = {
-                            accountViewModel.googleLink()
+                            loginViewModel.googleLink()
                         },
                         enabled = user?.linkedGoogle != true
                     ) {
@@ -244,7 +246,7 @@ fun Profile(
                 }
             }
         }
-        if (accountViewModel.hasGitHubProvider) {
+        if (loginViewModel.hasGitHubProvider) {
             item {
                 Row(
                     modifier = Modifier
@@ -268,7 +270,7 @@ fun Profile(
                     Button(
                         onClick = {
                             githubAuthParams?.let {
-                                accountViewModel.githubLink(it)
+                                loginViewModel.githubLink(it)
                             }
                         },
                         enabled = user?.github?.linked != true && githubAuthParams != null

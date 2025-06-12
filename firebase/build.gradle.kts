@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.sekret)
     alias(libs.plugins.atomicfu)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
@@ -23,6 +25,7 @@ kotlin {
             implementation(libs.sekret)
             implementation(libs.kase.change)
             implementation(libs.immutable)
+            implementation(libs.ktorfit)
 
             api(libs.firebase)
             api(libs.firebase.firestore)

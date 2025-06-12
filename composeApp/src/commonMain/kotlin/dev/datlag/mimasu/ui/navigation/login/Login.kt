@@ -102,6 +102,7 @@ import dev.datlag.mimasu.ui.navigation.login.components.LoginSignInButton
 import dev.datlag.mimasu.ui.navigation.login.components.LoginSocialProvider
 import dev.datlag.mimasu.ui.navigation.login.components.LoginSocialProviderDivider
 import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
+import dev.datlag.mimasu.ui.viewmodel.loginViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformButton
 import dev.datlag.tooling.compose.platform.PlatformText
@@ -115,19 +116,19 @@ import kotlin.onSuccess
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Login(onSuccess: () -> Unit) {
-    val accountViewModel = accountViewModel()
+    val loginViewModel = loginViewModel()
 
-    val emailValue by accountViewModel.email.collectAsStateWithLifecycle()
-    val emailHasError by accountViewModel.emailHasError.collectAsStateWithLifecycle(false)
+    val emailValue by loginViewModel.email.collectAsStateWithLifecycle()
+    val emailHasError by loginViewModel.emailHasError.collectAsStateWithLifecycle(false)
     val emailValid = remember(emailValue, emailHasError) {
         emailValue.isNotBlank() && !emailHasError
     }
-    val emailReadonly by accountViewModel.emailReadonly.collectAsStateWithLifecycle()
+    val emailReadonly by loginViewModel.emailReadonly.collectAsStateWithLifecycle()
     val emailInteractionSource = remember { MutableInteractionSource() }
     val typingEmail by emailInteractionSource.collectIsFocusedAsState()
 
-    val passwordValue by accountViewModel.password.collectAsStateWithLifecycle()
-    val passwordErrorState by accountViewModel.passwordErrorState.collectAsStateWithLifecycle(null)
+    val passwordValue by loginViewModel.password.collectAsStateWithLifecycle()
+    val passwordErrorState by loginViewModel.passwordErrorState.collectAsStateWithLifecycle(null)
     val passwordHasError = remember(passwordErrorState) {
         passwordErrorState?.hasError == true
     }
@@ -136,11 +137,11 @@ fun Login(onSuccess: () -> Unit) {
     }
     val passwordInteractionSource = remember { MutableInteractionSource() }
     val typingPassword by passwordInteractionSource.collectIsFocusedAsState()
-    val passwordResetCode by accountViewModel.passwordResetCode.collectAsStateWithLifecycle()
-    val passwordResetUi by accountViewModel.passwordResetUi.collectAsStateWithLifecycle()
+    val passwordResetCode by loginViewModel.passwordResetCode.collectAsStateWithLifecycle()
+    val passwordResetUi by loginViewModel.passwordResetUi.collectAsStateWithLifecycle()
 
     LaunchedEffect(passwordResetCode) {
-        accountViewModel.verifyPasswordResetCode(passwordResetCode)
+        loginViewModel.verifyPasswordResetCode(passwordResetCode)
     }
 
     val focusManager = LocalFocusManager.current
@@ -174,7 +175,7 @@ fun Login(onSuccess: () -> Unit) {
                     },
                     value = emailValue,
                     onValueChange = {
-                        accountViewModel.updateEmail(it)
+                        loginViewModel.updateEmail(it)
                     },
                     leadingIcon = {
                         MaterialSymbols(
@@ -207,7 +208,7 @@ fun Login(onSuccess: () -> Unit) {
                 },
                 value = passwordValue,
                 onValueChange = {
-                    accountViewModel.updatePassword(it)
+                    loginViewModel.updatePassword(it)
                 },
                 leadingIcon = {
                     MaterialSymbols(
@@ -256,7 +257,7 @@ fun Login(onSuccess: () -> Unit) {
                 passwordErrorState = passwordErrorState,
                 modifier = Modifier.fillParentMaxWidth(),
                 onPasswordReset = {
-                    accountViewModel.resetPassword(emailValue)
+                    loginViewModel.resetPassword(emailValue)
                 }
             )
         }
@@ -266,7 +267,7 @@ fun Login(onSuccess: () -> Unit) {
                 passwordReset = passwordResetUi,
                 modifier = Modifier.fillParentMaxWidth(),
                 onSignIn = {
-                    accountViewModel.emailSignIn(
+                    loginViewModel.emailSignIn(
                         params = EmailAuthParams(
                             email = emailValue,
                             password = passwordValue
@@ -279,7 +280,7 @@ fun Login(onSuccess: () -> Unit) {
                     )
                 },
                 onPasswordReset = {
-                    accountViewModel.changePassword(
+                    loginViewModel.changePassword(
                         code = passwordResetCode,
                         email = emailValue,
                         newPassword = passwordValue,
@@ -295,25 +296,25 @@ fun Login(onSuccess: () -> Unit) {
         if (!passwordResetUi) {
             item {
                 LoginSocialProviderDivider(
-                    hasGitHubProvider = accountViewModel.hasGitHubProvider,
-                    hasGoogleProvider = accountViewModel.hasGoogleProvider,
+                    hasGitHubProvider = loginViewModel.hasGitHubProvider,
+                    hasGoogleProvider = loginViewModel.hasGoogleProvider,
                     modifier = Modifier.fillParentMaxWidth().padding(vertical = 8.dp)
                 )
             }
             item {
                 LoginSocialProvider(
-                    hasGitHubProvider = accountViewModel.hasGitHubProvider,
-                    hasGoogleProvider = accountViewModel.hasGoogleProvider,
+                    hasGitHubProvider = loginViewModel.hasGitHubProvider,
+                    hasGoogleProvider = loginViewModel.hasGoogleProvider,
                     modifier = Modifier.fillParentMaxWidth(),
                     onGitHubClicked = { params ->
-                        accountViewModel.githubSignIn(params) {
+                        loginViewModel.githubSignIn(params) {
                             withMainContext {
                                 onSuccess()
                             }
                         }
                     },
                     onGoogleClicked = {
-                        accountViewModel.googleSignIn {
+                        loginViewModel.googleSignIn {
                             withMainContext {
                                 onSuccess()
                             }
@@ -322,7 +323,7 @@ fun Login(onSuccess: () -> Unit) {
                 )
             }
             item {
-                val loginResult by accountViewModel.loginResult.collectAsStateWithLifecycle()
+                val loginResult by loginViewModel.loginResult.collectAsStateWithLifecycle()
 
                 LoginResult(
                     failure = loginResult == false,
