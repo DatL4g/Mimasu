@@ -100,11 +100,6 @@ fun MovieDetail(
             )
         },
         floatingActionButton = {
-            /*val movieInfo = rememberMovieWatchInfo(
-                movie = movieState.getOrNull(),
-                initial = initial
-            )*/
-
             MovieWatchProviderFAB(
                 movie = movieState.getOrNull(),
                 onWatchClick = onWatchClick

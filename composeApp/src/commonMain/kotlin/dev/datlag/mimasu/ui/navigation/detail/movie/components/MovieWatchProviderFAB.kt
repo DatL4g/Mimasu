@@ -68,8 +68,7 @@ fun MovieWatchProviderFAB(
             ExtendedFloatingActionButton(
                 onClick = {
                     if (regionProviders.hasProviders()) {
-                        onWatchClick()
-                        // dialog = !dialog
+                        dialog = !dialog
                     } else {
                         openLink?.let(uriHandler::openUri)
                     }
