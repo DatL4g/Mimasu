@@ -102,6 +102,7 @@
     <string name="login_password_reset_email_sent">Password reset email sent.</string>
     <string name="login_password_reset_email_nothing_receiving">If you originally signed up with another provider, like Google or Github, you may not receive any email.</string>
     <string name="login_new_password">New Password</string>
+    <string name="login_email_disposable">Disposable accounts are not allowed.</string>
 
     <string name="github">GitHub</string>
     <string name="google">Google</string>

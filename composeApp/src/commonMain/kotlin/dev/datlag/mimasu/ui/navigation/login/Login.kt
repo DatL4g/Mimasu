@@ -102,6 +102,7 @@ import dev.datlag.mimasu.ui.navigation.login.components.LoginSignInButton
 import dev.datlag.mimasu.ui.navigation.login.components.LoginSocialProvider
 import dev.datlag.mimasu.ui.navigation.login.components.LoginSocialProviderDivider
 import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
+import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.mimasu.ui.viewmodel.loginViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformButton
@@ -117,6 +118,7 @@ import kotlin.onSuccess
 @Composable
 fun Login(onSuccess: () -> Unit) {
     val loginViewModel = loginViewModel()
+    val loginResult by loginViewModel.loginResult.collectAsStateWithLifecycle()
 
     val emailValue by loginViewModel.email.collectAsStateWithLifecycle()
     val emailHasError by loginViewModel.emailHasError.collectAsStateWithLifecycle(false)
@@ -193,7 +195,7 @@ fun Login(onSuccess: () -> Unit) {
                     ),
                     maxLines = 1,
                     singleLine = true,
-                    isError = emailHasError,
+                    isError = emailHasError || loginResult is LoginViewModel.LoginResult.Disposable,
                     interactionSource = emailInteractionSource
                 )
             }
@@ -323,10 +325,8 @@ fun Login(onSuccess: () -> Unit) {
                 )
             }
             item {
-                val loginResult by loginViewModel.loginResult.collectAsStateWithLifecycle()
-
                 LoginResult(
-                    failure = loginResult == false,
+                    failure = loginResult,
                     modifier = Modifier.fillParentMaxWidth()
                 )
             }

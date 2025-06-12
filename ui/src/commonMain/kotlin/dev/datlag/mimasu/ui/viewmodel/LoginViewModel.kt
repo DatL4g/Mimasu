@@ -110,7 +110,7 @@ class LoginViewModel(
         get() = gitHubAuthProvider != null
 
     private var loginJob: Job? = null
-    private val _loginResult = MutableStateFlow<Boolean?>(null)
+    private val _loginResult = MutableStateFlow<LoginResult>(LoginResult.None)
     val loginResult = _loginResult.asStateFlow()
 
     private fun startLoginJob(block: suspend CoroutineScope.() -> Unit): Job? {
@@ -122,7 +122,7 @@ class LoginViewModel(
     }
 
     fun emailSignIn(params: EmailAuthParams, onSuccess: suspend () -> Unit) = startLoginJob {
-        _loginResult.update { null }
+        _loginResult.update { LoginResult.None }
 
         val disposable = suspendCatching {
             disposableDebounce?.checkDisposable(
@@ -132,10 +132,10 @@ class LoginViewModel(
         }.getOrNull() ?: false
 
         if (disposable) {
-            _loginResult.update { false }
+            _loginResult.update { LoginResult.Disposable }
         } else {
             emailAuthProvider.signIn(params).also { result ->
-                _loginResult.update { result.isSuccess }
+                _loginResult.update { LoginResult.Finish(result.isSuccess) }
                 if (result.isSuccess) {
                     onSuccess()
                 }
@@ -144,11 +144,11 @@ class LoginViewModel(
     }
 
     fun googleSignIn(onSuccess: suspend () -> Unit) = startLoginJob {
-        _loginResult.update { null }
+        _loginResult.update { LoginResult.None }
         googleAuthProvider?.signIn(
             FirebaseGoogleAuthProvider.SignInParams(isRetrying = false)
         ).also { result ->
-            _loginResult.update { result?.isSuccess }
+            _loginResult.update { result?.let { LoginResult.Finish(it.isSuccess) } ?: LoginResult.None }
             if (result?.isSuccess == true) {
                 onSuccess()
             }
@@ -162,9 +162,9 @@ class LoginViewModel(
     }
 
     fun githubSignIn(params: GitHubAuthParams, onSuccess: suspend () -> Unit) = startLoginJob {
-        _loginResult.update { null }
+        _loginResult.update { LoginResult.None }
         gitHubAuthProvider?.signIn(params).also { result ->
-            _loginResult.update { result?.isSuccess }
+            _loginResult.update { result?.let { LoginResult.Finish(it.isSuccess) } ?: LoginResult.None }
             if (result?.isSuccess == true) {
                 onSuccess()
             }
@@ -251,6 +251,19 @@ class LoginViewModel(
                 || !hasSpecialChar
                 || !isLongEnough
                 || isTooLong
+    }
+
+    @Serializable
+    sealed interface LoginResult {
+
+        @Serializable
+        data object None : LoginResult
+
+        @Serializable
+        data object Disposable : LoginResult
+
+        @Serializable
+        data class Finish(val success: Boolean) : LoginResult
     }
 
     companion object : ViewModelStoreOwner {
