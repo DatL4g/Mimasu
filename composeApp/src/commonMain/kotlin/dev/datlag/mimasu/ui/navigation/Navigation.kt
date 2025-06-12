@@ -135,8 +135,7 @@ fun Navigation(
     } else {
         val controller = rememberNavController()
         val backStack by controller.currentBackStackEntryAsState()
-        val rewardAdManager = rememberAdManager()
-        val userData by accountViewModel.userData.collectAsStateWithLifecycle()
+        val videoNavigationController = rememberVideoNavigationController()
 
         NavigationSuiteScaffold(
             navigationSuiteItems = {
@@ -211,87 +210,42 @@ fun Navigation(
                 composable<Navigation.Home> {
                     HomeNavigation(
                         navigateToVideo = {
-                            val navigationAllowed = VideoViewModel.updateSources(it.sources.map { (k, v) ->
-                                VideoViewModel.SourceInfo(
-                                    sourceTitle = k.sourceTitle?.ifBlank { null },
-                                    sourceKey = k.sourceKey?.ifBlank { null },
-                                    locale = k.locale?.ifBlank { null }
-                                ) to v
-                            }.toMap())
-
-                            if (navigationAllowed) {
-                                if (userData?.premium == true) {
+                            videoNavigationController.loadSources(
+                                sources = it.sources,
+                                navigate = {
                                     controller.navigate(Navigation.Video) {
                                         launchSingleTop = true
                                     }
-                                } else {
-                                    rewardAdManager.showRewardAd {
-                                        controller.navigate(Navigation.Video) {
-                                            launchSingleTop = true
-                                        }
-                                    }
                                 }
-                            } else {
-                                VideoViewModel.clear()
-                            }
+                            )
                         }
                     )
                 }
                 composable<Navigation.Series> {
                     SeriesNavigation(
                         navigateToVideo = {
-                            val navigationAllowed = VideoViewModel.updateSources(it.sources.map { (k, v) ->
-                                VideoViewModel.SourceInfo(
-                                    sourceTitle = k.sourceTitle?.ifBlank { null },
-                                    sourceKey = k.sourceKey?.ifBlank { null },
-                                    locale = k.locale?.ifBlank { null }
-                                ) to v
-                            }.toMap())
-
-                            if (navigationAllowed) {
-                                if (userData?.premium == true) {
+                            videoNavigationController.loadSources(
+                                sources = it.sources,
+                                navigate = {
                                     controller.navigate(Navigation.Video) {
                                         launchSingleTop = true
                                     }
-                                } else {
-                                    rewardAdManager.showRewardAd {
-                                        controller.navigate(Navigation.Video) {
-                                            launchSingleTop = true
-                                        }
-                                    }
                                 }
-                            } else {
-                                VideoViewModel.clear()
-                            }
+                            )
                         }
                     )
                 }
                 composable<Navigation.Search> {
                     SearchNavigation(
                         navigateToVideo = {
-                            val navigationAllowed = VideoViewModel.updateSources(it.sources.map { (k, v) ->
-                                VideoViewModel.SourceInfo(
-                                    sourceTitle = k.sourceTitle?.ifBlank { null },
-                                    sourceKey = k.sourceKey?.ifBlank { null },
-                                    locale = k.locale?.ifBlank { null }
-                                ) to v
-                            }.toMap())
-
-                            if (navigationAllowed) {
-                                if (userData?.premium == true) {
+                            videoNavigationController.loadSources(
+                                sources = it.sources,
+                                navigate = {
                                     controller.navigate(Navigation.Video) {
                                         launchSingleTop = true
                                     }
-                                } else {
-                                    rewardAdManager.showRewardAd {
-                                        controller.navigate(Navigation.Video) {
-                                            launchSingleTop = true
-                                        }
-                                    }
                                 }
-                            } else {
-                                VideoViewModel.clear()
-                            }
+                            )
                         }
                     )
                 }

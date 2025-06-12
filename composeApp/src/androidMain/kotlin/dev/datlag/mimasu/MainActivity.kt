@@ -2,6 +2,8 @@ package dev.datlag.mimasu
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -13,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.extension.AppInstallReceiver
 import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.other.AdManager
@@ -39,6 +42,8 @@ class MainActivity : AdActivity() {
             ?: application.safeCast<DIAware>()?.di
             ?: DIAware::class.safeCast(applicationContext)?.di
             ?: DIAware::class.safeCast(application)?.di
+
+    private val appInstallReceiver = AppInstallReceiver()
 
     // ToDo("use Tolgee wrapper")
     override fun attachBaseContext(newBase: Context?) {
@@ -97,9 +102,27 @@ class MainActivity : AdActivity() {
         handleIntent(intent)
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        val intentFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REPLACED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addDataScheme("package")
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(appInstallReceiver, intentFilter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(appInstallReceiver, intentFilter)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
+        unregisterReceiver(appInstallReceiver)
         ExtensionInitializer.unbindAll(this)
     }
 

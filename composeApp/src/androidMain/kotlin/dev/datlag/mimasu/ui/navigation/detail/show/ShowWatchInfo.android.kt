@@ -50,13 +50,11 @@ actual fun rememberShowAvailability(
 }
 
 @Composable
-actual fun rememberEpisodeStreamState(
+actual fun rememberEpisodeStream(
     tmdbId: Int?,
     seasonNumber: Int?,
     episode: Season.Episode,
-): EpisodeStreamState? = with(localDI()) {
-    if (tmdbId == null) return null
-
+): EpisodeStream = with(localDI()) {
     val context = LocalContext.current
     val singletonProvider by instanceOrNull<ShowProvider>()
     val showProvider = singletonProvider ?: remember(context) {
@@ -71,7 +69,7 @@ actual fun rememberEpisodeStreamState(
     }
 
     val state = remember(showProvider, tmdbId, request) {
-        EpisodeStreamState(
+        EpisodeStream(
             provider = showProvider,
             tmdbId = tmdbId,
             request = request
@@ -85,19 +83,38 @@ actual fun rememberEpisodeStreamState(
     return state
 }
 
-actual class EpisodeStreamState(
-    private val provider: ShowProvider,
-    private val tmdbId: Int,
+actual class EpisodeStream(
+    private val provider: ShowProvider?,
+    private val tmdbId: Int?,
     private val request: Extension.EpisodeRequest
 ) {
-    private val _available = MutableStateFlow<Boolean?>(null)
-    actual val available = _available.asStateFlow()
+    private val _available = MutableStateFlow(coreAvailability(EpisodeStreamState.Initializing))
+    actual val state = _available.asStateFlow()
 
     actual suspend fun getStream(): Extension.Response? {
-        return provider.requestStream(tmdbId, request)
+        return if (provider != null && tmdbId?.takeIf { it > 0 } != null) {
+            return provider.requestStream(tmdbId, request)
+        } else {
+            null
+        }
     }
 
     internal suspend fun requestEpisodeAvailability() {
-        _available.emit(provider.requestEpisode(tmdbId, request))
+        _available.emit(EpisodeStreamState.Requesting)
+
+        val state = if (provider != null && tmdbId?.takeIf { it > 0 } != null) {
+            EpisodeStreamState.Available(provider.requestEpisode(tmdbId, request))
+        } else {
+            EpisodeStreamState.Unavailable
+        }
+        _available.emit(state)
+    }
+
+    private fun coreAvailability(available: EpisodeStreamState): EpisodeStreamState {
+        return if (provider == null || tmdbId?.takeIf { it > 0 } == null) {
+            EpisodeStreamState.Unavailable
+        } else {
+            available
+        }
     }
 }

@@ -14,6 +14,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.theme.Colors
+import dev.datlag.mimasu.ui.theme.dynamicDark
+import dev.datlag.mimasu.ui.theme.dynamicLight
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformMaterialTheme
@@ -39,7 +41,7 @@ fun App(
         LocalDarkMode provides systemDarkTheme
     ) {
         PlatformMaterialTheme(
-            colorScheme = if (systemDarkTheme) Colors.getDarkScheme() else Colors.getLightScheme(),
+            colorScheme = if (systemDarkTheme) Colors.dynamicDark() else Colors.dynamicLight(),
             typography = typography
         ) {
             PlatformSurface(

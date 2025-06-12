@@ -144,3 +144,9 @@ data object Colors {
         inversePrimary = Color(THEME_LIGHT_INVERSE_PRIMARY)
     )
 }
+
+@Composable
+expect fun Colors.dynamicDark(): ColorScheme
+
+@Composable
+expect fun Colors.dynamicLight(): ColorScheme

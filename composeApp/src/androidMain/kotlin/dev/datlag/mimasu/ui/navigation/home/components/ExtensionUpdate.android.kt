@@ -78,6 +78,8 @@ actual fun ExtensionUpdate(
                         if (state is ExtensionUpdateViewModel.State.Install.Success) {
                             extensionUpdateViewModel.clearState()
                         }
+
+                        ExtensionInitializer.rebindAll(context)
                     }
 
                     update?.downloadUrl?.let {

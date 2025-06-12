@@ -15,11 +15,14 @@ import com.jet.ads.common.rewarded.RewardedControllerFactory
 import com.jet.ads.common.rewarded.RewardsController
 import dev.datlag.mimasu.common.findActivity
 import dev.datlag.mimasu.other.AdManager
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
 
+@Serializable
 actual class RewardAdManager(
-    private val activity: Activity?,
+    @Transient private val activity: Activity? = null,
     private val rewardManager: RewardsController = RewardedControllerFactory.admobController(),
     private val available: Boolean
 ) {

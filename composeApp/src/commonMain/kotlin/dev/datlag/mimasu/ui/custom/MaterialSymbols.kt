@@ -60,6 +60,7 @@ import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material.icons.rounded.Work
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
@@ -165,6 +166,7 @@ data object MaterialSymbols {
     const val SPEED_ONE_SEVEN_FIVE = "speed_1_75"
     const val SPEED_TWO = "speed_2x"
     const val SPEED = "speed"
+    const val WARNING = "warning"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -538,6 +540,7 @@ data object MaterialSymbols {
         name.equals(SPEED_ONE_TWO_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
         name.equals(SPEED_ZERO_SEVEN_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
         name.equals(SPEED_ZERO_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
+        name.equals(WARNING, ignoreCase = true) -> Icons.Rounded.Warning
         else -> null
     }
 

@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,13 +33,13 @@ import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeStreamState
+import dev.datlag.mimasu.ui.navigation.detail.show.EpisodeStreamState
+import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeStream
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.compose.withMainContext
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -52,25 +54,19 @@ fun EpisodeItem(
     modifier: Modifier = Modifier,
     onStream: (Extension.Response) -> Unit
 ) {
-    val episodeStreamState = if (showAvailability) {
-        rememberEpisodeStreamState(
-            tmdbId = tmdbId,
-            seasonNumber = seasonNumber,
-            episode = episode
-        )
-    } else {
-        null
-    }
+    val episodeStream = rememberEpisodeStream(
+        tmdbId = tmdbId.takeIf { showAvailability },
+        seasonNumber = seasonNumber,
+        episode = episode
+    )
     val scope = rememberCoroutineScope()
-    val available by remember(episodeStreamState) {
-        episodeStreamState?.available ?: flowOf(null)
-    }.collectAsStateWithLifecycle(null)
+    val episodeStreamState by episodeStream.state.collectAsStateWithLifecycle()
 
     ElevatedCard(
         modifier = modifier,
         onClick = {
             scope.launch {
-                val stream = episodeStreamState?.getStream() ?: return@launch
+                val stream = episodeStream.getStream() ?: return@launch
 
                 withMainContext {
                     onStream(stream)
@@ -81,7 +77,10 @@ fun EpisodeItem(
             containerColor = Platform.colorScheme().background,
             contentColor = Platform.colorScheme().onBackground
         ),
-        enabled = available ?: true,
+        enabled = when  (val current = episodeStreamState) {
+            is EpisodeStreamState.Available -> current.state
+            else -> current !is EpisodeStreamState.Unavailable
+        },
         elevation = CardDefaults.elevatedCardElevation(0.dp, 0.dp, 0.dp, 0.dp, 0.dp, 0.dp)
     ) {
         Row(
@@ -120,21 +119,50 @@ fun EpisodeItem(
                     )
                 }
 
-                episode.runtime.takeIf { it > 0 }?.let { runtime ->
-                    Text(
-                        modifier = Modifier
-                            .padding(end = 4.dp, bottom = 4.dp)
-                            .align(Alignment.BottomEnd)
-                            .background(
+                Row(
+                    modifier = Modifier
+                        .padding(end = 4.dp, bottom = 4.dp)
+                        .align(Alignment.BottomEnd),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    when (val current = episodeStreamState) {
+                        is EpisodeStreamState.Requesting -> CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp).background(
                                 color = Platform.colorScheme().secondaryContainer,
                                 shape = Platform.shapes().small
-                            )
-                            .padding(4.dp),
-                        text = runtime.toDuration(DurationUnit.MINUTES).toString(),
-                        maxLines = 1,
-                        color = Platform.colorScheme().onSecondaryContainer,
-                        style = Platform.typography().labelSmall
-                    )
+                            ).padding(4.dp),
+                            color = Platform.colorScheme().onSecondaryContainer,
+                            strokeWidth = 2.dp
+                        )
+                        is EpisodeStreamState.Available -> MaterialSymbols(
+                            modifier = Modifier.size(24.dp).background(
+                                color = Platform.colorScheme().secondaryContainer,
+                                shape = Platform.shapes().small
+                            ).padding(4.dp),
+                            name = if (current.state) {
+                                MaterialSymbols.PLAY_ARROW
+                            } else {
+                                MaterialSymbols.WARNING
+                            },
+                            contentDescription = null,
+                            filled = true,
+                            tint = Platform.colorScheme().onSecondaryContainer,
+                        )
+                        else -> { }
+                    }
+                    episode.runtime.takeIf { it > 0 }?.let { runtime ->
+                        Text(
+                            modifier = Modifier.height(24.dp).background(
+                                color = Platform.colorScheme().secondaryContainer,
+                                shape = Platform.shapes().small
+                            ).padding(4.dp),
+                            text = runtime.toDuration(DurationUnit.MINUTES).toString(),
+                            maxLines = 1,
+                            color = Platform.colorScheme().onSecondaryContainer,
+                            style = Platform.typography().labelSmall
+                        )
+                    }
                 }
             }
 
