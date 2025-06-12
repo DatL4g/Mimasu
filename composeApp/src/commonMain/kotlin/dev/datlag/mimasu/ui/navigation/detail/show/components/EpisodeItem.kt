@@ -34,6 +34,7 @@ import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.show.EpisodeStreamState
+import dev.datlag.mimasu.ui.navigation.detail.show.ShowState
 import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeStream
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
@@ -50,12 +51,13 @@ fun EpisodeItem(
     tmdbId: Int?,
     episode: Season.Episode,
     seasonNumber: Int?,
-    showAvailability: Boolean,
+    showAvailability: ShowState,
     modifier: Modifier = Modifier,
     onStream: (Extension.Response) -> Unit
 ) {
     val episodeStream = rememberEpisodeStream(
-        tmdbId = tmdbId.takeIf { showAvailability },
+        showState = showAvailability,
+        tmdbId = tmdbId,
         seasonNumber = seasonNumber,
         episode = episode
     )

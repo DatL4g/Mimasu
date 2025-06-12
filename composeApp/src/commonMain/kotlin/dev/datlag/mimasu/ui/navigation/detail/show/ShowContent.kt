@@ -42,7 +42,7 @@ fun ShowContent(
     showSeason: Show.Season?,
     seasonState: ShowViewModel.SeasonState,
     initial: TV?,
-    showAvailability: Boolean,
+    showAvailability: ShowState,
     padding: PaddingValues,
     onSelectSeason: (Show.Season) -> Unit = {},
     onStream: (Extension.Response) -> Unit
@@ -131,9 +131,6 @@ fun ShowContent(
                 )
             }
             is ShowViewModel.SeasonState.Success -> {
-                item {
-                    Text("Show available: $showAvailability")
-                }
                 itemsIndexed(seasonState.season.episodes.toImmutableList()) { index, episode ->
                     EpisodeItem(
                         tmdbId = show.id.takeIf { it > 0 } ?: initial?.id,

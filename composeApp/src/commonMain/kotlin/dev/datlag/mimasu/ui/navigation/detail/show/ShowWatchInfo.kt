@@ -9,10 +9,11 @@ import kotlinx.serialization.Serializable
 import dev.datlag.mimasu.extension.model.Show as Extension
 
 @Composable
-expect fun rememberShowAvailability(show: Show?, initial: TV?): Boolean
+expect fun rememberShowAvailability(show: Show?, initial: TV?): ShowState
 
 @Composable
 expect fun rememberEpisodeStream(
+    showState: ShowState,
     tmdbId: Int?,
     seasonNumber: Int?,
     episode: Season.Episode,
@@ -22,6 +23,19 @@ expect class EpisodeStream {
     val state: StateFlow<EpisodeStreamState>
 
     suspend fun getStream(): Extension.Response?
+}
+
+@Serializable
+sealed interface ShowState {
+
+    @Serializable
+    data object Initializing : ShowState
+
+    @Serializable
+    data class Available(val state: Boolean) : ShowState
+
+    @Serializable
+    data object Unavailable : ShowState
 }
 
 @Serializable
