@@ -146,3 +146,12 @@ actual fun Navigation.Video.dialogProperties(): DialogProperties {
         decorFitsSystemWindows = false
     )
 }
+
+actual fun Navigation.Login.dialogProperties(): DialogProperties {
+    return DialogProperties(
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        usePlatformDefaultWidth = false,
+        decorFitsSystemWindows = false
+    )
+}

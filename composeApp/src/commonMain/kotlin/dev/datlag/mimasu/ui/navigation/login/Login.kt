@@ -29,6 +29,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -152,189 +153,193 @@ fun Login(onSuccess: () -> Unit) {
         focusManager.clearFocus(true)
     }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 16.dp)
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
     ) {
-        item {
-            Column(
-                modifier = Modifier.fillParentMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LoginAppImage(
-                    imageModifier = Modifier.size(200.dp).clip(CircleShape),
-                    riveModifier = Modifier.fillMaxWidth(),
-                    typingEmail = typingEmail && !typingPassword,
-                    typingPassword = typingPassword && !typingEmail
-                )
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) {
+            item {
+                Column(
+                    modifier = Modifier.fillParentMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LoginAppImage(
+                        imageModifier = Modifier.size(200.dp).clip(CircleShape),
+                        riveModifier = Modifier.fillMaxWidth(),
+                        typingEmail = typingEmail && !typingPassword,
+                        typingPassword = typingPassword && !typingEmail
+                    )
+                    OutlinedTextField(
+                        modifier = Modifier.fillParentMaxWidth().semantics {
+                            contentType = ContentType.EmailAddress
+                            contentDataType = ContentDataType.Text
+                        },
+                        value = emailValue,
+                        onValueChange = {
+                            loginViewModel.updateEmail(it)
+                        },
+                        leadingIcon = {
+                            MaterialSymbols(
+                                name = MaterialSymbols.MAIL,
+                                contentDescription = null
+                            )
+                        },
+                        label = {
+                            Text(text = stringResource(Res.string.login_email))
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            capitalization = KeyboardCapitalization.None,
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next
+                        ),
+                        maxLines = 1,
+                        singleLine = true,
+                        isError = emailHasError || loginResult is LoginViewModel.LoginResult.Disposable,
+                        interactionSource = emailInteractionSource
+                    )
+                }
+            }
+            item {
+                var showPassword by remember { mutableStateOf(false) }
+
                 OutlinedTextField(
                     modifier = Modifier.fillParentMaxWidth().semantics {
-                        contentType = ContentType.EmailAddress
+                        contentType = ContentType.Password // + ContentType.NewPassword // not supported yet?
                         contentDataType = ContentDataType.Text
                     },
-                    value = emailValue,
+                    value = passwordValue,
                     onValueChange = {
-                        loginViewModel.updateEmail(it)
+                        loginViewModel.updatePassword(it)
                     },
                     leadingIcon = {
                         MaterialSymbols(
-                            name = MaterialSymbols.MAIL,
+                            name = MaterialSymbols.PASSWORD,
                             contentDescription = null
                         )
                     },
                     label = {
-                        Text(text = stringResource(Res.string.login_email))
+                        Text(text = stringResource(Res.string.login_password))
                     },
+                    trailingIcon = if (passwordValue.isBlank()) null else {
+                        {
+                            IconButton(
+                                onClick = {
+                                    showPassword = !showPassword
+                                }
+                            ) {
+                                MaterialSymbols(
+                                    name = if (showPassword) {
+                                        MaterialSymbols.VISIBILITY_OFF
+                                    } else {
+                                        MaterialSymbols.VISIBILITY
+                                    },
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    },
+                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.None,
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Go
                     ),
                     maxLines = 1,
                     singleLine = true,
-                    isError = emailHasError || loginResult is LoginViewModel.LoginResult.Disposable,
-                    interactionSource = emailInteractionSource
-                )
-            }
-        }
-        item {
-            var showPassword by remember { mutableStateOf(false) }
-
-            OutlinedTextField(
-                modifier = Modifier.fillParentMaxWidth().semantics {
-                    contentType = ContentType.Password // + ContentType.NewPassword // not supported yet?
-                    contentDataType = ContentDataType.Text
-                },
-                value = passwordValue,
-                onValueChange = {
-                    loginViewModel.updatePassword(it)
-                },
-                leadingIcon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.PASSWORD,
-                        contentDescription = null
-                    )
-                },
-                label = {
-                    Text(text = stringResource(Res.string.login_password))
-                },
-                trailingIcon = if (passwordValue.isBlank()) null else {
-                    {
-                        IconButton(
-                            onClick = {
-                                showPassword = !showPassword
-                            }
-                        ) {
-                            MaterialSymbols(
-                                name = if (showPassword) {
-                                    MaterialSymbols.VISIBILITY_OFF
-                                } else {
-                                    MaterialSymbols.VISIBILITY
-                                },
-                                contentDescription = null
-                            )
-                        }
-                    }
-                },
-                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.None,
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Go
-                ),
-                maxLines = 1,
-                singleLine = true,
-                isError = passwordHasError,
-                readOnly = emailReadonly,
-                interactionSource = passwordInteractionSource
-            )
-        }
-        item {
-            LoginPasswordCriteriaSection(
-                emailValid = emailValid,
-                criteriaVisible = passwordValue.isNotEmpty(),
-                passwordErrorState = passwordErrorState,
-                modifier = Modifier.fillParentMaxWidth(),
-                onPasswordReset = {
-                    loginViewModel.resetPassword(emailValue)
-                }
-            )
-        }
-        item {
-            LoginSignInButton(
-                enabled = emailValid && passwordValid,
-                passwordReset = passwordResetUi,
-                modifier = Modifier.fillParentMaxWidth(),
-                onSignIn = {
-                    loginViewModel.emailSignIn(
-                        params = EmailAuthParams(
-                            email = emailValue,
-                            password = passwordValue
-                        ),
-                        onSuccess = {
-                            withMainContext {
-                                onSuccess()
-                            }
-                        }
-                    )
-                },
-                onPasswordReset = {
-                    loginViewModel.changePassword(
-                        code = passwordResetCode,
-                        email = emailValue,
-                        newPassword = passwordValue,
-                        onSuccess = {
-                            withMainContext {
-                                onSuccess()
-                            }
-                        }
-                    )
-                }
-            )
-        }
-        if (!passwordResetUi) {
-            item {
-                LoginSocialProviderDivider(
-                    hasGitHubProvider = loginViewModel.hasGitHubProvider,
-                    hasGoogleProvider = loginViewModel.hasGoogleProvider,
-                    modifier = Modifier.fillParentMaxWidth().padding(vertical = 8.dp)
+                    isError = passwordHasError,
+                    readOnly = emailReadonly,
+                    interactionSource = passwordInteractionSource
                 )
             }
             item {
-                LoginSocialProvider(
-                    hasGitHubProvider = loginViewModel.hasGitHubProvider,
-                    hasGoogleProvider = loginViewModel.hasGoogleProvider,
+                LoginPasswordCriteriaSection(
+                    emailValid = emailValid,
+                    criteriaVisible = passwordValue.isNotEmpty(),
+                    passwordErrorState = passwordErrorState,
                     modifier = Modifier.fillParentMaxWidth(),
-                    onGitHubClicked = { params ->
-                        loginViewModel.githubSignIn(params) {
-                            withMainContext {
-                                onSuccess()
-                            }
-                        }
-                    },
-                    onGoogleClicked = {
-                        loginViewModel.googleSignIn {
-                            withMainContext {
-                                onSuccess()
-                            }
-                        }
+                    onPasswordReset = {
+                        loginViewModel.resetPassword(emailValue)
                     }
                 )
             }
             item {
-                LoginResult(
-                    failure = loginResult,
-                    modifier = Modifier.fillParentMaxWidth()
+                LoginSignInButton(
+                    enabled = emailValid && passwordValid,
+                    passwordReset = passwordResetUi,
+                    modifier = Modifier.fillParentMaxWidth(),
+                    onSignIn = {
+                        loginViewModel.emailSignIn(
+                            params = EmailAuthParams(
+                                email = emailValue,
+                                password = passwordValue
+                            ),
+                            onSuccess = {
+                                withMainContext {
+                                    onSuccess()
+                                }
+                            }
+                        )
+                    },
+                    onPasswordReset = {
+                        loginViewModel.changePassword(
+                            code = passwordResetCode,
+                            email = emailValue,
+                            newPassword = passwordValue,
+                            onSuccess = {
+                                withMainContext {
+                                    onSuccess()
+                                }
+                            }
+                        )
+                    }
                 )
             }
-        }
-        item {
-            LoginAgreement(
-                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp)
-            )
+            if (!passwordResetUi) {
+                item {
+                    LoginSocialProviderDivider(
+                        hasGitHubProvider = loginViewModel.hasGitHubProvider,
+                        hasGoogleProvider = loginViewModel.hasGoogleProvider,
+                        modifier = Modifier.fillParentMaxWidth().padding(vertical = 8.dp)
+                    )
+                }
+                item {
+                    LoginSocialProvider(
+                        hasGitHubProvider = loginViewModel.hasGitHubProvider,
+                        hasGoogleProvider = loginViewModel.hasGoogleProvider,
+                        modifier = Modifier.fillParentMaxWidth(),
+                        onGitHubClicked = { params ->
+                            loginViewModel.githubSignIn(params) {
+                                withMainContext {
+                                    onSuccess()
+                                }
+                            }
+                        },
+                        onGoogleClicked = {
+                            loginViewModel.googleSignIn {
+                                withMainContext {
+                                    onSuccess()
+                                }
+                            }
+                        }
+                    )
+                }
+                item {
+                    LoginResult(
+                        failure = loginResult,
+                        modifier = Modifier.fillParentMaxWidth()
+                    )
+                }
+            }
+            item {
+                LoginAgreement(
+                    modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp)
+                )
+            }
         }
     }
 }

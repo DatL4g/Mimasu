@@ -84,18 +84,7 @@ class MainActivity : AdActivity() {
                     PlatformText("Report Failure: $it")
                 },
                 content = {
-                    var logInResult by remember { mutableStateOf(false) }
-
-                    Navigation(
-                        isLoggedIn = logInResult,
-                        loginContent = {
-                            Login(
-                                onSuccess = {
-                                    logInResult = true
-                                }
-                            )
-                        }
-                    )
+                    Navigation()
                 }
             )
         }

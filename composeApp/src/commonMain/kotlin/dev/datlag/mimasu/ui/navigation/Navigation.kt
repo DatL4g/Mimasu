@@ -32,8 +32,13 @@ import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import kotlinx.serialization.Serializable
 import dev.datlag.mimasu.ui.ads.rememberAdManager
+import dev.datlag.mimasu.ui.navigation.login.Login
+import dev.datlag.mimasu.ui.viewmodel.loginViewModel
 
 object Navigation {
+
+    @Serializable
+    data object Login
 
     @Serializable
     data object Profile
@@ -122,142 +127,150 @@ object Navigation {
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun Navigation(
-    isLoggedIn: Boolean,
-    loginContent: @Composable () -> Unit
-) {
+fun Navigation() {
     val accountViewModel = accountViewModel()
+    val loginViewModel = loginViewModel()
     val user by accountViewModel.user.collectAsStateWithLifecycle()
-    var loggedIn by remember(isLoggedIn, user) { mutableStateOf(isLoggedIn || user != null) }
 
-    if (!loggedIn) {
-        loginContent()
-    } else {
-        val controller = rememberNavController()
-        val backStack by controller.currentBackStackEntryAsState()
-        // val videoNavigationController = rememberVideoNavigationController()
+    val controller = rememberNavController()
+    val backStack by controller.currentBackStackEntryAsState()
+    // val videoNavigationController = rememberVideoNavigationController()
 
-        NavigationSuiteScaffold(
-            navigationSuiteItems = {
-                val isProfile = backStack?.destination?.hasRoute<Navigation.Profile>() ?: false
-                val isMovies = backStack?.destination?.hasRoute<Navigation.Movies>() ?: false
-                val isHome = backStack?.destination?.hasRoute<Navigation.Home>() ?: false
-                val isSeries = backStack?.destination?.hasRoute<Navigation.Series>() ?: false
-                val isSearch = backStack?.destination?.hasRoute<Navigation.Search>() ?: false
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            val isProfile = backStack?.destination?.hasRoute<Navigation.Profile>() ?: false
+            val isMovies = backStack?.destination?.hasRoute<Navigation.Movies>() ?: false
+            val isHome = backStack?.destination?.hasRoute<Navigation.Home>() ?: false
+            val isSeries = backStack?.destination?.hasRoute<Navigation.Series>() ?: false
+            val isSearch = backStack?.destination?.hasRoute<Navigation.Search>() ?: false
 
-                profileItem(
-                    selected = isProfile,
-                    user = user,
-                    onClick = {
-                        controller.navigate(Navigation.Profile) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+            profileItem(
+                selected = isProfile,
+                user = user,
+                onClick = {
+                    controller.navigate(Navigation.Profile) {
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                )
-                movieItem(
-                    selected = isMovies,
-                    onClick = {
-                        controller.navigate(Navigation.Movies) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                }
+            )
+            movieItem(
+                selected = isMovies,
+                onClick = {
+                    controller.navigate(Navigation.Movies) {
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                )
-                homeItem(
-                    selected = isHome,
-                    onClick = {
-                        controller.navigate(Navigation.Home) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                }
+            )
+            homeItem(
+                selected = isHome,
+                onClick = {
+                    controller.navigate(Navigation.Home) {
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                )
-                seriesItem(
-                    selected = isSeries,
-                    onClick = {
-                        controller.navigate(Navigation.Series) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                }
+            )
+            seriesItem(
+                selected = isSeries,
+                onClick = {
+                    controller.navigate(Navigation.Series) {
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                )
-                searchItem(
-                    selected = isSearch,
-                    onClick = {
-                        controller.navigate(Navigation.Search) {
-                            launchSingleTop = true
-                            restoreState = true
+                }
+            )
+            searchItem(
+                selected = isSearch,
+                onClick = {
+                    controller.navigate(Navigation.Search) {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
+        }
+    ) {
+        NavHost(
+            navController = controller,
+            startDestination = if (user != null) {
+                Navigation.Home
+            } else {
+                Navigation.Login
+            }
+        ) {
+            dialog<Navigation.Login>(
+                dialogProperties = Navigation.Login.dialogProperties()
+            ) {
+                Login {
+                    controller.navigate(Navigation.Home)
+                }
+            }
+            composable<Navigation.Profile> {
+                Profile(
+                    onLogout = {
+                        controller.navigate(Navigation.Login) {
+                            popUpTo(Navigation.Home) {
+                                inclusive = true
+                            }
                         }
                     }
                 )
             }
-        ) {
-            NavHost(
-                navController = controller,
-                startDestination = Navigation.Home
+            composable<Navigation.Movies> {
+                MoviesNavigation()
+            }
+            composable<Navigation.Home> {
+                HomeNavigation(
+                    navigateToVideo = {
+                        /*videoNavigationController.loadSources(
+                            sources = it.sources,
+                            navigate = {
+                                controller.navigate(Navigation.Video) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )*/
+                    }
+                )
+            }
+            composable<Navigation.Series> {
+                SeriesNavigation(
+                    navigateToVideo = {
+                        /*videoNavigationController.loadSources(
+                            sources = it.sources,
+                            navigate = {
+                                controller.navigate(Navigation.Video) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )*/
+                    }
+                )
+            }
+            composable<Navigation.Search> {
+                SearchNavigation(
+                    navigateToVideo = {
+                        /*videoNavigationController.loadSources(
+                            sources = it.sources,
+                            navigate = {
+                                controller.navigate(Navigation.Video) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )*/
+                    }
+                )
+            }
+            dialog<Navigation.Video>(
+                dialogProperties = Navigation.Video.dialogProperties()
             ) {
-                composable<Navigation.Profile> {
-                    Profile(
-                        onLogout = {
-                            loggedIn = user != null
-                        }
-                    )
-                }
-                composable<Navigation.Movies> {
-                    MoviesNavigation()
-                }
-                composable<Navigation.Home> {
-                    HomeNavigation(
-                        navigateToVideo = {
-                            /*videoNavigationController.loadSources(
-                                sources = it.sources,
-                                navigate = {
-                                    controller.navigate(Navigation.Video) {
-                                        launchSingleTop = true
-                                    }
-                                }
-                            )*/
-                        }
-                    )
-                }
-                composable<Navigation.Series> {
-                    SeriesNavigation(
-                        navigateToVideo = {
-                            /*videoNavigationController.loadSources(
-                                sources = it.sources,
-                                navigate = {
-                                    controller.navigate(Navigation.Video) {
-                                        launchSingleTop = true
-                                    }
-                                }
-                            )*/
-                        }
-                    )
-                }
-                composable<Navigation.Search> {
-                    SearchNavigation(
-                        navigateToVideo = {
-                            /*videoNavigationController.loadSources(
-                                sources = it.sources,
-                                navigate = {
-                                    controller.navigate(Navigation.Video) {
-                                        launchSingleTop = true
-                                    }
-                                }
-                            )*/
-                        }
-                    )
-                }
-                dialog<Navigation.Video>(
-                    dialogProperties = Navigation.Video.dialogProperties()
-                ) {
-                    VideoScreen(
-                        onBack = {
-                            controller.popBackStack()
-                        }
-                    )
-                }
+                VideoScreen(
+                    onBack = {
+                        controller.popBackStack()
+                    }
+                )
             }
         }
     }

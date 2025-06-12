@@ -48,7 +48,8 @@ data class User(
         name = firebase.providerData.filter {
             it.providerId.equals("github", ignoreCase = true) || it.providerId.equals("github.com", ignoreCase = true)
         }.firstNotNullOfOrNull { it.displayName?.ifBlank { null } }
-    )
+    ),
+    val isVerified: Boolean = firebase.isEmailVerified
 ) {
     data class GitHub(
         val linked: Boolean,
