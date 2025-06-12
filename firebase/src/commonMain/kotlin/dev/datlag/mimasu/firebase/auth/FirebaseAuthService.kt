@@ -9,9 +9,9 @@ import dev.gitlive.firebase.auth.AuthCredential
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 
 data class FirebaseAuthService(
     private val app: FirebaseApp = Firebase.app
@@ -20,8 +20,34 @@ data class FirebaseAuthService(
     val auth: FirebaseAuth
         get() = Firebase.auth(app)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val user: Flow<User?> = auth.authStateChanged.mapLatest { it?.let(::User) }
+    val user = combine(
+        triggerUserReload,
+        auth.authStateChanged,
+        auth.idTokenChanged
+    ) { reloadRequested, authState, idToken ->
+        val reloadedUser = if (reloadRequested) {
+            auth.currentUser?.let(::User)
+        } else {
+            null
+        }
+
+        val authUser = authState?.let(::User)
+        val idTokenUser = idToken?.let(::User)
+
+        listOfNotNull(
+            reloadedUser,
+            authUser,
+            idTokenUser
+        ).fold<User, User?>(null) { left, right ->
+            left?.plus(right) ?: right
+        }.also { user ->
+            if (reloadRequested) {
+                clearUserReload()
+
+                user?.let { auth.updateCurrentUser(it.firebase) }
+            }
+        }
+    }
 
     val currentUser: User?
         get() = auth.currentUser?.let(::User)
@@ -56,9 +82,9 @@ data class FirebaseAuthService(
 
     suspend fun sendPasswordResetEmail(email: String) {
         auth.sendPasswordResetEmail(email, ActionCodeSettings(
-            url = "https://mimasu.datlag.dev",
+            url = URL,
             androidPackageName = AndroidPackageName(
-                packageName = "dev.datlag.mimasu",
+                packageName = PACKAGE_NAME,
                 installIfNotAvailable = true
             ),
             canHandleCodeInApp = true
@@ -71,5 +97,23 @@ data class FirebaseAuthService(
 
     suspend fun changePassword(code: String, newPassword: String) {
         return auth.confirmPasswordReset(code, newPassword)
+    }
+
+    companion object {
+        private val _triggerUserReload = MutableStateFlow(false)
+        val triggerUserReload = _triggerUserReload.asStateFlow()
+
+        fun forceReload() = _triggerUserReload.compareAndSet(
+            expect = false,
+            update = true
+        )
+
+        private fun clearUserReload() = _triggerUserReload.compareAndSet(
+            expect = true,
+            update = false
+        )
+
+        internal const val URL = "https://mimasu.datlag.dev"
+        internal const val PACKAGE_NAME = "dev.datlag.mimasu"
     }
 }

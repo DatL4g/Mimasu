@@ -156,4 +156,9 @@
 
     <string name="error_state_text">Etwas ist schiefgelaufen, bitte versuche es später noch einmal.</string>
     <string name="error_state_with_throwable_text">Etwas ist schiefgelaufen und wurde gemeldet, bitte versuche es später noch einmal.</string>
+
+    <string name="account_verification">Kontobestätigung</string>
+    <string name="account_verification_text">Bitte bestätige dein Konto innerhalb von 30 Tagen oder es wird gelöscht, der Vorgang kann eine Weile dauern.</string>
+    <string name="account_verification_send">Bestätigung senden</string>
+    <string name="account_verification_check">Status überprüfen</string>
 </resources>

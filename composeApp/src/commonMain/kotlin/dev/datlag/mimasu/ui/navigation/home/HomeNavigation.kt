@@ -50,6 +50,7 @@ fun NavigationSuiteScope.homeItem(
 @Composable
 fun HomeNavigation(
     navigateToVideo: (Extension.Response) -> Unit,
+    onLogout: () -> Unit
 ) {
     val controller = rememberListDetailController<Any, Navigation.Home.Detail, Navigation.Home.Extra>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
@@ -74,7 +75,8 @@ fun HomeNavigation(
                     MovieViewModel.updateFrom(it)
 
                     controller.navigateToDetail(Navigation.Home.Detail.Movie)
-                }
+                },
+                onLogout = onLogout
             )
         },
         detailPane = {

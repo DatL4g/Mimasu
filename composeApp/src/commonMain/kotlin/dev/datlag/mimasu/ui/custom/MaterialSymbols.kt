@@ -49,6 +49,7 @@ import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonPinCircle
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Public
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RequestQuote
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
@@ -167,6 +168,7 @@ data object MaterialSymbols {
     const val SPEED_TWO = "speed_2x"
     const val SPEED = "speed"
     const val WARNING = "warning"
+    const val REFRESH = "refresh"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -541,6 +543,7 @@ data object MaterialSymbols {
         name.equals(SPEED_ZERO_SEVEN_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
         name.equals(SPEED_ZERO_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
         name.equals(WARNING, ignoreCase = true) -> Icons.Rounded.Warning
+        name.equals(REFRESH, ignoreCase = true) -> Icons.Rounded.Refresh
         else -> null
     }
 

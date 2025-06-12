@@ -26,6 +26,7 @@ kotlin {
             implementation(libs.kase.change)
             implementation(libs.immutable)
             implementation(libs.ktorfit)
+            implementation(libs.kermit)
 
             api(libs.firebase)
             api(libs.firebase.firestore)

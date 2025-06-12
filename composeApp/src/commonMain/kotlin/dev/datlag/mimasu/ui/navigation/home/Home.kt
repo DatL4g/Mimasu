@@ -51,6 +51,7 @@ import dev.datlag.mimasu.ui.custom.PagerWormIndicator
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.mimasu.ui.custom.PersonCard
 import dev.datlag.mimasu.ui.custom.ShowPager
+import dev.datlag.mimasu.ui.navigation.home.components.AccountVerification
 import dev.datlag.mimasu.ui.navigation.home.components.ExtensionUpdate
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
@@ -64,7 +65,8 @@ import org.jetbrains.compose.resources.stringResource
 fun Home(
     onPersonClicked: (People) -> Unit,
     onShowClicked: (TV) -> Unit,
-    onMovieClicked: (Movie) -> Unit
+    onMovieClicked: (Movie) -> Unit,
+    onLogout: () -> Unit
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
     val trendingViewModel = kodeinViewModel<TrendingViewModel>()
@@ -76,6 +78,12 @@ fun Home(
         item {
             ExtensionUpdate(
                 modifier = Modifier.fillParentMaxWidth().padding(16.dp)
+            )
+        }
+        item {
+            AccountVerification(
+                modifier = Modifier.fillParentMaxWidth().padding(16.dp),
+                onLogout = onLogout
             )
         }
         item {

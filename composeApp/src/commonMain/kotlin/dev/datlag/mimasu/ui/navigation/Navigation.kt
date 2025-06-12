@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.common.dialogProperties
 import dev.datlag.mimasu.ui.navigation.home.HomeNavigation
 import dev.datlag.mimasu.ui.navigation.home.homeItem
@@ -129,7 +131,6 @@ object Navigation {
 @Composable
 fun Navigation() {
     val accountViewModel = accountViewModel()
-    val loginViewModel = loginViewModel()
     val user by accountViewModel.user.collectAsStateWithLifecycle()
 
     val controller = rememberNavController()
@@ -194,10 +195,10 @@ fun Navigation() {
     ) {
         NavHost(
             navController = controller,
-            startDestination = if (user != null) {
-                Navigation.Home
-            } else {
+            startDestination = if (user == null) {
                 Navigation.Login
+            } else {
+                Navigation.Home
             }
         ) {
             dialog<Navigation.Login>(
@@ -232,6 +233,13 @@ fun Navigation() {
                                 }
                             }
                         )*/
+                    },
+                    onLogout = {
+                        controller.navigate(Navigation.Login) {
+                            popUpTo(Navigation.Home) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }

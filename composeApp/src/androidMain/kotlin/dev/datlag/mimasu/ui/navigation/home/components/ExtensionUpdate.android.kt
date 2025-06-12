@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.navigation.home.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,9 +67,9 @@ actual fun ExtensionUpdate(
                 )
                 Text(text = stringResource(Res.string.home_extension_update_text))
 
-                Row(
+                FlowRow(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val uriHandler = LocalUriHandler.current

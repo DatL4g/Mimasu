@@ -67,6 +67,10 @@ class AccountViewModel(
     val isSignedIn: Boolean
         get() = currentUser != null
 
+    suspend fun signOut() {
+        service.signOut()
+    }
+
     override fun onCleared() {
         super.onCleared()
 
