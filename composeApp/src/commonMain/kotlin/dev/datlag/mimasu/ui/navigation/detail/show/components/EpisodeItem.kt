@@ -67,13 +67,13 @@ fun EpisodeItem(
     ElevatedCard(
         modifier = modifier,
         onClick = {
-            scope.launch {
+            /*scope.launch {
                 val stream = episodeStream.getStream() ?: return@launch
 
                 withMainContext {
                     onStream(stream)
                 }
-            }
+            }*/
         },
         colors = CardDefaults.elevatedCardColors(
             containerColor = Platform.colorScheme().background,

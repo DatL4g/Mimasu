@@ -26,7 +26,7 @@ data class VideoNavigationController(
         val canNavigate = VideoViewModel.updateSources(sources.map { (k, v) ->
             VideoViewModel.SourceInfo(
                 sourceTitle = k.sourceTitle?.ifBlank { null },
-                sourceKey = k.sourceKey?.ifBlank { null },
+                sourceLocale = k.sourceLocale?.ifBlank { null },
                 locale = k.locale?.ifBlank { null }
             ) to v
         }.toMap())

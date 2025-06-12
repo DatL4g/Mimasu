@@ -51,7 +51,7 @@ class VideoViewModel(
 
     data class SourceInfo(
         val sourceTitle: String?,
-        val sourceKey: String?,
+        val sourceLocale: String?,
         val locale: String?
     )
 
