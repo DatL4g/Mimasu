@@ -95,6 +95,28 @@
             ]
         },
         {
+            "uniqueId": "androidx.asynclayoutinflater:asynclayoutinflater",
+            "funding": [
+                
+            ],
+            "developers": [
+                {
+                    "name": "The Android Open Source Project"
+                }
+            ],
+            "artifactVersion": "1.0.0",
+            "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+            "scm": {
+                "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
+                "url": "http://source.android.com"
+            },
+            "name": "Support Async Layout Inflater",
+            "website": "http://developer.android.com/tools/extras/support-library.html",
+            "licenses": [
+                "Apache-2.0"
+            ]
+        },
+        {
             "uniqueId": "androidx.autofill:autofill",
             "funding": [
                 
@@ -389,6 +411,22 @@
             }
         },
         {
+            "uniqueId": "androidx.compose:compose-bom",
+            "funding": [
+                
+            ],
+            "developers": [
+                
+            ],
+            "artifactVersion": "2024.12.01",
+            "description": "A compatible set of Jetpack Compose libraries.",
+            "name": "Jetpack Compose Libraries BOM",
+            "website": "https://developer.android.com/jetpack",
+            "licenses": [
+                "Apache-2.0"
+            ]
+        },
+        {
             "uniqueId": "androidx.concurrent:concurrent-futures",
             "funding": [
                 
@@ -406,6 +444,28 @@
             },
             "name": "AndroidX Futures",
             "website": "https://developer.android.com/topic/libraries/architecture/index.html",
+            "licenses": [
+                "Apache-2.0"
+            ]
+        },
+        {
+            "uniqueId": "androidx.coordinatorlayout:coordinatorlayout",
+            "funding": [
+                
+            ],
+            "developers": [
+                {
+                    "name": "The Android Open Source Project"
+                }
+            ],
+            "artifactVersion": "1.0.0",
+            "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+            "scm": {
+                "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
+                "url": "http://source.android.com"
+            },
+            "name": "Support Coordinator Layout",
+            "website": "http://developer.android.com/tools/extras/support-library.html",
             "licenses": [
                 "Apache-2.0"
             ]
@@ -712,7 +772,7 @@
             ]
         },
         {
-            "uniqueId": "androidx.legacy:legacy-support-core-utils",
+            "uniqueId": "androidx.legacy:legacy-support-core-ui",
             "funding": [
                 
             ],
@@ -727,7 +787,7 @@
                 "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
                 "url": "http://source.android.com"
             },
-            "name": "Support core utils",
+            "name": "Support core UI",
             "website": "http://developer.android.com/tools/extras/support-library.html",
             "licenses": [
                 "Apache-2.0"
@@ -803,6 +863,27 @@
             ]
         },
         {
+            "uniqueId": "androidx.media3:media3-cast",
+            "funding": [
+                
+            ],
+            "developers": [
+                {
+                    "name": "The Android Open Source Project"
+                }
+            ],
+            "artifactVersion": "1.7.1",
+            "description": "Media3 Cast module",
+            "scm": {
+                "connection": "scm:git:https://github.com/androidx/media.git",
+                "url": "https://github.com/androidx/media"
+            },
+            "name": "Media3 Cast module",
+            "licenses": [
+                "Apache-2.0"
+            ]
+        },
+        {
             "uniqueId": "androidx.media:media",
             "funding": [
                 
@@ -820,6 +901,28 @@
             },
             "name": "Support media compat",
             "website": "https://developer.android.com/jetpack/androidx/releases/media#1.6.0",
+            "licenses": [
+                "Apache-2.0"
+            ]
+        },
+        {
+            "uniqueId": "androidx.mediarouter:mediarouter",
+            "funding": [
+                
+            ],
+            "developers": [
+                {
+                    "name": "The Android Open Source Project"
+                }
+            ],
+            "artifactVersion": "1.6.0-beta01",
+            "description": "Android MediaRouter Support Library",
+            "scm": {
+                "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
+                "url": "https://cs.android.com/androidx/platform/frameworks/support"
+            },
+            "name": "MediaRouter",
+            "website": "https://developer.android.com/jetpack/androidx/releases/mediarouter#1.6.0-beta01",
             "licenses": [
                 "Apache-2.0"
             ]
@@ -896,6 +999,28 @@
             }
         },
         {
+            "uniqueId": "androidx.palette:palette",
+            "funding": [
+                
+            ],
+            "developers": [
+                {
+                    "name": "The Android Open Source Project"
+                }
+            ],
+            "artifactVersion": "1.0.0",
+            "description": "Android Support Palette v7",
+            "scm": {
+                "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
+                "url": "http://source.android.com"
+            },
+            "name": "Support Palette v7",
+            "website": "http://developer.android.com/tools/extras/support-library.html",
+            "licenses": [
+                "Apache-2.0"
+            ]
+        },
+        {
             "uniqueId": "androidx.print:print",
             "funding": [
                 
@@ -968,6 +1093,28 @@
             }
         },
         {
+            "uniqueId": "androidx.recyclerview:recyclerview",
+            "funding": [
+                
+            ],
+            "developers": [
+                {
+                    "name": "The Android Open Source Project"
+                }
+            ],
+            "artifactVersion": "1.0.0",
+            "description": "Android Support RecyclerView v7",
+            "scm": {
+                "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
+                "url": "http://source.android.com"
+            },
+            "name": "Support RecyclerView v7",
+            "website": "http://developer.android.com/tools/extras/support-library.html",
+            "licenses": [
+                "Apache-2.0"
+            ]
+        },
+        {
             "uniqueId": "androidx.resourceinspection:resourceinspection-annotation",
             "funding": [
                 
@@ -1034,6 +1181,28 @@
             ]
         },
         {
+            "uniqueId": "androidx.slidingpanelayout:slidingpanelayout",
+            "funding": [
+                
+            ],
+            "developers": [
+                {
+                    "name": "The Android Open Source Project"
+                }
+            ],
+            "artifactVersion": "1.0.0",
+            "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+            "scm": {
+                "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
+                "url": "http://source.android.com"
+            },
+            "name": "Support Sliding Pane Layout",
+            "website": "http://developer.android.com/tools/extras/support-library.html",
+            "licenses": [
+                "Apache-2.0"
+            ]
+        },
+        {
             "uniqueId": "androidx.sqlite:sqlite",
             "funding": [
                 
@@ -1073,6 +1242,28 @@
             },
             "name": "Android App Startup Runtime",
             "website": "https://developer.android.com/jetpack/androidx/releases/startup#1.1.1",
+            "licenses": [
+                "Apache-2.0"
+            ]
+        },
+        {
+            "uniqueId": "androidx.swiperefreshlayout:swiperefreshlayout",
+            "funding": [
+                
+            ],
+            "developers": [
+                {
+                    "name": "The Android Open Source Project"
+                }
+            ],
+            "artifactVersion": "1.0.0",
+            "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+            "scm": {
+                "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
+                "url": "http://source.android.com"
+            },
+            "name": "Support Custom View",
+            "website": "http://developer.android.com/tools/extras/support-library.html",
             "licenses": [
                 "Apache-2.0"
             ]
@@ -1360,7 +1551,7 @@
                     "name": "Erik Uggeldahl"
                 }
             ],
-            "artifactVersion": "10.1.4",
+            "artifactVersion": "10.1.6",
             "description": "Rive is a real-time interactive design and animation tool. Use our collaborative editor to create motion graphics that respond to different states and user inputs. Then load your animations into apps, games, and websites with our lightweight open-source runtimes.",
             "scm": {
                 "connection": "scm:git:git@github.com:rive-app/rive-android.git",
@@ -1452,7 +1643,7 @@
                     "name": "Appmattus Limited"
                 }
             ],
-            "artifactVersion": "2.6.2",
+            "artifactVersion": "2.6.4",
             "description": "Certificate transparency for Android and Java",
             "scm": {
                 "connection": "scm:git:git://github.com/appmattus/certificatetransparency.git",
@@ -1565,13 +1756,9 @@
             "developers": [
                 
             ],
-            "artifactVersion": "3.2.0",
+            "artifactVersion": "3.0.0",
             "description": "",
-            "scm": {
-                "connection": "scm:git:https://github.com/firebase/firebase-android-sdk.git",
-                "url": "https://github.com/firebase/firebase-android-sdk"
-            },
-            "name": "com.google.android.datatransport:transport-api",
+            "name": "transport-api",
             "licenses": [
                 "Apache-2.0"
             ]
@@ -1584,7 +1771,7 @@
             "developers": [
                 
             ],
-            "artifactVersion": "24.3.0",
+            "artifactVersion": "24.4.0",
             "description": "",
             "name": "play-services-ads",
             "licenses": [
@@ -1793,7 +1980,7 @@
                     "name": "Eddie Aftandilian"
                 }
             ],
-            "artifactVersion": "2.11.0",
+            "artifactVersion": "2.28.0",
             "description": "Error Prone is a static analysis tool for Java that catches common programming mistakes at compile-time.",
             "scm": {
                 "connection": "scm:git:https://github.com/google/error-prone.git/error_prone_annotations",
@@ -1870,14 +2057,17 @@
                 
             ],
             "developers": [
-                
+                {
+                    "organisationUrl": "https://www.google.com",
+                    "name": "Tom Ball"
+                }
             ],
-            "artifactVersion": "1.3",
+            "artifactVersion": "3.0.0",
             "description": "A set of annotations that provide additional information to the J2ObjC\n    translator to modify the result of translation.",
             "scm": {
-                "connection": "scm:svn:http://svn.sonatype.org/spice/tags/oss-parent-7/j2objc-annotations",
-                "url": "http://svn.sonatype.org/spice/tags/oss-parent-7/j2objc-annotations",
-                "developerConnection": "scm:svn:https://svn.sonatype.org/spice/tags/oss-parent-7/j2objc-annotations"
+                "connection": "scm:git:git://github.com/google/j2objc.git",
+                "url": "http://github.com/google/j2objc",
+                "developerConnection": "scm:git:ssh://git@github.com/google/j2objc.git"
             },
             "name": "J2ObjC Annotations",
             "website": "https://github.com/google/j2objc/",
@@ -2032,7 +2222,7 @@
                     "name": "Mike Penz"
                 }
             ],
-            "artifactVersion": "12.2.0",
+            "artifactVersion": "12.2.2",
             "description": "AboutLibraries automatically detects all dependencies of a project and collects their information including the license. Optionally visualising it via the provided ui components.",
             "scm": {
                 "connection": "scm:git@github.com:mikepenz/AboutLibraries.git",
@@ -2193,7 +2383,7 @@
                     "name": "Chris Banes"
                 }
             ],
-            "artifactVersion": "1.6.2",
+            "artifactVersion": "1.6.3",
             "description": "Haze",
             "scm": {
                 "connection": "scm:git:git://github.com/chrisbanes/haze.git",
@@ -2306,7 +2496,7 @@
                     "name": "Denis Berestinskii"
                 }
             ],
-            "artifactVersion": "2.5.3",
+            "artifactVersion": "2.5.4",
             "description": "Library for recovering stack trace in exceptions thrown in Kotlin coroutines.",
             "scm": {
                 "connection": "scm:git:git://github.com/Anamorphosee/stacktrace-decoroutinator.git",
@@ -2713,15 +2903,15 @@
                     "name": "Suzanne Millstein"
                 }
             ],
-            "artifactVersion": "3.12.0",
+            "artifactVersion": "3.43.0",
             "description": "checker-qual contains annotations (type qualifiers) that a programmer\nwrites to specify Java code for type-checking by the Checker Framework.",
             "scm": {
-                "connection": "scm:git:git://github.com/typetools/checker-framework.git",
+                "connection": "scm:git:https://github.com/typetools/checker-framework.git",
                 "url": "https://github.com/typetools/checker-framework.git",
                 "developerConnection": "scm:git:ssh://git@github.com/typetools/checker-framework.git"
             },
             "name": "Checker Qual",
-            "website": "https://checkerframework.org",
+            "website": "https://checkerframework.org/",
             "licenses": [
                 "MIT"
             ]
@@ -3222,7 +3412,7 @@
                     "name": "JetBrains Team"
                 }
             ],
-            "artifactVersion": "0.27.0",
+            "artifactVersion": "0.28.0",
             "description": "AtomicFU utilities",
             "scm": {
                 "url": "https://github.com/Kotlin/kotlinx.atomicfu"
@@ -3440,7 +3630,7 @@
                     "name": "Ilya Fomichev"
                 }
             ],
-            "artifactVersion": "0.12.2",
+            "artifactVersion": "0.13.2",
             "description": "API definitions for Ackpine",
             "scm": {
                 "connection": "scm:git:github.com/solrudev/Ackpine.git",
