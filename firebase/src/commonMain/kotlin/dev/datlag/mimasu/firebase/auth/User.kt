@@ -56,7 +56,8 @@ data class User(
     val isVerified: Boolean = firebase.isEmailVerified,
     val creationDate: Instant? = scopeCatching {
         firebase.metaData?.creationTime?.toLong()?.let(Instant::fromEpochMilliseconds)
-    }.getOrNull()
+    }.getOrNull(),
+    val uid: String = firebase.uid
 ) {
 
     private val signInTime: Double

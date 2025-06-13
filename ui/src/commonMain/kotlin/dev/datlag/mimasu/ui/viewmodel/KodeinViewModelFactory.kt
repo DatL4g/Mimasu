@@ -66,7 +66,9 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
             }
             modelClass typeOf AccountViewModel::class -> {
                 val service = di.instanceOrNull<FirebaseAuthService>() ?: FirebaseAuthService()
-                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper()
+                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper(
+                    authService = service
+                )
                 val model = AccountViewModel(
                     service = service,
                     firestoreWrapper = wrapper
@@ -94,7 +96,10 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
             }
             modelClass typeOf ShowViewModel::class -> {
                 val tmdb = di.instance<TMDB>()
-                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper()
+                val service = di.instanceOrNull<FirebaseAuthService>() ?: FirebaseAuthService()
+                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper(
+                    authService = service
+                )
                 val model = ShowViewModel(
                     detailsRepository = tmdb.details,
                     firestoreWrapper = wrapper
@@ -104,7 +109,10 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
             }
             modelClass typeOf FirebaseViewModel::class -> {
                 val tmdb = di.instance<TMDB>()
-                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper()
+                val service = di.instanceOrNull<FirebaseAuthService>() ?: FirebaseAuthService()
+                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper(
+                    authService = service
+                )
                 val model = FirebaseViewModel(
                     firestoreWrapper = wrapper,
                     detailsRepository = tmdb.details
@@ -113,7 +121,10 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
                 (model as? T) ?: super.create(modelClass, extras)
             }
             modelClass typeOf VideoViewModel::class -> {
-                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper()
+                val service = di.instanceOrNull<FirebaseAuthService>() ?: FirebaseAuthService()
+                val wrapper = di.instanceOrNull<FirebaseFirestoreWrapper>() ?: FirebaseFirestoreWrapper(
+                    authService = service
+                )
                 val model = VideoViewModel(wrapper)
 
                 (model as? T) ?: super.create(modelClass, extras)

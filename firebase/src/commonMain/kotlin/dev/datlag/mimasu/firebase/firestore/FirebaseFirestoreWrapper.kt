@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.firebase.firestore
 
+import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.tooling.async.scopeCatching
 import dev.datlag.tooling.async.suspendCatching
 import dev.gitlive.firebase.Firebase
@@ -20,7 +21,8 @@ import kotlin.time.Duration.Companion.hours
  * Wrapper for Firebase Firestore to simplify requests and lower usage.
  */
 data class FirebaseFirestoreWrapper(
-    private val app: FirebaseApp = Firebase.app
+    private val app: FirebaseApp = Firebase.app,
+    private val authService: FirebaseAuthService
 ) {
     /**
      * Locks online/offline usage to subsequent tasks.
@@ -29,9 +31,6 @@ data class FirebaseFirestoreWrapper(
 
     private val firestore: FirebaseFirestore
         get() = Firebase.firestore(app)
-
-    private val auth: FirebaseAuth
-        get() = Firebase.auth(app)
 
     suspend fun <T> getOfflineData(
         db: FirebaseFirestore = firestore,
@@ -60,7 +59,7 @@ data class FirebaseFirestoreWrapper(
     }
 
     suspend fun getBookmarkedMovies(): List<MovieData> {
-        val uid = auth.currentUser?.uid ?: return emptyList()
+        val uid = authService.currentUser?.uid ?: return emptyList()
         suspend fun request(db: FirebaseFirestore): List<MovieData> {
             return db.collection(MovieData.COLLECTION).document(uid).collection(MovieData.GROUP).where {
                 all(
@@ -107,7 +106,7 @@ data class FirebaseFirestoreWrapper(
     }
 
     suspend fun getBookmarkedShows(): List<ShowData> {
-        val uid = auth.currentUser?.uid ?: return emptyList()
+        val uid = authService.currentUser?.uid ?: return emptyList()
         suspend fun request(db: FirebaseFirestore): List<ShowData> {
             return db.collection(ShowData.COLLECTION).document(uid).collection(ShowData.GROUP).where {
                 all(
@@ -154,7 +153,7 @@ data class FirebaseFirestoreWrapper(
     }
 
     suspend fun bookmark(movie: MovieData, db: FirebaseFirestore = firestore) {
-        val uid = auth.currentUser?.uid ?: return
+        val uid = authService.currentUser?.uid ?: return
         val doc = db.collection(MovieData.COLLECTION)
             .document(uid)
             .collection(MovieData.GROUP)
@@ -168,7 +167,7 @@ data class FirebaseFirestoreWrapper(
     }
 
     suspend fun bookmark(show: ShowData, db: FirebaseFirestore = firestore) {
-        val uid = auth.currentUser?.uid ?: return
+        val uid = authService.currentUser?.uid ?: return
         val doc = db.collection(ShowData.COLLECTION)
             .document(uid)
             .collection(ShowData.GROUP)
@@ -190,7 +189,7 @@ data class FirebaseFirestoreWrapper(
     }
 
     suspend fun selectSeason(show: ShowData, db: FirebaseFirestore = firestore) {
-        val uid = auth.currentUser?.uid ?: return
+        val uid = authService.currentUser?.uid ?: return
         val doc = db.collection(ShowData.COLLECTION)
             .document(uid)
             .collection(ShowData.GROUP)
@@ -204,7 +203,7 @@ data class FirebaseFirestoreWrapper(
     }
 
     suspend fun getSeason(tmdbId: Int, offlineOnly: Boolean = false): Int? {
-        val uid = auth.currentUser?.uid ?: return null
+        val uid = authService.currentUser?.uid ?: return null
         suspend fun request(db: FirebaseFirestore): Int? {
             val snapshot = db.collection(ShowData.COLLECTION)
                 .document(uid)
@@ -266,7 +265,7 @@ data class FirebaseFirestoreWrapper(
     }
 
     suspend fun getUserData(): UserData {
-        val uid = auth.currentUser?.uid ?: return UserData.Default
+        val uid = authService.currentUser?.uid ?: return UserData.Default
         suspend fun request(db: FirebaseFirestore): UserData? {
             val snapshot = db.collection(UserData.COLLECTION)
                 .document(uid)

@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.firebase.auth
 
+import dev.datlag.tooling.scopeCatching
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.app
@@ -26,7 +27,7 @@ data class FirebaseAuthService(
         auth.idTokenChanged
     ) { reloadRequested, authState, idToken ->
         val reloadedUser = if (reloadRequested) {
-            auth.currentUser?.let(::User)
+            currentUser
         } else {
             null
         }
@@ -50,7 +51,9 @@ data class FirebaseAuthService(
     }
 
     val currentUser: User?
-        get() = auth.currentUser?.let(::User)
+        get() = scopeCatching {
+            auth.currentUser?.let(::User)
+        }.getOrNull()
 
     suspend fun signIn(
         credential: AuthCredential
