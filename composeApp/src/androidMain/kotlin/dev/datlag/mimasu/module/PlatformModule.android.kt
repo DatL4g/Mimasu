@@ -63,7 +63,7 @@ actual object PlatformModule {
             HttpClient(OkHttp) {
                 followRedirects = true
                 engine {
-                    if (Build.VERSION.SDK_INT < 36) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA) {
                         addNetworkInterceptor(instance(TAG_CERT_TRANSPARENT))
                     }
                     // Add the Cronet interceptor last, otherwise the subsequent interceptors will be skipped.

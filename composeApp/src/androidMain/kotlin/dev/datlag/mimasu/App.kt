@@ -50,7 +50,7 @@ class App : MultiDexApplication(), DIAware {
     override fun onCreate() {
         super.onCreate()
 
-        if (Build.VERSION.SDK_INT < 36) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA) {
             installCertificateTransparencyProvider {
                 logger = BasicAndroidCTLogger(BuildConfig.DEBUG)
                 diskCache = AndroidDiskCache(applicationContext)

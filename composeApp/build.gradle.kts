@@ -168,11 +168,11 @@ android {
     sourceSets["main"].assets.srcDirs("src/androidMain/assets", "src/commonMain/assets")
 
     namespace = "dev.datlag.mimasu"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
 
         applicationId = "dev.datlag.mimasu"
         versionCode = 102
