@@ -11,6 +11,7 @@ import dev.datlag.mimasu.extension.model.Update
 import dev.datlag.tooling.async.suspendCatching
 import dev.datlag.tooling.createAsFileSafely
 import dev.datlag.tooling.deleteSafely
+import dev.datlag.tooling.existsSafely
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.onDownload
 import io.ktor.client.request.prepareGet
@@ -69,7 +70,7 @@ class ExtensionUpdateViewModel(
         update: Update?
     ) {
         val downloadUrl = update?.downloadUrl?.ifBlank { null } ?: return
-        val file = filesDir?.resolve("extension.apk") ?: return
+        val file = filesDir?.resolve(EXTENSION_FILE) ?: return
 
         _state.update { State.Preparing }
 
@@ -107,26 +108,44 @@ class ExtensionUpdateViewModel(
             }
 
             if (response.status.isSuccess()) {
-                _state.update { State.Install.Unknown }
-                val installResult = updatePackage(
-                    uri = file.toUri()
-                )
+                _state.update { State.Install.Ready }
 
-                when (installResult) {
-                    is Session.State.Succeeded -> _state.update {
-                        State.Install.Success
-                    }
-                    is Session.State.Failed -> _state.update {
-                        State.Install.Failure(
-                            canRetry = installResult.failure is InstallFailure.Aborted
-                        )
-                    }
-                }
             } else {
                 _state.update { State.Install.Failure(false) }
             }
-            file.deleteSafely()
         }
+    }
+
+    fun startInstallProcess() = viewModelScope.launch {
+        val file = filesDir?.resolve(EXTENSION_FILE)
+
+        if (file == null || !file.existsSafely()) {
+            _state.update { State.Install.Failure(canRetry = false) }
+        } else {
+            _state.update { State.Install.Start }
+            val installResult = updatePackage(
+                uri = file.toUri()
+            )
+
+            when (installResult) {
+                is Session.State.Succeeded -> _state.update {
+                    State.Install.Success
+                }
+                is Session.State.Failed -> _state.update {
+                    State.Install.Failure(
+                        canRetry = installResult.failure is InstallFailure.Aborted
+                    )
+                }
+            }
+        }
+        file?.deleteSafely()
+    }
+
+    fun dismiss() = viewModelScope.launch {
+        val file = filesDir?.resolve(EXTENSION_FILE)
+        file?.deleteSafely()
+
+        clearState()
     }
 
     fun clearState() = _state.update { null }
@@ -158,7 +177,10 @@ class ExtensionUpdateViewModel(
         sealed interface Install : State {
 
             @Serializable
-            data object Unknown : Install
+            data object Ready : Install
+
+            @Serializable
+            data object Start : Install
 
             @Serializable
             data object Success : Install
@@ -171,6 +193,7 @@ class ExtensionUpdateViewModel(
     }
 
     companion object {
+        private const val EXTENSION_FILE = "extension.apk"
         private const val BUFFER_SIZE = 1024L
     }
 }

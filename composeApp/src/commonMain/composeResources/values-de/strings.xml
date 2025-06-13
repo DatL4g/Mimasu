@@ -161,4 +161,11 @@
     <string name="account_verification_text">Bitte bestätige dein Konto innerhalb von 30 Tagen oder es wird gelöscht, der Vorgang kann eine Weile dauern.</string>
     <string name="account_verification_send">Bestätigung senden</string>
     <string name="account_verification_check">Status überprüfen</string>
+
+    <string name="update_extension_dialog_title">Erweiterung aktualisieren</string>
+    <string name="update_extension_dialog_text_process">Bist du sicher, dass du die Erweiterung aktualisieren möchtest? Dadurch werden die neusten Funktionen und Sicherheitsverbesserungen installiert. Wenn du fortfährst, wird der System-Dialog zur Bestätigung der Installation geöffnet.</string>
+    <string name="update_extension_dialog_text_hint">Wichtiger Hinweis:</string>
+    <string name="update_extension_dialog_text_hint_text">Ein fehlgeschlagener oder unterbrochener Aktualisierungsvorgang kann dazu führen, dass die Erweiterung vorübergehend nicht mehr ordnungsgemäß funktioniert, bis die Aktualisierung erfolgreich abgeschlossen ist.</string>
+    <string name="update_extension_dialog_confirm">Bestätigen</string>
+    <string name="update_extension_dialog_cancel">Abbrechen</string>
 </resources>

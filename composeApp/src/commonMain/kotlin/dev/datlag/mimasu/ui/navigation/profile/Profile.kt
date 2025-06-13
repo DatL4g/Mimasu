@@ -85,16 +85,15 @@ fun Profile(
                 Text(text = stringResource(Res.string.profile_sign_out_text))
             },
             dismissButton = {
-                Button(
+                TextButton(
                     onClick = {
                         showSignOutDialog = false
                         loginViewModel.signOut()?.invokeOnCompletion {
                             onLogout()
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Platform.colorScheme().error,
-                        contentColor = Platform.colorScheme().onError
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = Platform.colorScheme().error
                     )
                 ) {
                     Text(text = stringResource(Res.string.profile_sign_out_yes))

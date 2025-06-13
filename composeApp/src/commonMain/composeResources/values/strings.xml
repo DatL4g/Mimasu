@@ -162,4 +162,11 @@
     <string name="account_verification_text">Please verify your account within 30 days or it will be deleted, the process may take a while.</string>
     <string name="account_verification_send">Send Verification</string>
     <string name="account_verification_check">Check Status</string>
+
+    <string name="update_extension_dialog_title">Update Extension</string>
+    <string name="update_extension_dialog_text_process">Are you sure you want to update the extension? This ensures the latest features and security improvements are installed. If you proceed, the System-Dialog will open to confirm the installation.</string>
+    <string name="update_extension_dialog_text_hint">Important Note:</string>
+    <string name="update_extension_dialog_text_hint_text">A failed or interrupted update process may cause the extension to temporarily stop working properly until the update is successfully completed.</string>
+    <string name="update_extension_dialog_confirm">Confirm</string>
+    <string name="update_extension_dialog_cancel">Cancel</string>
 </resources>

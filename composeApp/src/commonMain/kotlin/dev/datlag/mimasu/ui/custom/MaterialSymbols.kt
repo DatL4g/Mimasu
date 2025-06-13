@@ -33,6 +33,7 @@ import androidx.compose.material.icons.rounded.Handshake
 import androidx.compose.material.icons.rounded.HelpOutline
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.InstallMobile
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.LightMode
@@ -169,6 +170,7 @@ data object MaterialSymbols {
     const val SPEED = "speed"
     const val WARNING = "warning"
     const val REFRESH = "refresh"
+    const val APK_INSTALL = "apk_install"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -544,6 +546,7 @@ data object MaterialSymbols {
         name.equals(SPEED_ZERO_FIVE, ignoreCase = true) -> Icons.Rounded.Speed
         name.equals(WARNING, ignoreCase = true) -> Icons.Rounded.Warning
         name.equals(REFRESH, ignoreCase = true) -> Icons.Rounded.Refresh
+        name.equals(APK_INSTALL, ignoreCase = true) -> Icons.Rounded.InstallMobile
         else -> null
     }
 

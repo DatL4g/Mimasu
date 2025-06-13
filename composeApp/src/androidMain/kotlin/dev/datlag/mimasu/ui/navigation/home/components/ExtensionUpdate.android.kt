@@ -16,6 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -74,6 +77,7 @@ actual fun ExtensionUpdate(
                 ) {
                     val uriHandler = LocalUriHandler.current
                     val state by extensionUpdateViewModel.state.collectAsStateWithLifecycle()
+                    var showDialog by remember(state) { mutableStateOf(state is ExtensionUpdateViewModel.State.Install.Ready) }
 
                     LaunchedEffect(state) {
                         if (state is ExtensionUpdateViewModel.State.Install.Success) {
@@ -81,6 +85,18 @@ actual fun ExtensionUpdate(
                         }
 
                         ExtensionInitializer.rebindAll(context)
+                    }
+
+                    if (showDialog) {
+                        ExtensionUpdateDialog(
+                            onDismissRequest = {
+                                extensionUpdateViewModel.dismiss()
+                                showDialog = false
+                            },
+                            onConfirm = {
+                                extensionUpdateViewModel.startInstallProcess()
+                            }
+                        )
                     }
 
                     update?.downloadUrl?.let {
