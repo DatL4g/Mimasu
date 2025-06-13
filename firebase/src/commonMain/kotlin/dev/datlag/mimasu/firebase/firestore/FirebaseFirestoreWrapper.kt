@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.firebase.firestore
 
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
+import dev.datlag.mimasu.firebase.auth.User
 import dev.datlag.tooling.async.scopeCatching
 import dev.datlag.tooling.async.suspendCatching
 import dev.gitlive.firebase.Firebase
@@ -306,6 +307,18 @@ data class FirebaseFirestoreWrapper(
                 }
             ) ?: UserData.Default
         }
+    }
+
+    suspend fun deleteUserData(user: User) {
+        val uid = user.uid.ifBlank { null } ?: authService.currentUser?.uid ?: return
+
+        getOnlineData(
+            block = { db ->
+                suspendCatching { db.collection(UserData.COLLECTION).document(uid).delete() }
+                suspendCatching { db.collection(ShowData.COLLECTION).document(uid).delete() }
+                suspendCatching { db.collection(MovieData.COLLECTION).document(uid).delete() }
+            }
+        )
     }
 
     companion object {

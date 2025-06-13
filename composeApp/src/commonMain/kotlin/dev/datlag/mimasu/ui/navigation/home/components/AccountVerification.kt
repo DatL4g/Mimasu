@@ -61,8 +61,7 @@ fun AccountVerification(
                     val pastDays = abs(creationDate.daysUntil(Clock.System.now(), TimeZone.currentSystemDefault()))
 
                     if (pastDays > 60) { // ToDo("Set to 60 for initial release with this setup, lower after one month")
-                        current.delete()
-                        accountViewModel.signOut()
+                        accountViewModel.deleteAccount(current)
 
                         withMainContext {
                             onLogout()

@@ -67,7 +67,10 @@ class AccountViewModel(
     val isSignedIn: Boolean
         get() = currentUser != null
 
-    suspend fun signOut() {
+    suspend fun deleteAccount(user: User) {
+        firestoreWrapper.deleteUserData(user)
+
+        user.delete()
         service.signOut()
     }
 
