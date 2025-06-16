@@ -4,6 +4,8 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
+import dev.datlag.mimasu.tmdb.model.details.Season
+import dev.datlag.mimasu.tmdb.model.details.Show
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,6 +42,8 @@ class VideoViewModel(
         } ?: emptyList()
     }
 
+    val watchData = Companion.watchData
+
     fun selectInfo(info: SourceInfo) = _selectedInfo.update { info }
 
     override fun onCleared() {
@@ -55,6 +59,27 @@ class VideoViewModel(
         val locale: String?
     )
 
+    data class WatchData(
+        val title: String,
+        val subTitle: String?,
+        val genre: String?,
+        val description: String?,
+        val groupTitle: String?,
+        val artworkUri: String?,
+        val sources: Map<SourceInfo, Collection<String>>
+    ) {
+
+        constructor(show: Show, episode: Season.Episode) : this(
+            title = episode.name?.ifBlank { null } ?: show.name,
+            subTitle = null,
+            genre = show.genres.firstOrNull()?.name,
+            description = episode.overview?.ifBlank { null } ?: show.overview,
+            groupTitle = show.name,
+            artworkUri = null,
+            sources = emptyMap()
+        )
+    }
+
     companion object {
         private val _sources: MutableStateFlow<Map<SourceInfo, Collection<String>>> = MutableStateFlow(
             emptyMap()
@@ -64,7 +89,10 @@ class VideoViewModel(
         private val _selectedInfo = MutableStateFlow<SourceInfo?>(null)
         private val selectedInfo = _selectedInfo.asStateFlow()
 
-        fun updateSources(list: Map<SourceInfo, Collection<String>>): Boolean {
+        private val _watchData = MutableStateFlow<WatchData?>(null)
+        val watchData = _watchData.asStateFlow()
+
+        private fun updateSources(list: Map<SourceInfo, Collection<String>>): Boolean {
             return _sources.updateAndGet {
                 list.filterNot { (_, value) ->
                     value.isEmpty()
@@ -86,6 +114,11 @@ class VideoViewModel(
 
                 selected != null
             }
+        }
+
+        fun watch(data: WatchData): Boolean {
+            _watchData.update { data }
+            return updateSources(data.sources)
         }
 
         fun clear() {

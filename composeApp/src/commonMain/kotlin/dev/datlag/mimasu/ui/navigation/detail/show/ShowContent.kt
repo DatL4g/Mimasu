@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +31,7 @@ import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowPosterContent
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowProduction
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowSeason
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.tooling.compose.ifTrue
 import kotlinx.collections.immutable.toImmutableList
 import dev.datlag.mimasu.extension.model.Show as Extension
@@ -45,7 +47,7 @@ fun ShowContent(
     showAvailability: ShowState,
     padding: PaddingValues,
     onSelectSeason: (Show.Season) -> Unit = {},
-    onStream: (Extension.Response) -> Unit
+    onStream: (VideoViewModel.WatchData) -> Unit
 ) {
     LazyColumn(
         state = listState,
@@ -132,6 +134,10 @@ fun ShowContent(
             }
             is ShowViewModel.SeasonState.Success -> {
                 itemsIndexed(seasonState.season.episodes.toImmutableList()) { index, episode ->
+                    val watchData = remember(show, episode) {
+                        VideoViewModel.WatchData(show, episode)
+                    }
+
                     EpisodeItem(
                         tmdbId = show.id.takeIf { it > 0 } ?: initial?.id,
                         episode = episode,
@@ -140,7 +146,17 @@ fun ShowContent(
                         modifier = Modifier.fillParentMaxWidth().ifTrue(index >= seasonState.season.episodes.size - 1) {
                             padding(bottom = 16.dp)
                         },
-                        onStream = onStream
+                        onStream = {
+                            onStream(watchData.copy(
+                                sources = it.sources.map { (k, v) ->
+                                    VideoViewModel.SourceInfo(
+                                        sourceTitle = k.sourceTitle,
+                                        sourceLocale = k.sourceLocale,
+                                        locale = k.locale
+                                    ) to v
+                                }.toMap()
+                            ))
+                        }
                     )
                 }
             }

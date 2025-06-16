@@ -17,11 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopControls(
     state: ControlsState,
+    data: VideoViewModel.WatchData?,
     modifier: Modifier = Modifier,
     onBack: () -> Unit
 ) {
@@ -45,7 +47,7 @@ fun TopControls(
                 }
             },
             title = {
-                Text(text = "Video Player")
+                Text(text = data?.title ?: data?.groupTitle ?: data?.subTitle ?: "")
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,

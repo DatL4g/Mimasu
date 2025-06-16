@@ -182,6 +182,7 @@ class PlayerWrapper(
         }
 
     private var firstFrameListener: FirstFrame? = null
+    private var onErrorListener: OnError? = null
 
     init {
         castPlayer?.addListener(this)
@@ -198,12 +199,22 @@ class PlayerWrapper(
         firstFrameListener = listener
     }
 
+    fun onError(listener: OnError) = apply {
+        onErrorListener = listener
+    }
+
     override fun onCastSessionAvailable() {
         castSessionAvailable = true
     }
 
     override fun onCastSessionUnavailable() {
         castSessionAvailable = false
+    }
+
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+
+        onErrorListener?.invoke()
     }
 
     override fun getApplicationLooper(): Looper {
@@ -767,6 +778,10 @@ class PlayerWrapper(
     }
 
     fun interface FirstFrame {
+        operator fun invoke()
+    }
+
+    fun interface OnError {
         operator fun invoke()
     }
 }

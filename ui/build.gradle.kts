@@ -40,7 +40,6 @@ kotlin {
 
         androidMain.dependencies {
             api(libs.paging.compose)
-            implementation(libs.bundles.ackpine)
 
             implementation(project(":extension"))
         }

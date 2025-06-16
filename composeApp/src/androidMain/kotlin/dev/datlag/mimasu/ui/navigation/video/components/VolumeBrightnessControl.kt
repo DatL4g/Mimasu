@@ -99,7 +99,7 @@ fun VolumeBrightnessControl(
                         .clip(CircleShape)
                         .hazeEffect(
                             state = hazeState,
-                            style = HazeMaterials.thin(surface)
+                            style = HazeMaterials.regular(surface)
                         )
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -137,7 +137,7 @@ fun VolumeBrightnessControl(
                         .clip(CircleShape)
                         .hazeEffect(
                             state = hazeState,
-                            style = HazeMaterials.thin(surface)
+                            style = HazeMaterials.regular(surface)
                         )
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,

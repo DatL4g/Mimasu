@@ -1,13 +1,12 @@
 [versions]
-app = "1.0.3"
+app = "1.0.4"
 about = "12.2.2"
-ackpine = "0.13.2"
 activity = "1.10.1"
 adaptive = "1.1.1"
 admob = "24.4.0"
 android = "8.10.1"
 android-annotation = "1.9.1"
-android-autofill = "1.3.0-rc01"
+android-autofill = "1.3.0"
 android-core = "1.16.0"
 android-credentials = "1.5.0"
 android-firebase = "33.15.0"
@@ -94,8 +93,6 @@ android-firebase-analytics = { module = "com.google.firebase:firebase-analytics"
 android-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 android-firebase-performance = { module = "com.google.firebase:firebase-perf" }
 android-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "android-startup" }
-ackpine = { group = "ru.solrudev.ackpine", name = "ackpine-core", version.ref = "ackpine" }
-ackpine-ktx = { group = "ru.solrudev.ackpine", name = "ackpine-ktx", version.ref = "ackpine" }
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
@@ -197,7 +194,6 @@ windowsize = { group = "dev.chrisbanes.material3", name = "material3-window-size
 youtube-player = { group = "io.github.khubaibkhan4", name = "mediaplayer-kmp", version.ref = "youtube-player" }
 
 [bundles]
-ackpine = [ "ackpine", "ackpine-ktx" ]
 android-ads = [ "admob", "ump", "jetads" ]
 android-media = [ "media3", "media3-dash", "media3-hls", "media3-rtsp", "media3-session", "media3-smooth", "media3-ui", "media3-cast", "media3-cronet" ]
 google-auth = [ "google-credentials", "google-credentials-play-service", "google-identity", "google-play-service" ]

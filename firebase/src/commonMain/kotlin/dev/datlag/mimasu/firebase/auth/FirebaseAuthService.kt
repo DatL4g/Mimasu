@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.firebase.auth
 
+import dev.datlag.tooling.async.suspendCatching
 import dev.datlag.tooling.scopeCatching
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
@@ -32,8 +33,13 @@ data class FirebaseAuthService(
             null
         }
 
-        val authUser = authState?.let(::User)
-        val idTokenUser = idToken?.let(::User)
+        val authUser = suspendCatching {
+            authState?.let(::User)
+        }.getOrNull()
+
+        val idTokenUser = suspendCatching {
+            idToken?.let(::User)
+        }.getOrNull()
 
         listOfNotNull(
             reloadedUser,

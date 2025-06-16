@@ -135,7 +135,7 @@ fun Navigation() {
 
     val controller = rememberNavController()
     val backStack by controller.currentBackStackEntryAsState()
-    // val videoNavigationController = rememberVideoNavigationController()
+    val videoNavigationController = rememberVideoNavigationController()
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
@@ -225,14 +225,14 @@ fun Navigation() {
             composable<Navigation.Home> {
                 HomeNavigation(
                     navigateToVideo = {
-                        /*videoNavigationController.loadSources(
-                            sources = it.sources,
+                        videoNavigationController.loadSources(
+                            data = it,
                             navigate = {
                                 controller.navigate(Navigation.Video) {
                                     launchSingleTop = true
                                 }
                             }
-                        )*/
+                        )
                     },
                     onLogout = {
                         controller.navigate(Navigation.Login) {
@@ -246,28 +246,28 @@ fun Navigation() {
             composable<Navigation.Series> {
                 SeriesNavigation(
                     navigateToVideo = {
-                        /*videoNavigationController.loadSources(
-                            sources = it.sources,
+                        videoNavigationController.loadSources(
+                            data = it,
                             navigate = {
                                 controller.navigate(Navigation.Video) {
                                     launchSingleTop = true
                                 }
                             }
-                        )*/
+                        )
                     }
                 )
             }
             composable<Navigation.Search> {
                 SearchNavigation(
                     navigateToVideo = {
-                        /*videoNavigationController.loadSources(
-                            sources = it.sources,
+                        videoNavigationController.loadSources(
+                            data = it,
                             navigate = {
                                 controller.navigate(Navigation.Video) {
                                     launchSingleTop = true
                                 }
                             }
-                        )*/
+                        )
                     }
                 )
             }

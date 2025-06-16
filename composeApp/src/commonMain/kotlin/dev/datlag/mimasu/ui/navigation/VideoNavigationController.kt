@@ -20,16 +20,10 @@ data class VideoNavigationController(
 ) {
 
     fun loadSources(
-        sources: Map<Show.Response.SourceInfo, Collection<String>>,
+        data: VideoViewModel.WatchData,
         navigate: () -> Unit
     ) {
-        val canNavigate = VideoViewModel.updateSources(sources.map { (k, v) ->
-            VideoViewModel.SourceInfo(
-                sourceTitle = k.sourceTitle?.ifBlank { null },
-                sourceLocale = k.sourceLocale?.ifBlank { null },
-                locale = k.locale?.ifBlank { null }
-            ) to v
-        }.toMap())
+        val canNavigate = VideoViewModel.watch(data)
 
         if (canNavigate) {
             if (userData?.premium == true) {

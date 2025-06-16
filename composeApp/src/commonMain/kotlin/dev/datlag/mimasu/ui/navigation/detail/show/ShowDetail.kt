@@ -31,6 +31,7 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowToolbar
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowWatchProviderFAB
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import org.jetbrains.compose.resources.stringResource
 import dev.datlag.mimasu.extension.model.Show as Extension
@@ -39,7 +40,7 @@ import dev.datlag.mimasu.extension.model.Show as Extension
 @Composable
 fun ShowDetail(
     onBack: () -> Unit,
-    onStream: (Extension.Response) -> Unit
+    onStream: (VideoViewModel.WatchData) -> Unit
 ) {
     val showViewModel = kodeinViewModel<ShowViewModel>()
     val showState by showViewModel.show.collectAsStateWithLifecycle(ShowViewModel.ShowState.Loading)

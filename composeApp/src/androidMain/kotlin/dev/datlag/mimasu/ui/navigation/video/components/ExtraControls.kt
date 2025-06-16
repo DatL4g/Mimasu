@@ -47,7 +47,7 @@ fun ExtraControls(
                 .clip(Platform.shapes().medium)
                 .hazeEffect(
                     state = hazeState,
-                    style = HazeMaterials.thin(surface)
+                    style = HazeMaterials.regular(surface)
                 )
                 .padding(8.dp),
             horizontalArrangement = Arrangement.Center,

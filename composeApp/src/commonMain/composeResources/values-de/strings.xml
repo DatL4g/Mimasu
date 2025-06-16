@@ -14,9 +14,7 @@
 
     <string name="home_extension_update_title">Neues Update</string>
     <string name="home_extension_update_text">Ein Update für die Erweiterung ist verfügbar, klicke zum installieren oder ansehen.</string>
-    <string name="home_extension_update_download">Herunterladen</string>
-    <string name="home_extension_update_downloading">Lädt herunter</string>
-    <string name="home_extension_update_installing">Installiert</string>
+    <string name="home_extension_update_open_app">App öffnen</string>
     <string name="home_extension_update_view">Ansehen</string>
 
     <string name="movies_now_playing">Jetzt im Kino</string>

@@ -20,6 +20,7 @@ import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import org.jetbrains.compose.resources.stringResource
 import dev.datlag.mimasu.extension.model.Show as Extension
 
@@ -49,7 +50,7 @@ fun NavigationSuiteScope.homeItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun HomeNavigation(
-    navigateToVideo: (Extension.Response) -> Unit,
+    navigateToVideo: (VideoViewModel.WatchData) -> Unit,
     onLogout: () -> Unit
 ) {
     val controller = rememberListDetailController<Any, Navigation.Home.Detail, Navigation.Home.Extra>()

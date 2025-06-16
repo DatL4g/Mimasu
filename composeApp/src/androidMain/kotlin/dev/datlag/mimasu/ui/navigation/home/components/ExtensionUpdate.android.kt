@@ -27,16 +27,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.home_extension_update_download
-import dev.datlag.mimasu.composeapp.generated.resources.home_extension_update_downloading
-import dev.datlag.mimasu.composeapp.generated.resources.home_extension_update_installing
+import dev.datlag.mimasu.composeapp.generated.resources.home_extension_update_open_app
 import dev.datlag.mimasu.composeapp.generated.resources.home_extension_update_text
 import dev.datlag.mimasu.composeapp.generated.resources.home_extension_update_title
 import dev.datlag.mimasu.composeapp.generated.resources.home_extension_update_view
+import dev.datlag.mimasu.extension.AIDLService
 import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.extension.UpdateProvider
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.viewmodel.ExtensionUpdateViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.localContentColor
@@ -53,7 +51,6 @@ actual fun ExtensionUpdate(
     val context = LocalContext.current
     val safeProvider = provider ?: ExtensionInitializer.getUpdateProvider(context)
     val update by safeProvider.update.collectAsStateWithLifecycle()
-    val extensionUpdateViewModel = kodeinViewModel<ExtensionUpdateViewModel>()
 
     if (update != null && update?.available == true) {
         ElevatedCard(
@@ -76,76 +73,19 @@ actual fun ExtensionUpdate(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val uriHandler = LocalUriHandler.current
-                    val state by extensionUpdateViewModel.state.collectAsStateWithLifecycle()
-                    var showDialog by remember(state) { mutableStateOf(state is ExtensionUpdateViewModel.State.Install.Ready) }
 
-                    LaunchedEffect(state) {
-                        if (state is ExtensionUpdateViewModel.State.Install.Success) {
-                            extensionUpdateViewModel.clearState()
+                    Button(
+                        onClick = {
+                            AIDLService.openExtension(context)
                         }
-
-                        ExtensionInitializer.rebindAll(context)
-                    }
-
-                    if (showDialog) {
-                        ExtensionUpdateDialog(
-                            onDismissRequest = {
-                                extensionUpdateViewModel.dismiss()
-                                showDialog = false
-                            },
-                            onConfirm = {
-                                extensionUpdateViewModel.startInstallProcess()
-                            }
+                    ) {
+                        MaterialSymbols(
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
+                            name = MaterialSymbols.APK_INSTALL,
+                            contentDescription = null
                         )
-                    }
-
-                    update?.downloadUrl?.let {
-                        Button(
-                            onClick = {
-                                extensionUpdateViewModel.update(update)
-                            },
-                            enabled = state == null
-                        ) {
-                            when (val current = state) {
-                                is ExtensionUpdateViewModel.State.Downloading.Unknown -> {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                                        strokeWidth = 2.dp,
-                                        color = Platform.localContentColor()
-                                    )
-                                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                                    Text(text = stringResource(Res.string.home_extension_update_downloading))
-                                }
-                                is ExtensionUpdateViewModel.State.Downloading.Progress -> {
-                                    CircularProgressIndicator(
-                                        progress = { current.percentage },
-                                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                                        strokeWidth = 2.dp,
-                                        color = Platform.localContentColor()
-                                    )
-                                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                                    Text(text = stringResource(Res.string.home_extension_update_downloading))
-                                }
-                                is ExtensionUpdateViewModel.State.Install -> {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                                        strokeWidth = 2.dp,
-                                        color = Platform.localContentColor()
-                                    )
-                                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                                    Text(text = stringResource(Res.string.home_extension_update_installing))
-                                }
-                                else -> {
-                                    MaterialSymbols(
-                                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                                        name = MaterialSymbols.DOWNLOAD,
-                                        contentDescription = null
-                                    )
-                                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                                    Text(text = stringResource(Res.string.home_extension_update_download))
-                                }
-                            }
-                        }
+                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                        Text(text = stringResource(Res.string.home_extension_update_open_app))
                     }
                     update?.viewUrl?.let {
                         Button(

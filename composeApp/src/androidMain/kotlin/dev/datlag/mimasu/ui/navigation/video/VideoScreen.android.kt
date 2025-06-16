@@ -17,6 +17,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,9 +31,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
@@ -81,12 +84,36 @@ actual fun VideoScreen(onBack: () -> Unit) {
         mutableFloatStateOf(1F)
     }
 
+    val data by videoViewModel.watchData.collectAsStateWithLifecycle()
     val sources by videoViewModel.selectedSource.collectAsStateWithLifecycle(emptyList())
-    val mediaItem = remember(sources) {
-        sources.firstOrNull()?.let {
+    var streamIndex by remember(sources) { mutableIntStateOf(0) }
+    val sourceUrl = remember(sources, streamIndex) {
+        sources.elementAtOrNull(streamIndex)
+    }
+    val metadata = remember(data) {
+        MediaMetadata.Builder()
+            .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
+            .setTitle(data?.title)
+            .setSubtitle(data?.subTitle)
+            .setGenre(data?.genre)
+            .setAlbumTitle(data?.groupTitle)
+            .setArtworkUri(data?.artworkUri?.toUri())
+            .build()
+    }
+    val mediaItem = remember(sourceUrl, metadata) {
+        sourceUrl?.let {
             MediaItem.Builder()
                 .setUri(it)
+                .setMediaMetadata(metadata)
                 .build()
+        }
+    }
+
+    LaunchedEffect(playerWrapper) {
+        playerWrapper.onError {
+            if (sources.size - 1 > streamIndex) {
+                streamIndex++
+            }
         }
     }
 
@@ -122,6 +149,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
         topBar = {
             TopControls(
                 state = controlsState,
+                data = data,
                 modifier = Modifier.fillMaxWidth(),
                 onBack = onBack
             )
