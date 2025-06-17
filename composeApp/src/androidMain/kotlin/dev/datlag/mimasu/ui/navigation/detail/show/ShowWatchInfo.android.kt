@@ -2,12 +2,14 @@ package dev.datlag.mimasu.ui.navigation.detail.show
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.intl.Locale
 import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.extension.ShowProvider
+import dev.datlag.mimasu.extension.ShowProviderAndroid
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
@@ -30,6 +32,11 @@ actual fun rememberShowAvailability(
     val showProvider = singletonProvider ?: remember(context) {
         ExtensionInitializer.getShowProvider(context)
     }
+
+    SideEffect {
+        (showProvider as? ShowProviderAndroid)?.rebindIfNoneAvailable(context)
+    }
+
     val request = remember(show, initial) {
         Extension.Request(
             tmdbId = show?.id?.takeIf { it > 0 } ?: initial?.id,
@@ -62,6 +69,11 @@ actual fun rememberEpisodeStream(
     val showProvider = singletonProvider ?: remember(context) {
         ExtensionInitializer.getShowProvider(context)
     }
+
+    SideEffect {
+        (showProvider as? ShowProviderAndroid)?.rebindIfNoneAvailable(context)
+    }
+
     val request = remember(tmdbId, episode) {
         Extension.EpisodeRequest(
             episodeNumber = episode.episodeNumber,

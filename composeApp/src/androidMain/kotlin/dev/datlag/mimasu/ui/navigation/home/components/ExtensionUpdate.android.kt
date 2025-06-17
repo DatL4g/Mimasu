@@ -15,6 +15,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.home_extension_update_vi
 import dev.datlag.mimasu.extension.AIDLService
 import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.extension.UpdateProvider
+import dev.datlag.mimasu.extension.UpdateProviderAndroid
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
@@ -51,6 +53,10 @@ actual fun ExtensionUpdate(
     val context = LocalContext.current
     val safeProvider = provider ?: ExtensionInitializer.getUpdateProvider(context)
     val update by safeProvider.update.collectAsStateWithLifecycle()
+
+    SideEffect {
+        (safeProvider as? UpdateProviderAndroid)?.rebindIfUnavailable(context)
+    }
 
     if (update != null && update?.available == true) {
         ElevatedCard(

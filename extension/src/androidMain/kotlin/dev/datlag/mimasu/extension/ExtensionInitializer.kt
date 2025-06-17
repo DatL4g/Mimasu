@@ -30,7 +30,7 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
     companion object {
         private val state = atomic<State?>(null)
 
-        fun getUpdateProvider(context: Context): UpdateProvider {
+        fun getUpdateProvider(context: Context): UpdateProviderAndroid {
             return state.value?.updateProvider ?: androidx.startup.AppInitializer
                 .getInstance(context)
                 .initializeComponent(ExtensionInitializer::class.java)
@@ -56,6 +56,11 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
         fun rebindAll(context: Context) {
             nullableUpdateProvider()?.rebind(context)
             nullableShowProvider()?.rebind(context)
+        }
+
+        fun rebindIfNoneAvailable(context: Context) {
+            nullableUpdateProvider()?.rebindIfUnavailable(context)
+            nullableShowProvider()?.rebindIfNoneAvailable(context)
         }
     }
 }

@@ -24,4 +24,10 @@ class UpdateProviderAndroid(context: Context) : UpdateProvider {
             AIDLService.bind(context, service, AIDLService.EXTENSION_PACKAGE)
         }
     }
+
+    fun rebindIfUnavailable(context: Context) {
+        if (!service.isBound) {
+            rebind(context)
+        }
+    }
 }

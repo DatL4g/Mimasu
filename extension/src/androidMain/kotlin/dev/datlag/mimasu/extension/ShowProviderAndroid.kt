@@ -42,6 +42,12 @@ class ShowProviderAndroid(context: Context) : ShowProvider {
         services = bind(context)
     }
 
+    fun rebindIfNoneAvailable(context: Context) {
+        if (boundServices.isEmpty()) {
+            rebind(context)
+        }
+    }
+
     override suspend fun requestId(request: Show.Request): Boolean = coroutineScope {
         val bytes = request.toByteArray()
 

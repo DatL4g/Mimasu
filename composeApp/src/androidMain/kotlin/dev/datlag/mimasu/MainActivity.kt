@@ -7,11 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
@@ -20,15 +15,9 @@ import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.ui.navigation.Navigation
-import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.theme.Font
-import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
-import dev.datlag.mimasu.ui.viewmodel.accountViewModel
-import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
-import dev.datlag.tooling.compose.platform.colorScheme
-import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.compose.toTypography
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DI
@@ -70,6 +59,7 @@ class MainActivity : AdActivity() {
         val di = this.di ?: return exit("Could not find dependency injection.")
         val nullableAdManager by di.instanceOrNull<AdManager>()
         (nullableAdManager ?: AdManager(this)).requestConsentUpdate(this)
+        ExtensionInitializer.rebindIfNoneAvailable(this)
 
         setContent {
             // ToDo("ignore font on TV")
@@ -107,6 +97,26 @@ class MainActivity : AdActivity() {
         } else {
             registerReceiver(appInstallReceiver, intentFilter)
         }
+
+        ExtensionInitializer.rebindIfNoneAvailable(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        ExtensionInitializer.rebindIfNoneAvailable(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        ExtensionInitializer.rebindIfNoneAvailable(this)
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        ExtensionInitializer.rebindIfNoneAvailable(this)
     }
 
     override fun onDestroy() {
