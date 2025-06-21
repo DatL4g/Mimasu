@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.HideImage
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Apartment
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Beenhere
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkAdd
 import androidx.compose.material.icons.rounded.Cake
@@ -171,6 +172,7 @@ data object MaterialSymbols {
     const val WARNING = "warning"
     const val REFRESH = "refresh"
     const val APK_INSTALL = "apk_install"
+    const val BEEN_HERE = "beenhere"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -547,6 +549,7 @@ data object MaterialSymbols {
         name.equals(WARNING, ignoreCase = true) -> Icons.Rounded.Warning
         name.equals(REFRESH, ignoreCase = true) -> Icons.Rounded.Refresh
         name.equals(APK_INSTALL, ignoreCase = true) -> Icons.Rounded.InstallMobile
+        name.equals(BEEN_HERE, ignoreCase = true) -> Icons.Rounded.Beenhere
         else -> null
     }
 
