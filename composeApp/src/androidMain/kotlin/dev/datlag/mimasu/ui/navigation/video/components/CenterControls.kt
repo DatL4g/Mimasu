@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Surface
@@ -32,6 +33,7 @@ import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
 
+@ExperimentalMaterial3ExpressiveApi
 @OptIn(UnstableApi::class)
 @Composable
 fun CenterControls(
@@ -55,31 +57,30 @@ fun CenterControls(
         ) {
             val showPlay by state.showPlay.collectAsStateWithLifecycle()
             val enabled by state.isEnabled.collectAsStateWithLifecycle()
-            val surface = Platform.colorScheme().surface
-            val onSurface = Platform.colorScheme().onSurface
 
             IconButton(
                 modifier = Modifier
-                    .clip(Platform.shapes().medium)
-                    .hazeEffect(
-                        state = hazeState,
-                        style = HazeMaterials.regular(surface)
-                    )
-                    .padding(8.dp),
+                    .size(
+                        IconButtonDefaults.largeContainerSize(
+                            IconButtonDefaults.IconButtonWidthOption.Wide
+                        )
+                    ),
                 onClick = {
                     state.onClick()
                 },
+                shapes = IconButtonDefaults.shapes(),
+                colors = IconButtonDefaults.filledIconButtonColors(),
                 enabled = enabled
             ) {
                 MaterialSymbols(
+                    modifier = Modifier.size(IconButtonDefaults.largeIconSize),
                     name = if (showPlay) {
                         MaterialSymbols.PLAY_ARROW
                     } else {
                         MaterialSymbols.PAUSE
                     },
                     contentDescription = null,
-                    filled = true,
-                    tint = onSurface
+                    filled = true
                 )
             }
         }

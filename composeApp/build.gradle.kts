@@ -46,8 +46,6 @@ kotlin {
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
     }
 
-    jvm()
-
     /*js {
         browser()
         binaries.executable()
@@ -135,15 +133,9 @@ kotlin {
             implementation(libs.kermit.crashlytics)
 
             implementation(libs.bundles.android.media)
+            implementation("androidx.compose.material3:material3:1.4.0-alpha15")
 
             implementation(project(":rive"))
-        }
-
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.coroutines.swing)
-            implementation(libs.ktor.jvm)
-            implementation(libs.certificate.transparency.jvm)
         }
 
         jsMain.dependencies {

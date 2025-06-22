@@ -2,7 +2,7 @@
 app = "1.0.4"
 about = "12.2.2"
 activity = "1.10.1"
-adaptive = "1.1.1"
+adaptive = "1.2.0-alpha02"
 admob = "24.4.0"
 android = "8.10.1"
 android-annotation = "1.9.1"
@@ -14,10 +14,10 @@ android-startup = "1.2.0"
 assertk = "0.28.1"
 atomicfu = "0.28.0"
 car = "1.4.0"
-certificate-transparency = "2.6.4"
+certificate-transparency = "2.7.0"
 coil = "3.2.0"
 collection = "1.5.0"
-compose = "1.8.1"
+compose = "1.9.0-alpha02"
 compose-report = "1.4.2"
 compose-reload = "1.0.0-alpha10"
 connectivity = "1.1.3"
@@ -76,7 +76,6 @@ tv-material = "1.0.0"
 ump = "3.2.0"
 versions = "0.52.0"
 wavy-slider = "2.0.0"
-windowsize = "0.5.0"
 youtube-player = "2.0.5"
 
 [libraries]
@@ -189,8 +188,6 @@ tv-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose
 tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tv-material" }
 ump = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "ump" }
 viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
-wavy-slider = { group = "ir.mahozad.multiplatform", name = "wavy-slider", version.ref = "wavy-slider" }
-windowsize = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version.ref = "windowsize" }
 youtube-player = { group = "io.github.khubaibkhan4", name = "mediaplayer-kmp", version.ref = "youtube-player" }
 
 [bundles]

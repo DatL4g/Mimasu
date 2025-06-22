@@ -2,6 +2,9 @@ package dev.datlag.mimasu
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialExpressiveTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -28,6 +31,7 @@ import org.kodein.di.compose.withDI
 
 val LocalDarkMode = compositionLocalOf<Boolean> { error("No dark mode state provided") }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun App(
     di: DI,
@@ -44,23 +48,28 @@ fun App(
             colorScheme = if (systemDarkTheme) Colors.dynamicDark() else Colors.dynamicLight(),
             typography = typography
         ) {
-            PlatformSurface(
-                modifier = Modifier.fillMaxSize(),
-                containerColor = Platform.colorScheme().background,
-                contentColor = Platform.colorScheme().onBackground
+            MaterialExpressiveTheme(
+                colorScheme = Platform.colorScheme(),
+                typography = Platform.typography()
             ) {
-                val accountViewModel = accountViewModel()
-                val config by NetworkModule.config.collectAsStateWithLifecycle()
+                PlatformSurface(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = Platform.colorScheme().background,
+                    contentColor = Platform.colorScheme().onBackground
+                ) {
+                    val accountViewModel = accountViewModel()
+                    val config by NetworkModule.config.collectAsStateWithLifecycle()
 
-                LaunchedEffect(accountViewModel) {
-                    // Force account loading, while startup
-                    accountViewModel.isSignedIn
-                }
+                    LaunchedEffect(accountViewModel) {
+                        // Force account loading, while startup
+                        accountViewModel.isSignedIn
+                    }
 
-                when (val current = config) {
-                    is NetworkModule.Config.Fetching -> fetchingContent()
-                    is NetworkModule.Config.Failure -> failureContent(current)
-                    is NetworkModule.Config.Success -> content()
+                    when (val current = config) {
+                        is NetworkModule.Config.Fetching -> fetchingContent()
+                        is NetworkModule.Config.Failure -> failureContent(current)
+                        is NetworkModule.Config.Success -> content()
+                    }
                 }
             }
         }
