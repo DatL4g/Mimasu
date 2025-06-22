@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
@@ -25,13 +26,14 @@ fun TopControls(
     state: ControlsState,
     data: VideoViewModel.WatchData?,
     modifier: Modifier = Modifier,
+    pipActive: Boolean = PiPHelper.active.value,
     onBack: () -> Unit
 ) {
     val visibility by state.controlsVisibility.collectAsStateWithLifecycle()
 
     AnimatedVisibility(
         modifier = modifier,
-        visible = visibility,
+        visible = visibility && !pipActive,
         enter = slideInVertically() + fadeIn(),
         exit = slideOutVertically() + fadeOut()
     ) {

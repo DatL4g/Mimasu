@@ -49,6 +49,7 @@ import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonPinCircle
+import androidx.compose.material.icons.rounded.PictureInPicture
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Refresh
@@ -173,6 +174,7 @@ data object MaterialSymbols {
     const val REFRESH = "refresh"
     const val APK_INSTALL = "apk_install"
     const val BEEN_HERE = "beenhere"
+    const val PIP = "pip"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -550,6 +552,7 @@ data object MaterialSymbols {
         name.equals(REFRESH, ignoreCase = true) -> Icons.Rounded.Refresh
         name.equals(APK_INSTALL, ignoreCase = true) -> Icons.Rounded.InstallMobile
         name.equals(BEEN_HERE, ignoreCase = true) -> Icons.Rounded.Beenhere
+        name.equals(PIP, ignoreCase = true) -> Icons.Rounded.PictureInPicture
         else -> null
     }
 

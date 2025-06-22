@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.ui.navigation.video.components
 
+import android.graphics.Rect
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -17,6 +18,7 @@ import androidx.media3.common.Player
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.tooling.Platform
@@ -29,7 +31,11 @@ fun ExtraControls(
     hazeState: HazeState,
     player: Player,
     viewModel: VideoViewModel,
-    modifier: Modifier = Modifier
+    pipHelper: PiPHelper,
+    aspectRatio: Float,
+    sourceRect: Rect,
+    modifier: Modifier = Modifier,
+    pipActive: Boolean = PiPHelper.active.value
 ) {
     val surface = Platform.colorScheme().surface
     val onSurface = Platform.colorScheme().onSurface
@@ -37,7 +43,7 @@ fun ExtraControls(
     val visibility by controlsState.controlsVisibility.collectAsStateWithLifecycle()
 
     AnimatedVisibility(
-        visible = visibility,
+        visible = visibility && !pipActive,
         modifier = modifier,
         enter = fadeIn(),
         exit = fadeOut()
@@ -61,6 +67,12 @@ fun ExtraControls(
             SourceButton(
                 controlsState = controlsState,
                 viewModel = viewModel,
+                color = onSurface
+            )
+            PiPButton(
+                pipHelper = pipHelper,
+                aspectRatio = aspectRatio,
+                sourceRect = sourceRect,
                 color = onSurface
             )
         }

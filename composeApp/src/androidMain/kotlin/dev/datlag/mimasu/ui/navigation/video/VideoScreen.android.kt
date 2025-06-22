@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package dev.datlag.mimasu.ui.navigation.video
 
+import android.graphics.Rect
 import android.view.WindowManager
 import androidx.compose.foundation.AndroidExternalSurface
 import androidx.compose.foundation.background
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -28,9 +32,13 @@ import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toAndroidRectF
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toRect
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -44,6 +52,8 @@ import dev.chrisbanes.haze.rememberHazeState
 import dev.datlag.mimasu.common.detectPinchGestures
 import dev.datlag.mimasu.common.hazeEffect
 import dev.datlag.mimasu.common.merge
+import dev.datlag.mimasu.other.PiPHelper
+import dev.datlag.mimasu.other.rememberPiPHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.video.components.BottomControls
 import dev.datlag.mimasu.ui.navigation.video.components.CenterControls
@@ -109,6 +119,10 @@ actual fun VideoScreen(onBack: () -> Unit) {
         }
     }
 
+    val pipHelper = rememberPiPHelper()
+    val pipActive by PiPHelper.active.collectAsStateWithLifecycle()
+    var videoViewBounds by remember { mutableStateOf(Rect()) }
+
     LaunchedEffect(playerWrapper) {
         playerWrapper.onError {
             if (sources.size - 1 > streamIndex) {
@@ -149,6 +163,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
         topBar = {
             TopControls(
                 state = controlsState,
+                pipActive = pipActive,
                 data = data,
                 modifier = Modifier.fillMaxWidth(),
                 onBack = onBack
@@ -157,6 +172,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
         bottomBar = {
             BottomControls(
                 controlsState = controlsState,
+                pipActive = pipActive,
                 state = progressState,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -193,7 +209,9 @@ actual fun VideoScreen(onBack: () -> Unit) {
             val hazeState = rememberHazeState()
 
             AndroidExternalSurface(
-                modifier = sizeModifier.hazeSource(hazeState),
+                modifier = sizeModifier.hazeSource(hazeState).onGloballyPositioned {
+                    videoViewBounds = it.boundsInWindow().toAndroidRectF().toRect()
+                },
                 onInit = {
                     onSurface { surface, _, _ ->
                         playerWrapper.setVideoSurface(surface)
@@ -218,7 +236,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
             CenterControls(
                 controlsState = controlsState,
                 state = playPauseState,
-                hazeState = hazeState,
+                pipActive = pipActive,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
@@ -229,6 +247,10 @@ actual fun VideoScreen(onBack: () -> Unit) {
                 hazeState = hazeState,
                 player = playerWrapper,
                 viewModel = videoViewModel,
+                pipHelper = pipHelper,
+                pipActive = pipActive,
+                aspectRatio = aspectRatio,
+                sourceRect = videoViewBounds,
                 modifier = Modifier
                     .padding(bottom = contentPadding.calculateBottomPadding())
                     .align(Alignment.BottomCenter)

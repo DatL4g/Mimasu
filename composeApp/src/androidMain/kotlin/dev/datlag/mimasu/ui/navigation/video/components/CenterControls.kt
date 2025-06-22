@@ -26,6 +26,7 @@ import androidx.media3.common.util.UnstableApi
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
 import dev.datlag.mimasu.ui.navigation.video.states.PlayPauseButtonState
@@ -39,13 +40,13 @@ import dev.datlag.tooling.compose.platform.shapes
 fun CenterControls(
     controlsState: ControlsState,
     state: PlayPauseButtonState,
-    hazeState: HazeState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    pipActive: Boolean = PiPHelper.active.value
 ) {
     val visibility by controlsState.controlsVisibility.collectAsStateWithLifecycle()
 
     AnimatedVisibility(
-        visible = visibility,
+        visible = visibility && !pipActive,
         modifier = modifier,
         enter = fadeIn(),
         exit = fadeOut()

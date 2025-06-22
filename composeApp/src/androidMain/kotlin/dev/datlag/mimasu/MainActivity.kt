@@ -10,10 +10,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.common.isInPiPMode
 import dev.datlag.mimasu.extension.AppInstallReceiver
 import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.other.AdManager
+import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
@@ -60,6 +62,7 @@ class MainActivity : AdActivity() {
         val nullableAdManager by di.instanceOrNull<AdManager>()
         (nullableAdManager ?: AdManager(this)).requestConsentUpdate(this)
         ExtensionInitializer.rebindIfNoneAvailable(this)
+        PiPHelper.setActive(this.isInPiPMode())
 
         setContent {
             // ToDo("ignore font on TV")
@@ -99,24 +102,28 @@ class MainActivity : AdActivity() {
         }
 
         ExtensionInitializer.rebindIfNoneAvailable(this)
+        PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onResume() {
         super.onResume()
 
         ExtensionInitializer.rebindIfNoneAvailable(this)
+        PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onPause() {
         super.onPause()
 
         ExtensionInitializer.rebindIfNoneAvailable(this)
+        PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onRestart() {
         super.onRestart()
 
         ExtensionInitializer.rebindIfNoneAvailable(this)
+        PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onDestroy() {
@@ -124,6 +131,7 @@ class MainActivity : AdActivity() {
 
         unregisterReceiver(appInstallReceiver)
         ExtensionInitializer.unbindAll(this)
+        PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onNewIntent(intent: Intent) {

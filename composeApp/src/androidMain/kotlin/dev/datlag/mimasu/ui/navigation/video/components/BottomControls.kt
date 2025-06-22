@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.common.toDuration
 import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
 import dev.datlag.mimasu.ui.navigation.video.states.ProgressState
@@ -31,13 +32,14 @@ import kotlin.math.roundToLong
 fun BottomControls(
     controlsState: ControlsState,
     state: ProgressState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    pipActive: Boolean = PiPHelper.active.value,
 ) {
     val visibility by controlsState.controlsVisibility.collectAsStateWithLifecycle()
 
     AnimatedVisibility(
         modifier = modifier,
-        visible = visibility,
+        visible = visibility && !pipActive,
         enter = slideInVertically { it / 2 } + fadeIn(),
         exit = slideOutVertically { it / 2 } + fadeOut()
     ) {
