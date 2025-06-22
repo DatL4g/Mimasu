@@ -124,7 +124,7 @@ fun EpisodeItem(
         state = rememberSwipeableActionsState(),
         startActions = startActions,
         endActions = endActions,
-        backgroundUntilSwipeThreshold = Platform.colorScheme().surfaceColorAtElevation(32.dp)
+        backgroundUntilSwipeThreshold = if (finished) errorColor else successColor
     ) {
         ElevatedCard(
             modifier = Modifier.fillMaxWidth(),

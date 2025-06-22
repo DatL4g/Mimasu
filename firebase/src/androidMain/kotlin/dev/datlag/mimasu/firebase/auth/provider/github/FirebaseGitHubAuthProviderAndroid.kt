@@ -24,19 +24,25 @@ class FirebaseGitHubAuthProviderAndroid(
 ) : FirebaseGitHubAuthProvider(firebaseAuthDataSource) {
 
     override suspend fun signIn(params: GitHubAuthParams): Result<User> {
-        val currentUser = firebaseAuthDataSource.currentUser?.firebase?.android
+        val currentUser = suspendCatching {
+            firebaseAuthDataSource.currentUser?.firebase?.android
+        }.getOrNull()
 
-        val linkAuthResult = currentUser?.startActivityForLinkWithProvider(
-            params,
-            provider.android
-        )?.linkOrSignInUser(currentUser)?.getOrNull()
+        val linkAuthResult = suspendCatching {
+            currentUser?.startActivityForLinkWithProvider(
+                params,
+                provider.android
+            )?.linkOrSignInUser(currentUser)?.getOrThrow()
+        }.getOrNull()
 
-        val authResult = linkAuthResult ?: firebaseAuthDataSource.auth.android.startActivityForSignInWithProvider(
-            params,
-            provider.android
-        ).linkOrSignInUser(currentUser).getOrThrow()
+        val authResult = linkAuthResult ?: suspendCatching {
+            firebaseAuthDataSource.auth.android.startActivityForSignInWithProvider(
+                params,
+                provider.android
+            ).linkOrSignInUser(currentUser).getOrThrow()
+        }.getOrNull()
 
-        authResult.let {
+        authResult?.let {
             firebaseAuthDataSource.auth.android.updateCurrentUser(it).await()
         }
 
@@ -48,15 +54,19 @@ class FirebaseGitHubAuthProviderAndroid(
     }
 
     override suspend fun link(params: GitHubAuthParams): Result<User> {
-        val currentUser = firebaseAuthDataSource.currentUser?.firebase?.android
+        val currentUser = suspendCatching {
+            firebaseAuthDataSource.currentUser?.firebase?.android
+        }.getOrNull()
 
-        val linkAuthResult = currentUser?.startActivityForLinkWithProvider(
-            params,
-            provider.android
-        )?.linkOrSignInUser(currentUser)
+        val linkAuthResult = suspendCatching {
+            currentUser?.startActivityForLinkWithProvider(
+                params,
+                provider.android
+            )?.linkOrSignInUser(currentUser)?.getOrThrow()
+        }
 
         return suspendCatching {
-            val linkedUser = linkAuthResult?.getOrThrow() ?: throw FirebaseAuthException.UnknownUser(FirebaseProvider.GitHub)
+            val linkedUser = linkAuthResult.getOrThrow() ?: throw FirebaseAuthException.UnknownUser(FirebaseProvider.GitHub)
 
             firebaseAuthDataSource.auth.android.updateCurrentUser(linkedUser).await()
 
