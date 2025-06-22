@@ -1,6 +1,8 @@
 package dev.datlag.mimasu.ui.navigation.profile.components
 
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,6 +16,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_open
 import dev.datlag.mimasu.extension.AIDLService
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 actual fun ExtensionButton() {
     val context = LocalContext.current
@@ -25,7 +28,8 @@ actual fun ExtensionButton() {
         Button(
             onClick = {
                 AIDLService.openExtension(context)
-            }
+            },
+            shapes = ButtonDefaults.shapes()
         ) {
             Text(text = stringResource(Res.string.profile_extension_open))
         }
@@ -41,7 +45,8 @@ actual fun ExtensionButton() {
         Button(
             onClick = {
                 dialog = !dialog
-            }
+            },
+            shapes = ButtonDefaults.shapes()
         ) {
             Text(text = stringResource(Res.string.profile_extension_info))
         }

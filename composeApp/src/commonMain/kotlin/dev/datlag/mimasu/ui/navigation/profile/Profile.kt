@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -57,6 +58,7 @@ import dev.datlag.tooling.compose.platform.typography
 import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun Profile(
     onLogout: () -> Unit,
@@ -94,7 +96,8 @@ fun Profile(
                     },
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = Platform.colorScheme().error
-                    )
+                    ),
+                    shapes = ButtonDefaults.shapes()
                 ) {
                     Text(text = stringResource(Res.string.profile_sign_out_yes))
                 }
@@ -103,7 +106,8 @@ fun Profile(
                 TextButton(
                     onClick = {
                         showSignOutDialog = false
-                    }
+                    },
+                    shapes = ButtonDefaults.shapes()
                 ) {
                     Text(text = stringResource(Res.string.profile_sign_out_cancel))
                 }
@@ -218,6 +222,8 @@ fun Profile(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    val linked = user?.linkedGoogle == true
+
                     Icon(
                         modifier = Modifier.size(24.dp),
                         imageVector = MaterialSymbols.GoogleGLogo,
@@ -232,10 +238,17 @@ fun Profile(
                         onClick = {
                             loginViewModel.googleLink()
                         },
-                        enabled = user?.linkedGoogle != true
+                        enabled = !linked,
+                        shapes = ButtonDefaults.shapes()
                     ) {
+                        MaterialSymbols(
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
+                            name = if (linked) MaterialSymbols.LINK else MaterialSymbols.LINK_OFF,
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
                         Text(
-                            text = if (user?.linkedGoogle == true) {
+                            text = if (linked) {
                                 stringResource(Res.string.profile_connected)
                             } else {
                                 stringResource(Res.string.profile_connect)
@@ -256,6 +269,7 @@ fun Profile(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val githubAuthParams = rememberGitHubAuthParams()
+                    val linked = user?.github?.linked == true
 
                     Icon(
                         modifier = Modifier.size(24.dp),
@@ -272,10 +286,17 @@ fun Profile(
                                 loginViewModel.githubLink(it)
                             }
                         },
-                        enabled = user?.github?.linked != true && githubAuthParams != null
+                        enabled = !linked && githubAuthParams != null,
+                        shapes = ButtonDefaults.shapes()
                     ) {
+                        MaterialSymbols(
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
+                            name = if (linked) MaterialSymbols.LINK else MaterialSymbols.LINK_OFF,
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
                         Text(
-                            text = if (user?.github?.linked == true) {
+                            text = if (linked) {
                                 stringResource(Res.string.profile_connected)
                             } else {
                                 stringResource(Res.string.profile_connect)

@@ -11,6 +11,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.common.isInPiPMode
+import dev.datlag.mimasu.common.toExpressiveTypography
 import dev.datlag.mimasu.extension.AppInstallReceiver
 import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.module.NetworkModule
@@ -69,7 +70,7 @@ class MainActivity : AdActivity() {
             // ToDo("navigation wrapped for TV")
             App(
                 di = di,
-                typography = Font.manrope.toTypography(),
+                typography = Font.manrope.toExpressiveTypography(),
                 fetchingContent = {
                     PlatformText("Fetching Config, please wait")
                 },

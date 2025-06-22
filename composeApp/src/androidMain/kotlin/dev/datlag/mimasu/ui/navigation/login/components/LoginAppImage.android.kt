@@ -6,7 +6,9 @@ import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,7 +41,7 @@ import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.rive.RiveAnimation
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 actual fun LoginAppImage(
     typingEmail: Boolean,
@@ -95,14 +97,16 @@ actual fun LoginAppImage(
                             TextButton(
                                 onClick = {
                                     uriHandler.openUri(Constants.RIVE_BUNNY_LINK)
-                                }
+                                },
+                                shapes = ButtonDefaults.shapes()
                             ) {
                                 Text(stringResource(Res.string.login_rive_bunny_marketplace))
                             }
                             TextButton(
                                 onClick = {
                                     uriHandler.openUri(Constants.CREATIVE_COMMONS_4_LICENSE)
-                                }
+                                },
+                                shapes = ButtonDefaults.shapes()
                             ) {
                                 Text(stringResource(Res.string.login_rive_bunny_license))
                             }

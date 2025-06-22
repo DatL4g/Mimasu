@@ -5,8 +5,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,6 +37,7 @@ import dev.datlag.tooling.compose.platform.shapes
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ShowWatchProviderFAB(
     show: Show?,
@@ -77,7 +79,7 @@ fun ShowWatchProviderFAB(
                 )
             }
 
-            ExtendedFloatingActionButton(
+            SmallExtendedFloatingActionButton(
                 onClick = {
                     if (regionProviders.hasProviders()) {
                         dialog = !dialog
@@ -132,7 +134,7 @@ fun ShowWatchProviderFAB(
                     } else {
                         Text(text = stringResource(Res.string.justwatch))
                     }
-                }
+                },
             )
 
             if (bestProvider != null) {

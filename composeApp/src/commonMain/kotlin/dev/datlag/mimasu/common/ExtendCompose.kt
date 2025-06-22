@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
@@ -22,8 +23,12 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.AsyncImagePainter.State
 import coil3.compose.rememberAsyncImagePainter
@@ -233,5 +238,118 @@ suspend fun PointerInputScope.detectPinchGestures(
         } while (!canceled && event.changes.any { it.pressed })
 
         onGestureEnd(pointer)
+    }
+}
+
+@Composable
+fun FontFamily.toExpressiveTypography(): Typography {
+    return remember(this) {
+        Typography(
+            displayLarge = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Bold,
+                fontSize = 64.sp,
+                lineHeight = 72.0.sp,
+                letterSpacing = (-0.5).sp
+            ),
+            displayMedium = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Bold,
+                fontSize = 50.sp,
+                lineHeight = 58.0.sp,
+                letterSpacing = (-0.2).sp
+            ),
+            displaySmall = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Bold,
+                fontSize = 40.sp,
+                lineHeight = 48.0.sp,
+                letterSpacing = 0.0.sp
+            ),
+            headlineLarge = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 36.sp,
+                lineHeight = 44.0.sp,
+                letterSpacing = 0.0.sp
+            ),
+            headlineMedium = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 30.sp,
+                lineHeight = 38.0.sp,
+                letterSpacing = 0.0.sp
+            ),
+            headlineSmall = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 26.sp,
+                lineHeight = 34.0.sp,
+                letterSpacing = 0.0.sp
+            ),
+            titleLarge = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Medium, // Often remains Medium or SemiBold
+                fontSize = 22.sp,
+                lineHeight = 28.0.sp,
+                letterSpacing = 0.0.sp
+            ),
+            titleMedium = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                lineHeight = 24.0.sp,
+                letterSpacing = 0.2.sp
+            ),
+            titleSmall = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                lineHeight = 20.0.sp,
+                letterSpacing = 0.1.sp
+            ),
+            bodyLarge = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                lineHeight = 24.0.sp,
+                letterSpacing = 0.5.sp
+            ),
+            bodyMedium = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp,
+                lineHeight = 20.0.sp,
+                letterSpacing = 0.2.sp
+            ),
+            bodySmall = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp,
+                lineHeight = 16.0.sp,
+                letterSpacing = 0.4.sp,
+            ),
+            labelLarge = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                lineHeight = 20.0.sp,
+                letterSpacing = 0.1.sp
+            ),
+            labelMedium = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp,
+                lineHeight = 16.0.sp,
+                letterSpacing = 0.5.sp
+            ),
+            labelSmall = TextStyle(
+                fontFamily = this,
+                fontWeight = FontWeight.Medium,
+                fontSize = 11.sp,
+                lineHeight = 16.0.sp,
+                letterSpacing = 0.5.sp
+            )
+        )
     }
 }

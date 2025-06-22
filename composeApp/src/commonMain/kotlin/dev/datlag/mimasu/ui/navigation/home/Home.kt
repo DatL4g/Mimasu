@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -53,6 +54,7 @@ import dev.datlag.mimasu.ui.custom.PersonCard
 import dev.datlag.mimasu.ui.custom.ShowPager
 import dev.datlag.mimasu.ui.navigation.home.components.AccountVerification
 import dev.datlag.mimasu.ui.navigation.home.components.ExtensionUpdate
+import dev.datlag.mimasu.ui.navigation.home.components.TimeWindowSelection
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
@@ -166,64 +168,33 @@ fun Home(
             }
         }
         item {
-            Row(
+            Text(
                 modifier = Modifier.fillParentMaxWidth().padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val dayWeek by trendingViewModel.timeWindow.collectAsStateWithLifecycle()
+                text = stringResource(Res.string.home_trending),
+                style = Platform.typography().headlineLarge,
+                maxLines = 1
+            )
+        }
+        item {
+            val dayWeek by trendingViewModel.timeWindow.collectAsStateWithLifecycle()
 
-                Text(
-                    modifier = Modifier.weight(1F),
-                    text = stringResource(Res.string.home_trending),
-                    fontWeight = FontWeight.Bold,
-                    style = Platform.typography().headlineLarge,
-                    maxLines = 1
-                )
-                SingleChoiceSegmentedButtonRow {
-                    SegmentedButton(
-                        selected = dayWeek is TimeWindow.Day,
-                        onClick = {
-                            trendingViewModel.updateToDayTimeWindow()
-                        },
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = 0,
-                            count = 2
-                        ),
-                        label = {
-                            Text(
-                                text = stringResource(Res.string.home_today),
-                                maxLines = 1,
-                                style = Platform.typography().labelSmall
-                            )
-                        }
-                    )
-                    SegmentedButton(
-                        selected = dayWeek is TimeWindow.Week,
-                        onClick = {
-                            trendingViewModel.updateToWeekTimeWindow()
-                        },
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = 1,
-                            count = 2
-                        ),
-                        label = {
-                            Text(
-                                text = stringResource(Res.string.home_week),
-                                maxLines = 1,
-                                style = Platform.typography().labelSmall
-                            )
-                        }
-                    )
+            TimeWindowSelection(
+                modifier = Modifier.fillParentMaxWidth().padding(horizontal = 16.dp),
+                selected = dayWeek,
+                selectDay = {
+                    trendingViewModel.updateToDayTimeWindow()
+                },
+                selectWeek = {
+                    trendingViewModel.updateToWeekTimeWindow()
                 }
-            }
+            )
         }
         item {
             Column(
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .animateContentSize()
-                    .padding(bottom = 16.dp),
+                    .padding(vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val people = trendingViewModel.people.collectAsLazyPagingItems()

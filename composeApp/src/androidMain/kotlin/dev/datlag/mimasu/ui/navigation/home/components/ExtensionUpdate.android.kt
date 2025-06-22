@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +46,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 actual fun ExtensionUpdate(
     modifier: Modifier
@@ -83,7 +85,8 @@ actual fun ExtensionUpdate(
                     Button(
                         onClick = {
                             AIDLService.openExtension(context)
-                        }
+                        },
+                        shapes = ButtonDefaults.shapes()
                     ) {
                         MaterialSymbols(
                             modifier = Modifier.size(ButtonDefaults.IconSize),
@@ -97,7 +100,8 @@ actual fun ExtensionUpdate(
                         Button(
                             onClick = {
                                 uriHandler.openUri(it)
-                            }
+                            },
+                            shapes = ButtonDefaults.shapes()
                         ) {
                             MaterialSymbols(
                                 modifier = Modifier.size(ButtonDefaults.IconSize),

@@ -38,6 +38,8 @@ import androidx.compose.material.icons.rounded.InstallMobile
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.LightMode
+import androidx.compose.material.icons.rounded.Link
+import androidx.compose.material.icons.rounded.LinkOff
 import androidx.compose.material.icons.rounded.LocalFlorist
 import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Mail
@@ -175,6 +177,8 @@ data object MaterialSymbols {
     const val APK_INSTALL = "apk_install"
     const val BEEN_HERE = "beenhere"
     const val PIP = "pip"
+    const val LINK = "link"
+    const val LINK_OFF = "link_off"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -553,6 +557,8 @@ data object MaterialSymbols {
         name.equals(APK_INSTALL, ignoreCase = true) -> Icons.Rounded.InstallMobile
         name.equals(BEEN_HERE, ignoreCase = true) -> Icons.Rounded.Beenhere
         name.equals(PIP, ignoreCase = true) -> Icons.Rounded.PictureInPicture
+        name.equals(LINK, ignoreCase = true) -> Icons.Rounded.Link
+        name.equals(LINK_OFF, ignoreCase = true) -> Icons.Rounded.LinkOff
         else -> null
     }
 

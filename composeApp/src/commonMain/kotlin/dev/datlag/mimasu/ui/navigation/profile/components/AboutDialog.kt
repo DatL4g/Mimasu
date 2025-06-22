@@ -40,7 +40,6 @@ fun AboutDialog(
                         .padding(top = 16.dp),
                     text = stringResource(Res.string.profile_about),
                     style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     textAlign = TextAlign.Center
                 )

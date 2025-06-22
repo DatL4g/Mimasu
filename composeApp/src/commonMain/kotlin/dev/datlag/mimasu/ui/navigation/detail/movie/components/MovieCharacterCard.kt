@@ -120,7 +120,7 @@ fun MovieCharacterCard(
 ) {
     Card(
         modifier = modifier,
-        onClick = onClick
+        onClick = { } // onClick, disable as long as 1.9.0 is not stable
     ) {
         var loading by remember(id) { mutableStateOf(true) }
         var fallback by remember(id) { mutableStateOf(false) }

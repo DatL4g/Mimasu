@@ -57,7 +57,6 @@ fun Movies(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = stringResource(Res.string.movies_now_playing),
                     style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1
                 )
                 LazyRow(
@@ -99,7 +98,6 @@ fun Movies(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = stringResource(Res.string.movies_upcoming),
                     style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1
                 )
                 LazyRow(
@@ -141,7 +139,6 @@ fun Movies(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = stringResource(Res.string.movies_popular),
                     style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1
                 )
                 LazyRow(
@@ -183,7 +180,6 @@ fun Movies(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = stringResource(Res.string.movies_top_rated),
                     style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1
                 )
                 LazyRow(
