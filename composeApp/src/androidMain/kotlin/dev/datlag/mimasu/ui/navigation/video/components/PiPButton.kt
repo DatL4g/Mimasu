@@ -16,17 +16,14 @@ import dev.datlag.tooling.compose.platform.localContentColor
 @Composable
 fun PiPButton(
     pipHelper: PiPHelper,
-    aspectRatio: Float,
-    sourceRect: Rect,
     modifier: Modifier = Modifier,
-    color: Color = Platform.localContentColor()
+    color: Color = Platform.localContentColor(),
+    enterPiP: () -> Unit
 ) {
     val enabled by pipHelper.enabled.collectAsStateWithLifecycle()
 
     IconButton(
-        onClick = {
-            pipHelper.enter(aspectRatio, sourceRect)
-        },
+        onClick = enterPiP,
         modifier = modifier,
         enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(

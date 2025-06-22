@@ -32,10 +32,9 @@ fun ExtraControls(
     player: Player,
     viewModel: VideoViewModel,
     pipHelper: PiPHelper,
-    aspectRatio: Float,
-    sourceRect: Rect,
     modifier: Modifier = Modifier,
-    pipActive: Boolean = PiPHelper.active.value
+    pipActive: Boolean = PiPHelper.active.value,
+    enterPiP: () -> Unit
 ) {
     val surface = Platform.colorScheme().surface
     val onSurface = Platform.colorScheme().onSurface
@@ -71,9 +70,8 @@ fun ExtraControls(
             )
             PiPButton(
                 pipHelper = pipHelper,
-                aspectRatio = aspectRatio,
-                sourceRect = sourceRect,
-                color = onSurface
+                color = onSurface,
+                enterPiP = enterPiP
             )
         }
     }

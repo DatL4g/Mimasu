@@ -31,8 +31,9 @@
         <activity android:name=".MainActivity"
             android:visibleToInstantApps="true"
             android:launchMode="singleInstance"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:configChanges="orientation|smallestScreenSize|screenSize|screenLayout|keyboardHidden"
             android:supportsPictureInPicture="true"
+            android:resizeableActivity="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

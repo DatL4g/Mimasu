@@ -249,11 +249,12 @@ actual fun VideoScreen(onBack: () -> Unit) {
                 viewModel = videoViewModel,
                 pipHelper = pipHelper,
                 pipActive = pipActive,
-                aspectRatio = aspectRatio,
-                sourceRect = videoViewBounds,
                 modifier = Modifier
                     .padding(bottom = contentPadding.calculateBottomPadding())
-                    .align(Alignment.BottomCenter)
+                    .align(Alignment.BottomCenter),
+                enterPiP = {
+                    pipHelper.enter(aspectRatio, videoViewBounds)
+                }
             )
         }
     }
