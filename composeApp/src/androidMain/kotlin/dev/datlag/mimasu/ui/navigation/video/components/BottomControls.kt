@@ -50,8 +50,8 @@ fun BottomControls(
             val interactionSource = remember { MutableInteractionSource() }
             val isDragging by interactionSource.collectIsDraggedAsState()
             val enabled by state.enabled.collectAsStateWithLifecycle()
-            val position by state.contentPosition.collectAsStateWithLifecycle()
-            val duration by state.contentDuration.collectAsStateWithLifecycle()
+            val position by state.position.collectAsStateWithLifecycle()
+            val duration by state.duration.collectAsStateWithLifecycle()
             var progress by remember { mutableFloatStateOf(0F) }
             val progressForText by remember(progress, duration) {
                 derivedStateOf {

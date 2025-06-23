@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
 import androidx.compose.material.icons.automirrored.rounded.Logout
+import androidx.compose.material.icons.automirrored.rounded.Redo
+import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.automirrored.rounded.VolumeDown
 import androidx.compose.material.icons.automirrored.rounded.VolumeMute
 import androidx.compose.material.icons.automirrored.rounded.VolumeOff
@@ -179,6 +181,8 @@ data object MaterialSymbols {
     const val PIP = "pip"
     const val LINK = "link"
     const val LINK_OFF = "link_off"
+    const val REPLAY = "replay"
+    const val FORWARD_MEDIA = "forward_media"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -559,6 +563,8 @@ data object MaterialSymbols {
         name.equals(PIP, ignoreCase = true) -> Icons.Rounded.PictureInPicture
         name.equals(LINK, ignoreCase = true) -> Icons.Rounded.Link
         name.equals(LINK_OFF, ignoreCase = true) -> Icons.Rounded.LinkOff
+        name.equals(REPLAY, ignoreCase = true) -> Icons.AutoMirrored.Rounded.Undo
+        name.equals(FORWARD_MEDIA, ignoreCase = true) -> Icons.AutoMirrored.Rounded.Redo
         else -> null
     }
 

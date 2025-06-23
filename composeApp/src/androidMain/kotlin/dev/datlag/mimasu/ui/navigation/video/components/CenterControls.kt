@@ -26,10 +26,12 @@ import androidx.media3.common.util.UnstableApi
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.datlag.mimasu.common.mediumLargeContainerSize
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
 import dev.datlag.mimasu.ui.navigation.video.states.PlayPauseButtonState
+import dev.datlag.mimasu.ui.navigation.video.states.SeekState
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
@@ -40,6 +42,7 @@ import dev.datlag.tooling.compose.platform.shapes
 fun CenterControls(
     controlsState: ControlsState,
     state: PlayPauseButtonState,
+    seekState: SeekState,
     modifier: Modifier = Modifier,
     pipActive: Boolean = PiPHelper.active.value
 ) {
@@ -58,11 +61,34 @@ fun CenterControls(
         ) {
             val showPlay by state.showPlay.collectAsStateWithLifecycle()
             val enabled by state.isEnabled.collectAsStateWithLifecycle()
+            val seekBackEnabled by seekState.seekBackEnabled.collectAsStateWithLifecycle()
+            val seekForwardEnabled by seekState.seekForwardEnabled.collectAsStateWithLifecycle()
 
             IconButton(
                 modifier = Modifier
                     .size(
-                        IconButtonDefaults.largeContainerSize(
+                        IconButtonDefaults.mediumLargeContainerSize(
+                            IconButtonDefaults.IconButtonWidthOption.Narrow
+                        )
+                    ),
+                onClick = {
+                    seekState.seekBack()
+                },
+                shapes = IconButtonDefaults.shapes(),
+                colors = IconButtonDefaults.filledTonalIconButtonColors(),
+                enabled = seekBackEnabled
+            ) {
+                MaterialSymbols(
+                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+                    name = MaterialSymbols.REPLAY,
+                    contentDescription = null
+                )
+            }
+
+            IconButton(
+                modifier = Modifier
+                    .size(
+                        IconButtonDefaults.mediumLargeContainerSize(
                             IconButtonDefaults.IconButtonWidthOption.Wide
                         )
                     ),
@@ -74,7 +100,7 @@ fun CenterControls(
                 enabled = enabled
             ) {
                 MaterialSymbols(
-                    modifier = Modifier.size(IconButtonDefaults.largeIconSize),
+                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
                     name = if (showPlay) {
                         MaterialSymbols.PLAY_ARROW
                     } else {
@@ -82,6 +108,27 @@ fun CenterControls(
                     },
                     contentDescription = null,
                     filled = true
+                )
+            }
+
+            IconButton(
+                modifier = Modifier
+                    .size(
+                        IconButtonDefaults.mediumLargeContainerSize(
+                            IconButtonDefaults.IconButtonWidthOption.Narrow
+                        )
+                    ),
+                onClick = {
+                    seekState.seekForward()
+                },
+                shapes = IconButtonDefaults.shapes(),
+                colors = IconButtonDefaults.filledTonalIconButtonColors(),
+                enabled = seekForwardEnabled
+            ) {
+                MaterialSymbols(
+                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+                    name = MaterialSymbols.FORWARD_MEDIA,
+                    contentDescription = null
                 )
             }
         }

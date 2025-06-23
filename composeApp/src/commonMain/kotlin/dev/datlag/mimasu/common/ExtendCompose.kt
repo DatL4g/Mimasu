@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -27,6 +28,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
@@ -41,6 +44,7 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.FluentMaterials
 import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.datlag.mimasu.LocalDarkMode
+import dev.datlag.mimasu.ui.custom.MediumLargeIconButtonTokens
 import dev.datlag.tooling.Platform
 import kotlin.math.abs
 import kotlin.math.absoluteValue
@@ -352,4 +356,20 @@ fun FontFamily.toExpressiveTypography(): Typography {
             )
         )
     }
+}
+
+fun IconButtonDefaults.mediumLargeContainerSize(
+    widthOption: IconButtonDefaults.IconButtonWidthOption = IconButtonDefaults.IconButtonWidthOption.Uniform
+): DpSize {
+    val horizontalSpace = when (widthOption) {
+        IconButtonDefaults.IconButtonWidthOption.Narrow -> MediumLargeIconButtonTokens.NarrowLeadingSpace + MediumLargeIconButtonTokens.NarrowTrailingSpace
+        IconButtonDefaults.IconButtonWidthOption.Uniform -> MediumLargeIconButtonTokens.UniformLeadingSpace + MediumLargeIconButtonTokens.UniformTrailingSpace
+        IconButtonDefaults.IconButtonWidthOption.Wide -> MediumLargeIconButtonTokens.WideLeadingSpace + MediumLargeIconButtonTokens.WideTrailingSpace
+        else -> 0.dp
+    }
+
+    return DpSize(
+        width = MediumLargeIconButtonTokens.IconSize + horizontalSpace,
+        height = MediumLargeIconButtonTokens.ContainerHeight
+    )
 }

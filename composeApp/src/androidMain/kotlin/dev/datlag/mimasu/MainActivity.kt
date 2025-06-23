@@ -72,7 +72,7 @@ class MainActivity : AdActivity() {
                 di = di,
                 typography = Font.manrope.toExpressiveTypography(),
                 fetchingContent = {
-                    PlatformText("Fetching Config, please wait")
+                    // ToDo()
                 },
                 failureContent = {
                     PlatformText("Report Failure: $it")

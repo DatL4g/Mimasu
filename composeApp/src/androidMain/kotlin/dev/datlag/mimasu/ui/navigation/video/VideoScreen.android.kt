@@ -64,6 +64,7 @@ import dev.datlag.mimasu.ui.navigation.video.states.rememberControlsState
 import dev.datlag.mimasu.ui.navigation.video.states.rememberPlayPauseButtonState
 import dev.datlag.mimasu.ui.navigation.video.states.rememberPresentationState
 import dev.datlag.mimasu.ui.navigation.video.states.rememberProgressState
+import dev.datlag.mimasu.ui.navigation.video.states.rememberSeekState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import kotlin.math.max
@@ -79,6 +80,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
     val controlsState = rememberControlsState()
     val progressState = rememberProgressState(playerWrapper)
     val playPauseState = rememberPlayPauseButtonState(playerWrapper)
+    val seekState = rememberSeekState(playerWrapper)
     val isCasting by playerWrapper.usingCastPlayer.collectAsStateWithLifecycle()
     val videoSize by presentationState.videoSizeDp.collectAsStateWithLifecycle()
     val aspectRatio = remember(videoSize) {
@@ -236,6 +238,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
             CenterControls(
                 controlsState = controlsState,
                 state = playPauseState,
+                seekState = seekState,
                 pipActive = pipActive,
                 modifier = Modifier
                     .fillMaxWidth()
