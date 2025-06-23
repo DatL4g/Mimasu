@@ -40,6 +40,8 @@ import dev.datlag.mimasu.composeapp.generated.resources.home_series
 import dev.datlag.mimasu.composeapp.generated.resources.home_today
 import dev.datlag.mimasu.composeapp.generated.resources.home_trending
 import dev.datlag.mimasu.composeapp.generated.resources.home_week
+import dev.datlag.mimasu.composeapp.generated.resources.home_your_movies
+import dev.datlag.mimasu.composeapp.generated.resources.home_your_series
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.TV
@@ -59,7 +61,6 @@ import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
-import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
 import org.jetbrains.compose.resources.stringResource
 
@@ -97,34 +98,38 @@ fun Home(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val bookmarked = firebaseViewModel.bookmarkedShows.collectAsLazyPagingItems()
-                    val pagerState = rememberPagerState { bookmarked.itemCount }
 
                     Text(
                         modifier = Modifier.padding(horizontal = 16.dp),
-                        text = stringResource(Res.string.home_series),
+                        text = stringResource(Res.string.home_your_series),
                         style = Platform.typography().headlineSmall,
-                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1
                     )
-                    HorizontalPager(
-                        state = pagerState,
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                        pageSpacing = 8.dp
-                    ) { page ->
-                        val show = bookmarked[page]
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp)
+                    ) {
+                        items(bookmarked.itemCount) { index ->
+                            val show = bookmarked[index]
 
-                        ShowPager(
-                            show = show,
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
+                            ShowCard(show) {
                                 onShowClicked(it.asCommon())
                             }
-                        )
+                        }
+                        when {
+                            bookmarked.loadState.refresh is LoadState.Loading -> {
+                                items(5) {
+                                    ShowCard(show = null)
+                                }
+                            }
+                            bookmarked.loadState.append is LoadState.Loading -> {
+                                items(3) {
+                                    ShowCard(show = null)
+                                }
+                            }
+                        }
                     }
-                    PagerWormIndicator(
-                        pagerState = pagerState,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
                 }
             }
         }
@@ -137,33 +142,41 @@ fun Home(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val bookmarked = firebaseViewModel.bookmarkedMovies.collectAsLazyPagingItems()
-                    val pagerState = rememberPagerState { bookmarked.itemCount }
 
                     Text(
                         modifier = Modifier.padding(horizontal = 16.dp),
-                        text = stringResource(Res.string.home_movies),
+                        text = stringResource(Res.string.home_your_movies),
                         style = Platform.typography().headlineSmall,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1
                     )
-                    HorizontalPager(
-                        state = pagerState,
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                        pageSpacing = 8.dp
-                    ) { page ->
-                        val movie = bookmarked[page]
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp)
+                    ) {
+                        items(bookmarked.itemCount) { index ->
+                            val movie = bookmarked[index]
 
-                        MoviePager(
-                            movie = movie,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            onMovieClicked(it.asCommon())
+                            MovieCard(
+                                detailed = movie
+                            ) {
+                                onMovieClicked(it.asCommon())
+                            }
+                        }
+                        when {
+                            bookmarked.loadState.refresh is LoadState.Loading -> {
+                                items(5) {
+                                    MovieCard(detailed = null)
+                                }
+                            }
+                            bookmarked.loadState.append is LoadState.Loading -> {
+                                items(3) {
+                                    MovieCard(detailed = null)
+                                }
+                            }
                         }
                     }
-                    PagerWormIndicator(
-                        pagerState = pagerState,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
                 }
             }
         }
@@ -203,7 +216,6 @@ fun Home(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = stringResource(Res.string.home_people),
                     style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1
                 )
                 LazyRow(
@@ -253,7 +265,6 @@ fun Home(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = stringResource(Res.string.home_series),
                     style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1
                 )
                 LazyRow(
@@ -271,12 +282,12 @@ fun Home(
                     when {
                         series.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                         series.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                     }
@@ -297,7 +308,6 @@ fun Home(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = stringResource(Res.string.home_movies),
                     style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1
                 )
                 LazyRow(

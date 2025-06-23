@@ -27,57 +27,78 @@ import coil3.compose.rememberAsyncImagePainter
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.material3.fade
 import com.eygraber.compose.placeholder.material3.placeholder
+import dev.datlag.mimasu.common.rememberNestedImagePainter
+import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.TV
+import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 
 @Composable
 fun ShowCard(
-    show: TV?,
+    tv: TV?,
     onClick: (TV) -> Unit = { }
 ) {
-    Card(
+    ShowCard(
+        onClick = { tv?.let(onClick) },
+        placeholder = tv == null,
+        id = tv?.id,
+        posters = tv.posters(fallbackShow = null),
+        name = tv?.name,
+        originalName = tv?.originalName,
+    )
+}
+
+@Composable
+fun ShowCard(
+    show: Show?,
+    onClick: (Show) -> Unit = { }
+) {
+    ShowCard(
         onClick = { show?.let(onClick) },
+        placeholder = show == null,
+        id = show?.id,
+        posters = show.posters(fallbackShow = null),
+        name = show?.name,
+        originalName = show?.originalName,
+    )
+}
+
+@Composable
+private fun ShowCard(
+    placeholder: Boolean,
+    id: Int?,
+    posters: Collection<String>,
+    name: String?,
+    originalName: String?,
+    onClick: () -> Unit = { }
+) {
+    Card(
+        onClick = onClick,
         modifier = Modifier.width(100.dp).height(220.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent
         )
     ) {
-        var loading by remember(show?.id) { mutableStateOf(true) }
+        var loading by remember(id) { mutableStateOf(true) }
 
         AsyncImage(
             modifier = Modifier
                 .size(width = 100.dp, height = 160.dp)
                 .clip(Platform.shapes().medium)
                 .placeholder(
-                    visible = loading,
+                    visible = placeholder || loading,
                     shape = Platform.shapes().medium,
                     highlight = PlaceholderHighlight.fade()
                 ),
-            model = show?.poster,
+            model = posters.firstOrNull(),
             contentScale = ContentScale.Crop,
-            error = rememberAsyncImagePainter(
-                model = show?.posterW500,
-                contentScale = ContentScale.Crop,
-                error = rememberAsyncImagePainter(
-                    model = show?.posterW400,
-                    contentScale = ContentScale.Crop,
-                    error = rememberAsyncImagePainter(
-                        model = show?.posterW300,
-                        contentScale = ContentScale.Crop,
-                        error = rememberAsyncImagePainter(
-                            model = show?.posterW200,
-                            contentScale = ContentScale.Crop,
-                            error = rememberAsyncImagePainter(
-                                model = show?.posterSource,
-                                contentScale = ContentScale.Crop
-                            )
-                        )
-                    )
-                )
+            error = rememberNestedImagePainter(
+                models = posters.drop(1),
+                contentScale = ContentScale.Crop
             ),
-            contentDescription = show?.name,
+            contentDescription = name,
             onLoading = {
                 loading = true
             },
@@ -93,11 +114,11 @@ fun ShowCard(
                 .padding(top = 8.dp)
                 .fillMaxWidth()
                 .placeholder(
-                    visible = show == null,
+                    visible = placeholder,
                     shape = Platform.shapes().small,
                     highlight = PlaceholderHighlight.fade()
                 ),
-            text = show?.name ?: show?.originalName ?: "",
+            text = name ?: originalName ?: "",
             maxLines = 2,
             textAlign = TextAlign.Center
         )

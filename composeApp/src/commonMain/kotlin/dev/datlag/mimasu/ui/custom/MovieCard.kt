@@ -47,6 +47,7 @@ import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
 import kotlinx.collections.immutable.ImmutableList
+import dev.datlag.mimasu.tmdb.model.details.Movie as DetailedMovie
 
 @Composable
 fun MovieCard(
@@ -54,25 +55,60 @@ fun MovieCard(
     modifier: Modifier = Modifier,
     onClick: (Movie) -> Unit = { }
 ) {
+    MovieCard(
+        onClick = { movie?.let(onClick) },
+        placeholder = movie == null,
+        modifier = modifier,
+        id = movie?.id,
+        posters = movie.posters(fallbackMovie = null),
+        title = movie?.title,
+        originalTitle = movie?.originalTitle
+    )
+}
+
+@Composable
+fun MovieCard(
+    detailed: DetailedMovie?,
+    modifier: Modifier = Modifier,
+    onClick: (DetailedMovie) -> Unit = { }
+) {
+    MovieCard(
+        onClick = { detailed?.let(onClick) },
+        placeholder = detailed == null,
+        modifier = modifier,
+        id = detailed?.id,
+        posters = detailed.posters(fallbackMovie = null),
+        title = detailed?.title,
+        originalTitle = detailed?.originalTitle
+    )
+}
+
+@Composable
+private fun MovieCard(
+    placeholder: Boolean,
+    id: Int?,
+    posters: Collection<String>,
+    title: String?,
+    originalTitle: String?,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = { }
+) {
     Card(
-        onClick = {
-            movie?.let(onClick)
-        },
+        onClick = onClick,
         modifier = modifier.width(100.dp).height(220.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent
         )
     ) {
-        val posters = remember(movie?.id) { movie.posters(fallbackMovie = null) }
-        var loading by remember(movie?.id) { mutableStateOf(true) }
+        var loading by remember(id) { mutableStateOf(true) }
 
         AsyncImage(
             modifier = Modifier
                 .size(width = 100.dp, height = 160.dp)
                 .clip(Platform.shapes().medium)
                 .placeholder(
-                    visible = loading,
+                    visible = placeholder || loading,
                     shape = Platform.shapes().medium,
                     highlight = PlaceholderHighlight.fade()
                 ),
@@ -88,7 +124,7 @@ fun MovieCard(
                     loading = false
                 }
             ),
-            contentDescription = movie?.title,
+            contentDescription = title,
             onLoading = {
                 loading = true
             },
@@ -102,11 +138,11 @@ fun MovieCard(
                 .padding(top = 8.dp)
                 .fillMaxWidth()
                 .placeholder(
-                    visible = movie == null,
+                    visible = placeholder,
                     shape = Platform.shapes().small,
                     highlight = PlaceholderHighlight.fade()
                 ),
-            text = movie?.title ?: movie?.originalTitle ?: "",
+            text = title ?: originalTitle ?: "",
             maxLines = 2,
             textAlign = TextAlign.Center,
             softWrap = true,

@@ -74,12 +74,12 @@ fun Series(
                     when {
                         airingToday.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                         airingToday.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                     }
@@ -116,12 +116,12 @@ fun Series(
                     when {
                         topRated.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                         topRated.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                     }
@@ -158,12 +158,12 @@ fun Series(
                     when {
                         onTheAir.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                         onTheAir.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                     }
@@ -200,12 +200,12 @@ fun Series(
                     when {
                         popular.loadState.refresh is LoadState.Loading -> {
                             items(5) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                         popular.loadState.append is LoadState.Loading -> {
                             items(3) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                     }

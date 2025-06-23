@@ -11,6 +11,8 @@
     <string name="home_people">Personen</string>
     <string name="home_series">Serien</string>
     <string name="home_movies">Filme</string>
+    <string name="home_your_series">Deine Serien</string>
+    <string name="home_your_movies">Deine Filme</string>
 
     <string name="home_extension_update_title">Neues Update</string>
     <string name="home_extension_update_text">Ein Update für die Erweiterung ist verfügbar, klicke zum installieren oder ansehen.</string>

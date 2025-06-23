@@ -110,13 +110,13 @@ fun SearchContent(
                         if (success != null) {
                             items(success.series.toImmutableList()) {
                                 ShowCard(
-                                    show = it,
+                                    tv = it,
                                     onClick = onShowClicked
                                 )
                             }
                         } else {
                             items(5) {
-                                ShowCard(null)
+                                ShowCard(tv = null)
                             }
                         }
                     }
