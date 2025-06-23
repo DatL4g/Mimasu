@@ -56,8 +56,7 @@ fun TimeWindowSelection(
             }
             Text(
                 text = stringResource(Res.string.home_today),
-                maxLines = 1,
-                style = Platform.typography().labelSmall
+                maxLines = 1
             )
         }
         ToggleButton(
@@ -80,8 +79,7 @@ fun TimeWindowSelection(
             }
             Text(
                 text = stringResource(Res.string.home_week),
-                maxLines = 1,
-                style = Platform.typography().labelSmall
+                maxLines = 1
             )
         }
     }

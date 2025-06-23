@@ -15,6 +15,9 @@ import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tmdb.repository.DetailsRepository
 import dev.datlag.tooling.safeSubSet
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -119,12 +122,13 @@ class FirebaseViewModel(
             val position = params.key ?: 0
             val pageSize = params.loadSize
 
-            val fromIndex = position
             val toIndex = (position + pageSize).coerceAtMost(tmdbIds.size)
-            val pageIds = tmdbIds.safeSubSet(fromIndex, toIndex)
+            val pageIds = tmdbIds.safeSubSet(position, toIndex)
 
-            val movies = pageIds.mapNotNull { id ->
-                detailsRepository.movie(id).getOrNull()
+            val movies = coroutineScope {
+                pageIds.map { id -> async {
+                    detailsRepository.movie(id).getOrNull()
+                } }.awaitAll().filterNotNull()
             }
 
             return LoadResult.Page(
@@ -151,12 +155,13 @@ class FirebaseViewModel(
             val position = params.key ?: 0
             val pageSize = params.loadSize
 
-            val fromIndex = position
             val toIndex = (position + pageSize).coerceAtMost(tmdbIds.size)
-            val pageIds = tmdbIds.safeSubSet(fromIndex, toIndex)
+            val pageIds = tmdbIds.safeSubSet(position, toIndex)
 
-            val shows = pageIds.mapNotNull { id ->
-                detailsRepository.show(id).getOrNull()
+            val shows = coroutineScope {
+                pageIds.map { id -> async {
+                    detailsRepository.show(id).getOrNull()
+                } }.awaitAll().filterNotNull()
             }
 
             return LoadResult.Page(
