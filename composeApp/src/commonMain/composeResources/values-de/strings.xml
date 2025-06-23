@@ -168,4 +168,6 @@
     <string name="update_extension_dialog_text_hint_text">Ein fehlgeschlagener oder unterbrochener Aktualisierungsvorgang kann dazu führen, dass die Erweiterung vorübergehend nicht mehr ordnungsgemäß funktioniert, bis die Aktualisierung erfolgreich abgeschlossen ist.</string>
     <string name="update_extension_dialog_confirm">Bestätigen</string>
     <string name="update_extension_dialog_cancel">Abbrechen</string>
+
+    <string name="feature_temporarily_disabled">Funktion vorübergehend deaktiviert.</string>
 </resources>

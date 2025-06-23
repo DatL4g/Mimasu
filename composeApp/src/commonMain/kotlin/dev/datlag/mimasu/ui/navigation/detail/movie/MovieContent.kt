@@ -6,11 +6,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
+import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.feature_temporarily_disabled
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieCast
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieCrew
@@ -19,12 +23,15 @@ import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieInfo
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieOverview
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MoviePosterContent
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieProduction
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable
 fun MovieContent(
     hazeState: HazeState,
     listState: LazyListState,
+    snackbarState: SnackbarHostState,
     movie: Movie,
     initial: CommonMovie?,
     padding: PaddingValues,
@@ -81,20 +88,35 @@ fun MovieContent(
             )
         }
         item {
+            val scope = rememberCoroutineScope()
+            val disabledText = stringResource(Res.string.feature_temporarily_disabled)
+
             MovieCast(
                 movie = movie,
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(bottom = 16.dp),
-                onClick = onCastClick
+                onClick = {
+                    scope.launch {
+                        snackbarState.showSnackbar(disabledText, withDismissAction = true)
+                    }
+                }
             )
         }
         item {
+            val scope = rememberCoroutineScope()
+            val disabledText = stringResource(Res.string.feature_temporarily_disabled)
+
             MovieCrew(
                 movie = movie,
                 modifier = Modifier
                     .fillParentMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 16.dp),
+                onClick = {
+                    scope.launch {
+                        snackbarState.showSnackbar(disabledText, withDismissAction = true)
+                    }
+                }
             )
         }
     }

@@ -17,6 +17,8 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -77,6 +79,7 @@ fun MovieDetail(
     )
     val haze = remember { HazeState() }
     val listState = rememberLazyListState()
+    val snackbarState = remember { SnackbarHostState() }
 
     BackHandler(enabled = true) {
         onBack()
@@ -103,6 +106,9 @@ fun MovieDetail(
                 movie = movieState.getOrNull(),
                 onWatchClick = onWatchClick
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarState)
         }
     ) { padding ->
         when (val current = movieState) {
@@ -126,6 +132,7 @@ fun MovieDetail(
             is MovieViewModel.State.Success -> MovieContent(
                 hazeState = haze,
                 listState = listState,
+                snackbarState = snackbarState,
                 movie = current.movie,
                 initial = initial,
                 padding = padding,

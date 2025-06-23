@@ -28,7 +28,8 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun MovieCrew(
     movie: Movie,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Movie.Credits.Crew) -> Unit
 ) {
     val crew = remember(movie.id) { movie.credits?.crew.orEmpty().toImmutableList() }
 
@@ -53,7 +54,9 @@ fun MovieCrew(
                     MovieCharacterCard(
                         crew = it,
                         modifier = Modifier.width(100.dp).height(200.dp),
-                        onClick = { }
+                        onClick = {
+                            onClick(it)
+                        }
                     )
                 }
             }

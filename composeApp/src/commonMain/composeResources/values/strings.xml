@@ -162,4 +162,6 @@
     <string name="account_verification_text">Please verify your account within 30 days or it will be deleted, the process may take a while.</string>
     <string name="account_verification_send">Send Verification</string>
     <string name="account_verification_check">Check Status</string>
+
+    <string name="feature_temporarily_disabled">Feature temporarily disabled.</string>
 </resources>
