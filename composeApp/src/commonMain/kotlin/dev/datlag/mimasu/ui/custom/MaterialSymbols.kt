@@ -23,6 +23,7 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.CloudDownload
+import androidx.compose.material.icons.rounded.CloudOff
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Download
@@ -199,6 +200,7 @@ data object MaterialSymbols {
     const val CLOUD_DOWNLOAD = "cloud_download"
     const val SETTINGS_ETHERNET = "settings_ethernet"
     const val PLAY_CIRCLE = "play_circle"
+    const val CLOUD_OFF = "cloud_off"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -635,6 +637,7 @@ data object MaterialSymbols {
         name.equals(CLOUD_DOWNLOAD, ignoreCase = true) -> Icons.Rounded.CloudDownload
         name.equals(SETTINGS_ETHERNET, ignoreCase = true) -> Icons.Rounded.SettingsEthernet
         name.equals(PLAY_CIRCLE, ignoreCase = true) -> Icons.Rounded.PlayCircleOutline
+        name.equals(CLOUD_OFF, ignoreCase = true) -> Icons.Rounded.CloudOff
         else -> null
     }
 

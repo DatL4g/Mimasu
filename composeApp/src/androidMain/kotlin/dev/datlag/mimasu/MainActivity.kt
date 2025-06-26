@@ -71,12 +71,6 @@ class MainActivity : AdActivity() {
             App(
                 di = di,
                 typography = Font.manrope.toExpressiveTypography(),
-                failureContent = {
-                    PlatformText("Report Failure: $it")
-                },
-                content = {
-                    Navigation()
-                }
             )
         }
 

@@ -16,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.module.NetworkModule
+import dev.datlag.mimasu.ui.custom.FailureConfigState
 import dev.datlag.mimasu.ui.custom.FetchConfigState
+import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.mimasu.ui.theme.dynamicDark
 import dev.datlag.mimasu.ui.theme.dynamicLight
@@ -37,9 +39,7 @@ val LocalDarkMode = compositionLocalOf<Boolean> { error("No dark mode state prov
 fun App(
     di: DI,
     typography: Typography = Platform.typography(),
-    systemDarkTheme: Boolean = isSystemInDarkTheme() || Platform.rememberIsTv(anyOS = true),
-    failureContent: @Composable (NetworkModule.Config.Failure) -> Unit = { },
-    content: @Composable () -> Unit
+    systemDarkTheme: Boolean = isSystemInDarkTheme() || Platform.rememberIsTv(anyOS = true)
 ) = withDI(di) {
     CompositionLocalProvider(
         LocalDarkMode provides systemDarkTheme
@@ -67,8 +67,8 @@ fun App(
 
                     when (val current = config) {
                         is NetworkModule.Config.Fetching -> FetchConfigState()
-                        is NetworkModule.Config.Failure -> failureContent(current)
-                        is NetworkModule.Config.Success -> content()
+                        is NetworkModule.Config.Failure -> FailureConfigState(current)
+                        is NetworkModule.Config.Success -> Navigation()
                     }
                 }
             }

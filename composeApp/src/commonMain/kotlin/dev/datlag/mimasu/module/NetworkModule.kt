@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
 import okio.FileSystem
 import org.kodein.di.DI
@@ -116,17 +117,17 @@ data object NetworkModule {
         startedFetching = LocalDateTime.now().toEpochMilliseconds()
         _config.update { Config.Fetching }
 
-        val tmdb = remoteService.getString(Config.TMDB_KEY)?.ifBlank { null }
+        val tmdb = remoteService.getStringResult(Config.TMDB_KEY)
         startedFetching = 0L
 
         _config.update {
-            if (tmdb.isNullOrBlank()) {
-                Config.Failure.Fetching
+            if (tmdb.isFailure) {
+                Config.Failure.Fetching(tmdb.exceptionOrNull())
             } else {
-                val tolgee = remoteService.getString(Config.TOLGEE_KEY)?.ifBlank { null }
+                val tolgee = remoteService.getNullableString(Config.TOLGEE_KEY)?.ifBlank { null }
 
                 Config.Success(
-                    tmdb = tmdb,
+                    tmdb = tmdb.getOrNull() ?: return@update Config.Failure.Fetching(),
                     tolgee = tolgee
                 )
             }
@@ -163,7 +164,9 @@ data object NetworkModule {
             data object Initialize : Failure
 
             @Serializable
-            data object Fetching : Failure
+            data class Fetching(
+                @Transient val throwable: Throwable? = null
+            ) : Failure
         }
 
         @Serializable

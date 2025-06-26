@@ -21,20 +21,29 @@ data class FirebaseRemoteConfigService(
         }
     }.also { it.fetchAndActivate() }
 
-    suspend inline fun <reified T> get(key: String, defaultValue: T): T = suspendCatching<T> {
+    suspend inline fun <reified T> get(key: String, defaultValue: T): Result<T> = suspendCatching<T> {
+        config()[key] ?: defaultValue
+    }.recover { defaultValue }
+
+    suspend inline fun <reified T> getOrNull(key: String): Result<T> = suspendCatching {
         config()[key]
-    }.getOrNull() ?: defaultValue
+    }
 
-    suspend inline fun <reified T> getOrNull(key: String): T? = suspendCatching<T> {
-        config()[key]
-    }.getOrNull()
+    suspend fun getBoolean(key: String, defaultValue: Boolean): Boolean = get(key, defaultValue).getOrDefault(defaultValue)
+    suspend fun getLong(key: String, defaultValue: Long): Long = get(key, defaultValue).getOrDefault(defaultValue)
+    suspend fun getString(key: String, defaultValue: String) = get(key, defaultValue).getOrDefault(defaultValue)
 
-    suspend fun getBoolean(key: String, defaultValue: Boolean): Boolean = get(key, defaultValue)
-    suspend fun getLong(key: String, defaultValue: Long): Long = get(key, defaultValue)
-    suspend fun getString(key: String, defaultValue: String) = get(key, defaultValue)
+    suspend fun getBoolean(key: String): Boolean? = getOrNull<Boolean?>(key).getOrNull()
+    suspend fun getLong(key: String): Long? = getOrNull<Long?>(key).getOrNull()
 
-    suspend fun getBoolean(key: String): Boolean? = getOrNull(key)
-    suspend fun getLong(key: String): Long? = getOrNull(key)
-    suspend fun getString(key: String): String? = getOrNull<String?>(key)?.ifBlank { null }
+    suspend fun getStringResult(key: String): Result<String> = getOrNull<String?>(key).mapCatching {
+        if (it.isNullOrBlank()) {
+            throw NullPointerException("Remote String for '$key' is null or empty")
+        } else {
+            it
+        }
+    }
+
+    suspend fun getNullableString(key: String) = getOrNull<String?>(key).getOrNull()
 
 }
