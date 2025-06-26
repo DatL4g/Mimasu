@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import com.mayakapps.kache.InMemoryKache
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Details
+import dev.datlag.mimasu.tmdb.common.async
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tmdb.model.details.Person
 import dev.datlag.mimasu.tmdb.model.details.Season
@@ -49,7 +50,7 @@ class DetailsRepository(
 
     suspend fun movie(id: Int): Result<Movie?> = withNonEmptyContext(context) {
         suspendCatching {
-            movieKache.getOrPut(id) {
+            movieKache.async(id) {
                 val response = details.movie(
                     apiKey = apiKey,
                     id = id,
@@ -68,7 +69,7 @@ class DetailsRepository(
 
     suspend fun person(id: Int): Result<Person?> = withNonEmptyContext(context) {
         suspendCatching {
-            personKache.getOrPut(id) {
+            personKache.async(id) {
                 val response = details.person(
                     apiKey = apiKey,
                     id = id,
@@ -82,7 +83,7 @@ class DetailsRepository(
 
     suspend fun show(id: Int): Result<Show?> = withNonEmptyContext(context) {
         suspendCatching {
-            showKache.getOrPut(id) {
+            showKache.async(id) {
                 val response = details.show(
                     apiKey = apiKey,
                     id = id,
@@ -101,7 +102,7 @@ class DetailsRepository(
 
     suspend fun showSeason(showId: Int, seasonId: Int): Result<Season?> = withNonEmptyContext(context) {
         suspendCatching {
-            showSeasonKache.getOrPut(
+            showSeasonKache.async(
                 ShowSeasonCacheKey(
                     showId = showId,
                     seasonId = seasonId

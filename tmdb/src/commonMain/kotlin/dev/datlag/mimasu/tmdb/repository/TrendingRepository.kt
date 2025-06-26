@@ -7,6 +7,7 @@ import com.mayakapps.kache.KacheStrategy
 import dev.datlag.mimasu.core.typeOf
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Trending
+import dev.datlag.mimasu.tmdb.common.async
 import dev.datlag.mimasu.tmdb.model.PagedResponse
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.People
@@ -90,7 +91,7 @@ data class TrendingRepository internal constructor(
         window: TimeWindow
     ): Result<PagedResponse<T>?> = when {
         T::class typeOf Movie::class -> suspendCatching {
-            movieCache(window).getOrPut(page) {
+            movieCache(window).async(page) {
                 val response = trending.movies(
                     apiKey = apiKey,
                     window = window,
@@ -102,7 +103,7 @@ data class TrendingRepository internal constructor(
             }
         }
         T::class typeOf TV::class -> suspendCatching {
-            tvCache(window).getOrPut(page) {
+            tvCache(window).async(page) {
                 val response = trending.tv(
                     apiKey = apiKey,
                     window = window,
@@ -114,7 +115,7 @@ data class TrendingRepository internal constructor(
             }
         }
         T::class typeOf People::class -> suspendCatching {
-            peopleCache(window).getOrPut(page) {
+            peopleCache(window).async(page) {
                 val response = trending.people(
                     apiKey = apiKey,
                     window = window,

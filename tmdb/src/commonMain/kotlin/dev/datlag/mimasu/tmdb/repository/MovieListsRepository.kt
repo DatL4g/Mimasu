@@ -6,6 +6,7 @@ import com.mayakapps.kache.InMemoryKache
 import com.mayakapps.kache.KacheStrategy
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.MovieLists
+import dev.datlag.mimasu.tmdb.common.async
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.PagedResponse
 import dev.datlag.sekret.Secret
@@ -61,7 +62,7 @@ class MovieListsRepository(
         page: Int,
         type: Type
     ): Result<PagedResponse<Movie>?> = suspendCatching {
-        cache(type).getOrPut(page) {
+        cache(type).async(page) {
             val response = when (type) {
                 is Type.NowPlaying -> api.nowPlaying(
                     apiKey = apiKey,

@@ -6,6 +6,7 @@ import com.mayakapps.kache.InMemoryKache
 import com.mayakapps.kache.KacheStrategy
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.TvSeriesLists
+import dev.datlag.mimasu.tmdb.common.async
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.PagedResponse
 import dev.datlag.mimasu.tmdb.model.TV
@@ -63,7 +64,7 @@ class TvSeriesListsRepository(
         page: Int,
         type: Type
     ): Result<PagedResponse<TV>?> = suspendCatching {
-        cache(type).getOrPut(page) {
+        cache(type).async(page) {
             val response = when (type) {
                 is Type.AiringToday -> api.airingToday(
                     apiKey = apiKey,
