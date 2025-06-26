@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.common.isInPiPMode
 import dev.datlag.mimasu.common.toExpressiveTypography
@@ -62,7 +63,7 @@ class MainActivity : AdActivity() {
         val di = this.di ?: return exit("Could not find dependency injection.")
         val nullableAdManager by di.instanceOrNull<AdManager>()
         (nullableAdManager ?: AdManager(this)).requestConsentUpdate(this)
-        ExtensionInitializer.rebindIfNoneAvailable(this)
+        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
         PiPHelper.setActive(this.isInPiPMode())
 
         setContent {
@@ -93,28 +94,28 @@ class MainActivity : AdActivity() {
             registerReceiver(appInstallReceiver, intentFilter)
         }
 
-        ExtensionInitializer.rebindIfNoneAvailable(this)
+        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onResume() {
         super.onResume()
 
-        ExtensionInitializer.rebindIfNoneAvailable(this)
+        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onPause() {
         super.onPause()
 
-        ExtensionInitializer.rebindIfNoneAvailable(this)
+        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onRestart() {
         super.onRestart()
 
-        ExtensionInitializer.rebindIfNoneAvailable(this)
+        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
         PiPHelper.setActive(this.isInPiPMode())
     }
 

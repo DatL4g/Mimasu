@@ -5,6 +5,9 @@ import androidx.annotation.Keep
 import androidx.startup.Initializer
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @Keep
 class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
@@ -12,7 +15,11 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
     override fun create(context: Context): State {
         return State(
             updateProvider = UpdateProviderAndroid(context),
-            showProviderAndroid = ShowProviderAndroid(context)
+            showProviderAndroid = ShowProviderAndroid(context).also {
+                GlobalScope.launch {
+                    it.initialize()
+                }
+            }
         ).also { result ->
             state.update { result }
         }
@@ -53,14 +60,22 @@ class ExtensionInitializer : Initializer<ExtensionInitializer.State> {
             nullableShowProvider()?.unbind(context)
         }
 
-        fun rebindAll(context: Context) {
+        suspend fun initialize(context: Context) {
+            getShowProvider(context).initialize()
+        }
+
+        suspend fun rebindAll(context: Context) {
             nullableUpdateProvider()?.rebind(context)
             nullableShowProvider()?.rebind(context)
         }
 
-        fun rebindIfNoneAvailable(context: Context) {
+        suspend fun rebindIfNoneAvailable(context: Context) {
             nullableUpdateProvider()?.rebindIfUnavailable(context)
             nullableShowProvider()?.rebindIfNoneAvailable(context)
+        }
+
+        fun rebindIfNoneAvailable(scope: CoroutineScope, context: Context) = scope.launch {
+            rebindIfNoneAvailable(context)
         }
     }
 }

@@ -33,7 +33,7 @@ actual fun rememberShowAvailability(
         ExtensionInitializer.getShowProvider(context)
     }
 
-    SideEffect {
+    LaunchedEffect(Unit) {
         (showProvider as? ShowProviderAndroid)?.rebindIfNoneAvailable(context)
     }
 
@@ -70,7 +70,7 @@ actual fun rememberEpisodeStream(
         ExtensionInitializer.getShowProvider(context)
     }
 
-    SideEffect {
+    LaunchedEffect(Unit) {
         (showProvider as? ShowProviderAndroid)?.rebindIfNoneAvailable(context)
     }
 

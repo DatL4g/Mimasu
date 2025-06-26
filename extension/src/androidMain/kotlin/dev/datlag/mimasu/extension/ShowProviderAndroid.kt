@@ -4,21 +4,31 @@ import android.content.Context
 import dev.datlag.mimasu.extension.model.Show
 import dev.datlag.mimasu.extension.service.ShowService
 import dev.datlag.tooling.async.suspendCatching
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
-class ShowProviderAndroid(context: Context) : ShowProvider {
+class ShowProviderAndroid(private val context: Context) : ShowProvider {
 
-    private var extensionPackages = AIDLService.extensions(
-        packageManager = context.packageManager,
-        action = ShowService.ACTION
-    )
+    private var extensionPackages = emptySet<String>()
 
     private var services = bind(context)
 
     private val boundServices: List<ShowService>
         get() = services.filter { it.isBound }
+
+    override suspend fun initialize() {
+        if (extensionPackages.isEmpty()) {
+            extensionPackages = withContext(Dispatchers.IO) {
+                AIDLService.extensions(
+                    packageManager = context.packageManager,
+                    action = ShowService.ACTION
+                )
+            }
+        }
+    }
 
     fun unbind(context: Context): Boolean {
         return boundServices.map {
@@ -32,17 +42,23 @@ class ShowProviderAndroid(context: Context) : ShowProvider {
         }
     }
 
-    fun rebind(context: Context) {
-        unbind(context)
+    suspend fun rebind(context: Context) {
+        withContext(Dispatchers.Main) {
+            unbind(context)
+        }
 
-        extensionPackages = AIDLService.extensions(
-            packageManager = context.packageManager,
-            action = ShowService.ACTION
-        )
-        services = bind(context)
+        extensionPackages = withContext(Dispatchers.IO) {
+            AIDLService.extensions(
+                packageManager = context.packageManager,
+                action = ShowService.ACTION
+            )
+        }
+        services = withContext(Dispatchers.Main) {
+            bind(context)
+        }
     }
 
-    fun rebindIfNoneAvailable(context: Context) {
+    suspend fun rebindIfNoneAvailable(context: Context) {
         if (boundServices.isEmpty()) {
             rebind(context)
         }

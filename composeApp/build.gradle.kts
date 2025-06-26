@@ -166,8 +166,8 @@ android {
         targetSdk = 36
 
         applicationId = "dev.datlag.mimasu"
-        versionCode = 104
-        versionName = "1.0.4"
+        versionCode = 110
+        versionName = "1.1.0"
 
         multiDexEnabled = true
 

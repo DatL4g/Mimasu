@@ -92,7 +92,6 @@ class App : MultiDexApplication(), DIAware {
         applicationScope.launchIO {
             NetworkModule.fetchConfig(config)
         }
-
     }
 
     override fun onTerminate() {

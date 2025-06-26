@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.extension
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -131,7 +132,8 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
         /**
          * Get all available packageNames implementing the action.
          */
-        fun extensions(packageManager: PackageManager, action: String): Set<String> {
+        @SuppressLint("WrongConstant")
+        suspend fun extensions(packageManager: PackageManager, action: String): Set<String> {
             val intent = Intent(action)
             val resolveInfoList = dev.datlag.tooling.scopeCatching {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -186,6 +188,7 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
 
         fun extensionInstalled(context: Context): Boolean = applicationInfo(EXTENSION_PACKAGE, context.packageManager) != null
 
+        @SuppressLint("WrongConstant")
         fun openExtension(context: Context) {
             fun activities(intent: Intent): List<ResolveInfo> {
                 val resolved = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
