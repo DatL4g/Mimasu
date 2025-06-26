@@ -170,4 +170,10 @@
     <string name="update_extension_dialog_cancel">Abbrechen</string>
 
     <string name="feature_temporarily_disabled">Funktion vorübergehend deaktiviert.</string>
+
+    <string name="fetch_title">App wird vorbereitet</string>
+    <string name="fetch_description">Wir richten alles für dich ein. Das dauert nur einen Moment.</string>
+    <string name="fetch_loading_data">Deine Daten werden geladen.</string>
+    <string name="fetch_connecting_services">Stellt Verbindung zu Diensten her.</string>
+    <string name="fetch_initialize_app">Initialisiert und startet App.</string>
 </resources>

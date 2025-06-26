@@ -71,9 +71,6 @@ class MainActivity : AdActivity() {
             App(
                 di = di,
                 typography = Font.manrope.toExpressiveTypography(),
-                fetchingContent = {
-                    // ToDo()
-                },
                 failureContent = {
                     PlatformText("Report Failure: $it")
                 },

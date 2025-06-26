@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.ui.custom
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.rounded.Cake
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.CloudDownload
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Download
@@ -55,12 +57,14 @@ import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonPinCircle
 import androidx.compose.material.icons.rounded.PictureInPicture
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.PlayCircleOutline
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RequestQuote
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.SettingsEthernet
 import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material.icons.rounded.Translate
@@ -71,7 +75,15 @@ import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material.icons.rounded.Work
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
@@ -103,6 +115,7 @@ import dev.tclement.fonticons.VariableIconFont
 import dev.tclement.fonticons.createVariableIconFont
 import dev.tclement.fonticons.painter.rememberFontIconPainter
 import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.FontResource
 import org.jetbrains.compose.resources.getSystemResourceEnvironment
@@ -183,6 +196,9 @@ data object MaterialSymbols {
     const val LINK_OFF = "link_off"
     const val REPLAY = "replay"
     const val FORWARD_MEDIA = "forward_media"
+    const val CLOUD_DOWNLOAD = "cloud_download"
+    const val SETTINGS_ETHERNET = "settings_ethernet"
+    const val PLAY_CIRCLE = "play_circle"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -454,6 +470,57 @@ data object MaterialSymbols {
         fallback = fallback
     )
 
+    @RedrawRequired
+    @Composable
+    fun forcedRedraw(
+        name: String,
+        contentDescription: String?,
+        modifier: Modifier = Modifier,
+        tint: Color = Platform.localContentColor(),
+        fallback: ImageVector? = fallbackFromName(name),
+        maxRedraws: Int = 15
+    ) {
+        var triggerRedraw by remember { mutableStateOf(false) }
+        var redrawn by remember { mutableIntStateOf(0) }
+
+        Box(contentAlignment = Alignment.Center) {
+            MaterialSymbols(
+                name = name,
+                contentDescription = contentDescription,
+                modifier = modifier,
+                tint = if (redrawn < maxRedraws) {
+                    // Force redraw by using different tinting, but both are transparent
+                    if (redrawn % 2 == 0) {
+                        Color(0x00FFFFFF)
+                    } else {
+                        Color(0x00000000)
+                    }
+                } else tint,
+                fallback = fallback
+            )
+            if (redrawn < maxRedraws && fallback != null) {
+                PlatformIcon(
+                    imageVector = fallback,
+                    contentDescription = contentDescription,
+                    modifier = modifier,
+                    tint = tint
+                )
+            }
+        }
+
+        SideEffect {
+            if (redrawn < maxRedraws - 1) {
+                triggerRedraw = true
+            }
+        }
+
+        LaunchedEffect(triggerRedraw) {
+            delay(200)
+            redrawn++
+            triggerRedraw = false
+        }
+    }
+
     @Composable
     fun rememberPainter(
         name: String,
@@ -565,6 +632,9 @@ data object MaterialSymbols {
         name.equals(LINK_OFF, ignoreCase = true) -> Icons.Rounded.LinkOff
         name.equals(REPLAY, ignoreCase = true) -> Icons.AutoMirrored.Rounded.Undo
         name.equals(FORWARD_MEDIA, ignoreCase = true) -> Icons.AutoMirrored.Rounded.Redo
+        name.equals(CLOUD_DOWNLOAD, ignoreCase = true) -> Icons.Rounded.CloudDownload
+        name.equals(SETTINGS_ETHERNET, ignoreCase = true) -> Icons.Rounded.SettingsEthernet
+        name.equals(PLAY_CIRCLE, ignoreCase = true) -> Icons.Rounded.PlayCircleOutline
         else -> null
     }
 
@@ -657,4 +727,9 @@ data object MaterialSymbols {
         crew.isNonBinary -> FACE_2
         else -> FACE_5
     }
+
+    @RequiresOptIn(message = "Only use this if redraw process is mandatory for example on app start.")
+    @Retention(AnnotationRetention.BINARY)
+    @Target(AnnotationTarget.FUNCTION)
+    annotation class RedrawRequired
 }

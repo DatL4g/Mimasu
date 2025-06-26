@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.module.NetworkModule
+import dev.datlag.mimasu.ui.custom.FetchConfigState
 import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.mimasu.ui.theme.dynamicDark
 import dev.datlag.mimasu.ui.theme.dynamicLight
@@ -37,7 +38,6 @@ fun App(
     di: DI,
     typography: Typography = Platform.typography(),
     systemDarkTheme: Boolean = isSystemInDarkTheme() || Platform.rememberIsTv(anyOS = true),
-    fetchingContent: @Composable () -> Unit = { },
     failureContent: @Composable (NetworkModule.Config.Failure) -> Unit = { },
     content: @Composable () -> Unit
 ) = withDI(di) {
@@ -66,7 +66,7 @@ fun App(
                     }
 
                     when (val current = config) {
-                        is NetworkModule.Config.Fetching -> fetchingContent()
+                        is NetworkModule.Config.Fetching -> FetchConfigState()
                         is NetworkModule.Config.Failure -> failureContent(current)
                         is NetworkModule.Config.Success -> content()
                     }

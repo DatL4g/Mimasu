@@ -164,4 +164,10 @@
     <string name="account_verification_check">Check Status</string>
 
     <string name="feature_temporarily_disabled">Feature temporarily disabled.</string>
+
+    <string name="fetch_title">App is getting ready</string>
+    <string name="fetch_description">We are setting everything up for you. This will only take a moment.</string>
+    <string name="fetch_loading_data">Your data is being loaded.</string>
+    <string name="fetch_connecting_services">Connecting to services.</string>
+    <string name="fetch_initialize_app">Initializing and starting app.</string>
 </resources>
