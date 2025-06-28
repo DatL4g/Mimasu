@@ -50,7 +50,7 @@ fun NavigationSuiteScope.homeItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun HomeNavigation(
-    navigateToVideo: (VideoViewModel.WatchData) -> Unit,
+    navigateToVideo: (VideoViewModel.WatchType) -> Unit,
     onLogout: () -> Unit
 ) {
     val controller = rememberListDetailController<Any, Navigation.Home.Detail, Navigation.Home.Extra>()

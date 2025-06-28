@@ -24,7 +24,8 @@ import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 @Composable
 fun TopControls(
     state: ControlsState,
-    data: VideoViewModel.WatchData?,
+    isInCompactMode: Boolean,
+    watchType: VideoViewModel.WatchType?,
     modifier: Modifier = Modifier,
     pipActive: Boolean = PiPHelper.active.value,
     onBack: () -> Unit
@@ -33,7 +34,7 @@ fun TopControls(
 
     AnimatedVisibility(
         modifier = modifier,
-        visible = visibility && !pipActive,
+        visible = (visibility || isInCompactMode) && !pipActive,
         enter = slideInVertically() + fadeIn(),
         exit = slideOutVertically() + fadeOut()
     ) {
@@ -49,15 +50,19 @@ fun TopControls(
                 }
             },
             title = {
-                Text(text = data?.title ?: data?.groupTitle ?: data?.subTitle ?: "")
+                Text(text = watchType?.title ?: "")
             },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
-                scrolledContainerColor = Color.Transparent,
-                navigationIconContentColor = Color.White,
-                titleContentColor = Color.White,
-                actionIconContentColor = Color.White
-            )
+            colors = if (isInCompactMode) {
+                TopAppBarDefaults.topAppBarColors()
+            } else {
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent,
+                    navigationIconContentColor = Color.White,
+                    titleContentColor = Color.White,
+                    actionIconContentColor = Color.White
+                )
+            }
         )
     }
 }

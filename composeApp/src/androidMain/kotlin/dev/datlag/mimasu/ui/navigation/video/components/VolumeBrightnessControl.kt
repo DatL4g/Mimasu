@@ -52,6 +52,8 @@ import dev.datlag.mimasu.other.rememberBrightnessHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.ifFalse
+import dev.datlag.tooling.compose.ifTrue
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.contentColorFor
 import kotlin.math.max
@@ -61,12 +63,12 @@ import kotlin.math.roundToInt
 @Composable
 fun VolumeBrightnessControl(
     controlsState: ControlsState,
-    hazeState: HazeState,
+    isInCompactMode: Boolean,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         val context = LocalContext.current
@@ -90,17 +92,14 @@ fun VolumeBrightnessControl(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             AnimatedVisibility(
-                visible = volumeVisible,
+                visible = volumeVisible && !isInCompactMode,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
                 Row(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .hazeEffect(
-                            state = hazeState,
-                            style = HazeMaterials.regular(surface)
-                        )
+                        .background(surface, CircleShape)
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
@@ -128,17 +127,14 @@ fun VolumeBrightnessControl(
             }
 
             AnimatedVisibility(
-                visible = brightnessVisible,
+                visible = brightnessVisible && !isInCompactMode,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
                 Row(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .hazeEffect(
-                            state = hazeState,
-                            style = HazeMaterials.regular(surface)
-                        )
+                        .background(surface, CircleShape)
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
@@ -171,7 +167,7 @@ fun VolumeBrightnessControl(
         }
 
         Row(
-            modifier = modifier.pointerInput(Unit) {
+            modifier = Modifier.fillMaxSize().pointerInput(Unit) {
                 detectTapGestures {
                     controlsState.toggleControls()
                 }
@@ -188,19 +184,21 @@ fun VolumeBrightnessControl(
                     .weight(1F)
                     .fillMaxHeight()
                     .padding(start = start, end = end)
-                    .pointerInput(Unit) {
-                        detectVerticalDragGestures(
-                            onDragStart = {
-                                brightnessVisible = true
-                            },
-                            onDragEnd = {
-                                brightnessVisible = false
-                            },
-                            onVerticalDrag = { _, dragAmount ->
-                                brightnessProgress = (brightnessProgress + -dragAmount / 1000F).coerceIn(brightnessHelper.minBrightness - 0.01F, brightnessHelper.maxBrightness)
-                                brightnessHelper.brightness = brightnessProgress
-                            }
-                        )
+                    .ifFalse(isInCompactMode) {
+                        pointerInput(Unit) {
+                            detectVerticalDragGestures(
+                                onDragStart = {
+                                    brightnessVisible = true
+                                },
+                                onDragEnd = {
+                                    brightnessVisible = false
+                                },
+                                onVerticalDrag = { _, dragAmount ->
+                                    brightnessProgress = (brightnessProgress + -dragAmount / 1000F).coerceIn(brightnessHelper.minBrightness - 0.01F, brightnessHelper.maxBrightness)
+                                    brightnessHelper.brightness = brightnessProgress
+                                }
+                            )
+                        }
                     }
                     .padding(8.dp)
             )
@@ -209,20 +207,22 @@ fun VolumeBrightnessControl(
                     .weight(1F)
                     .fillMaxHeight()
                     .padding(start = end, end = start)
-                    .pointerInput(Unit) {
-                        detectVerticalDragGestures(
-                            onDragStart = {
-                                volumeVisible = true
-                            },
-                            onDragEnd = {
-                                volumeVisible = false
-                            },
-                            onVerticalDrag = { _, dragAmount ->
-                                volumeProgress = (volumeProgress + -dragAmount / 1000F).coerceIn(0F, 1F)
+                    .ifFalse(isInCompactMode) {
+                        pointerInput(Unit) {
+                            detectVerticalDragGestures(
+                                onDragStart = {
+                                    volumeVisible = true
+                                },
+                                onDragEnd = {
+                                    volumeVisible = false
+                                },
+                                onVerticalDrag = { _, dragAmount ->
+                                    volumeProgress = (volumeProgress + -dragAmount / 1000F).coerceIn(0F, 1F)
 
-                                audioHelper.volumeProgress = volumeProgress
-                            }
-                        )
+                                    audioHelper.volumeProgress = volumeProgress
+                                }
+                            )
+                        }
                     }
                     .padding(8.dp)
             )

@@ -47,7 +47,7 @@ fun NavigationSuiteScope.seriesItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SeriesNavigation(
-    navigateToVideo: (VideoViewModel.WatchData) -> Unit
+    navigateToVideo: (VideoViewModel.WatchType) -> Unit
 ) {
     val controller = rememberListDetailController<Any, Navigation.Series.Detail, Nothing>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()

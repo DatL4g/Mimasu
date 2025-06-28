@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
+import androidx.window.core.layout.WindowSizeClass
 import coil3.compose.AsyncImagePainter
 import coil3.compose.AsyncImagePainter.State
 import coil3.compose.rememberAsyncImagePainter
@@ -372,4 +373,52 @@ fun IconButtonDefaults.mediumLargeContainerSize(
         width = MediumLargeIconButtonTokens.IconSize + horizontalSpace,
         height = MediumLargeIconButtonTokens.ContainerHeight
     )
+}
+
+fun WindowSizeClass.isCompactWidth(): Boolean {
+    return when {
+        this.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> false // expanded
+        this.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> false // medium
+        else -> true
+    }
+}
+
+fun WindowSizeClass.isMediumWidth(): Boolean {
+    return when {
+        this.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> false // expanded
+        this.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> true // medium
+        else -> false
+    }
+}
+
+fun WindowSizeClass.isExpandedWidth(): Boolean {
+    return when {
+        this.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> true // expanded
+        this.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> false // medium
+        else -> false
+    }
+}
+
+fun WindowSizeClass.isCompactHeight(): Boolean {
+    return when {
+        this.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> false // expanded
+        this.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> false // medium
+        else -> true
+    }
+}
+
+fun WindowSizeClass.isMediumHeight(): Boolean {
+    return when {
+        this.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> false // expanded
+        this.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> true // medium
+        else -> false
+    }
+}
+
+fun WindowSizeClass.isExpandedHeight(): Boolean {
+    return when {
+        this.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> true // expanded
+        this.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> false // medium
+        else -> false
+    }
 }

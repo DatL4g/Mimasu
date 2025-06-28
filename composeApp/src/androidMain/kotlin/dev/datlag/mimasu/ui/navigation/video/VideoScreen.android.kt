@@ -2,6 +2,7 @@
 
 package dev.datlag.mimasu.ui.navigation.video
 
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.view.WindowManager
 import androidx.compose.foundation.AndroidExternalSurface
@@ -13,12 +14,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -37,6 +42,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toRect
 import androidx.core.net.toUri
@@ -67,6 +73,8 @@ import dev.datlag.mimasu.ui.navigation.video.states.rememberProgressState
 import dev.datlag.mimasu.ui.navigation.video.states.rememberSeekState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.compose.ifFalse
+import dev.datlag.tooling.compose.ifTrue
 import kotlin.math.max
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -96,20 +104,19 @@ actual fun VideoScreen(onBack: () -> Unit) {
         mutableFloatStateOf(1F)
     }
 
-    val data by videoViewModel.watchData.collectAsStateWithLifecycle()
+    val type by videoViewModel.watchType.collectAsStateWithLifecycle()
     val sources by videoViewModel.selectedSource.collectAsStateWithLifecycle(emptyList())
     var streamIndex by remember(sources) { mutableIntStateOf(0) }
     val sourceUrl = remember(sources, streamIndex) {
         sources.elementAtOrNull(streamIndex)
     }
-    val metadata = remember(data) {
+    val metadata = remember(type) {
         MediaMetadata.Builder()
             .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
-            .setTitle(data?.title)
-            .setSubtitle(data?.subTitle)
-            .setGenre(data?.genre)
-            .setAlbumTitle(data?.groupTitle)
-            .setArtworkUri(data?.artworkUri?.toUri())
+            .setTitle(type?.title)
+            .setSubtitle(type?.subTitle)
+            .setGenre(type?.genre)
+            .setAlbumTitle(type?.albumTitle)
             .build()
     }
     val mediaItem = remember(sourceUrl, metadata) {
@@ -124,6 +131,8 @@ actual fun VideoScreen(onBack: () -> Unit) {
     val pipHelper = rememberPiPHelper()
     val pipActive by PiPHelper.active.collectAsStateWithLifecycle()
     var videoViewBounds by remember { mutableStateOf(Rect()) }
+    var handleWindowController by remember(playerWrapper) { mutableStateOf(false) }
+    var isInCompactMode by remember { mutableStateOf(false) }
 
     LaunchedEffect(playerWrapper) {
         playerWrapper.onError {
@@ -135,8 +144,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
 
     LaunchedEffect(playerWrapper) {
         playerWrapper.onFirstFrame {
-            windowController.isSystemBarsVisible = false
-            windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            handleWindowController = true
             windowController.addWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
@@ -159,14 +167,13 @@ actual fun VideoScreen(onBack: () -> Unit) {
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(Color.Black),
-        containerColor = Color.Black,
-        contentColor = Color.White,
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopControls(
                 state = controlsState,
+                isInCompactMode = isInCompactMode,
                 pipActive = pipActive,
-                data = data,
+                watchType = type,
                 modifier = Modifier.fillMaxWidth(),
                 onBack = onBack
             )
@@ -174,91 +181,150 @@ actual fun VideoScreen(onBack: () -> Unit) {
         bottomBar = {
             BottomControls(
                 controlsState = controlsState,
+                isInCompactMode = isInCompactMode,
                 pipActive = pipActive,
                 state = progressState,
                 modifier = Modifier.fillMaxWidth()
             )
-        }
-    ) { contentPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .pointerInput(Unit) {
-                    detectPinchGestures(
-                        pass = PointerEventPass.Initial,
-                        onGesture = { _, newZoom ->
-                            zoom *= newZoom
-                        },
-                        onGestureEnd = {
-                            if (zoom > 1.2F) {
-                                isZoomed = true
-                            } else if (zoom < 0.85F) {
-                                isZoomed = false
-                            }
-
-                            zoom = 1F
-                        }
-                    )
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            val sizeModifier = if (isZoomed) {
-                Modifier.fillMaxSize().scale(zoom.coerceIn(0.75F, 1F))
-            } else {
-                Modifier.aspectRatio(aspectRatio).scale(max(zoom, 0.95F))
+        },
+        floatingActionButton = {
+            if (isInCompactMode) {
+                ExtraControls(
+                    controlsState = controlsState,
+                    isInCompactMode = true,
+                    player = playerWrapper,
+                    viewModel = videoViewModel,
+                    pipHelper = pipHelper,
+                    pipActive = pipActive,
+                    enterPiP = {
+                        pipHelper.enter(aspectRatio, videoViewBounds)
+                    }
+                )
             }
-            val hazeState = rememberHazeState()
+        },
+        floatingActionButtonPosition = FabPosition.Center
+    ) { contentPadding ->
+        VideoInfo(
+            watchType = type,
+            contentPadding = contentPadding,
+            forceCompact = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+        ) { info ->
+            LaunchedEffect(handleWindowController, info) {
+                isInCompactMode = info.showingCompact
 
-            AndroidExternalSurface(
-                modifier = sizeModifier.hazeSource(hazeState).onGloballyPositioned {
-                    videoViewBounds = it.boundsInWindow().toAndroidRectF().toRect()
-                },
-                onInit = {
-                    onSurface { surface, _, _ ->
-                        playerWrapper.setVideoSurface(surface)
-
-                        surface.onChanged { _, _ ->
-                            playerWrapper.setVideoSurface(surface)
-                        }
-                        surface.onDestroyed {
-                            playerWrapper.clearVideoSurface()
-                        }
+                if (handleWindowController) {
+                    if (info.showingCompact) {
+                        windowController.isSystemBarsVisible = true
+                        windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+                    } else {
+                        windowController.isSystemBarsVisible = false
+                        windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                     }
                 }
-            )
+            }
 
-            VolumeBrightnessControl(
-                controlsState = controlsState,
-                hazeState = hazeState,
-                contentPadding = contentPadding.merge(PaddingValues(top = 16.dp)),
-                modifier = Modifier.matchParentSize()
-            )
+            Box(
+                modifier = info.modifier
+                    .background(Color.Black)
+                    .ifFalse(info.showingCompact) {
+                        pointerInput(Unit) {
+                            detectPinchGestures(
+                                pass = PointerEventPass.Initial,
+                                onGesture = { _, newZoom ->
+                                    zoom *= newZoom
+                                },
+                                onGestureEnd = {
+                                    if (zoom > 1.2F) {
+                                        isZoomed = true
+                                    } else if (zoom < 0.85F) {
+                                        isZoomed = false
+                                    }
 
-            CenterControls(
-                controlsState = controlsState,
-                state = playPauseState,
-                seekState = seekState,
-                pipActive = pipActive,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center)
-            )
-
-            ExtraControls(
-                controlsState = controlsState,
-                hazeState = hazeState,
-                player = playerWrapper,
-                viewModel = videoViewModel,
-                pipHelper = pipHelper,
-                pipActive = pipActive,
-                modifier = Modifier
-                    .padding(bottom = contentPadding.calculateBottomPadding())
-                    .align(Alignment.BottomCenter),
-                enterPiP = {
-                    pipHelper.enter(aspectRatio, videoViewBounds)
+                                    zoom = 1F
+                                }
+                            )
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                val zoomScale = remember(isZoomed, zoom, info.showingCompact) {
+                    if (isZoomed && !info.showingCompact) {
+                        zoom.coerceIn(0.75F, 1F)
+                    } else {
+                        max(zoom, 0.95F)
+                    }
                 }
-            )
+                val roundedShape = remember(zoomScale, isZoomed, info.showingCompact) {
+                    if (zoomScale >= 1F || info.showingCompact) {
+                        RoundedCornerShape(0.dp)
+                    } else {
+                        val maxRound = 20.dp
+                        val minZoom = if (isZoomed) 0.75F else 0.95F
+                        val normalizedZoom = ((zoomScale - minZoom) / (1F - minZoom)).coerceIn(0f, 1F)
+                        val inverseNormalizedZoom = 1f - normalizedZoom
+
+                        RoundedCornerShape(maxRound * inverseNormalizedZoom)
+                    }
+                }
+
+                val sizeModifier = if (isZoomed && !info.showingCompact) {
+                    Modifier.fillMaxSize().scale(zoomScale)
+                } else {
+                    Modifier.aspectRatio(aspectRatio).scale(zoomScale)
+                }
+
+                AndroidExternalSurface(
+                    modifier = sizeModifier.onGloballyPositioned {
+                        videoViewBounds = it.boundsInWindow().toAndroidRectF().toRect()
+                    }.clip(roundedShape),
+                    onInit = {
+                        onSurface { surface, _, _ ->
+                            playerWrapper.setVideoSurface(surface)
+
+                            surface.onChanged { _, _ ->
+                                playerWrapper.setVideoSurface(surface)
+                            }
+                            surface.onDestroyed {
+                                playerWrapper.clearVideoSurface()
+                            }
+                        }
+                    }
+                )
+
+                VolumeBrightnessControl(
+                    controlsState = controlsState,
+                    isInCompactMode = info.showingCompact,
+                    contentPadding = contentPadding.merge(PaddingValues(top = 16.dp)),
+                    modifier = Modifier.matchParentSize()
+                )
+
+                CenterControls(
+                    controlsState = controlsState,
+                    state = playPauseState,
+                    seekState = seekState,
+                    pipActive = pipActive,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                )
+
+                if (!info.showingCompact) {
+                    ExtraControls(
+                        modifier = Modifier
+                            .padding(bottom = contentPadding.calculateBottomPadding())
+                            .align(Alignment.BottomCenter),
+                        controlsState = controlsState,
+                        isInCompactMode = false,
+                        player = playerWrapper,
+                        viewModel = videoViewModel,
+                        pipHelper = pipHelper,
+                        pipActive = pipActive,
+                        enterPiP = {
+                            pipHelper.enter(aspectRatio, videoViewBounds)
+                        }
+                    )
+                }
+            }
         }
     }
 

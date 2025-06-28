@@ -47,7 +47,7 @@ fun ShowContent(
     showAvailability: ShowState,
     padding: PaddingValues,
     onSelectSeason: (Show.Season) -> Unit = {},
-    onStream: (VideoViewModel.WatchData) -> Unit
+    onStream: (VideoViewModel.WatchType.Show) -> Unit
 ) {
     LazyColumn(
         state = listState,
@@ -135,7 +135,12 @@ fun ShowContent(
             is ShowViewModel.SeasonState.Success -> {
                 itemsIndexed(seasonState.season.episodes.toImmutableList()) { index, episode ->
                     val watchData = remember(show, episode) {
-                        VideoViewModel.WatchData(show, episode)
+                        VideoViewModel.WatchType.Show(
+                            showInfo = show,
+                            seasonInfo = seasonState.season,
+                            episodeInfo = episode,
+                            sources = emptyMap()
+                        )
                     }
 
                     EpisodeItem(

@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 class VideoViewModel(
     val firestoreWrapper: FirebaseFirestoreWrapper,
@@ -42,7 +44,7 @@ class VideoViewModel(
         } ?: emptyList()
     }
 
-    val watchData = Companion.watchData
+    val watchType = Companion.watchType
 
     fun selectInfo(info: SourceInfo) = _selectedInfo.update { info }
 
@@ -53,31 +55,50 @@ class VideoViewModel(
         clear()
     }
 
+    @Serializable
     data class SourceInfo(
         val sourceTitle: String?,
         val sourceLocale: String?,
         val locale: String?
     )
 
-    data class WatchData(
-        val title: String,
-        val subTitle: String?,
-        val genre: String?,
-        val description: String?,
-        val groupTitle: String?,
-        val artworkUri: String?,
-        val sources: Map<SourceInfo, Collection<String>>
-    ) {
+    @Serializable
+    sealed interface WatchType {
 
-        constructor(show: Show, episode: Season.Episode) : this(
-            title = episode.name?.ifBlank { null } ?: show.name,
-            subTitle = null,
-            genre = show.genres.firstOrNull()?.name,
-            description = episode.overview?.ifBlank { null } ?: show.overview,
-            groupTitle = show.name,
-            artworkUri = null,
-            sources = emptyMap()
-        )
+        @Transient
+        val title: String
+
+        @Transient
+        val subTitle: String?
+
+        @Transient
+        val genre: String?
+
+        @Transient
+        val albumTitle: String?
+
+        val sources: Map<SourceInfo, Collection<String>>
+
+        @Serializable
+        data class Show(
+            val showInfo: dev.datlag.mimasu.tmdb.model.details.Show,
+            val seasonInfo: Season,
+            val episodeInfo: Season.Episode,
+            override val sources: Map<SourceInfo, Collection<String>>
+        ) : WatchType {
+
+            @Transient
+            override val title: String = episodeInfo.name ?: ""
+
+            @Transient
+            override val subTitle: String? = seasonInfo.name
+
+            @Transient
+            override val genre: String? = showInfo.genres.firstOrNull()?.name
+
+            @Transient
+            override val albumTitle: String = showInfo.name
+        }
     }
 
     companion object {
@@ -89,8 +110,8 @@ class VideoViewModel(
         private val _selectedInfo = MutableStateFlow<SourceInfo?>(null)
         private val selectedInfo = _selectedInfo.asStateFlow()
 
-        private val _watchData = MutableStateFlow<WatchData?>(null)
-        val watchData = _watchData.asStateFlow()
+        private val _watchType = MutableStateFlow<WatchType?>(null)
+        val watchType = _watchType.asStateFlow()
 
         private fun updateSources(list: Map<SourceInfo, Collection<String>>): Boolean {
             return _sources.updateAndGet {
@@ -116,8 +137,8 @@ class VideoViewModel(
             }
         }
 
-        fun watch(data: WatchData): Boolean {
-            _watchData.update { data }
+        fun watch(data: WatchType): Boolean {
+            _watchType.update { data }
             return updateSources(data.sources)
         }
 

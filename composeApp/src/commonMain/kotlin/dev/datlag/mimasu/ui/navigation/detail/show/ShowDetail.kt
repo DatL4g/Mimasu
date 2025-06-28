@@ -39,7 +39,7 @@ import dev.datlag.mimasu.extension.model.Show as Extension
 @Composable
 fun ShowDetail(
     onBack: () -> Unit,
-    onStream: (VideoViewModel.WatchData) -> Unit
+    onStream: (VideoViewModel.WatchType.Show) -> Unit
 ) {
     val showViewModel = kodeinViewModel<ShowViewModel>()
     val showState by showViewModel.show.collectAsStateWithLifecycle(ShowViewModel.ShowState.Loading)

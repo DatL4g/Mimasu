@@ -50,7 +50,7 @@ fun NavigationSuiteScope.searchItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SearchNavigation(
-    navigateToVideo: (VideoViewModel.WatchData) -> Unit
+    navigateToVideo: (VideoViewModel.WatchType) -> Unit
 ) {
     val controller = rememberListDetailController<Any, Navigation.Search.Detail, Navigation.Search.Extra>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()

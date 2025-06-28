@@ -20,7 +20,7 @@ data class VideoNavigationController(
 ) {
 
     fun loadSources(
-        data: VideoViewModel.WatchData,
+        data: VideoViewModel.WatchType,
         navigate: () -> Unit
     ) {
         val canNavigate = VideoViewModel.watch(data)

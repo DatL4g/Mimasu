@@ -31,6 +31,7 @@ import kotlin.math.roundToLong
 @Composable
 fun BottomControls(
     controlsState: ControlsState,
+    isInCompactMode: Boolean,
     state: ProgressState,
     modifier: Modifier = Modifier,
     pipActive: Boolean = PiPHelper.active.value,
@@ -39,7 +40,7 @@ fun BottomControls(
 
     AnimatedVisibility(
         modifier = modifier,
-        visible = visibility && !pipActive,
+        visible = visibility && !pipActive && !isInCompactMode,
         enter = slideInVertically { it / 2 } + fadeIn(),
         exit = slideOutVertically { it / 2 } + fadeOut()
     ) {

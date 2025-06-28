@@ -4,9 +4,13 @@ import android.graphics.Rect
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,7 +32,7 @@ import dev.datlag.tooling.compose.platform.shapes
 @Composable
 fun ExtraControls(
     controlsState: ControlsState,
-    hazeState: HazeState,
+    isInCompactMode: Boolean,
     player: Player,
     viewModel: VideoViewModel,
     pipHelper: PiPHelper,
@@ -36,24 +40,22 @@ fun ExtraControls(
     pipActive: Boolean = PiPHelper.active.value,
     enterPiP: () -> Unit
 ) {
-    val surface = Platform.colorScheme().surface
-    val onSurface = Platform.colorScheme().onSurface
+    val surface = FloatingActionButtonDefaults.containerColor
+    val onSurface = Platform.colorScheme().contentColorFor(surface)
+    val shape = FloatingActionButtonDefaults.extendedFabShape
 
     val visibility by controlsState.controlsVisibility.collectAsStateWithLifecycle()
 
     AnimatedVisibility(
-        visible = visibility && !pipActive,
+        visible = (visibility || isInCompactMode) && !pipActive,
         modifier = modifier,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
         Row(
             modifier = Modifier
-                .clip(Platform.shapes().medium)
-                .hazeEffect(
-                    state = hazeState,
-                    style = HazeMaterials.regular(surface)
-                )
+                .clip(shape)
+                .background(surface, shape)
                 .padding(8.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
