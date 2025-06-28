@@ -47,9 +47,11 @@ import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_DETECT_AC
 import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
+import dev.datlag.kast.Kast
 import dev.datlag.mimasu.common.cronetEngine
 import dev.datlag.mimasu.common.videoCache
 import dev.datlag.tooling.scopeCatching
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -61,7 +63,7 @@ import java.util.concurrent.Executors
 @UnstableApi
 class PlayerWrapper(
     private val context: Context,
-    private val castContext: CastContext?,
+    private val castContext: CastContext? = Kast.castContext,
     cronetEngine: CronetEngine?,
     cache: Cache
 ) : Player, SessionAvailabilityListener, Player.Listener {
@@ -133,6 +135,16 @@ class PlayerWrapper(
             useCastPlayer = value && castSupported
         }
 
+    private var availableMediaItem by atomic<MediaItem?>(null)
+    private val availableOrLocalMediaItem: MediaItem?
+        get() {
+            return availableMediaItem ?: if (localPlayer.isCommandAvailable(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)) {
+                localPlayer.currentMediaItem
+            } else {
+                null
+            }
+        }
+
     private var useCastPlayer = castSupported && castSessionAvailable
         set(value) {
             val previous = field
@@ -142,6 +154,10 @@ class PlayerWrapper(
                 player = if (value) {
                     castPlayer?.also {
                         localPlayer.pause()
+
+                        if (it.mediaItemCount <= 0) {
+                            availableOrLocalMediaItem?.forPlayer(it)?.let(it::setMediaItem)
+                        }
                     } ?: localPlayer
                 } else {
                     localPlayer
@@ -149,17 +165,13 @@ class PlayerWrapper(
             }
         }
 
-    private var player: Player = (if (useCastPlayer) castPlayer ?: localPlayer else localPlayer).also {
-        // ToDo("create session")
-    }
+    private var player: Player = (if (useCastPlayer) castPlayer ?: localPlayer else localPlayer)
         set(value) {
             val previous = field
             field = value
 
             if (previous != value) {
                 _usingCastPlayer.update { value is CastPlayer }
-
-                // ToDo("create session")
             }
         }
 
@@ -209,6 +221,12 @@ class PlayerWrapper(
 
     override fun onCastSessionUnavailable() {
         castSessionAvailable = false
+    }
+
+    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        super.onMediaItemTransition(mediaItem, reason)
+
+        availableMediaItem = mediaItem
     }
 
     override fun onPlayerError(error: PlaybackException) {
@@ -503,8 +521,6 @@ class PlayerWrapper(
         localPlayer.release()
         castPlayer?.stop()
         castPlayer?.clearMediaItems()
-
-        // ToDo("release session")
     }
 
     override fun getCurrentTracks(): Tracks {
@@ -790,7 +806,7 @@ class PlayerWrapper(
 @Composable
 fun rememberPlayerWrapper(
     context: Context = LocalContext.current,
-    castContext: CastContext? = null,
+    castContext: CastContext? = Kast.castContext,
     cronetEngine: CronetEngine? = localDI().cronetEngine(),
     cache: Cache = localDI().videoCache()
 ): PlayerWrapper {

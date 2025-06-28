@@ -19,12 +19,15 @@ import androidx.compose.material.icons.rounded.Beenhere
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkAdd
 import androidx.compose.material.icons.rounded.Cake
+import androidx.compose.material.icons.rounded.Cast
+import androidx.compose.material.icons.rounded.CastConnected
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.CloudDownload
 import androidx.compose.material.icons.rounded.CloudOff
 import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material.icons.rounded.Computer
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Error
@@ -66,6 +69,7 @@ import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SettingsEthernet
+import androidx.compose.material.icons.rounded.Speaker
 import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material.icons.rounded.Translate
@@ -201,6 +205,10 @@ data object MaterialSymbols {
     const val SETTINGS_ETHERNET = "settings_ethernet"
     const val PLAY_CIRCLE = "play_circle"
     const val CLOUD_OFF = "cloud_off"
+    const val CAST = "cast"
+    const val CAST_CONNECTED = "cast_connected"
+    const val SPEAKER = "speaker"
+    const val COMPUTER = "computer"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -638,6 +646,10 @@ data object MaterialSymbols {
         name.equals(SETTINGS_ETHERNET, ignoreCase = true) -> Icons.Rounded.SettingsEthernet
         name.equals(PLAY_CIRCLE, ignoreCase = true) -> Icons.Rounded.PlayCircleOutline
         name.equals(CLOUD_OFF, ignoreCase = true) -> Icons.Rounded.CloudOff
+        name.equals(CAST, ignoreCase = true) -> Icons.Rounded.Cast
+        name.equals(CAST_CONNECTED, ignoreCase = true) -> Icons.Rounded.CastConnected
+        name.equals(SPEAKER, ignoreCase = true) -> Icons.Rounded.Speaker
+        name.equals(COMPUTER, ignoreCase = true) -> Icons.Rounded.Computer
         else -> null
     }
 

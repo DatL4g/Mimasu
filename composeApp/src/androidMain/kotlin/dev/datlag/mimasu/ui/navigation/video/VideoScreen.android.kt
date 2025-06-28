@@ -43,6 +43,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toRect
 import androidx.core.net.toUri
@@ -51,10 +52,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.MediaSession
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
+import dev.datlag.kast.Kast
+import dev.datlag.kast.UnselectReason
 import dev.datlag.mimasu.common.detectPinchGestures
 import dev.datlag.mimasu.common.hazeEffect
 import dev.datlag.mimasu.common.merge
@@ -128,6 +132,9 @@ actual fun VideoScreen(onBack: () -> Unit) {
         }
     }
 
+    val context = LocalContext.current
+    var mediaSession by remember { mutableStateOf<MediaSession?>(null) }
+
     val pipHelper = rememberPiPHelper()
     val pipActive by PiPHelper.active.collectAsStateWithLifecycle()
     var videoViewBounds by remember { mutableStateOf(Rect()) }
@@ -135,6 +142,9 @@ actual fun VideoScreen(onBack: () -> Unit) {
     var isInCompactMode by remember { mutableStateOf(false) }
 
     LaunchedEffect(playerWrapper) {
+        mediaSession?.release()
+        mediaSession = MediaSession.Builder(context, playerWrapper).build()
+
         playerWrapper.onError {
             if (sources.size - 1 > streamIndex) {
                 streamIndex++
@@ -328,11 +338,23 @@ actual fun VideoScreen(onBack: () -> Unit) {
         }
     }
 
+    DisposableEffect(mediaSession) {
+        onDispose {
+            mediaSession?.release()
+        }
+    }
+
     DisposableEffect(windowController) {
         onDispose {
             windowController.isSystemBarsVisible = true
             windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
             windowController.clearWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON and WindowManager.LayoutParams.FLAG_SECURE)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            Kast.unselect(UnselectReason.stopped)
         }
     }
 }

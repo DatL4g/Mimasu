@@ -14,6 +14,7 @@ android-startup = "1.2.0"
 assertk = "0.28.1"
 atomicfu = "0.28.0"
 car = "1.4.0"
+cast = "22.1.0"
 certificate-transparency = "2.7.0"
 coil = "3.2.0"
 collection = "1.5.0"
@@ -97,6 +98,8 @@ activity-compose = { group = "androidx.activity", name = "activity-compose", ver
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
 assertk-coroutines = { group = "com.willowtreeapps.assertk", name = "assertk-coroutines", version.ref = "assertk" }
 car = { group = "androidx.car.app", name = "app", version.ref = "car" }
+cast = { group = "com.google.android.gms", name = "play-services-cast", version.ref = "cast" }
+cast-framework = { group = "com.google.android.gms", name = "play-services-cast-framework", version.ref = "cast" }
 certificate-transparency-android = { group = "com.appmattus.certificatetransparency", name = "certificatetransparency-android", version.ref = "certificate-transparency" }
 certificate-transparency-jvm = { group = "com.appmattus.certificatetransparency", name = "certificatetransparency", version.ref = "certificate-transparency" }
 coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
@@ -192,6 +195,7 @@ youtube-player = { group = "io.github.khubaibkhan4", name = "mediaplayer-kmp", v
 
 [bundles]
 android-ads = [ "admob", "ump", "jetads" ]
+android-cast = [ "cast", "cast-framework", "kast" ]
 android-media = [ "media3", "media3-dash", "media3-hls", "media3-rtsp", "media3-session", "media3-smooth", "media3-ui", "media3-cast", "media3-cronet" ]
 google-auth = [ "google-credentials", "google-credentials-play-service", "google-identity", "google-play-service" ]
 

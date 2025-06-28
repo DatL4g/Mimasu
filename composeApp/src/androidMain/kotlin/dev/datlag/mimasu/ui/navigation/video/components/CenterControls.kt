@@ -73,6 +73,7 @@ fun CenterControls(
                     ),
                 onClick = {
                     seekState.seekBack()
+                    controlsState.showControls()
                 },
                 shapes = IconButtonDefaults.shapes(),
                 colors = IconButtonDefaults.filledTonalIconButtonColors(),
@@ -120,6 +121,7 @@ fun CenterControls(
                     ),
                 onClick = {
                     seekState.seekForward()
+                    controlsState.showControls()
                 },
                 shapes = IconButtonDefaults.shapes(),
                 colors = IconButtonDefaults.filledTonalIconButtonColors(),

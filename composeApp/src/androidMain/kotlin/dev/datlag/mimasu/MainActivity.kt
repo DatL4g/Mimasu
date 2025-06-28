@@ -11,6 +11,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import co.touchlab.kermit.Logger
+import dev.datlag.kast.Kast
 import dev.datlag.mimasu.common.isInPiPMode
 import dev.datlag.mimasu.common.toExpressiveTypography
 import dev.datlag.mimasu.extension.AppInstallReceiver
@@ -65,6 +66,7 @@ class MainActivity : AdActivity() {
         (nullableAdManager ?: AdManager(this)).requestConsentUpdate(this)
         ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
         PiPHelper.setActive(this.isInPiPMode())
+        Kast.setup(this)
 
         setContent {
             // ToDo("ignore font on TV")
@@ -125,6 +127,7 @@ class MainActivity : AdActivity() {
         unregisterReceiver(appInstallReceiver)
         ExtensionInitializer.unbindAll(this)
         PiPHelper.setActive(this.isInPiPMode())
+        Kast.dispose()
     }
 
     override fun onNewIntent(intent: Intent) {

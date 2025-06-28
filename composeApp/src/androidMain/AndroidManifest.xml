@@ -51,6 +51,10 @@
         </activity>
 
         <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="dev.datlag.mimasu.other.CastOptionsProvider" />
+
+        <meta-data
             android:name="instantapps.clients.allowed"
             android:value="true" />
 
