@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.firebase.firestore
 
+import dev.datlag.mimasu.core.addSafely
 import dev.gitlive.firebase.firestore.BaseTimestamp
 import dev.gitlive.firebase.firestore.Timestamp
 import kotlinx.serialization.EncodeDefault
@@ -50,10 +51,10 @@ data class MovieData(
                 if (index != null) {
                     set(index, merged)
                 } else {
-                    add(0, merged)
+                    addSafely(0, merged)
                 }
             } else {
-                add(0, merged)
+                addSafely(0, merged)
             }
         }.distinctBy { it.tmdbId }
     }

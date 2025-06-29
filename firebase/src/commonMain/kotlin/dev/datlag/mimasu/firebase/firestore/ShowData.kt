@@ -1,11 +1,14 @@
 package dev.datlag.mimasu.firebase.firestore
 
+import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.core.addSafely
 import dev.gitlive.firebase.firestore.BaseTimestamp
 import dev.gitlive.firebase.firestore.Timestamp
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.math.max
 
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
@@ -44,27 +47,65 @@ data class ShowData(
                 if (index != null) {
                     set(index, merged)
                 } else {
-                    add(0, merged)
+                    addSafely(0, merged)
                 }
             } else {
-                add(0, merged)
+                addSafely(0, merged)
             }
         }.distinctBy { it.tmdbId }
     }
 
     @Serializable
     data class EpisodeData(
-        @SerialName(MARKED_AS_WATCHED) val markedAsWatched: Boolean = false,
-        @SerialName(FINISHED) val finished: Boolean = false
+        @SerialName(NUMBER) val number: Int,
+        @SerialName(ID) val id: String? = null,
+        @SerialName(MARKED_AS_WATCHED) val markedAsWatched: Boolean? = null,
+        @SerialName(FINISHED) val finished: Boolean? = null
     ) {
+
+        internal fun mergeWith(other: EpisodeData): EpisodeData {
+            return if (number == other.number) {
+                EpisodeData(
+                    number = number,
+                    id = id?.ifBlank { null } ?: other.id,
+                    markedAsWatched = markedAsWatched,
+                    finished = finished
+                )
+            } else {
+                this
+            }
+        }
+
+        internal fun mergeWithCollection(collection: Collection<EpisodeData>): Collection<EpisodeData> {
+            val defaultValue = collection.firstOrNull { it.number == number }
+            val merged = defaultValue?.let(::mergeWith) ?: this
+
+            return collection.toMutableList().apply {
+                if (defaultValue != null) {
+                    val index = indexOf(defaultValue).takeIf { it >= 0 }
+
+                    if (index != null) {
+                        set(index, merged)
+                    } else {
+                        addSafely(max(number - 1, 0), merged)
+                    }
+                } else {
+                    addSafely(max(number - 1, 0), merged)
+                }
+            }.distinctBy { it.number }
+        }
 
         internal companion object {
             private const val COLLECTION_PREFIX = "season"
+            private const val DOCUMENT_PREFIX = "episode"
 
+            const val NUMBER = "number"
+            const val ID = "id"
             const val MARKED_AS_WATCHED = "markedAsWatched"
             const val FINISHED = "finished"
 
             fun collectionForSeason(number: Int) = "$COLLECTION_PREFIX$number"
+            fun documentForNumber(number: Int) = "$DOCUMENT_PREFIX$number"
         }
     }
 

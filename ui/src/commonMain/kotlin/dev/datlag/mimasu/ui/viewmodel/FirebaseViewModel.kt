@@ -47,7 +47,7 @@ class FirebaseViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val bookmarkedMovies = bookmarkedMovieData.transformLatest {
-        val ids = it.mapNotNull { it.tmdbId.takeIf { id -> id > 0 } }
+        val ids = it.mapNotNull { m -> m.tmdbId.takeIf { id -> id > 0 } }
 
         return@transformLatest emitAll(
             Pager(
@@ -63,7 +63,7 @@ class FirebaseViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val bookmarkedShows = bookmarkedShowData.transformLatest {
-        val ids = it.mapNotNull { it.tmdbId.takeIf { id -> id > 0 } }
+        val ids = it.mapNotNull { s -> s.tmdbId.takeIf { id -> id > 0 } }
 
         return@transformLatest emitAll(
             Pager(

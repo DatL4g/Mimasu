@@ -106,6 +106,34 @@ class ShowViewModel(
 
     fun select(season: Show.Season) = _season.updateAndGet { season }
 
+    val episodesData = showSeason.mapNotNull { s ->
+        s?.seasonNumber?.takeIf { it >= 0 }
+    }.combine(id) { seasonNumber, showId ->
+        val showNotNullId = showId?.takeIf { it > 0 }
+            ?: show.firstOrNull()?.getOrNull()?.id?.takeIf { it > 0 }
+            ?: return@combine null
+
+        firestoreWrapper.episodesFor(showNotNullId, seasonNumber)
+    }
+
+    suspend fun markAsWatched(tmdbId: Int, seasonNumber: Int, episode: Season.Episode): ShowData.EpisodeData {
+        val data = ShowData.EpisodeData(
+            number = episode.episodeNumber,
+            markedAsWatched = true
+        )
+
+        return firestoreWrapper.updateEpisode(tmdbId, seasonNumber, data)
+    }
+
+    suspend fun markAsUnwatched(tmdbId: Int, seasonNumber: Int, episode: Season.Episode): ShowData.EpisodeData  {
+        val data = ShowData.EpisodeData(
+            number = episode.episodeNumber,
+            markedAsWatched = false
+        )
+
+        return firestoreWrapper.updateEpisode(tmdbId, seasonNumber, data)
+    }
+
     override fun onCleared() {
         super.onCleared()
 

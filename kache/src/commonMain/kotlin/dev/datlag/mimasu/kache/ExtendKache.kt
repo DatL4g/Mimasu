@@ -32,7 +32,9 @@ suspend fun <K : Any, V : Any> ObjectKache<K, V>.asyncDelete(key: K): V? {
 }
 
 suspend fun <K : Any, V : Any> ObjectKache<K, V>.asyncPutAndGet(key: K, value: V): V {
-    return suspendCatching {
+    suspendCatching {
         this@asyncPutAndGet.put(key, value)
-    }.getOrNull() ?: async(key) { value } ?: value
+    }.getOrNull()
+
+    return async(key) ?: value
 }

@@ -349,6 +349,35 @@ data class FirebaseFirestoreWrapper(
         ).orEmpty()
     }
 
+    suspend fun updateEpisode(
+        tmdbId: Int,
+        seasonNumber: Int,
+        data: ShowData.EpisodeData,
+        db: FirebaseFirestore = firestore
+    ): ShowData.EpisodeData {
+        val uid = authService.currentUser?.uid ?: return data
+        val doc = db.collection(ShowData.COLLECTION)
+            .document(uid)
+            .collection(ShowData.GROUP)
+            .document(tmdbId.toString())
+            .collection(ShowData.EpisodeData.collectionForSeason(seasonNumber))
+            .document(ShowData.EpisodeData.documentForNumber(data.number))
+
+        getOnlineData(db = db, block = {
+            doc.set(data, merge = true) {
+                encodeDefaults = false
+            }
+        })
+
+        return showSeasonEpisodeKache.asyncPutAndGet(
+            EpisodeCacheKey(
+                uid = uid,
+                showId = tmdbId,
+                seasonNumber = seasonNumber
+            ), data.mergeWithCollection(episodesFor(tmdbId, seasonNumber))
+        ).firstOrNull { it.number == data.number } ?: data
+    }
+
     @Serializable
     data class SeasonCacheKey(
         val uid: String,

@@ -32,6 +32,7 @@ import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowWatchProviderF
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 import dev.datlag.mimasu.extension.model.Show as Extension
 
@@ -64,6 +65,7 @@ fun ShowDetail(
         show = showState.getOrNull(),
         initial = initial
     )
+    val episodesData by showViewModel.episodesData.collectAsStateWithLifecycle(null)
 
     BackHandler(enabled = true) {
         onBack()
@@ -119,10 +121,37 @@ fun ShowDetail(
                 initial = initial,
                 showAvailability = showAvailability,
                 padding = padding,
+                episodesData = episodesData.orEmpty().toImmutableList(),
                 onSelectSeason = {
                     showViewModel.select(it)
                 },
-                onStream = onStream
+                onStream = onStream,
+                markAsWatched = {
+                    val seasonNumber = seasonState.getOrNull()?.seasonNumber ?: showSeason?.seasonNumber
+
+                    if (seasonNumber != null) {
+                        showViewModel.markAsWatched(
+                            tmdbId = current.show.id,
+                            seasonNumber = seasonNumber,
+                            episode = it
+                        )
+                    } else {
+                        null
+                    }
+                },
+                markAsUnWatched = {
+                    val seasonNumber = seasonState.getOrNull()?.seasonNumber ?: showSeason?.seasonNumber
+
+                    if (seasonNumber != null) {
+                        showViewModel.markAsUnwatched(
+                            tmdbId = current.show.id,
+                            seasonNumber = seasonNumber,
+                            episode = it
+                        )
+                    } else {
+                        null
+                    }
+                }
             )
         }
     }

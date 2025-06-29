@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.datlag.mimasu.common.mediumLargeContainerSize
 import dev.datlag.mimasu.common.rememberNestedImagePainter
+import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -47,6 +49,7 @@ import dev.datlag.mimasu.ui.navigation.detail.show.EpisodeStreamState
 import dev.datlag.mimasu.ui.navigation.detail.show.ShowState
 import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeStream
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
@@ -61,10 +64,13 @@ import dev.datlag.mimasu.extension.model.Show as Extension
 fun EpisodeItem(
     tmdbId: Int?,
     episode: Season.Episode,
+    defaultEpisodeData: ShowData.EpisodeData?,
     seasonNumber: Int?,
     showAvailability: ShowState,
     modifier: Modifier = Modifier,
-    onStream: (Extension.Response) -> Unit
+    onStream: (Extension.Response) -> Unit,
+    markAsWatched: suspend () -> ShowData.EpisodeData?,
+    markAsUnWatched: suspend () -> ShowData.EpisodeData?
 ) {
     val episodeStream = rememberEpisodeStream(
         showState = showAvailability,
@@ -76,12 +82,15 @@ fun EpisodeItem(
     val episodeStreamState by episodeStream.state.collectAsStateWithLifecycle()
 
     var isRevealed by remember(tmdbId, seasonNumber, episode.id) { mutableStateOf(false) }
+    var episodeData by remember(defaultEpisodeData) { mutableStateOf(defaultEpisodeData) }
+    val watched = remember(episodeData) { episodeData?.markedAsWatched == true || episodeData?.finished == true }
+
     RevealingCard(
         modifier = modifier,
         isRevealed = isRevealed,
         onCardClick = {
-            scope.launch {
-                val stream = episodeStream.getStream() ?: return@launch
+            scope.launchIO {
+                val stream = episodeStream.getStream() ?: return@launchIO
 
                 withMainContext {
                     onStream(stream)
@@ -102,12 +111,29 @@ fun EpisodeItem(
                 modifier = Modifier.padding(start = 4.dp).fillMaxHeight(),
                 onClick = {
                     isRevealed = false
+                    scope.launchIO {
+                        episodeData = if (watched) {
+                            markAsUnWatched() ?: episodeData
+                        } else {
+                            markAsWatched() ?: episodeData
+                        }
+                    }
                 },
                 shapes = IconButtonDefaults.shapes(),
-                colors = IconButtonDefaults.filledIconButtonColors()
+                colors = if (watched) {
+                    IconButtonDefaults.filledIconButtonColors(
+                        containerColor = Platform.colorScheme().error
+                    )
+                } else {
+                    IconButtonDefaults.filledIconButtonColors()
+                }
             ) {
                 MaterialSymbols(
-                    name = MaterialSymbols.CHECK,
+                    name = if (watched) {
+                        MaterialSymbols.CLOSE
+                    } else {
+                        MaterialSymbols.CHECK
+                    },
                     contentDescription = null
                 )
             }
@@ -164,11 +190,24 @@ fun EpisodeItem(
 
                     Row(
                         modifier = Modifier
-                            .padding(end = 4.dp, bottom = 4.dp)
+                            .padding(4.dp)
                             .align(Alignment.BottomEnd),
                         horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        if (watched) {
+                            MaterialSymbols(
+                                modifier = Modifier.size(24.dp).background(
+                                    color = Platform.colorScheme().secondaryContainer,
+                                    shape = Platform.shapes().small
+                                ).padding(4.dp),
+                                name = MaterialSymbols.CHECK,
+                                contentDescription = null,
+                                filled = true,
+                                tint = Platform.colorScheme().onSecondaryContainer,
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1F))
                         when (val current = episodeStreamState) {
                             is EpisodeStreamState.Requesting -> CircularProgressIndicator(
                                 modifier = Modifier.size(24.dp).background(

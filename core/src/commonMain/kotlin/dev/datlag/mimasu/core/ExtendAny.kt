@@ -35,3 +35,11 @@ fun LocalDate.toEpochMilliseconds(timeZone: TimeZone = TimeZone.currentSystemDef
 fun LocalDateTime.toEpochMilliseconds(timeZone: TimeZone = TimeZone.currentSystemDefault()): Long {
     return this.toInstant(timeZone = timeZone).toEpochMilliseconds()
 }
+
+fun <T> MutableList<T>.addSafely(index: Int, value: T) {
+    if (this.size > index && index >= 0) {
+        add(index, value)
+    } else {
+        add(value)
+    }
+}
