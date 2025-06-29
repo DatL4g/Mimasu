@@ -15,9 +15,9 @@ import dev.datlag.mimasu.composeapp.generated.resources.movie_rating
 import dev.datlag.mimasu.composeapp.generated.resources.movie_rating_placeholder
 import dev.datlag.mimasu.composeapp.generated.resources.movie_revenue
 import dev.datlag.mimasu.tmdb.model.details.Movie
-import dev.datlag.tolgee.stringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
+import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 
 @Composable

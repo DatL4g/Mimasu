@@ -29,10 +29,10 @@ import dev.datlag.mimasu.composeapp.generated.resources.show_production
 import dev.datlag.mimasu.tmdb.common.logos
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.tolgee.stringResource
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
 import kotlinx.collections.immutable.toImmutableList
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ShowProduction(

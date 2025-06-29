@@ -37,30 +37,12 @@ import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.unit.dp
-import co.touchlab.kermit.Logger
-import coil3.compose.AsyncImage
 import dev.chrisbanes.haze.HazeState
-import dev.datlag.mimasu.common.rememberNestedImagePainter
-import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.justwatch
-import dev.datlag.mimasu.composeapp.generated.resources.movie_watch
-import dev.datlag.mimasu.tmdb.common.logos
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieWatchProviderFAB
-import dev.datlag.tolgee.stringResource
-import dev.datlag.tooling.Platform
-import dev.datlag.tooling.async.suspendCatching
-import dev.datlag.tooling.compose.platform.colorScheme
-import dev.datlag.tooling.compose.platform.shapes
-import dev.datlag.tooling.listFrom
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
