@@ -35,7 +35,6 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.sekret)
             implementation(libs.tooling)
-            implementation(libs.kache)
             implementation(libs.ktor)
             implementation(libs.serialization)
             implementation(libs.serialization.json)
@@ -43,6 +42,7 @@ kotlin {
             implementation(libs.datetime)
             implementation(libs.kermit)
             implementation(project(":core"))
+            implementation(project(":kache"))
 
             api(libs.immutable)
             api(libs.paging)

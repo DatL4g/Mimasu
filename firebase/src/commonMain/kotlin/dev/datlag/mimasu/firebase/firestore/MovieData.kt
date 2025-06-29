@@ -21,6 +21,43 @@ data class MovieData(
     @SerialName(LAST_WATCHED) val lastWatched: BaseTimestamp? = null,
 ) {
 
+    internal fun mergeWith(other: MovieData): MovieData {
+        return if (tmdbId == other.tmdbId) {
+            MovieData(
+                bookmarked = bookmarked,
+                tmdbId = tmdbId,
+                imdbId = imdbId?.ifBlank { null } ?: other.imdbId,
+                watchProgress = watchProgress.takeIf { it > 0L } ?: other.watchProgress,
+                length = length.takeIf { it >= 0 } ?: other.length,
+                finishThreshold = finishThreshold.takeIf { it >= 0 } ?: other.finishThreshold,
+                watchLanguage = watchLanguage?.ifBlank { null } ?: other.watchLanguage,
+                lastUpdated = lastUpdated,
+                lastWatched = lastWatched
+            )
+        } else {
+            this
+        }
+    }
+
+    internal fun mergeWithCollection(collection: Collection<MovieData>): Collection<MovieData> {
+        val defaultValue = collection.firstOrNull { it.tmdbId == tmdbId }
+        val merged = defaultValue?.let(::mergeWith) ?: this
+
+        return collection.toMutableList().apply {
+            if (defaultValue != null) {
+                val index = indexOf(defaultValue).takeIf { it >= 0 }
+
+                if (index != null) {
+                    set(index, merged)
+                } else {
+                    add(0, merged)
+                }
+            } else {
+                add(0, merged)
+            }
+        }.distinctBy { it.tmdbId }
+    }
+
     internal companion object {
         const val COLLECTION = "movie"
         const val GROUP = "items"

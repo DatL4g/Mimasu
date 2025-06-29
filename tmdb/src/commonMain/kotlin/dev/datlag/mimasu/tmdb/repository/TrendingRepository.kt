@@ -6,8 +6,8 @@ import com.mayakapps.kache.InMemoryKache
 import com.mayakapps.kache.KacheStrategy
 import dev.datlag.mimasu.core.typeOf
 import dev.datlag.mimasu.core.withNonEmptyContext
+import dev.datlag.mimasu.kache.async
 import dev.datlag.mimasu.tmdb.api.Trending
-import dev.datlag.mimasu.tmdb.common.async
 import dev.datlag.mimasu.tmdb.model.PagedResponse
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.People

@@ -5,8 +5,8 @@ import androidx.paging.PagingState
 import com.mayakapps.kache.InMemoryKache
 import com.mayakapps.kache.KacheStrategy
 import dev.datlag.mimasu.core.withNonEmptyContext
+import dev.datlag.mimasu.kache.async
 import dev.datlag.mimasu.tmdb.api.MovieLists
-import dev.datlag.mimasu.tmdb.common.async
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.PagedResponse
 import dev.datlag.sekret.Secret

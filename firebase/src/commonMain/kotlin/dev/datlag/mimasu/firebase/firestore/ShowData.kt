@@ -17,6 +17,57 @@ data class ShowData(
     @SerialName(NUMBER_OF_SEASONS) val numberOfSeasons: Int? = null,
     @EncodeDefault(EncodeDefault.Mode.ALWAYS) @SerialName(LAST_UPDATED) val lastUpdated: BaseTimestamp = Timestamp.ServerTimestamp,
 ) {
+
+    internal fun mergeWith(other: ShowData): ShowData {
+        return if (tmdbId == other.tmdbId) {
+            ShowData(
+                bookmarked = bookmarked,
+                tmdbId = tmdbId,
+                imdbId = imdbId?.ifBlank { null } ?: other.imdbId,
+                season = season?.takeIf { it >= 0 } ?: other.season,
+                numberOfSeasons = numberOfSeasons?.takeIf { it > 0 } ?: other.numberOfSeasons,
+                lastUpdated = lastUpdated
+            )
+        } else {
+            this
+        }
+    }
+
+    internal fun mergeWithCollection(collection: Collection<ShowData>): Collection<ShowData> {
+        val defaultValue = collection.firstOrNull { it.tmdbId == tmdbId }
+        val merged = defaultValue?.let(::mergeWith) ?: this
+
+        return collection.toMutableList().apply {
+            if (defaultValue != null) {
+                val index = indexOf(defaultValue).takeIf { it >= 0 }
+
+                if (index != null) {
+                    set(index, merged)
+                } else {
+                    add(0, merged)
+                }
+            } else {
+                add(0, merged)
+            }
+        }.distinctBy { it.tmdbId }
+    }
+
+    @Serializable
+    data class EpisodeData(
+        @SerialName(MARKED_AS_WATCHED) val markedAsWatched: Boolean = false,
+        @SerialName(FINISHED) val finished: Boolean = false
+    ) {
+
+        internal companion object {
+            private const val COLLECTION_PREFIX = "season"
+
+            const val MARKED_AS_WATCHED = "markedAsWatched"
+            const val FINISHED = "finished"
+
+            fun collectionForSeason(number: Int) = "$COLLECTION_PREFIX$number"
+        }
+    }
+
     internal companion object {
         const val COLLECTION = "show"
         const val GROUP = "items"

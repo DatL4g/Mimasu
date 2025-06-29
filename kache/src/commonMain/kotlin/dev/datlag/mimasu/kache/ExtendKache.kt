@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.tmdb.common
+package dev.datlag.mimasu.kache
 
 import com.mayakapps.kache.ObjectKache
 import dev.datlag.tooling.async.suspendCatching
@@ -23,4 +23,16 @@ suspend fun <K : Any, V : Any> ObjectKache<K, V>.async(key: K, creationFunction:
     return suspendCatching {
         this@async.put(key) { creationFunction.invoke(key).also { created = it } }
     }.getOrNull() ?: created
+}
+
+suspend fun <K : Any, V : Any> ObjectKache<K, V>.asyncDelete(key: K): V? {
+    return suspendCatching {
+        this@asyncDelete.remove(key)
+    }.getOrNull()
+}
+
+suspend fun <K : Any, V : Any> ObjectKache<K, V>.asyncPutAndGet(key: K, value: V): V {
+    return suspendCatching {
+        this@asyncPutAndGet.put(key, value)
+    }.getOrNull() ?: async(key) { value } ?: value
 }

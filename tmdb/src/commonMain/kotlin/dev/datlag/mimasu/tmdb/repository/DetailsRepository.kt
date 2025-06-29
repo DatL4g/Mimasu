@@ -3,8 +3,8 @@ package dev.datlag.mimasu.tmdb.repository
 import co.touchlab.kermit.Logger
 import com.mayakapps.kache.InMemoryKache
 import dev.datlag.mimasu.core.withNonEmptyContext
+import dev.datlag.mimasu.kache.async
 import dev.datlag.mimasu.tmdb.api.Details
-import dev.datlag.mimasu.tmdb.common.async
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tmdb.model.details.Person
 import dev.datlag.mimasu.tmdb.model.details.Season

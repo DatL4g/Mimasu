@@ -34,6 +34,7 @@ kotlin {
             api(libs.firebase.config)
 
             implementation(project(":core"))
+            implementation(project(":kache"))
         }
 
         commonTest.dependencies {
