@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.core
 
+import dev.datlag.tooling.safeSubList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -42,4 +43,31 @@ fun <T> MutableList<T>.addSafely(index: Int, value: T) {
     } else {
         add(value)
     }
+}
+
+fun <T> Collection<T>.findAroundPositionOrNull(value: Int, predicate: (T) -> Int): T? {
+    if (value > this.size - 1) {
+        return this.lastOrNull { predicate(it) == value }
+    }
+    if (value !in this.indices) {
+        return this.firstOrNull { predicate(it) == value }
+    }
+
+    this.elementAtOrNull(value)?.let {
+        val predicateValue = predicate(it)
+        if (predicateValue == value) {
+            return it
+        } else {
+            val lower = safeSubList(0, value)
+            val higher = safeSubList(value, size)
+
+            return if (predicateValue > value) {
+                lower.lastOrNull { l -> predicate(l) == value } ?: higher.firstOrNull { h -> predicate(h) == value }
+            } else {
+                higher.firstOrNull { h -> predicate(h) == value } ?: lower.lastOrNull { l -> predicate(l) == value }
+            }
+        }
+    }
+
+    return this.firstOrNull { predicate(it) == value }
 }

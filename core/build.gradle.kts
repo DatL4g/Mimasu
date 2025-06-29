@@ -44,6 +44,8 @@ kotlin {
             implementation(libs.coroutines)
             implementation(libs.datetime)
             implementation(libs.reflection)
+            implementation(libs.tooling)
+            implementation(libs.immutable)
         }
     }
 }

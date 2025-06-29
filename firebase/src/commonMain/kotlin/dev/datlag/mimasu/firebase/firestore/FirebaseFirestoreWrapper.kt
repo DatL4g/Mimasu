@@ -2,6 +2,7 @@ package dev.datlag.mimasu.firebase.firestore
 
 import com.mayakapps.kache.InMemoryKache
 import com.mayakapps.kache.KacheStrategy
+import dev.datlag.mimasu.core.findAroundPositionOrNull
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.User
 import dev.datlag.mimasu.kache.async
@@ -375,7 +376,7 @@ data class FirebaseFirestoreWrapper(
                 showId = tmdbId,
                 seasonNumber = seasonNumber
             ), data.mergeWithCollection(episodesFor(tmdbId, seasonNumber))
-        ).firstOrNull { it.number == data.number } ?: data
+        ).findAroundPositionOrNull(data.number) { it.number } ?: data
     }
 
     @Serializable

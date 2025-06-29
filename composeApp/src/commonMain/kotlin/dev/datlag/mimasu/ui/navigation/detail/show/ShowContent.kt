@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
+import dev.datlag.mimasu.core.findAroundPositionOrNull
 import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Season
@@ -146,7 +147,7 @@ fun ShowContent(
                         )
                     }
                     val episodeData = remember(episodesData, episode) {
-                        episodesData.firstOrNull { it.number == episode.episodeNumber }
+                        episodesData.findAroundPositionOrNull(episode.episodeNumber) { it.number }
                     }
 
                     EpisodeItem(
