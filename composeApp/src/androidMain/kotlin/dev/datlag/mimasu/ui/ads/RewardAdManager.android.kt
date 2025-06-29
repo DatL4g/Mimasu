@@ -13,6 +13,9 @@ import com.jet.ads.admob.AdMobTestIds
 import com.jet.ads.common.callbacks.ShowAdCallBack
 import com.jet.ads.common.rewarded.RewardedControllerFactory
 import com.jet.ads.common.rewarded.RewardsController
+import dev.datlag.mimasu.BuildConfig
+import dev.datlag.mimasu.BuildKonfig
+import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.common.findActivity
 import dev.datlag.mimasu.other.AdManager
 import kotlinx.serialization.Serializable
@@ -31,18 +34,28 @@ actual class RewardAdManager(
         onRewarded: () -> Unit
     ) {
         if (activity != null && available) {
-            rewardManager.show(
-                adUnitId = AdMobTestIds.REWARDED,
-                activity = activity,
-                callBack = ShowAdCallBack(
-                    onAdFailedToShow = {
+            val unitId = if (BuildConfig.DEBUG) {
+                AdMobTestIds.REWARDED
+            } else {
+                Sekret.admobVideoReward(BuildKonfig.packageName)?.ifBlank { null }
+            }
+
+            if (unitId != null) {
+                rewardManager.show(
+                    adUnitId = unitId,
+                    activity = activity,
+                    callBack = ShowAdCallBack(
+                        onAdFailedToShow = {
+                            onRewarded()
+                        }
+                    ),
+                    onRewarded = {
                         onRewarded()
                     }
-                ),
-                onRewarded = {
-                    onRewarded()
-                }
-            )
+                )
+            } else {
+                onRewarded()
+            }
         } else {
             onRewarded()
         }
