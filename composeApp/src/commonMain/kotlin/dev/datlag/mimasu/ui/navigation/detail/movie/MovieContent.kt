@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
@@ -23,6 +24,7 @@ import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieInfo
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieOverview
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MoviePosterContent
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieProduction
+import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieTrailer
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
@@ -82,6 +84,17 @@ fun MovieContent(
         item {
             MovieProduction(
                 movie = movie,
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
+            )
+        }
+        item {
+            MovieTrailer(
+                url = movie.youtubeTrailer(
+                    language = Locale.current.language,
+                    country = Locale.current.region
+                )?.key,
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)

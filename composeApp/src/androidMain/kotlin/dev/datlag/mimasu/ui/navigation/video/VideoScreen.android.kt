@@ -13,17 +13,13 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -46,25 +42,19 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toRect
-import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.materials.HazeMaterials
-import dev.chrisbanes.haze.rememberHazeState
 import dev.datlag.kast.Kast
 import dev.datlag.kast.UnselectReason
 import dev.datlag.mimasu.common.detectPinchGestures
-import dev.datlag.mimasu.common.hazeEffect
 import dev.datlag.mimasu.common.merge
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.other.rememberPiPHelper
-import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.video.components.BottomControls
 import dev.datlag.mimasu.ui.navigation.video.components.CenterControls
 import dev.datlag.mimasu.ui.navigation.video.components.ExtraControls
@@ -78,7 +68,6 @@ import dev.datlag.mimasu.ui.navigation.video.states.rememberSeekState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.compose.ifFalse
-import dev.datlag.tooling.compose.ifTrue
 import kotlin.math.max
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -143,7 +132,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
 
     LaunchedEffect(playerWrapper) {
         mediaSession?.release()
-        mediaSession = MediaSession.Builder(context, playerWrapper).build()
+        mediaSession = MediaSession.Builder(context, ForwardingPlayer(playerWrapper)).build()
 
         playerWrapper.onError {
             if (sources.size - 1 > streamIndex) {
@@ -217,9 +206,9 @@ actual fun VideoScreen(onBack: () -> Unit) {
         VideoInfo(
             watchType = type,
             contentPadding = contentPadding,
-            forceCompact = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+            forceCompact = LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE
         ) { info ->
-            LaunchedEffect(handleWindowController, info) {
+            LaunchedEffect(handleWindowController, info, windowController) {
                 isInCompactMode = info.showingCompact
 
                 if (handleWindowController) {
@@ -338,12 +327,6 @@ actual fun VideoScreen(onBack: () -> Unit) {
         }
     }
 
-    DisposableEffect(mediaSession) {
-        onDispose {
-            mediaSession?.release()
-        }
-    }
-
     DisposableEffect(windowController) {
         onDispose {
             windowController.isSystemBarsVisible = true
@@ -355,6 +338,9 @@ actual fun VideoScreen(onBack: () -> Unit) {
     DisposableEffect(Unit) {
         onDispose {
             Kast.unselect(UnselectReason.stopped)
+
+            mediaSession?.release()
+            mediaSession = null
         }
     }
 }

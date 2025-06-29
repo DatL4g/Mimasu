@@ -1,5 +1,6 @@
 package dev.datlag.mimasu
 
+import android.app.PictureInPictureUiState
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -154,4 +155,11 @@ class MainActivity : AdActivity() {
         setIntent(Intent())
     }
 
+    override fun onPictureInPictureUiStateChanged(pipState: PictureInPictureUiState) {
+        super.onPictureInPictureUiStateChanged(pipState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            PiPHelper.setActive(pipState.isTransitioningToPip || this.isInPiPMode())
+        }
+    }
 }

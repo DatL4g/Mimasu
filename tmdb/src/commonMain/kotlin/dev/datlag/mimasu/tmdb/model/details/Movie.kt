@@ -51,7 +51,8 @@ data class Movie(
     @SerialName("vote_count") val voteCount: Int = 0,
     @SerialName("credits") val credits: Credits? = null,
     @SerialName("external_ids") val externalIDs: ExternalIDs? = null,
-    @SerialName("watch/providers") val watchProviders: WatchProviders? = null
+    @SerialName("watch/providers") val watchProviders: WatchProviders? = null,
+    @SerialName("videos") private val videos: VideoResult? = null,
 ) : HasBackdrop, HasPoster {
 
     @Transient
@@ -61,6 +62,27 @@ data class Movie(
     val releaseLocalDate = releaseDate?.ifBlank { null }?.let { scopeCatching {
         LocalDate.parse(it)
     }.getOrNull() }
+
+    @Transient
+    val trailer: Set<VideoResult.Video> = videos?.results?.filter {
+        it.type.equals("Trailer", ignoreCase = true)
+    }?.let { list ->
+        list.filter { it.official }.ifEmpty { list }
+    }?.toImmutableSet() ?: emptySet()
+
+    fun youtubeTrailer(language: String, country: String): VideoResult.Video? {
+        val youtubeVideos = trailer.filter {
+            it.site.equals("youtube", ignoreCase = true)
+        }.ifEmpty { return null }.sortedByDescending { it.size }
+
+        return youtubeVideos.firstOrNull {
+            it.language.equals(language, ignoreCase = true)
+        } ?: youtubeVideos.firstOrNull {
+            it.country.equals(country, ignoreCase = true)
+        } ?: youtubeVideos.firstOrNull {
+            it.language.equals(originalLanguage ?: "", ignoreCase = true)
+        }
+    }
 
     fun asCommon(): CommonMovie = CommonMovie(
         adult = adult,
@@ -312,6 +334,23 @@ data class Movie(
                 @SerialName("display_priority") val displayPriority: Int = 0
             ) : HasLogo
         }
+    }
+
+    @Serializable
+    data class VideoResult(
+        @SerialName("results") val results: Set<Video>
+    ) {
+
+        @Serializable
+        data class Video(
+            @SerialName("key") val key: String,
+            @SerialName("site") val site: String? = null,
+            @SerialName("size") val size: Int = 0,
+            @SerialName("type") val type: String? = null,
+            @SerialName("official") val official: Boolean = false,
+            @SerialName("iso_639_1") val language: String? = null,
+            @SerialName("iso_3166_1") val country: String? = null
+        )
     }
 
 }

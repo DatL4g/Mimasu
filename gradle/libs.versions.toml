@@ -77,7 +77,7 @@ tv-material = "1.0.0"
 ump = "3.2.0"
 versions = "0.52.0"
 wavy-slider = "2.0.0"
-youtube-player = "2.0.5"
+youtube-player = "12.1.2"
 
 [libraries]
 about = { group = "com.mikepenz", name = "aboutlibraries-compose-core", version.ref = "about" }
@@ -191,7 +191,7 @@ tv-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose
 tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tv-material" }
 ump = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "ump" }
 viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
-youtube-player = { group = "io.github.khubaibkhan4", name = "mediaplayer-kmp", version.ref = "youtube-player" }
+youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtube-player" }
 
 [bundles]
 android-ads = [ "admob", "ump", "jetads" ]

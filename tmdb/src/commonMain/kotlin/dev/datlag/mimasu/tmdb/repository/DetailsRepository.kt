@@ -58,6 +58,7 @@ class DetailsRepository(
                     appendToResponse = listOf(
                         APPEND_CREDITS,
                         APPEND_EXTERNAL_IDS,
+                        VIDEOS,
                         WATCH_PROVIDERS
                     ).joinToString(separator = ",")
                 )
@@ -133,5 +134,6 @@ class DetailsRepository(
         private const val APPEND_CREDITS = "credits"
         private const val APPEND_EXTERNAL_IDS = "external_ids"
         private const val WATCH_PROVIDERS = "watch/providers"
+        private const val VIDEOS = "videos"
     }
 }
