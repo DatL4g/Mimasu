@@ -4,6 +4,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
+import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
 import kotlinx.coroutines.cancel
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -47,6 +49,21 @@ class VideoViewModel(
     val watchType = Companion.watchType
 
     fun selectInfo(info: SourceInfo) = _selectedInfo.update { info }
+
+    fun finish(watchType: WatchType) = viewModelScope.launch {
+        when (watchType) {
+            is WatchType.Show -> {
+                firestoreWrapper.updateEpisode(
+                    tmdbId = watchType.showInfo.id,
+                    seasonNumber = watchType.seasonInfo.seasonNumber,
+                    data = ShowData.EpisodeData(
+                        number = watchType.episodeInfo.episodeNumber,
+                        finished = true
+                    )
+                )
+            }
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

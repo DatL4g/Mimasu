@@ -83,7 +83,13 @@ fun EpisodeItem(
 
     var isRevealed by remember(tmdbId, seasonNumber, episode.id) { mutableStateOf(false) }
     var episodeData by remember(defaultEpisodeData) { mutableStateOf(defaultEpisodeData) }
-    val watched = remember(episodeData) { episodeData?.markedAsWatched == true || episodeData?.finished == true }
+    val watched = remember(episodeData) {
+        if (episodeData?.markedAsWatched == false) {
+            false
+        } else {
+            episodeData?.markedAsWatched == true || episodeData?.finished == true
+        }
+    }
 
     RevealingCard(
         modifier = modifier,

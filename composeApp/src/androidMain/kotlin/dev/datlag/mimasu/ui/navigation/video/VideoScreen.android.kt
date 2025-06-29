@@ -142,6 +142,14 @@ actual fun VideoScreen(onBack: () -> Unit) {
     }
 
     LaunchedEffect(playerWrapper) {
+        playerWrapper.onFinish {
+            type?.let {
+                videoViewModel.finish(it)
+            }
+        }
+    }
+
+    LaunchedEffect(playerWrapper) {
         playerWrapper.onFirstFrame {
             handleWindowController = true
             windowController.addWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

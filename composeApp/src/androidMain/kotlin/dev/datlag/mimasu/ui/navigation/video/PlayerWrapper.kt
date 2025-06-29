@@ -195,6 +195,7 @@ class PlayerWrapper(
 
     private var firstFrameListener: FirstFrame? = null
     private var onErrorListener: OnError? = null
+    private var finishListener: OnFinish? = null
 
     init {
         castPlayer?.addListener(this)
@@ -215,12 +216,24 @@ class PlayerWrapper(
         onErrorListener = listener
     }
 
+    fun onFinish(listener: OnFinish) = apply {
+        finishListener = listener
+    }
+
     override fun onCastSessionAvailable() {
         castSessionAvailable = true
     }
 
     override fun onCastSessionUnavailable() {
         castSessionAvailable = false
+    }
+
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+
+        if (playbackState == Player.STATE_ENDED) {
+            finishListener?.invoke()
+        }
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -798,6 +811,10 @@ class PlayerWrapper(
     }
 
     fun interface OnError {
+        operator fun invoke()
+    }
+
+    fun interface OnFinish {
         operator fun invoke()
     }
 }
