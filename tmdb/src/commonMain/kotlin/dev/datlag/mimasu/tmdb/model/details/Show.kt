@@ -41,7 +41,7 @@ data class Show(
     @SerialName("origin_country") val originCountry: Set<String> = emptySet(),
     @SerialName("original_language") val originalLanguage: String? = null,
     @SerialName("original_name") val originalName: String? = null,
-    @SerialName("overview") val overview: String? = null,
+    @SerialName("overview") private val _overview: String? = null,
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("poster_path") override val posterSource: String? = null,
     @SerialName("production_companies") val productionCompanies: Set<ProductionCompany> = emptySet(),
@@ -58,6 +58,9 @@ data class Show(
 
     @Transient
     val imdbId: String? = _imdbId?.ifBlank { null } ?: externalIDs?.imdbId?.ifBlank { null }
+
+    @Transient
+    val overview: String? = _overview?.trim()?.ifBlank { null }
 
     @Transient
     val displaySeasons = seasons.filter { it.episodeCount > 0 }

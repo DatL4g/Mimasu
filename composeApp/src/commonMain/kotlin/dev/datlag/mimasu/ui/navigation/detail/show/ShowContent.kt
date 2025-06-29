@@ -3,6 +3,7 @@ package dev.datlag.mimasu.ui.navigation.detail.show
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,10 +11,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +30,8 @@ import dev.chrisbanes.haze.hazeSource
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.ui.custom.ErrorState
+import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.custom.RevealingCard
 import dev.datlag.mimasu.ui.navigation.detail.show.components.EpisodeItem
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowGenres
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowInfo
@@ -36,6 +45,7 @@ import dev.datlag.tooling.compose.ifTrue
 import kotlinx.collections.immutable.toImmutableList
 import dev.datlag.mimasu.extension.model.Show as Extension
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ShowContent(
     hazeState: HazeState,
@@ -148,9 +158,7 @@ fun ShowContent(
                         episode = episode,
                         seasonNumber = seasonState.season.seasonNumber,
                         showAvailability = showAvailability,
-                        modifier = Modifier.fillParentMaxWidth().ifTrue(index >= seasonState.season.episodes.size - 1) {
-                            padding(bottom = 16.dp)
-                        },
+                        modifier = Modifier.fillParentMaxWidth().padding(4.dp),
                         onStream = {
                             onStream(watchData.copy(
                                 sources = it.sources.map { (k, v) ->

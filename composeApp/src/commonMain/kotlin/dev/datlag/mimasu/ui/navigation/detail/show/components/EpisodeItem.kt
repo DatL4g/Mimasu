@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -32,13 +37,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import dev.datlag.mimasu.common.mediumLargeContainerSize
 import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.custom.swipe.SwipeAction
-import dev.datlag.mimasu.ui.custom.swipe.SwipeableActionsBox
-import dev.datlag.mimasu.ui.custom.swipe.rememberSwipeableActionsState
+import dev.datlag.mimasu.ui.custom.RevealingCard
 import dev.datlag.mimasu.ui.navigation.detail.show.EpisodeStreamState
 import dev.datlag.mimasu.ui.navigation.detail.show.ShowState
 import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeStream
@@ -52,6 +56,7 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 import dev.datlag.mimasu.extension.model.Show as Extension
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun EpisodeItem(
     tmdbId: Int?,
@@ -70,93 +75,66 @@ fun EpisodeItem(
     val scope = rememberCoroutineScope()
     val episodeStreamState by episodeStream.state.collectAsStateWithLifecycle()
 
-    var finished by remember { mutableStateOf(false) }
-    val errorColor = Platform.colorScheme().error
-    val onError = Platform.colorScheme().onError
-    val successColor = Color(0xFF66BB6A)
-    val onSuccess = Color.White
-    val startActions = remember(finished) {
-        if (finished) {
-            listOf(
-                SwipeAction(
-                    onSwipe = { finished = false },
-                    icon = {
-                        MaterialSymbols(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            name = MaterialSymbols.CLOSE,
-                            contentDescription = null,
-                            tint = onError
-                        )
-                    },
-                    background = errorColor,
-                    isUndo = true
-                )
-            )
-        } else {
-            emptyList()
-        }
-    }
-    val endActions = remember(finished) {
-        if (finished) {
-            emptyList()
-        } else {
-            listOf(
-                SwipeAction(
-                    onSwipe = { finished = true },
-                    icon = {
-                        MaterialSymbols(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            name = MaterialSymbols.CHECK,
-                            contentDescription = null,
-                            filled = true,
-                            tint = onSuccess
-                        )
-                    },
-                    background = successColor,
-                    isUndo = false
-                )
-            )
-        }
-    }
+    var isRevealed by remember(tmdbId, seasonNumber, episode.id) { mutableStateOf(false) }
+    RevealingCard(
+        modifier = modifier,
+        isRevealed = isRevealed,
+        onCardClick = {
+            scope.launch {
+                val stream = episodeStream.getStream() ?: return@launch
 
-    SwipeableActionsBox(
-        modifier = modifier.clip(CardDefaults.elevatedShape),
-        state = rememberSwipeableActionsState(),
-        startActions = startActions,
-        endActions = endActions,
-        backgroundUntilSwipeThreshold = if (finished) errorColor else successColor
-    ) {
-        ElevatedCard(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                scope.launch {
-                    val stream = episodeStream.getStream() ?: return@launch
-
-                    withMainContext {
-                        onStream(stream)
-                    }
+                withMainContext {
+                    onStream(stream)
                 }
-            },
-            shape = RectangleShape,
-            colors = CardDefaults.elevatedCardColors(
-                containerColor = Platform.colorScheme().background,
-                contentColor = Platform.colorScheme().onBackground
-            ),
-            enabled = when  (val current = episodeStreamState) {
-                is EpisodeStreamState.Available -> current.state
-                else -> current !is EpisodeStreamState.Unavailable
-            },
-            elevation = CardDefaults.elevatedCardElevation(0.dp, 0.dp, 0.dp, 0.dp, 0.dp, 0.dp)
-        ) {
+            }
+        },
+        cardColors = CardDefaults.cardColors(
+            containerColor = Platform.colorScheme().background,
+            contentColor = Platform.colorScheme().onBackground
+        ),
+        revealedCardColors = CardDefaults.cardColors(),
+        cardEnabled = !isRevealed && when (val current = episodeStreamState) {
+            is EpisodeStreamState.Available -> current.state
+            else -> current !is EpisodeStreamState.Unavailable
+        },
+        actionsContent = {
+            IconButton(
+                modifier = Modifier.padding(start = 4.dp).fillMaxHeight(),
+                onClick = {
+                    isRevealed = false
+                },
+                shapes = IconButtonDefaults.shapes(),
+                colors = IconButtonDefaults.filledIconButtonColors()
+            ) {
+                MaterialSymbols(
+                    name = MaterialSymbols.CHECK,
+                    contentDescription = null
+                )
+            }
+            IconButton(
+                modifier = Modifier.fillMaxHeight(),
+                onClick = {
+                    isRevealed = false
+                },
+                shapes = IconButtonDefaults.shapes(),
+                colors = IconButtonDefaults.filledTonalIconButtonColors()
+            ) {
+                MaterialSymbols(
+                    name = MaterialSymbols.LOGOUT,
+                    contentDescription = null
+                )
+            }
+        },
+        cardContent = {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val posters = remember(episode.showId, episode.id) { episode.posters(fallbackShow = null) }
 
                 Box(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(vertical = 4.dp, horizontal = 8.dp)
                         .height(84.dp)
                         .aspectRatio(1.75F, true)
                         .clip(Platform.shapes().medium),
@@ -232,7 +210,7 @@ fun EpisodeItem(
                 }
 
                 Column(
-                    modifier = Modifier.weight(1F).padding(8.dp),
+                    modifier = Modifier.weight(1F).padding(4.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val overview = remember(episode.showId, episode.id) { episode.overview?.ifBlank { null } }
@@ -254,7 +232,18 @@ fun EpisodeItem(
                         )
                     }
                 }
+
+                IconButton(
+                    onClick = {
+                        isRevealed = !isRevealed
+                    }
+                ) {
+                    MaterialSymbols(
+                        name = "more_vert",
+                        contentDescription = null
+                    )
+                }
             }
         }
-    }
+    )
 }

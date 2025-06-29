@@ -56,7 +56,7 @@ fun VideoInfo(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-                (watchType.episodeInfo.overview ?: watchType.seasonInfo.overview ?: watchType.showInfo.overview)?.let { overview ->
+                (watchType.episodeInfo.overview?.ifBlank { null } ?: watchType.seasonInfo.overview?.ifBlank { null } ?: watchType.showInfo.overview?.ifBlank { null })?.let { overview ->
                     item {
                         Text(
                             modifier = Modifier.fillParentMaxWidth().padding(16.dp),
