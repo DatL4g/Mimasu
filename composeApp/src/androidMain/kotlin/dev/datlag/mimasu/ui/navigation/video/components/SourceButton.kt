@@ -98,7 +98,7 @@ private fun SourceBottomSheet(
                     }
 
                     Text(
-                        text = "${info.sourceTitle}: ${info.locale}",
+                        text = "${info.sourceTitle}: ${info.sourceLocale?.ifBlank { null } ?: info.locale}",
                         fontWeight = if (selected) {
                             FontWeight.Bold
                         } else {
