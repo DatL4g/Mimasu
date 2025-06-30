@@ -168,8 +168,8 @@ android {
         targetSdk = 36
 
         applicationId = "dev.datlag.mimasu"
-        versionCode = 110
-        versionName = "1.1.0"
+        versionCode = 111
+        versionName = "1.1.1"
 
         multiDexEnabled = true
 
@@ -189,7 +189,6 @@ android {
     }
     buildTypes {
         release {
-            isDebuggable = true
             isMinifyEnabled = true
             isShrinkResources = true
             manifestPlaceholders["admob_app_id"] = getAdmobAppId() ?: ADMOB_ANDROID_TESTING
