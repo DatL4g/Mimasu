@@ -22,7 +22,6 @@ sealed interface Response {
     @EncodeDefault(EncodeDefault.Mode.ALWAYS)
     val mediaType: String?
 
-    @OptIn(ExperimentalSerializationApi::class)
     companion object Serializer : JsonContentPolymorphicSerializer<Response>(Response::class) {
         override fun selectDeserializer(element: JsonElement): DeserializationStrategy<Response> {
             val mediaType = element.jsonObject["media_type"]?.jsonPrimitive?.contentOrNull

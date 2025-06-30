@@ -189,6 +189,7 @@ android {
     }
     buildTypes {
         release {
+            isDebuggable = true
             isMinifyEnabled = true
             isShrinkResources = true
             manifestPlaceholders["admob_app_id"] = getAdmobAppId() ?: ADMOB_ANDROID_TESTING
