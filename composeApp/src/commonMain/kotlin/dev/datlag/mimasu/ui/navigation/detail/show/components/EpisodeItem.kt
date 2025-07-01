@@ -64,13 +64,13 @@ import dev.datlag.mimasu.extension.model.Show as Extension
 fun EpisodeItem(
     tmdbId: Int?,
     episode: Season.Episode,
-    defaultEpisodeData: ShowData.EpisodeData?,
+    episodeData: ShowData.EpisodeData?,
     seasonNumber: Int?,
     showAvailability: ShowState,
     modifier: Modifier = Modifier,
     onStream: (Extension.Response) -> Unit,
-    markAsWatched: suspend () -> ShowData.EpisodeData?,
-    markAsUnWatched: suspend () -> ShowData.EpisodeData?
+    markAsWatched: suspend () -> Unit,
+    markAsUnWatched: suspend () -> Unit
 ) {
     val episodeStream = rememberEpisodeStream(
         showState = showAvailability,
@@ -82,7 +82,6 @@ fun EpisodeItem(
     val episodeStreamState by episodeStream.state.collectAsStateWithLifecycle()
 
     var isRevealed by remember(tmdbId, seasonNumber, episode.id) { mutableStateOf(false) }
-    var episodeData by remember(defaultEpisodeData) { mutableStateOf(defaultEpisodeData) }
     val watched = remember(episodeData) {
         if (episodeData?.markedAsWatched == false) {
             false
@@ -118,10 +117,10 @@ fun EpisodeItem(
                 onClick = {
                     isRevealed = false
                     scope.launchIO {
-                        episodeData = if (watched) {
-                            markAsUnWatched() ?: episodeData
+                        if (watched) {
+                            markAsUnWatched()
                         } else {
-                            markAsWatched() ?: episodeData
+                            markAsWatched()
                         }
                     }
                 },

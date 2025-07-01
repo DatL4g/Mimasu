@@ -29,13 +29,8 @@ class FirebaseViewModel(
     private val detailsRepository: DetailsRepository
 ) : ViewModel() {
 
-    private val bookmarkedMovieData = flow {
-        emit(firestoreWrapper.getBookmarkedMovies())
-    }
-
-    private val bookmarkedShowData = flow {
-        emit(firestoreWrapper.getBookmarkedShows())
-    }
+    private val bookmarkedMovieData = firestoreWrapper.bookmarkedMovies
+    private val bookmarkedShowData = firestoreWrapper.bookmarkedShows
 
     val hasBookmarkedMovies = bookmarkedMovieData.map {
         it.isNotEmpty()

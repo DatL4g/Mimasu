@@ -195,11 +195,7 @@ fun Navigation() {
     ) {
         NavHost(
             navController = controller,
-            startDestination = if (user == null) {
-                Navigation.Login
-            } else {
-                Navigation.Home
-            }
+            startDestination = Navigation.Home
         ) {
             dialog<Navigation.Login>(
                 dialogProperties = Navigation.Login.dialogProperties()
@@ -279,6 +275,12 @@ fun Navigation() {
                         controller.popBackStack()
                     }
                 )
+            }
+        }
+
+        LaunchedEffect(user) {
+            if (user == null) {
+                controller.navigate(Navigation.Login)
             }
         }
     }

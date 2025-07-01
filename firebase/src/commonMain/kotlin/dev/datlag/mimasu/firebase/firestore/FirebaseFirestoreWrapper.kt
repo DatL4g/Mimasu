@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.firebase.firestore
 
+import co.touchlab.kermit.Logger
 import com.mayakapps.kache.InMemoryKache
 import com.mayakapps.kache.KacheStrategy
 import dev.datlag.mimasu.core.findAroundPositionOrNull
@@ -13,16 +14,18 @@ import dev.datlag.tooling.async.suspendCatching
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseApp
 import dev.gitlive.firebase.app
-import dev.gitlive.firebase.auth.FirebaseAuth
-import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FirebaseFirestore
-import dev.gitlive.firebase.firestore.Source
 import dev.gitlive.firebase.firestore.firestore
-import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.hours
 
@@ -40,6 +43,19 @@ data class FirebaseFirestoreWrapper(
 
     private val firestore: FirebaseFirestore
         get() = Firebase.firestore(app)
+
+    private val _bookmarkedMovies = MutableStateFlow<Collection<MovieData>>(emptyList())
+    private val _bookmarkedShows = MutableStateFlow<Collection<ShowData>>(emptyList())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val bookmarkedMovies = _bookmarkedMovies.mapLatest {
+        it.ifEmpty { getBookmarkedMovies() }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val bookmarkedShows = _bookmarkedShows.mapLatest {
+        it.ifEmpty { getBookmarkedShows() }
+    }
 
     private suspend fun <T> getOfflineData(
         db: FirebaseFirestore = firestore,
@@ -67,7 +83,7 @@ data class FirebaseFirestoreWrapper(
         }.recoverCatching { onFailure(db) }.getOrNull()
     }
 
-    suspend fun getBookmarkedMovies(): Collection<MovieData> {
+    private suspend fun getBookmarkedMovies(): Collection<MovieData> {
         val uid = authService.currentUser?.uid ?: return emptyList()
         suspend fun request(db: FirebaseFirestore): List<MovieData> {
             return db.collection(MovieData.COLLECTION).document(uid).collection(MovieData.GROUP).where {
@@ -82,7 +98,7 @@ data class FirebaseFirestoreWrapper(
             }
         }
 
-        return bookmarkedMovies.async(uid) {
+        return Companion.bookmarkedMovies.async(uid) {
             getOnlineData(
                 block = { db ->
                     request(db).ifEmpty { null }
@@ -103,7 +119,7 @@ data class FirebaseFirestoreWrapper(
         ).orEmpty().filter { it.bookmarked }
     }
 
-    suspend fun getBookmarkedShows(): Collection<ShowData> {
+    private suspend fun getBookmarkedShows(): Collection<ShowData> {
         val uid = authService.currentUser?.uid ?: return emptyList()
         suspend fun request(db: FirebaseFirestore): List<ShowData> {
             return db.collection(ShowData.COLLECTION).document(uid).collection(ShowData.GROUP).where {
@@ -118,7 +134,7 @@ data class FirebaseFirestoreWrapper(
             }
         }
 
-        return bookmarkedShows.async(uid) {
+        return Companion.bookmarkedShows.async(uid) {
             getOnlineData(
                 block = { db ->
                     request(db).ifEmpty { null }
@@ -152,7 +168,12 @@ data class FirebaseFirestoreWrapper(
             }
         })
 
-        bookmarkedMovies.asyncPutAndGet(uid, movie.mergeWithCollection(getBookmarkedMovies()))
+        _bookmarkedMovies.emit(
+            Companion.bookmarkedMovies.asyncPutAndGet(
+                key = uid,
+                value = movie.mergeWithCollection(getBookmarkedMovies())
+            )
+        )
     }
 
     suspend fun bookmark(show: ShowData, db: FirebaseFirestore = firestore) {
@@ -168,7 +189,12 @@ data class FirebaseFirestoreWrapper(
             }
         })
 
-        bookmarkedShows.asyncPutAndGet(uid, show.mergeWithCollection(getBookmarkedShows()))
+        _bookmarkedShows.emit(
+            Companion.bookmarkedShows.asyncPutAndGet(
+                key = uid,
+                value = show.mergeWithCollection(getBookmarkedShows())
+            )
+        )
     }
 
     suspend fun isMovieBookmarked(tmdbId: Int): Boolean {
@@ -303,11 +329,11 @@ data class FirebaseFirestoreWrapper(
         userDataKache.asyncDelete(uid)
     }
 
-    suspend fun episodesFor(tmdbId: Int, seasonNumber: Int): Collection<ShowData.EpisodeData> {
-        val uid = authService.currentUser?.uid ?: return emptyList()
+    suspend fun episodesFor(tmdbId: Int, seasonNumber: Int): MutableEpisodeData {
+        val uid = authService.currentUser?.uid ?: return MutableEpisodeData(emptyList())
 
         if (tmdbId <= 0 || seasonNumber < 0) {
-            return emptyList()
+            return MutableEpisodeData(emptyList())
         }
 
         suspend fun request(db: FirebaseFirestore): List<ShowData.EpisodeData> {
@@ -323,8 +349,8 @@ data class FirebaseFirestoreWrapper(
                 }
         }
 
-        return showSeasonEpisodeKache.async(
-            EpisodeCacheKey(
+        val value = showSeasonEpisodeKache.async(
+            key = EpisodeCacheKey(
                 uid = uid,
                 showId = tmdbId,
                 seasonNumber = seasonNumber
@@ -342,12 +368,14 @@ data class FirebaseFirestoreWrapper(
                         }
                     )
                 }
-            )?.ifEmpty { null }
+            )?.ifEmpty { null }?.let { MutableEpisodeData(it) }
         }?.ifEmpty { null } ?: getOfflineData(
             block = { db ->
                 request(db)
             }
-        ).orEmpty()
+        ).orEmpty().let { MutableEpisodeData(it) }
+
+        return value
     }
 
     suspend fun updateEpisode(
@@ -355,8 +383,8 @@ data class FirebaseFirestoreWrapper(
         seasonNumber: Int,
         data: ShowData.EpisodeData,
         db: FirebaseFirestore = firestore
-    ): ShowData.EpisodeData {
-        val uid = authService.currentUser?.uid ?: return data
+    ) {
+        val uid = authService.currentUser?.uid ?: return
         val doc = db.collection(ShowData.COLLECTION)
             .document(uid)
             .collection(ShowData.GROUP)
@@ -370,13 +398,18 @@ data class FirebaseFirestoreWrapper(
             }
         })
 
-        return showSeasonEpisodeKache.asyncPutAndGet(
-            EpisodeCacheKey(
-                uid = uid,
-                showId = tmdbId,
-                seasonNumber = seasonNumber
-            ), data.mergeWithCollection(episodesFor(tmdbId, seasonNumber))
-        ).findAroundPositionOrNull(data.number) { it.number } ?: data
+        val key = EpisodeCacheKey(
+            uid = uid,
+            showId = tmdbId,
+            seasonNumber = seasonNumber
+        )
+        val cached = showSeasonEpisodeKache.async(key = key)
+        val updated = data.mergeWithCollection(cached ?: episodesFor(tmdbId, seasonNumber))
+
+        showSeasonEpisodeKache.asyncPutAndGet(
+            key = key,
+            value = cached?.also { it.emit(updated) } ?: MutableEpisodeData(updated)
+        )
     }
 
     @Serializable
@@ -391,6 +424,41 @@ data class FirebaseFirestoreWrapper(
         val showId: Int,
         val seasonNumber: Int
     )
+
+    class MutableEpisodeData(
+        collection: Collection<ShowData.EpisodeData>
+    ) : Collection<ShowData.EpisodeData> {
+
+        private val _flow = MutableStateFlow(collection)
+        val flow = _flow.asStateFlow()
+
+        internal suspend fun emit(values: Collection<ShowData.EpisodeData>) {
+            _flow.emit(values)
+        }
+
+        internal fun update(values: Collection<ShowData.EpisodeData>) {
+            _flow.update { values }
+        }
+
+        override val size: Int
+            get() = flow.value.size
+
+        override fun isEmpty(): Boolean {
+            return flow.value.isEmpty()
+        }
+
+        override fun iterator(): Iterator<ShowData.EpisodeData> {
+            return flow.value.iterator()
+        }
+
+        override fun contains(element: ShowData.EpisodeData): Boolean {
+            return flow.value.contains(element)
+        }
+
+        override fun containsAll(elements: Collection<ShowData.EpisodeData>): Boolean {
+            return flow.value.containsAll(elements)
+        }
+    }
 
     companion object {
         private val cacheDuration = 12.hours
@@ -423,7 +491,7 @@ data class FirebaseFirestoreWrapper(
             expireAfterWriteDuration = cacheDuration
         }
 
-        private val showSeasonEpisodeKache = InMemoryKache<EpisodeCacheKey, Collection<ShowData.EpisodeData>>(
+        private val showSeasonEpisodeKache = InMemoryKache<EpisodeCacheKey, MutableEpisodeData>(
             maxSize = 5L * 1024 * 1024
         ) {
             strategy = KacheStrategy.LRU

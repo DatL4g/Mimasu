@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.transformLatest
@@ -106,6 +107,7 @@ class ShowViewModel(
 
     fun select(season: Show.Season) = _season.updateAndGet { season }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val episodesData = showSeason.mapNotNull { s ->
         s?.seasonNumber?.takeIf { it >= 0 }
     }.combine(id) { seasonNumber, showId ->
@@ -113,10 +115,19 @@ class ShowViewModel(
             ?: show.firstOrNull()?.getOrNull()?.id?.takeIf { it > 0 }
             ?: return@combine null
 
-        firestoreWrapper.episodesFor(showNotNullId, seasonNumber)
+        SeasonRequest(
+            showId = showNotNullId,
+            seasonId = seasonNumber
+        )
+    }.transformLatest {
+        return@transformLatest if (it == null) {
+            emit(it)
+        } else {
+            emitAll(firestoreWrapper.episodesFor(it.showId, it.seasonId).flow)
+        }
     }
 
-    suspend fun markAsWatched(tmdbId: Int, seasonNumber: Int, episode: Season.Episode): ShowData.EpisodeData {
+    suspend fun markAsWatched(tmdbId: Int, seasonNumber: Int, episode: Season.Episode) {
         val data = ShowData.EpisodeData(
             number = episode.episodeNumber,
             markedAsWatched = true
@@ -125,7 +136,7 @@ class ShowViewModel(
         return firestoreWrapper.updateEpisode(tmdbId, seasonNumber, data)
     }
 
-    suspend fun markAsUnwatched(tmdbId: Int, seasonNumber: Int, episode: Season.Episode): ShowData.EpisodeData  {
+    suspend fun markAsUnwatched(tmdbId: Int, seasonNumber: Int, episode: Season.Episode)  {
         val data = ShowData.EpisodeData(
             number = episode.episodeNumber,
             markedAsWatched = false

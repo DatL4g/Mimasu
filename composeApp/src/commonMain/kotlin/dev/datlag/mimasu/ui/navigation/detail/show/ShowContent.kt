@@ -50,8 +50,8 @@ fun ShowContent(
     episodesData: ImmutableList<ShowData.EpisodeData>,
     onSelectSeason: (Show.Season) -> Unit = {},
     onStream: (VideoViewModel.WatchType.Show) -> Unit,
-    markAsWatched: suspend (Season.Episode) -> ShowData.EpisodeData?,
-    markAsUnWatched: suspend (Season.Episode) -> ShowData.EpisodeData?,
+    markAsWatched: suspend (Season.Episode) -> Unit,
+    markAsUnWatched: suspend (Season.Episode) -> Unit,
 ) {
     LazyColumn(
         state = listState,
@@ -153,7 +153,7 @@ fun ShowContent(
                     EpisodeItem(
                         tmdbId = show.id.takeIf { it > 0 } ?: initial?.id,
                         episode = episode,
-                        defaultEpisodeData = episodeData,
+                        episodeData = episodeData,
                         seasonNumber = seasonState.season.seasonNumber,
                         showAvailability = showAvailability,
                         modifier = Modifier.fillParentMaxWidth().padding(4.dp),
