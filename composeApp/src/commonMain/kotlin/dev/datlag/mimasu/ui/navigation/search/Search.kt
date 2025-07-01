@@ -56,6 +56,7 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.custom.PersonCard
 import dev.datlag.mimasu.ui.custom.ShowCard
+import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel
 import dev.datlag.mimasu.ui.viewmodel.SearchViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
@@ -71,6 +72,7 @@ fun Search(
     onMovieClicked: (Movie) -> Unit
 ) {
     val searchViewModel = kodeinViewModel<SearchViewModel>()
+    val discoverViewModel = kodeinViewModel<DiscoverViewModel>()
     val query by searchViewModel.query.collectAsStateWithLifecycle()
 
     BackHandler(enabled = !query.isNullOrEmpty()) {
@@ -151,7 +153,7 @@ fun Search(
 
             is SearchRepository.SearchResult.Success -> {
                 if (current.isEmpty()) {
-                    if (query?.trim()?.takeIf { it.length >=  2 }?.isNotBlank() == true) {
+                    if (query?.trim()?.takeIf { it.length >= 2 }?.isNotBlank() == true) {
                         SearchInfo(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -161,14 +163,30 @@ fun Search(
                             text = stringResource(Res.string.search_info_empty),
                         )
                     } else {
-                        SearchInfo(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(padding)
-                                .padding(horizontal = 16.dp),
-                            iconName = MaterialSymbols.SEARCH,
-                            text = stringResource(Res.string.search_info_default),
-                        )
+                        val tvResult = discoverViewModel.discoverTV.collectAsLazyPagingItems()
+
+                        if (tvResult.itemCount <= 0) {
+                            SearchInfo(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(padding)
+                                    .padding(horizontal = 16.dp),
+                                iconName = MaterialSymbols.SEARCH,
+                                text = stringResource(Res.string.search_info_default),
+                            )
+                        } else {
+                            LazyRow(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = padding
+                            ) {
+                                items(tvResult.itemCount) { index ->
+                                    ShowCard(
+                                        tv = tvResult[index],
+                                        onClick = onShowClicked
+                                    )
+                                }
+                            }
+                        }
                     }
                 } else {
                     SearchContent(

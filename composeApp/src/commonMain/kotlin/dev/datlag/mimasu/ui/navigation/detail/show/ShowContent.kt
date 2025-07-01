@@ -52,6 +52,7 @@ fun ShowContent(
     onStream: (VideoViewModel.WatchType.Show) -> Unit,
     markAsWatched: suspend (Season.Episode) -> Unit,
     markAsUnWatched: suspend (Season.Episode) -> Unit,
+    onDiscover: (Int) -> Unit
 ) {
     LazyColumn(
         state = listState,
@@ -83,7 +84,8 @@ fun ShowContent(
                 show = show,
                 modifier = Modifier
                     .fillParentMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 16.dp),
+                onClick = onDiscover
             )
         }
         item {

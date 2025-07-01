@@ -2,6 +2,7 @@ package dev.datlag.mimasu.tmdb
 
 import de.jensklingenberg.ktorfit.ktorfit
 import dev.datlag.mimasu.tmdb.api.createDetails
+import dev.datlag.mimasu.tmdb.api.createDiscover
 import dev.datlag.mimasu.tmdb.api.createMovieLists
 import dev.datlag.mimasu.tmdb.api.createSearch
 import dev.datlag.mimasu.tmdb.api.createTrending
@@ -9,6 +10,7 @@ import dev.datlag.mimasu.tmdb.api.createTvSeriesLists
 import dev.datlag.mimasu.tmdb.converter.BoolStringConverter
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.tmdb.repository.DetailsRepository
+import dev.datlag.mimasu.tmdb.repository.DiscoverRepository
 import dev.datlag.mimasu.tmdb.repository.MovieListsRepository
 import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import dev.datlag.mimasu.tmdb.repository.TrendingRepository
@@ -30,7 +32,8 @@ data class TMDB internal constructor(
     val search: SearchRepository,
     val movieLists: MovieListsRepository,
     val tvSeriesLists: TvSeriesListsRepository,
-    val details: DetailsRepository
+    val details: DetailsRepository,
+    val discoverRepository: DiscoverRepository
 ) {
 
     class Builder {
@@ -108,6 +111,12 @@ data class TMDB internal constructor(
                 details = DetailsRepository(
                     apiKey = apiKey,
                     details = ktorfit.createDetails(),
+                    language = language,
+                    context = network.context
+                ),
+                discoverRepository = DiscoverRepository(
+                    apiKey = apiKey,
+                    discover = ktorfit.createDiscover(),
                     language = language,
                     context = network.context
                 )

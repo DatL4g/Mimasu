@@ -35,6 +35,8 @@ import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import kotlinx.serialization.Serializable
 import dev.datlag.mimasu.ui.ads.rememberAdManager
 import dev.datlag.mimasu.ui.navigation.login.Login
+import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel
+import dev.datlag.mimasu.ui.viewmodel.SearchViewModel
 import dev.datlag.mimasu.ui.viewmodel.loginViewModel
 
 object Navigation {
@@ -201,16 +203,16 @@ fun Navigation() {
                 dialogProperties = Navigation.Login.dialogProperties()
             ) {
                 Login {
-                    controller.navigate(Navigation.Home)
+                    controller.navigate(Navigation.Home) {
+                        launchSingleTop = true
+                    }
                 }
             }
             composable<Navigation.Profile> {
                 Profile(
                     onLogout = {
                         controller.navigate(Navigation.Login) {
-                            popUpTo(Navigation.Home) {
-                                inclusive = true
-                            }
+                            popUpTo(Navigation.Home)
                         }
                     }
                 )
@@ -232,9 +234,14 @@ fun Navigation() {
                     },
                     onLogout = {
                         controller.navigate(Navigation.Login) {
-                            popUpTo(Navigation.Home) {
-                                inclusive = true
-                            }
+                            popUpTo(Navigation.Home)
+                        }
+                    },
+                    navigateToDiscoverTV = {
+                        DiscoverViewModel.updateTVGenre(it)
+
+                        controller.navigate(Navigation.Search) {
+                            launchSingleTop = true
                         }
                     }
                 )
@@ -250,6 +257,13 @@ fun Navigation() {
                                 }
                             }
                         )
+                    },
+                    navigateToDiscover = {
+                        DiscoverViewModel.updateTVGenre(it)
+
+                        controller.navigate(Navigation.Search) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -280,7 +294,9 @@ fun Navigation() {
 
         LaunchedEffect(user) {
             if (user == null) {
-                controller.navigate(Navigation.Login)
+                controller.navigate(Navigation.Login) {
+                    launchSingleTop = true
+                }
             }
         }
     }

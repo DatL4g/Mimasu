@@ -51,7 +51,8 @@ fun NavigationSuiteScope.homeItem(
 @Composable
 fun HomeNavigation(
     navigateToVideo: (VideoViewModel.WatchType) -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    navigateToDiscoverTV: (Int) -> Unit
 ) {
     val controller = rememberListDetailController<Any, Navigation.Home.Detail, Navigation.Home.Extra>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
@@ -111,7 +112,8 @@ fun HomeNavigation(
                             onBack = {
                                 controller.navigateBack()
                             },
-                            onStream = navigateToVideo
+                            onStream = navigateToVideo,
+                            onDiscover = navigateToDiscoverTV
                         )
                     }
                 }

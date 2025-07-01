@@ -21,7 +21,6 @@ collection = "1.5.0"
 compose = "1.9.0-alpha02"
 compose-report = "1.4.2"
 compose-reload = "1.0.0-alpha10"
-connectivity = "1.1.3"
 constraint-layout = "0.4.0"
 coroutines = "1.10.2"
 crashlytics = "3.0.4"
@@ -41,34 +40,28 @@ kache = "2.1.1"
 kase-change = "1.4.1"
 kast = "0.2.1"
 kermit = "2.0.6"
-kmpalette = "3.1.0"
 kodein = "7.26.1"
-kolor = "2.1.1"
 konfig = "0.17.1"
 kotlin = "2.1.21"
 ksp = "2.1.21-2.0.2"
 ktor = "3.1.3"
 ktorfit = "2.5.2"
 lifecycle = "2.9.1"
-livedata = "2.9.1"
-locale = "0.8.0"
 media3 = "1.7.1"
 mockk = "1.14.2"
 multidex = "2.0.1"
 nanoid = "1.0.1"
 navigation = "2.9.0-beta03"
-okhttp = "4.12.0"
 osdetector = "1.7.3"
 paging = "3.3.6"
 performance = "1.4.2"
 placeholder = "1.0.11"
 play-services = "21.3.0"
-rive = "10.1.6"
+rive = "10.2.0"
 sekret = "2.1.2"
 serialization = "1.8.1"
 splashscreen = "1.0.1"
 stacktrace-decoroutinator = "2.5.4"
-telephoto = "0.14.0"
 tolgee = "2.0.0-RC-1"
 tooling = "1.7.0"
 tv-foundation = "1.0.0-alpha12"
@@ -76,7 +69,6 @@ tv-lifecycle = "2.8.7"
 tv-material = "1.0.0"
 ump = "3.2.0"
 versions = "0.52.0"
-wavy-slider = "2.0.0"
 youtube-player = "12.1.2"
 
 [libraries]
@@ -101,18 +93,14 @@ car = { group = "androidx.car.app", name = "app", version.ref = "car" }
 cast = { group = "com.google.android.gms", name = "play-services-cast", version.ref = "cast" }
 cast-framework = { group = "com.google.android.gms", name = "play-services-cast-framework", version.ref = "cast" }
 certificate-transparency-android = { group = "com.appmattus.certificatetransparency", name = "certificatetransparency-android", version.ref = "certificate-transparency" }
-certificate-transparency-jvm = { group = "com.appmattus.certificatetransparency", name = "certificatetransparency", version.ref = "certificate-transparency" }
 coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
 collection = { group = "androidx.collection", name = "collection", version.ref = "collection" }
-connectivity = { group = "dev.jordond.connectivity", name = "connectivity-core", version.ref = "connectivity" }
-connectivity-device = { group = "dev.jordond.connectivity", name = "connectivity-device", version.ref = "connectivity" }
 constraint-layout = { group = "tech.annexflow.compose", name = "constraintlayout-compose-multiplatform", version.ref = "constraint-layout" }
 coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "coroutines" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 cronet = { group = "com.google.android.gms", name = "play-services-cronet", version.ref = "cronet" }
 cronet-okhttp = { group = "com.google.net.cronet", name = "cronet-okhttp", version.ref = "cronet-okhttp" }
@@ -137,10 +125,8 @@ kase-change = { group = "net.pearx.kasechange", name = "kasechange", version.ref
 kast = { group = "dev.datlag.kast", name = "kast", version.ref = "kast" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 kermit-crashlytics = { group = "co.touchlab", name = "kermit-crashlytics", version.ref = "kermit" }
-kmpalette = { group = "com.kmpalette", name = "kmpalette-core", version.ref = "kmpalette" }
 kodein = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodein" }
 kodein-compose = { group = "org.kodein.di", name = "kodein-di-framework-compose", version.ref = "kodein" }
-kolor = { group = "com.materialkolor", name = "material-kolor", version.ref = "kolor" }
 ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-jvm = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
@@ -151,8 +137,6 @@ ktor-test = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor"
 ktorfit = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-lib", version.ref = "ktorfit" }
 ktorfit-ksp = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-ksp", version.ref = "ktorfit" }
 lifecycle = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "livedata" }
-locale = { group = "com.vanniktech", name = "multiplatform-locale", version.ref = "locale" }
 media3 = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 media3-dash = { group = "androidx.media3", name = "media3-exoplayer-dash", version.ref = "media3" }
 media3-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "media3" }
@@ -166,7 +150,6 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 nanoid = { group = "dev.datlag.nanoid", name = "nanoid", version.ref = "nanoid" }
 navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
-okhttp-doh = { group = "com.squareup.okhttp3", name = "okhttp-dnsoverhttps", version.ref = "okhttp" }
 paging = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
 paging-test = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
@@ -179,11 +162,9 @@ serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serializ
 serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "serialization" }
 splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
-telephoto = { group = "me.saket.telephoto", name = "zoomable", version.ref = "telephoto" }
 test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 tolgee = { group = "dev.datlag.tolgee", name = "compose", version.ref = "tolgee" }
 tooling = { group = "dev.datlag.tooling", name = "tooling-async", version.ref = "tooling" }
-tooling-country = { group = "dev.datlag.tooling", name = "tooling-country", version.ref = "tooling" }
 tooling-compose = { group = "dev.datlag.tooling", name = "tooling-compose", version.ref = "tooling" }
 tooling-decompose = { group = "dev.datlag.tooling", name = "tooling-decompose", version.ref = "tooling" }
 tv-foundation = { group = "androidx.tv", name = "tv-foundation", version.ref = "tv-foundation" }

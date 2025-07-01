@@ -17,6 +17,7 @@ import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
 import dev.datlag.mimasu.ui.navigation.detail.show.ShowDetail
 import dev.datlag.mimasu.ui.navigation.rememberListDetailController
+import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
@@ -100,7 +101,12 @@ fun SearchNavigation(
                             onBack = {
                                 controller.navigateBack()
                             },
-                            onStream = navigateToVideo
+                            onStream = navigateToVideo,
+                            onDiscover = {
+                                DiscoverViewModel.updateTVGenre(it)
+
+                                controller.navigateToList()
+                            }
                         )
                     }
                     else -> controller.navigateBack()

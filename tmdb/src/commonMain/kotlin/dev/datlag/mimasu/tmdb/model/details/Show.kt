@@ -140,6 +140,7 @@ data class Show(
     sealed class Status : CharSequence {
 
         abstract val value: String
+        abstract val discoverValue: Int
 
         override val length: Int
             get() = value.length
@@ -159,35 +160,44 @@ data class Show(
         @Serializable
         data object Returning : Status() {
             override val value: String = "Returning Series"
+            override val discoverValue: Int = 0
         }
 
         @Serializable
         data object Planned : Status() {
             override val value: String = "Planned"
+            override val discoverValue: Int = 1
         }
 
         @Serializable
         data object Pilot : Status() {
             override val value: String = "Pilot"
+            override val discoverValue: Int = 5
         }
 
         @Serializable
         data object InProduction : Status() {
             override val value: String = "In Production"
+            override val discoverValue: Int = 2
         }
 
         @Serializable
         data object Ended : Status() {
             override val value: String = "Ended"
+            override val discoverValue: Int = 3
         }
 
         @Serializable
         data object Canceled : Status() {
             override val value: String = "Canceled"
+            override val discoverValue: Int = 4
         }
 
         @Serializable
-        data class Custom(override val value: String) : Status()
+        data class Custom(
+            override val value: String,
+            override val discoverValue: Int = value.toIntOrNull() ?: 6
+        ) : Status()
 
         companion object Serializer : KSerializer<Status?> {
             override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ShowStatus", PrimitiveKind.STRING)
@@ -218,7 +228,15 @@ data class Show(
                 value.equals(InProduction.value, ignoreCase = true) -> InProduction
                 value.equals(Ended.value, ignoreCase = true) -> Ended
                 value.equals(Canceled.value, ignoreCase = true) -> Canceled
-                else -> Custom(value)
+                else -> when (value.toIntOrNull()) {
+                    Returning.discoverValue -> Returning
+                    Planned.discoverValue -> Planned
+                    Pilot.discoverValue -> Pilot
+                    InProduction.discoverValue -> InProduction
+                    Ended.discoverValue -> Ended
+                    Canceled.discoverValue -> Canceled
+                    else -> Custom(value)
+                }
             }
         }
     }

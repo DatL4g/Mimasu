@@ -22,7 +22,8 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun ShowGenres(
     show: Show,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Int) -> Unit
 ) {
     val genres = remember(show.id) { show.genres.toImmutableList() }
 
@@ -48,7 +49,9 @@ fun ShowGenres(
         ) {
             items(genres) { genre ->
                 SuggestionChip(
-                    onClick = { },
+                    onClick = {
+                        onClick(genre.id)
+                    },
                     label = {
                         Text(text = genre.name)
                     },
