@@ -178,22 +178,17 @@ fun Search(
                                 text = stringResource(Res.string.search_info_default),
                             )
                         } else {
-                            Box(
-                                modifier = Modifier.padding(
-                                    padding.merge(PaddingValues(horizontal = 8.dp))
-                                )
+                            LazyVerticalGrid(
+                                columns = GridCells.Adaptive(100.dp),
+                                contentPadding = padding.merge(PaddingValues(horizontal = 8.dp)),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                LazyVerticalGrid(
-                                    columns = GridCells.Adaptive(100.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    items(tvResult.itemCount) { index ->
-                                        ShowCard(
-                                            tv = tvResult[index],
-                                            onClick = onShowClicked
-                                        )
-                                    }
+                                items(tvResult.itemCount) { index ->
+                                    ShowCard(
+                                        tv = tvResult[index],
+                                        onClick = onShowClicked
+                                    )
                                 }
                             }
                         }
