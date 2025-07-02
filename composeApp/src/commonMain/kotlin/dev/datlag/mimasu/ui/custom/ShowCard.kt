@@ -86,6 +86,7 @@ private fun ShowCard(
         AsyncImage(
             modifier = Modifier
                 .size(width = 100.dp, height = 160.dp)
+                .align(Alignment.CenterHorizontally)
                 .clip(Platform.shapes().medium)
                 .placeholder(
                     visible = placeholder || loading,

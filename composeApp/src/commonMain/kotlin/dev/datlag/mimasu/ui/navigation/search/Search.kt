@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
@@ -37,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
+import dev.datlag.mimasu.common.merge
 import dev.datlag.mimasu.common.plus
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.home_people
@@ -175,15 +178,22 @@ fun Search(
                                 text = stringResource(Res.string.search_info_default),
                             )
                         } else {
-                            LazyRow(
-                                modifier = Modifier.fillMaxSize(),
-                                contentPadding = padding
+                            Box(
+                                modifier = Modifier.padding(
+                                    padding.merge(PaddingValues(horizontal = 8.dp))
+                                )
                             ) {
-                                items(tvResult.itemCount) { index ->
-                                    ShowCard(
-                                        tv = tvResult[index],
-                                        onClick = onShowClicked
-                                    )
+                                LazyVerticalGrid(
+                                    columns = GridCells.Adaptive(100.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    items(tvResult.itemCount) { index ->
+                                        ShowCard(
+                                            tv = tvResult[index],
+                                            onClick = onShowClicked
+                                        )
+                                    }
                                 }
                             }
                         }

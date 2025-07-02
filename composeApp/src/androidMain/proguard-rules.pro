@@ -76,3 +76,14 @@
     public static ** INSTANCE;
     kotlinx.serialization.KSerializer serializer(...);
 }
+
+# Keep the sealed interface and its concrete implementations
+-keep @kotlinx.serialization.Serializable interface dev.datlag.mimasu.tmdb.model.Response { *; }
+-keep @kotlinx.serialization.Serializable interface dev.datlag.mimasu.tmdb.model.PagedResponse { *; }
+-keep @kotlinx.serialization.Serializable interface dev.datlag.mimasu.tmdb.model.Movie { *; }
+-keep @kotlinx.serialization.Serializable interface dev.datlag.mimasu.tmdb.model.TV { *; }
+-keep @kotlinx.serialization.Serializable interface dev.datlag.mimasu.tmdb.model.People { *; }
+
+# Keep the custom serializer object
+-keep class dev.datlag.mimasu.tmdb.model.Response$Serializer { *; }
+-keepnames class * implements kotlinx.serialization.KSerializer

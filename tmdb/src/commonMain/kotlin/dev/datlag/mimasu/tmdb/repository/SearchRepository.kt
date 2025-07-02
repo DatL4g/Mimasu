@@ -2,6 +2,7 @@ package dev.datlag.mimasu.tmdb.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Search
 import dev.datlag.mimasu.tmdb.model.Movie
@@ -13,11 +14,8 @@ import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import io.ktor.client.call.body
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.Serializable
@@ -97,13 +95,14 @@ class SearchRepository(
 
             internal fun from(result: Result<PagedResponse<Response>>): SearchResult {
                 if (result.isFailure) {
+                    Logger.e("Search Result Failure", result.exceptionOrNull())
                     return Error
                 }
-                val result = result.getOrNull() ?: return Empty
+                val saveResult = result.getOrNull() ?: return Empty
 
-                val people = result.results.filterIsInstance<People>()
-                val movies = result.results.filterIsInstance<Movie>()
-                val series = result.results.filterIsInstance<TV>()
+                val people = saveResult.results.filterIsInstance<People>()
+                val movies = saveResult.results.filterIsInstance<Movie>()
+                val series = saveResult.results.filterIsInstance<TV>()
 
                 return if (people.isEmpty() && movies.isEmpty() && series.isEmpty()) {
                     Empty
