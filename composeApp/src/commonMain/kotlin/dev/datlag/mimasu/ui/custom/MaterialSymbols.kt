@@ -96,12 +96,21 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toolingGraphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasurePolicy
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.composeapp.generated.resources.MaterialSymbolsRounded
@@ -112,10 +121,14 @@ import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.localContentColor
 import dev.datlag.tooling.compose.withIOContext
+import dev.datlag.tooling.scopeCatching
 import dev.tclement.fonticons.ExperimentalFontIconsApi
-import dev.tclement.fonticons.FontIcon
 import dev.tclement.fonticons.IconFont
+import dev.tclement.fonticons.LocalIconFont
 import dev.tclement.fonticons.LocalIconSize
+import dev.tclement.fonticons.LocalIconTint
+import dev.tclement.fonticons.LocalIconTintProvider
+import dev.tclement.fonticons.LocalIconWeight
 import dev.tclement.fonticons.VariableIconFont
 import dev.tclement.fonticons.createVariableIconFont
 import dev.tclement.fonticons.painter.rememberFontIconPainter
@@ -406,8 +419,9 @@ data object MaterialSymbols {
                 0F
             }
         )
+        var forceFallback by remember { mutableStateOf(false) }
 
-        if (font == null) {
+        if (font == null || forceFallback) {
             if (fallback != null) {
                 PlatformIcon(
                     imageVector = fallback,
@@ -419,12 +433,15 @@ data object MaterialSymbols {
                 Spacer(modifier = modifier)
             }
         } else {
-            FontIcon(
+            RebuildFontIcon(
                 iconName = name,
                 contentDescription = contentDescription,
                 modifier = modifier,
                 tint = tint,
-                iconFont = font
+                iconFont = font,
+                onError = {
+                    forceFallback = true
+                }
             )
         }
     }
@@ -747,4 +764,74 @@ data object MaterialSymbols {
     @Retention(AnnotationRetention.BINARY)
     @Target(AnnotationTarget.FUNCTION)
     annotation class RedrawRequired
+
+    @Composable
+    @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
+    private fun RebuildFontIcon(
+        iconName: String,
+        contentDescription: String?,
+        modifier: Modifier = Modifier,
+        tint: Color = LocalIconTintProvider.current?.current ?: LocalIconTint.current,
+        weight: FontWeight = LocalIconWeight.current,
+        iconFont: IconFont = LocalIconFont.current,
+        onError: (Throwable?) -> Unit
+    ) {
+        val fontFamilyResolver = LocalFontFamilyResolver.current
+
+        Layout(
+            modifier = modifier.toolingGraphicsLayer() then dev.tclement.fonticons.FontIconElement(
+                iconName,
+                tint,
+                weight,
+                iconFont,
+                fontFamilyResolver,
+                contentDescription
+            ),
+            measurePolicy = CustomMeasurePolicy(onError)
+        )
+    }
+
+    private class CustomMeasurePolicy(private val onError: (Throwable?) -> Unit) : MeasurePolicy {
+        private val placementBlock: Placeable.PlacementScope.() -> Unit = {}
+
+        override fun MeasureScope.measure(
+            measurables: List<Measurable>,
+            constraints: Constraints
+        ): MeasureResult {
+            val maxWidth = constraints.maxWidth
+            val maxHeight = constraints.maxHeight
+
+            val width = if (maxWidth and MaxLayoutMask != 0) {
+                if (maxHeight and MaxLayoutMask != 0) {
+                    null
+                } else {
+                    maxHeight
+                }
+            } else {
+                maxWidth
+            }
+
+            val height = if (maxHeight and MaxLayoutMask != 0) {
+                if (maxWidth and MaxLayoutMask != 0) {
+                    null
+                } else {
+                    maxWidth
+                }
+            } else {
+                maxHeight
+            }
+
+            return scopeCatching {
+                layout(
+                    width = width ?: constraints.maxWidth,
+                    height = height ?: constraints.maxHeight,
+                    placementBlock = placementBlock
+                )
+            }.onFailure(onError).getOrNull() ?: layout(0, 0, placementBlock = placementBlock)
+        }
+
+        companion object {
+            private const val MaxLayoutMask: Int = 0xFF00_0000.toInt()
+        }
+    }
 }
