@@ -7,12 +7,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.tv.material3.Text
 import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -33,7 +36,11 @@ class TVActivity : ComponentActivity() {
         }
 
         super.onCreate(savedInstanceState)
-        installSplashScreen()
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                Network.showSplashscreen
+            }
+        }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
@@ -42,6 +49,7 @@ class TVActivity : ComponentActivity() {
 
         setContent {
             Column(
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.aligned(Alignment.CenterVertically),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

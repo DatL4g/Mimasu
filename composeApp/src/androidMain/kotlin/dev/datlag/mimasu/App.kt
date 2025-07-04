@@ -15,6 +15,7 @@ import com.appmattus.certificatetransparency.installCertificateTransparencyProvi
 import com.google.android.gms.net.CronetProviderInstaller
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.module.NetworkModule
+import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.compose.launchIO
 import dev.gitlive.firebase.Firebase
@@ -67,7 +68,7 @@ class App : MultiDexApplication(), DIAware {
             val apiKey = Sekret.firebaseApiKey(BuildKonfig.packageName)
 
             if (appId.isNullOrBlank() || apiKey.isNullOrBlank()) {
-                NetworkModule.initializeFailure()
+                Network.initializeFailure()
                 return
             }
 
@@ -84,13 +85,13 @@ class App : MultiDexApplication(), DIAware {
                 Logger.setLogWriters(CrashlyticsLogWriter())
             }
         } else {
-            NetworkModule.initializeFailure()
+            Network.initializeFailure()
             return
         }
 
         val config by di.instance<FirebaseRemoteConfigService>()
         applicationScope.launchIO {
-            NetworkModule.fetchConfig(config)
+            Network.fetchConfig(config)
         }
     }
 

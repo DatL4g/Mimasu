@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.serialization)
     alias(libs.plugins.atomicfu)
+    alias(libs.plugins.sekret)
 }
 
 val artifact = "dev.datlag.mimasu.ui"

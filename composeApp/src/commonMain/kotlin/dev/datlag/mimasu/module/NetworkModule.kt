@@ -16,6 +16,7 @@ import dev.datlag.mimasu.firebase.auth.api.DisposableDebounce
 import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.tmdb.TMDB
+import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.viewmodel.KodeinViewModelFactory
 import dev.datlag.sekret.Secret
 import io.ktor.client.HttpClient
@@ -36,20 +37,6 @@ import org.kodein.di.instance
 data object NetworkModule {
 
     const val NAME = "NetworkModule"
-
-    private val _config = MutableStateFlow<Config>(Config.Fetching)
-    val config: StateFlow<Config> = _config.asStateFlow()
-
-    private var startedFetching = 0L
-
-    val showSplashscreen: Boolean
-        get() {
-            return if (config.value is Config.Fetching) {
-                startedFetching == 0L || LocalDateTime.now().toEpochMilliseconds() - startedFetching < 3000L
-            } else {
-                false
-            }
-        }
 
     val di: DI.Module = DI.Module(NAME) {
         import(PlatformModule.di)
@@ -89,7 +76,7 @@ data object NetworkModule {
                 network {
                     client(instance<HttpClient>())
                 }
-                apiKey(config.value.getOrThrow().tmdb)
+                apiKey(Network.tmdbApiKey)
                 language(Locale.current.language)
                 region(Locale.current.region)
             }
@@ -107,79 +94,6 @@ data object NetworkModule {
             DisposableDebounce.create(
                 client = instance()
             )
-        }
-    }
-
-    suspend fun fetchConfig(remoteService: FirebaseRemoteConfigService) {
-        if ((config.firstOrNull() ?: config.value) is Config.Failure.Initialize) {
-            return
-        }
-        startedFetching = LocalDateTime.now().toEpochMilliseconds()
-        _config.update { Config.Fetching }
-
-        val tmdb = remoteService.getStringResult(Config.TMDB_KEY)
-        startedFetching = 0L
-
-        _config.update {
-            if (tmdb.isFailure) {
-                Config.Failure.Fetching(tmdb.exceptionOrNull())
-            } else {
-                val tolgee = remoteService.getNullableString(Config.TOLGEE_KEY)?.ifBlank { null }
-
-                Config.Success(
-                    tmdb = tmdb.getOrNull() ?: return@update Config.Failure.Fetching(),
-                    tolgee = tolgee
-                )
-            }
-        }
-    }
-
-    fun initializeFailure() {
-        _config.update { Config.Failure.Initialize }
-    }
-
-    @Serializable
-    sealed interface Config {
-
-        fun getOrThrow(): Success {
-            return if (this is Success) {
-                this
-            } else {
-                throw AccessException(this)
-            }
-        }
-
-        fun tolgeeApiKey(): String? = when (this) {
-            is Success -> tolgee?.ifBlank { null }
-            else -> null
-        }
-
-        @Serializable
-        data object Fetching : Config
-
-        @Serializable
-        sealed interface Failure : Config {
-
-            @Serializable
-            data object Initialize : Failure
-
-            @Serializable
-            data class Fetching(
-                @Transient val throwable: Throwable? = null
-            ) : Failure
-        }
-
-        @Serializable
-        data class Success(
-            @Secret val tmdb: String,
-            @Secret val tolgee: String?
-        ) : Config
-
-        class AccessException(state: Config) : Exception("Tried to access config data while in $state state.")
-
-        companion object {
-            const val TMDB_KEY = "tmdb_api_key"
-            const val TOLGEE_KEY = "tolgee_api_key"
         }
     }
 }

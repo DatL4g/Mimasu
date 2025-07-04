@@ -21,6 +21,7 @@ import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.tv.TVActivity
+import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.tooling.Platform
@@ -61,7 +62,7 @@ class MainActivity : AdActivity() {
         } else {
             installSplashScreen().apply {
                 setKeepOnScreenCondition {
-                    NetworkModule.showSplashscreen
+                    Network.showSplashscreen
                 }
             }
         }

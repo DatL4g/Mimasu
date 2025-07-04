@@ -19,6 +19,7 @@ import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.custom.FailureConfigState
 import dev.datlag.mimasu.ui.custom.FetchConfigState
 import dev.datlag.mimasu.ui.navigation.Navigation
+import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.mimasu.ui.theme.dynamicDark
 import dev.datlag.mimasu.ui.theme.dynamicLight
@@ -58,7 +59,7 @@ fun App(
                     contentColor = Platform.colorScheme().onBackground
                 ) {
                     val accountViewModel = accountViewModel()
-                    val config by NetworkModule.config.collectAsStateWithLifecycle()
+                    val config by Network.config.collectAsStateWithLifecycle()
 
                     LaunchedEffect(accountViewModel) {
                         // Force account loading, while startup
@@ -66,9 +67,9 @@ fun App(
                     }
 
                     when (val current = config) {
-                        is NetworkModule.Config.Fetching -> FetchConfigState()
-                        is NetworkModule.Config.Failure -> FailureConfigState(current)
-                        is NetworkModule.Config.Success -> Navigation()
+                        is Network.Config.Fetching -> FetchConfigState()
+                        is Network.Config.Failure -> FailureConfigState(current)
+                        is Network.Config.Success -> Navigation()
                     }
                 }
             }
