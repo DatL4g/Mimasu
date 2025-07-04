@@ -20,16 +20,18 @@ kotlin {
             implementation(libs.navigation)
 
             implementation(libs.kermit)
-            implementation(libs.tooling)
+            implementation(libs.tooling.compose)
 
-            implementation(project(":ui"))
-        }
-
-        androidMain.dependencies {
             implementation(libs.tv.foundation)
             implementation(libs.tv.material)
 
+            implementation(libs.coil)
+            implementation(libs.coil.network)
+            implementation(libs.coil.svg)
+            implementation(libs.coil.compose)
             implementation(libs.splashscreen)
+
+            implementation(project(":ui"))
         }
     }
 }

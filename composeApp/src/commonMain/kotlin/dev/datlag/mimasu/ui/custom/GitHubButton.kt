@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.LocalDarkMode
 import dev.datlag.mimasu.common.rememberGitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
+import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.tooling.compose.platform.PlatformBorder
 import dev.datlag.tooling.compose.platform.PlatformButton
 import dev.datlag.tooling.compose.platform.PlatformButtonBorder

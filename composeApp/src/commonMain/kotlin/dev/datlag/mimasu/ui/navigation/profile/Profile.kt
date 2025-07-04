@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.datlag.mimasu.common.rememberGitHubAuthParams
-import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.github
 import dev.datlag.mimasu.composeapp.generated.resources.google
@@ -47,6 +46,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_cancel
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_text
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_yes
+import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.navigation.profile.components.AboutDialog
 import dev.datlag.mimasu.ui.navigation.profile.components.ExtensionSection

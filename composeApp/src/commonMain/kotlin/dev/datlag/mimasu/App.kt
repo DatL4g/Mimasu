@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.module.NetworkModule
+import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.custom.FailureConfigState
 import dev.datlag.mimasu.ui.custom.FetchConfigState
 import dev.datlag.mimasu.ui.navigation.Navigation
@@ -32,8 +33,6 @@ import dev.datlag.tooling.compose.platform.rememberIsTv
 import dev.datlag.tooling.compose.platform.typography
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI
-
-val LocalDarkMode = compositionLocalOf<Boolean> { error("No dark mode state provided") }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

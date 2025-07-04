@@ -52,9 +52,9 @@ import androidx.media3.session.MediaSession
 import dev.datlag.kast.Kast
 import dev.datlag.kast.UnselectReason
 import dev.datlag.mimasu.common.detectPinchGestures
-import dev.datlag.mimasu.common.merge
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.other.rememberPiPHelper
+import dev.datlag.mimasu.ui.common.merge
 import dev.datlag.mimasu.ui.navigation.video.components.BottomControls
 import dev.datlag.mimasu.ui.navigation.video.components.CenterControls
 import dev.datlag.mimasu.ui.navigation.video.components.ExtraControls

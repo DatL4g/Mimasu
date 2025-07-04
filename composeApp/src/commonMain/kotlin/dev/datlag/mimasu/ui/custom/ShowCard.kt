@@ -27,10 +27,10 @@ import coil3.compose.rememberAsyncImagePainter
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.material3.fade
 import com.eygraber.compose.placeholder.material3.placeholder
-import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 

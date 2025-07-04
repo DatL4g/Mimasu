@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.datlag.mimasu.common.merge
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.search_info_default
 import dev.datlag.mimasu.composeapp.generated.resources.search_info_empty
@@ -30,6 +29,7 @@ import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
+import dev.datlag.mimasu.ui.common.merge
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel

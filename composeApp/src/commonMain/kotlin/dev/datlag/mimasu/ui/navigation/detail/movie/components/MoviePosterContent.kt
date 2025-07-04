@@ -16,7 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.movie_release_date_format
 import dev.datlag.mimasu.composeapp.generated.resources.movie_status_canceled
@@ -35,6 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 import dev.datlag.mimasu.common.formatMedium
+import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 
 @Composable
 fun MoviePosterContent(

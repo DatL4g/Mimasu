@@ -33,9 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.window.core.layout.WindowSizeClass
-import coil3.compose.AsyncImagePainter
-import coil3.compose.AsyncImagePainter.State
-import coil3.compose.rememberAsyncImagePainter
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.hazeChild
@@ -44,95 +41,11 @@ import dev.chrisbanes.haze.materials.CupertinoMaterials
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.FluentMaterials
 import dev.chrisbanes.haze.materials.HazeMaterials
-import dev.datlag.mimasu.LocalDarkMode
+import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.custom.MediumLargeIconButtonTokens
 import dev.datlag.tooling.Platform
 import kotlin.math.abs
 import kotlin.math.absoluteValue
-
-@Composable
-operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
-    val direction = LocalLayoutDirection.current
-
-    return PaddingValues(
-        start = this.calculateStartPadding(direction) + other.calculateStartPadding(direction),
-        top = this.calculateTopPadding() + other.calculateTopPadding(),
-        end = this.calculateEndPadding(direction) + other.calculateEndPadding(direction),
-        bottom = this.calculateBottomPadding() + other.calculateBottomPadding()
-    )
-}
-
-@Composable
-operator fun PaddingValues.plus(all: Dp): PaddingValues {
-    val direction = LocalLayoutDirection.current
-    val other = PaddingValues(all)
-
-    return PaddingValues(
-        start = this.calculateStartPadding(direction) + other.calculateStartPadding(direction),
-        top = this.calculateTopPadding() + other.calculateTopPadding(),
-        end = this.calculateEndPadding(direction) + other.calculateEndPadding(direction),
-        bottom = this.calculateBottomPadding() + other.calculateBottomPadding()
-    )
-}
-
-@Composable
-fun PaddingValues.merge(other: PaddingValues): PaddingValues {
-    val direction = LocalLayoutDirection.current
-
-    return PaddingValues(
-        start = max(this.calculateStartPadding(direction), other.calculateStartPadding(direction)),
-        top = max(this.calculateTopPadding(), other.calculateTopPadding()),
-        end = max(this.calculateEndPadding(direction), other.calculateEndPadding(direction)),
-        bottom = max(this.calculateBottomPadding(), other.calculateBottomPadding())
-    )
-}
-
-@Composable
-fun PaddingValues.merge(all: Dp): PaddingValues {
-    val direction = LocalLayoutDirection.current
-    val other = PaddingValues(all)
-
-    return PaddingValues(
-        start = max(this.calculateStartPadding(direction), other.calculateStartPadding(direction)),
-        top = max(this.calculateTopPadding(), other.calculateTopPadding()),
-        end = max(this.calculateEndPadding(direction), other.calculateEndPadding(direction)),
-        bottom = max(this.calculateBottomPadding(), other.calculateBottomPadding())
-    )
-}
-
-@Composable
-fun rememberNestedImagePainter(
-    models: Collection<Any?>,
-    contentScale: ContentScale = ContentScale.Crop,
-    onLoading: ((State.Loading) -> Unit)? = null,
-    onSuccess: ((State.Success) -> Unit)? = null,
-    onError: ((State.Error) -> Unit)? = null,
-): AsyncImagePainter {
-    val data = remember(models) { models.filterNotNull() }
-
-    if (data.isEmpty()) {
-        return rememberAsyncImagePainter(
-            model = null,
-            contentScale = contentScale,
-            onError = {
-                onError?.invoke(it)
-            }
-        )
-    }
-
-    return rememberAsyncImagePainter(
-        model = data.first(),
-        contentScale = contentScale,
-        error = rememberNestedImagePainter(data.drop(1), contentScale),
-        onLoading = onLoading,
-        onSuccess = onSuccess,
-        onError = {
-            if (data.size <= 1) {
-                onError?.invoke(it)
-            }
-        }
-    )
-}
 
 @OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable

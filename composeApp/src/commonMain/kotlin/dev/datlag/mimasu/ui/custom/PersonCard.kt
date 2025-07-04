@@ -28,7 +28,9 @@ import coil3.compose.rememberAsyncImagePainter
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.material3.fade
 import com.eygraber.compose.placeholder.material3.placeholder
+import dev.datlag.mimasu.tmdb.common.logos
 import dev.datlag.mimasu.tmdb.model.People
+import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 
@@ -67,6 +69,8 @@ fun PersonCard(
                 }
             }
         } else {
+            val logos = remember { person.logos() }
+
             AsyncImage(
                 modifier = Modifier
                     .size(100.dp)
@@ -76,15 +80,11 @@ fun PersonCard(
                         shape = CircleShape,
                         highlight = PlaceholderHighlight.fade()
                     ),
-                model = person?.logo,
+                model = logos.firstOrNull(),
                 contentScale = ContentScale.Crop,
-                error = rememberAsyncImagePainter(
-                    model = person?.logoW500,
-                    contentScale = ContentScale.Crop,
-                    error = rememberAsyncImagePainter(
-                        model = person?.logoSource,
-                        contentScale = ContentScale.Crop
-                    )
+                error = rememberNestedImagePainter(
+                    models = logos.drop(1),
+                    contentScale = ContentScale.Crop
                 ),
                 alignment = Alignment.Center,
                 contentDescription = person?.name,

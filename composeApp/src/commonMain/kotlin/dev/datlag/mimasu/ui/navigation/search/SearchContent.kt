@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.common.plus
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.search_movies
 import dev.datlag.mimasu.composeapp.generated.resources.search_people
@@ -23,6 +22,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.search_series
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.repository.SearchRepository
+import dev.datlag.mimasu.ui.common.plus
 import dev.datlag.mimasu.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.custom.PersonCard
 import dev.datlag.mimasu.ui.custom.ShowCard

@@ -1,7 +1,6 @@
 package dev.datlag.mimasu.tv
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,12 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.tv.material3.Text
+import androidx.tv.material3.MaterialTheme
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.ui.other.Network
+import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.asTv
+import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -53,9 +54,8 @@ class TVActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.aligned(Alignment.CenterVertically),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Hello on Android TV",
-                    color = Color.White
+                App(
+                    di = di
                 )
             }
         }

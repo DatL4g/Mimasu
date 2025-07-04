@@ -38,6 +38,12 @@ kotlin {
             implementation(libs.collection)
             implementation(libs.kermit)
             implementation(libs.ktor)
+
+            implementation(libs.coil)
+            implementation(libs.coil.network)
+            implementation(libs.coil.svg)
+            implementation(libs.coil.compose)
+
             implementation(project(":core"))
 
             api(project(":tmdb"))
