@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -15,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -93,6 +96,21 @@ private fun TabBar(navController: NavController) {
     val isMovies = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Movies>() ?: false }
     val isShows = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Shows>() ?: false }
 
+    val searchFocus = remember { FocusRequester() }
+    val homeFocus = remember { FocusRequester() }
+    val moviesFocus = remember { FocusRequester() }
+    val showsFocus = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        when {
+            isSearch -> searchFocus.requestFocus()
+            isHome -> homeFocus.requestFocus()
+            isMovies -> moviesFocus.requestFocus()
+            isShows -> showsFocus.requestFocus()
+            else -> homeFocus.requestFocus()
+        }
+    }
+
     TabRow(
         selectedTabIndex = when {
             isSearch -> 0
@@ -104,7 +122,9 @@ private fun TabBar(navController: NavController) {
         modifier = Modifier.focusRestorer().padding(16.dp)
     ) {
         Tab(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier
+                .focusRequester(searchFocus)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             selected = isSearch,
             onFocus = {
                 if (!isSearch) {
@@ -125,7 +145,9 @@ private fun TabBar(navController: NavController) {
             Text(text = stringResource(Res.string.tv_tab_search))
         }
         Tab(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier
+                .focusRequester(homeFocus)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             selected = isHome,
             onFocus = {
                 if (!isHome) {
@@ -146,7 +168,9 @@ private fun TabBar(navController: NavController) {
             Text(text = stringResource(Res.string.tv_tab_home))
         }
         Tab(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier
+                .focusRequester(moviesFocus)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             selected = isMovies,
             onFocus = {
                 if (!isMovies) {
@@ -167,7 +191,9 @@ private fun TabBar(navController: NavController) {
             Text(text = stringResource(Res.string.tv_tab_movies))
         }
         Tab(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier
+                .focusRequester(showsFocus)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             selected = isShows,
             onFocus = {
                 if (!isShows) {
