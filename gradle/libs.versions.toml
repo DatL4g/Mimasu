@@ -65,7 +65,6 @@ stacktrace-decoroutinator = "2.5.4"
 tolgee = "2.0.0-RC-1"
 tooling = "1.7.0"
 tv-foundation = "1.0.0-alpha12"
-tv-lifecycle = "2.8.7"
 tv-material = "1.0.0"
 ump = "3.2.0"
 versions = "0.52.0"
@@ -168,7 +167,6 @@ tooling = { group = "dev.datlag.tooling", name = "tooling-async", version.ref = 
 tooling-compose = { group = "dev.datlag.tooling", name = "tooling-compose", version.ref = "tooling" }
 tooling-decompose = { group = "dev.datlag.tooling", name = "tooling-decompose", version.ref = "tooling" }
 tv-foundation = { group = "androidx.tv", name = "tv-foundation", version.ref = "tv-foundation" }
-tv-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "tv-lifecycle" }
 tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tv-material" }
 ump = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "ump" }
 viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }

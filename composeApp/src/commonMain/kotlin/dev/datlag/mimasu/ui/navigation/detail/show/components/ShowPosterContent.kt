@@ -23,7 +23,6 @@ import coil3.compose.AsyncImage
 import dev.datlag.mimasu.common.formatMedium
 import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.movie_release_date_format
 import dev.datlag.mimasu.composeapp.generated.resources.show_air_date_format
 import dev.datlag.mimasu.composeapp.generated.resources.show_status_canceled
 import dev.datlag.mimasu.composeapp.generated.resources.show_status_ended
@@ -37,10 +36,8 @@ import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
-import dev.datlag.tooling.listFrom
 import dev.datlag.tooling.setFrom
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toImmutableSet
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration

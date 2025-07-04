@@ -49,7 +49,7 @@ kotlin {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     namespace = "dev.datlag.mimasu.extension"
     (sourceSets.findByName("main") ?: sourceSets.findByName("androidMain"))?.aidl?.srcDir("src/androidMain/aidl")
 

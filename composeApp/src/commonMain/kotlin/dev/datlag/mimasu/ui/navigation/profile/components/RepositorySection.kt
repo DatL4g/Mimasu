@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.github
 import dev.datlag.mimasu.composeapp.generated.resources.profile_github_repository
-import dev.datlag.mimasu.composeapp.generated.resources.profile_owner
 import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform

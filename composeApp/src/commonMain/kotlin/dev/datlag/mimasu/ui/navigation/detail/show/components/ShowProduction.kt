@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ElevatedSuggestionChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.datlag.mimasu.common.rememberNestedImagePainter
 import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.movie_countries
-import dev.datlag.mimasu.composeapp.generated.resources.movie_production
 import dev.datlag.mimasu.composeapp.generated.resources.show_countries
 import dev.datlag.mimasu.composeapp.generated.resources.show_production
 import dev.datlag.mimasu.tmdb.common.logos

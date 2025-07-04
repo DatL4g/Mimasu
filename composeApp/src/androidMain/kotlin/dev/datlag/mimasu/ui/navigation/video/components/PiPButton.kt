@@ -1,6 +1,5 @@
 package dev.datlag.mimasu.ui.navigation.video.components
 
-import android.graphics.Rect
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable

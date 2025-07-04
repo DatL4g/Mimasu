@@ -3,17 +3,14 @@ package dev.datlag.mimasu.ui.navigation.detail.movie.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
@@ -40,7 +37,6 @@ import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_buy
 import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_flatrate
 import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_free
 import dev.datlag.mimasu.composeapp.generated.resources.movie_justwatch_rent
-import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source
 import dev.datlag.mimasu.tmdb.common.logos
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.MaterialSymbols

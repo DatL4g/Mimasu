@@ -4,7 +4,11 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.atomicfu)
 }
+
+val artifact = "dev.datlag.mimasu.ui"
+group = artifact
 
 kotlin {
     androidTarget()
@@ -22,6 +26,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
+            implementation(compose.components.resources)
+            implementation(compose.materialIconsExtended)
+            implementation(libs.fonticons)
+            implementation(libs.tooling.compose)
+
             implementation(libs.coroutines)
             implementation(libs.serialization)
             implementation(libs.tooling)
@@ -50,6 +59,13 @@ kotlin {
             jvmMain.orNull?.dependsOn(this)
             nativeMain.orNull?.dependsOn(this)
         }
+    }
+}
+
+compose {
+    resources {
+        generateResClass = auto
+        packageOfResClass = artifact
     }
 }
 

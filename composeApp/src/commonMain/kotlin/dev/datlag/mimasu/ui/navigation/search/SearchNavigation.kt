@@ -23,7 +23,6 @@ import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import org.jetbrains.compose.resources.stringResource
-import dev.datlag.mimasu.extension.model.Show as Extension
 
 fun NavigationSuiteScope.searchItem(
     selected: Boolean,

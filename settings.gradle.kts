@@ -15,7 +15,7 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp", ":composeApp:sekret")
+include(":composeApp", ":composeApp:sekret", "composeTV")
 include(":tmdb")
 include(":ui")
 include(":core")

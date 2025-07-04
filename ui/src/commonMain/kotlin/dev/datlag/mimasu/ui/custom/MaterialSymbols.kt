@@ -30,7 +30,6 @@ import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Computer
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material.icons.rounded.Extension
@@ -113,10 +112,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.composeapp.generated.resources.MaterialSymbolsRounded
-import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.details.Movie
+import dev.datlag.mimasu.ui.MaterialSymbolsRounded
+import dev.datlag.mimasu.ui.Res
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.localContentColor
