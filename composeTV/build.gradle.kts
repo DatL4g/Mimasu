@@ -6,6 +6,9 @@ plugins {
     alias(libs.plugins.android.library)
 }
 
+val artifact = "dev.datlag.mimasu.tv"
+group = artifact
+
 kotlin {
     androidTarget()
 
@@ -16,6 +19,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.components.resources)
             implementation(libs.lifecycle)
             implementation(libs.navigation)
 
@@ -37,9 +41,16 @@ kotlin {
     }
 }
 
+compose {
+    resources {
+        generateResClass = auto
+        packageOfResClass = artifact
+    }
+}
+
 android {
     compileSdk = 36
-    namespace = "dev.datlag.mimasu.tv"
+    namespace = artifact
 
     defaultConfig {
         minSdk = 21

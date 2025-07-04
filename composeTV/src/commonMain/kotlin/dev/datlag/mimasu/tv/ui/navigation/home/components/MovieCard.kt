@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.tv.ui.navigation.home.components
 
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,20 +31,39 @@ import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 
 @Composable
 fun MovieCard(
-    movie: Movie?
+    movie: Movie?,
+    orientation: Orientation
 ) {
+    val cardModifier = when (orientation) {
+        Orientation.Horizontal -> Modifier
+            .padding(bottom = 8.dp)
+            .width(200.dp)
+            .aspectRatio(CardDefaults.HorizontalImageAspectRatio)
+        Orientation.Vertical -> Modifier
+            .padding(bottom = 8.dp)
+            .width(120.dp)
+            .aspectRatio(CardDefaults.VerticalImageAspectRatio)
+    }
+    val textModifier = when (orientation) {
+        Orientation.Horizontal -> Modifier.width(200.dp)
+        Orientation.Vertical -> Modifier.width(120.dp)
+    }
+
     StandardCardContainer(
         imageCard = { interactionSource ->
             Card(
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .width(200.dp)
-                    .aspectRatio(CardDefaults.HorizontalImageAspectRatio),
+                modifier = cardModifier,
                 onClick = { },
                 interactionSource = interactionSource
             ) {
                 val backdrops = remember(movie) { movie.backdrops(fallback = null) }
                 val posters = remember(movie) { movie.posters(fallbackShow = null) }
+                val (mainImages, fallbackImages) = remember(backdrops, posters, orientation) {
+                    when (orientation) {
+                        Orientation.Horizontal -> backdrops to posters
+                        Orientation.Vertical -> posters to backdrops
+                    }
+                }
 
                 AsyncImage(
                     modifier = Modifier
@@ -55,11 +75,11 @@ fun MovieCard(
                             ),
                             color = PlaceholderDefaults.color()
                         ),
-                    model = backdrops.firstOrNull(),
+                    model = mainImages.firstOrNull(),
                     error = rememberNestedImagePainter(
-                        models = backdrops.drop(1),
+                        models = mainImages.drop(1),
                         error = rememberNestedImagePainter(
-                            models = posters,
+                            models = fallbackImages,
                             contentScale = ContentScale.Crop
                         ),
                         contentScale = ContentScale.Crop,
@@ -71,16 +91,14 @@ fun MovieCard(
         },
         title = {
             Text(
-                modifier = Modifier
-                    .width(200.dp)
-                    .placeholder(
-                        visible = movie == null,
-                        shape = MaterialTheme.shapes.small,
-                        highlight = PlaceholderHighlight.fade(
-                            highlightColor = PlaceholderDefaults.fadeHighlightColor()
-                        ),
-                        color = PlaceholderDefaults.color()
+                modifier = textModifier.placeholder(
+                    visible = movie == null,
+                    shape = MaterialTheme.shapes.small,
+                    highlight = PlaceholderHighlight.fade(
+                        highlightColor = PlaceholderDefaults.fadeHighlightColor()
                     ),
+                    color = PlaceholderDefaults.color()
+                ),
                 text = movie?.title ?: "",
                 textAlign = TextAlign.Center,
                 softWrap = true,
@@ -93,7 +111,7 @@ fun MovieCard(
                 it.equals(movie.title, ignoreCase = true)
             }?.let {
                 Text(
-                    modifier = Modifier.width(200.dp),
+                    modifier = textModifier,
                     text = it,
                     textAlign = TextAlign.Center,
                     softWrap = true,

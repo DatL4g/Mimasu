@@ -1,0 +1,11 @@
+<resources>
+    <string name="tv_tab_home">Home</string>
+    <string name="tv_tab_search">Search</string>
+    <string name="tv_tab_movies">Movies</string>
+    <string name="tv_tab_shows">Shows</string>
+
+    <string name="tv_home_trending_series_today">Daily TV Shows</string>
+    <string name="tv_home_trending_series_weekly">Weekly TV Shows</string>
+    <string name="tv_home_trending_movies_today">Daily Movies</string>
+    <string name="tv_home_trending_movies_weekly">Weekly Movies</string>
+</resources>
