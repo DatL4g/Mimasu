@@ -77,7 +77,8 @@ fun rememberNestedImagePainter(
 
     if (data.isEmpty()) {
         return rememberAsyncImagePainter(
-            model = error,
+            model = null,
+            error = error,
             contentScale = contentScale,
             onError = {
                 onError?.invoke(it)
