@@ -20,12 +20,12 @@ import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.other.PiPHelper
-import dev.datlag.mimasu.ui.navigation.Navigation
+import dev.datlag.mimasu.tv.TVActivity
 import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
-import dev.datlag.tooling.compose.platform.PlatformText
-import dev.datlag.tooling.compose.toTypography
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.safeCast
+import dev.datlag.tooling.scopeCatching
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.instanceOrNull
@@ -53,9 +53,16 @@ class MainActivity : AdActivity() {
         }
 
         super.onCreate(savedInstanceState)
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                NetworkModule.showSplashscreen
+
+        if (Platform.isTelevision(this)) {
+            val intent = Intent(this, TVActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            installSplashScreen().apply {
+                setKeepOnScreenCondition {
+                    NetworkModule.showSplashscreen
+                }
             }
         }
 
@@ -70,8 +77,6 @@ class MainActivity : AdActivity() {
         Kast.setup(this)
 
         setContent {
-            // ToDo("ignore font on TV")
-            // ToDo("navigation wrapped for TV")
             App(
                 di = di,
                 typography = Font.manrope.toExpressiveTypography(),
@@ -125,7 +130,9 @@ class MainActivity : AdActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        unregisterReceiver(appInstallReceiver)
+        scopeCatching {
+            unregisterReceiver(appInstallReceiver)
+        }.isSuccess
         ExtensionInitializer.unbindAll(this)
         PiPHelper.setActive(this.isInPiPMode())
         Kast.dispose()

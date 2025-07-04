@@ -135,6 +135,7 @@ kotlin {
             implementation(libs.bundles.android.cast)
             implementation(libs.bundles.android.media)
 
+            implementation(project(":composeTV"))
             implementation(project(":rive"))
         }
 

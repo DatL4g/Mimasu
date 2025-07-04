@@ -17,6 +17,10 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(libs.lifecycle)
+            implementation(libs.navigation)
+
+            implementation(libs.kermit)
+            implementation(libs.tooling)
 
             implementation(project(":ui"))
         }
@@ -24,6 +28,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.tv.foundation)
             implementation(libs.tv.material)
+
+            implementation(libs.splashscreen)
         }
     }
 }
