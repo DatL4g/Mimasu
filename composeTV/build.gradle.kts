@@ -30,6 +30,7 @@ kotlin {
             implementation(libs.coil.svg)
             implementation(libs.coil.compose)
             implementation(libs.splashscreen)
+            implementation(libs.placeholder)
 
             implementation(project(":ui"))
         }

@@ -2,7 +2,6 @@ package dev.datlag.mimasu.tv.ui.navigation.home.components
 
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -19,19 +18,19 @@ import androidx.tv.material3.StandardCardContainer
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import com.eygraber.compose.placeholder.PlaceholderDefaults
-import dev.datlag.mimasu.tmdb.common.backdrops
-import dev.datlag.mimasu.tmdb.common.posters
-import dev.datlag.mimasu.tmdb.model.TV
-import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.fade
 import com.eygraber.compose.placeholder.placeholder
+import dev.datlag.mimasu.tmdb.common.backdrops
+import dev.datlag.mimasu.tmdb.common.posters
+import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
+import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 
 @Composable
-fun ShowCard(
-    show: TV?
+fun MovieCard(
+    movie: Movie?
 ) {
     StandardCardContainer(
         imageCard = { interactionSource ->
@@ -43,14 +42,14 @@ fun ShowCard(
                 onClick = { },
                 interactionSource = interactionSource
             ) {
-                val backdrops = remember(show) { show.backdrops(fallback = null) }
-                val posters = remember(show) { show.posters(fallbackShow = null) }
+                val backdrops = remember(movie) { movie.backdrops(fallback = null) }
+                val posters = remember(movie) { movie.posters(fallbackShow = null) }
 
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxSize()
                         .placeholder(
-                            visible = show == null,
+                            visible = movie == null,
                             highlight = PlaceholderHighlight.fade(
                                 highlightColor = PlaceholderDefaults.fadeHighlightColor()
                             ),
@@ -66,7 +65,7 @@ fun ShowCard(
                         contentScale = ContentScale.Crop,
                     ),
                     contentScale = ContentScale.Crop,
-                    contentDescription = show?.name
+                    contentDescription = movie?.title
                 )
             }
         },
@@ -75,14 +74,14 @@ fun ShowCard(
                 modifier = Modifier
                     .width(200.dp)
                     .placeholder(
-                        visible = show == null,
+                        visible = movie == null,
                         shape = MaterialTheme.shapes.small,
                         highlight = PlaceholderHighlight.fade(
                             highlightColor = PlaceholderDefaults.fadeHighlightColor()
                         ),
                         color = PlaceholderDefaults.color()
                     ),
-                text = show?.name ?: "",
+                text = movie?.title ?: "",
                 textAlign = TextAlign.Center,
                 softWrap = true,
                 maxLines = 1,
@@ -90,8 +89,8 @@ fun ShowCard(
             )
         },
         subtitle = {
-            show?.originalName?.takeUnless {
-                it.equals(show.name, ignoreCase = true)
+            movie?.originalTitle?.takeUnless {
+                it.equals(movie.title, ignoreCase = true)
             }?.let {
                 Text(
                     modifier = Modifier.width(200.dp),

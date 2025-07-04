@@ -98,6 +98,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.kermit)
             implementation(libs.placeholder)
+            implementation(libs.placeholder.material3)
             implementation(libs.tolgee)
             implementation(libs.haze)
             implementation(libs.haze.materials)

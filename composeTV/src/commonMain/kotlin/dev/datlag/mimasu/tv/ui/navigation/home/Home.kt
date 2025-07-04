@@ -14,9 +14,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import dev.datlag.mimasu.tv.ui.navigation.home.components.MovieCard
 import dev.datlag.mimasu.tv.ui.navigation.home.components.ShowCard
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
@@ -53,6 +55,58 @@ fun Home() {
                         val show = shows[index]
 
                         ShowCard(show)
+                    }
+                    when {
+                        shows.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                ShowCard(show = null)
+                            }
+                        }
+                        shows.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                ShowCard(show = null)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        item {
+            Column(
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .padding(vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val movies = trendingViewModel.movies.collectAsLazyPagingItems()
+
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = "Movies",
+                    style = MaterialTheme.typography.headlineSmall,
+                    maxLines = 1
+                )
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(movies.itemCount) { index ->
+                        val movie = movies[index]
+
+                        MovieCard(movie)
+                    }
+                    when {
+                        movies.loadState.refresh is LoadState.Loading -> {
+                            items(5) {
+                                MovieCard(movie = null)
+                            }
+                        }
+                        movies.loadState.append is LoadState.Loading -> {
+                            items(3) {
+                                MovieCard(movie = null)
+                            }
+                        }
                     }
                 }
             }
