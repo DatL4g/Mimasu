@@ -26,10 +26,13 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,21 +44,29 @@ import androidx.tv.material3.Text
 import dev.datlag.mimasu.tv.ui.navigation.home.Home
 import kotlinx.serialization.Serializable
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.compose.dialog
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.TabDefaults
+import coil3.compose.AsyncImage
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_tab_home
 import dev.datlag.mimasu.tv.tv_tab_movies
 import dev.datlag.mimasu.tv.tv_tab_search
 import dev.datlag.mimasu.tv.tv_tab_shows
+import dev.datlag.mimasu.tv.ui.navigation.login.Login
 import dev.datlag.mimasu.tv.ui.navigation.movies.Movies
 import dev.datlag.mimasu.tv.ui.navigation.series.Series
 import dev.datlag.mimasu.ui.LocalDarkMode
+import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import org.jetbrains.compose.resources.stringResource
 
 object Navigation {
+
+    @Serializable
+    data object Login
 
     @Serializable
     data object Search
@@ -72,6 +83,9 @@ object Navigation {
 
 @Composable
 fun Navigation() {
+    val accountViewModel = accountViewModel()
+    val user by accountViewModel.user.collectAsStateWithLifecycle()
+
     val controller = rememberNavController()
 
     Box(
@@ -85,6 +99,16 @@ fun Navigation() {
             startDestination = Navigation.Home,
             modifier = Modifier.focusRequester(navHostFocus)
         ) {
+            dialog<Navigation.Login>(
+                dialogProperties = DialogProperties(
+                    dismissOnBackPress = false,
+                    dismissOnClickOutside = false,
+                    usePlatformDefaultWidth = false,
+                    decorFitsSystemWindows = false
+                )
+            ) {
+                Login()
+            }
             composable<Navigation.Search> {
                 Text(text = "Search Screen")
             }
@@ -104,12 +128,23 @@ fun Navigation() {
                 )
             }
         }
-        TabBar(
-            navController = controller,
-            downFocus = navHostFocus,
-            modifier = Modifier.align(Alignment.TopCenter),
-            onHeightMeasured = { tabBarHeight = it }
-        )
+
+        LaunchedEffect(user) {
+            if (user == null) {
+                controller.navigate(Navigation.Login) {
+                    launchSingleTop = true
+                }
+            }
+        }
+
+        if (user != null) {
+            TabBar(
+                navController = controller,
+                downFocus = navHostFocus,
+                modifier = Modifier.align(Alignment.TopCenter),
+                onHeightMeasured = { tabBarHeight = it }
+            )
+        }
     }
 }
 
@@ -158,6 +193,33 @@ private fun TabBar(
             }
         }.clip(CircleShape)
     ) {
+        Tab(
+            modifier = Modifier
+                .focusProperties {
+                    down = downFocus
+                }
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            selected = false,
+            onFocus = {
+
+            }
+        ) {
+            val accountViewModel = accountViewModel()
+            val user by accountViewModel.user.collectAsStateWithLifecycle()
+
+            AsyncImage(
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                model = user?.profilePictures?.firstOrNull(),
+                contentScale = ContentScale.Crop,
+                error = rememberNestedImagePainter(
+                    models = user?.profilePictures?.drop(1).orEmpty(),
+                    contentScale = ContentScale.Crop
+                ),
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+            Text(text = user?.name ?: "User")
+        }
         Tab(
             modifier = Modifier
                 .focusRequester(searchFocus)
