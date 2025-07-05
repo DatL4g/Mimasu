@@ -14,11 +14,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
-import app.rive.runtime.kotlin.core.RendererType
-import app.rive.runtime.kotlin.core.Rive
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.module.PlatformModule
-import dev.datlag.mimasu.other.ArchUtils
 import dev.datlag.mimasu.ui.navigation.Navigation
 import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.scopeCatching
@@ -32,20 +29,6 @@ import org.kodein.di.instance
 import org.kodein.di.instanceOrNull
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-
-tailrec fun Context.findActivity(): Activity? {
-    return when (this) {
-        is Activity -> this
-        is ContextWrapper -> this.baseContext.findActivity()
-        else -> null
-    }
-}
-
-tailrec fun Context.findWindow(): Window? = when (this) {
-    is Activity -> window
-    is ContextWrapper -> baseContext.findWindow()
-    else -> null
-}
 
 fun Activity.isInPiPMode(): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -95,56 +78,6 @@ actual fun LocalDate?.formatMedium(fallbackFormat: String): String? {
     }.getOrNull()?.ifBlank { null } ?: scopeCatching {
         fallbackFormatter.format(this)
     }.getOrNull()?.ifBlank { null }
-}
-
-@Composable
-actual fun rememberGitHubAuthParams(): GitHubAuthParams? {
-    val context = LocalContext.current
-    return remember(context) {
-        context.findActivity()
-    } ?: context.findActivity()
-}
-
-fun Context.isRunningInTestLab(): Boolean {
-    val testLabSetting = Settings.System.getString(contentResolver, "firebase.test.lab") ?: return false
-    return when {
-        testLabSetting.equals("true", ignoreCase = true) -> true
-        testLabSetting == "1" -> true
-        else -> testLabSetting.toBoolean()
-    }
-}
-
-fun Rive.initSafely(
-    context: Context,
-    defaultRenderer: RendererType = defaultRendererType
-): Boolean {
-    if (context.isRunningInTestLab() || !ArchUtils.supportsRive()) {
-        return false
-    }
-
-    val riveClass = "app.rive.runtime.kotlin.core.Rive"
-    val libName = scopeCatching {
-        val clazz = Class.forName(riveClass)
-        val field = clazz.getDeclaredField("RIVE_ANDROID")
-        field.isAccessible = true
-        field.get(null) as? String
-    }.getOrNull()?.trim()?.ifBlank { null } ?: "rive-android"
-
-    val libLoaded = NativeLoader.loadLibrary(context, libName)
-    val rendererSet = this.defaultRendererType == defaultRenderer || scopeCatching {
-        val clazz = Class.forName(riveClass)
-        val field = clazz.getDeclaredField("defaultRendererType")
-        field.isAccessible = true
-        field.set(clazz, defaultRenderer)
-    }.isSuccess
-
-    return if (libLoaded && rendererSet) {
-        initializeCppEnvironment()
-        true
-    } else {
-        init(context, defaultRenderer)
-        false
-    }
 }
 
 actual fun Navigation.Video.dialogProperties(): DialogProperties {

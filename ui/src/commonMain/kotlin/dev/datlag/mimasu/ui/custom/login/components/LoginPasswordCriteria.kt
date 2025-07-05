@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.login.components
+package dev.datlag.mimasu.ui.custom.login.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,7 +15,7 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun LoginPasswordCriteria(
+internal fun LoginPasswordCriteria(
     fulfilled: Boolean,
     text: String,
     modifier: Modifier = Modifier
@@ -42,7 +42,7 @@ fun LoginPasswordCriteria(
 }
 
 @Composable
-fun LoginPasswordCriteria(
+internal fun LoginPasswordCriteria(
     fulfilled: Boolean,
     text: StringResource,
     modifier: Modifier = Modifier

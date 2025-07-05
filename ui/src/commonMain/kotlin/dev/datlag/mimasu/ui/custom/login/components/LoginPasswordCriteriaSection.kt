@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.login.components
+package dev.datlag.mimasu.ui.custom.login.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -18,21 +18,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.login_forgot_password
-import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_length_minimum
-import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_lowercase
-import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_number
-import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_special
-import dev.datlag.mimasu.composeapp.generated.resources.login_password_criteria_uppercase
-import dev.datlag.mimasu.ui.viewmodel.AccountViewModel
+import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.login_forgot_password
+import dev.datlag.mimasu.ui.login_password_criteria_length_minimum
+import dev.datlag.mimasu.ui.login_password_criteria_lowercase
+import dev.datlag.mimasu.ui.login_password_criteria_number
+import dev.datlag.mimasu.ui.login_password_criteria_special
+import dev.datlag.mimasu.ui.login_password_criteria_uppercase
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.rememberIsTv
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun LoginPasswordCriteriaSection(
+internal fun LoginPasswordCriteriaSection(
     emailValid: Boolean,
     criteriaVisible: Boolean,
     passwordErrorState: LoginViewModel.PasswordErrorState?,
@@ -54,23 +53,23 @@ fun LoginPasswordCriteriaSection(
             Column {
                 LoginPasswordCriteria(
                     fulfilled = passwordErrorState?.hasLowercaseLetter == true,
-                    text = Res.string.login_password_criteria_lowercase
+                    text = UiRes.string.login_password_criteria_lowercase
                 )
                 LoginPasswordCriteria(
                     fulfilled = passwordErrorState?.hasUppercaseLetter == true,
-                    text = Res.string.login_password_criteria_uppercase
+                    text = UiRes.string.login_password_criteria_uppercase
                 )
                 LoginPasswordCriteria(
                     fulfilled = passwordErrorState?.hasNumber == true,
-                    text = Res.string.login_password_criteria_number
+                    text = UiRes.string.login_password_criteria_number
                 )
                 LoginPasswordCriteria(
                     fulfilled = passwordErrorState?.hasSpecialChar == true,
-                    text = Res.string.login_password_criteria_special
+                    text = UiRes.string.login_password_criteria_special
                 )
                 LoginPasswordCriteria(
                     fulfilled = passwordErrorState?.isLongEnough == true,
-                    text = Res.string.login_password_criteria_length_minimum
+                    text = UiRes.string.login_password_criteria_length_minimum
                 )
             }
         }
@@ -83,7 +82,7 @@ fun LoginPasswordCriteriaSection(
                 },
                 enabled = emailValid && !resetPasswordSent
             ) {
-                Text(text = stringResource(Res.string.login_forgot_password))
+                Text(text = stringResource(UiRes.string.login_forgot_password))
             }
         }
     }

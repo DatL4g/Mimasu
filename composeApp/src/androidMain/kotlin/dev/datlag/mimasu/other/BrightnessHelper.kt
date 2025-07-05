@@ -11,8 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.DialogWindowProvider
-import dev.datlag.mimasu.common.findActivity
-import dev.datlag.mimasu.common.findWindow
+import dev.datlag.mimasu.ui.common.findActivity
+import dev.datlag.mimasu.ui.common.findWindow
 import dev.datlag.tooling.scopeCatching
 
 class BrightnessHelper(

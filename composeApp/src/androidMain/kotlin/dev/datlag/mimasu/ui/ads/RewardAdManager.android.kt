@@ -16,8 +16,8 @@ import com.jet.ads.common.rewarded.RewardsController
 import dev.datlag.mimasu.BuildConfig
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
-import dev.datlag.mimasu.common.findActivity
 import dev.datlag.mimasu.other.AdManager
+import dev.datlag.mimasu.ui.common.findActivity
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.kodein.di.compose.localDI

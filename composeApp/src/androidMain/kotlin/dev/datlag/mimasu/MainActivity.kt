@@ -17,10 +17,8 @@ import dev.datlag.mimasu.common.isInPiPMode
 import dev.datlag.mimasu.common.toExpressiveTypography
 import dev.datlag.mimasu.extension.AppInstallReceiver
 import dev.datlag.mimasu.extension.ExtensionInitializer
-import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.other.PiPHelper
-import dev.datlag.mimasu.tv.TVActivity
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel

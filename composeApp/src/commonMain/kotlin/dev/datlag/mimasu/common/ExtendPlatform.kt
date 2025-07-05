@@ -35,9 +35,6 @@ fun LocalDate?.formatMedium(
     fallbackValue = fallbackValue
 )
 
-@Composable
-expect fun rememberGitHubAuthParams(): GitHubAuthParams?
-
 expect fun Navigation.Video.dialogProperties(): DialogProperties
 
 expect fun Navigation.Login.dialogProperties(): DialogProperties

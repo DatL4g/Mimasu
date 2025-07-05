@@ -36,18 +36,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import dev.datlag.mimasu.common.rememberGitHubAuthParams
 import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.github
-import dev.datlag.mimasu.composeapp.generated.resources.google
 import dev.datlag.mimasu.composeapp.generated.resources.profile_connect
 import dev.datlag.mimasu.composeapp.generated.resources.profile_connected
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_cancel
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_text
 import dev.datlag.mimasu.composeapp.generated.resources.profile_sign_out_yes
+import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.common.rememberGitHubAuthParams
+import dev.datlag.mimasu.ui.common.rememberGoogleAuthParams
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.github
+import dev.datlag.mimasu.ui.google
 import dev.datlag.mimasu.ui.navigation.profile.components.AboutDialog
 import dev.datlag.mimasu.ui.navigation.profile.components.ExtensionSection
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
@@ -222,20 +224,21 @@ fun Profile(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val linked = user?.linkedGoogle == true
+                    val googleSignIn = rememberGoogleAuthParams()
 
                     Icon(
                         modifier = Modifier.size(24.dp),
                         imageVector = MaterialSymbols.GoogleGLogo,
-                        contentDescription = stringResource(Res.string.google),
+                        contentDescription = stringResource(UiRes.string.google),
                         tint = Color.Unspecified
                     )
                     Text(
-                        text = stringResource(Res.string.google)
+                        text = stringResource(UiRes.string.google)
                     )
                     Spacer(modifier = Modifier.weight(1F))
                     Button(
                         onClick = {
-                            loginViewModel.googleLink()
+                            loginViewModel.googleLink(googleSignIn)
                         },
                         enabled = !linked,
                         shapes = ButtonDefaults.shapes()
@@ -273,10 +276,10 @@ fun Profile(
                     Icon(
                         modifier = Modifier.size(24.dp),
                         imageVector = MaterialSymbols.Github,
-                        contentDescription = stringResource(Res.string.github)
+                        contentDescription = stringResource(UiRes.string.github)
                     )
                     Text(
-                        text = stringResource(Res.string.github)
+                        text = stringResource(UiRes.string.github)
                     )
                     Spacer(modifier = Modifier.weight(1F))
                     Button(

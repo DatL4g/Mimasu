@@ -24,9 +24,10 @@ import dev.datlag.mimasu.composeapp.generated.resources.config_fail_connecting_s
 import dev.datlag.mimasu.composeapp.generated.resources.config_fail_data
 import dev.datlag.mimasu.composeapp.generated.resources.config_fail_description
 import dev.datlag.mimasu.composeapp.generated.resources.config_fail_initialize_title
-import dev.datlag.mimasu.composeapp.generated.resources.github
 import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.module.NetworkModule
+import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.github
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
@@ -113,7 +114,7 @@ fun FailureConfigState(
                 onClick = {
                     uriHandler.openUri(Constants.GITHUB_REPOSITORY)
                 },
-                text = stringResource(Res.string.github)
+                text = stringResource(UiRes.string.github)
             )
         }
     }

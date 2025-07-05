@@ -17,8 +17,8 @@ import com.jet.ads.common.callbacks.BannerCallBack
 import dev.datlag.mimasu.BuildConfig
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
-import dev.datlag.mimasu.common.findActivity
 import dev.datlag.mimasu.other.AdManager
+import dev.datlag.mimasu.ui.common.findActivity
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
 import kotlin.getValue

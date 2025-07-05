@@ -11,7 +11,7 @@ import com.jet.ads.common.controller.JetAdsControl
 import com.jet.ads.common.initializers.AdsInitializeFactory
 import com.jet.ads.common.initializers.AdsInitializer
 import dev.datlag.mimasu.AdActivity
-import dev.datlag.mimasu.common.findActivity
+import dev.datlag.mimasu.ui.common.findActivity
 import dev.datlag.tooling.Platform
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

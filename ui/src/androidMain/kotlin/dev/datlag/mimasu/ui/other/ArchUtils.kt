@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.other
+package dev.datlag.mimasu.ui.other
 
 import android.os.Build
 

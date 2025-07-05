@@ -1,0 +1,22 @@
+<resources>
+    <string name="tv_tab_profile">Profil</string>
+    <string name="tv_tab_home">Start</string>
+    <string name="tv_tab_search">Suche</string>
+    <string name="tv_tab_movies">Filme</string>
+    <string name="tv_tab_shows">Serien</string>
+
+    <string name="tv_home_trending_series_today">Tägliche Serien</string>
+    <string name="tv_home_trending_series_weekly">Wöchentliche Serien</string>
+    <string name="tv_home_trending_movies_today">Tägliche Filme</string>
+    <string name="tv_home_trending_movies_weekly">Wöchentliche Serien</string>
+
+    <string name="tv_movies_now_playing">Jetzt im Kino</string>
+    <string name="tv_movies_popular">Beliebt</string>
+    <string name="tv_movies_top_rated">Top Bewertet</string>
+    <string name="tv_movies_upcoming">Bald verfügbar</string>
+
+    <string name="tv_series_airing_today">Heute zu sehen</string>
+    <string name="tv_series_on_the_air">Auf Sendung</string>
+    <string name="tv_series_popular">Beliebt</string>
+    <string name="tv_series_top_rated">Top Bewertet</string>
+</resources>

@@ -1,10 +1,10 @@
-package dev.datlag.mimasu
+package dev.datlag.mimasu.ui
 
 import android.content.Context
 import androidx.annotation.Keep
 import androidx.startup.Initializer
 import app.rive.runtime.kotlin.core.Rive
-import dev.datlag.mimasu.common.initSafely
+import dev.datlag.mimasu.ui.common.initSafely
 import dev.datlag.sekret.NativeLoader
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update

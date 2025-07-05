@@ -1,12 +1,12 @@
-package dev.datlag.mimasu.ui.navigation.login.components
+package dev.datlag.mimasu.ui.custom.login.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.login_email_disposable
-import dev.datlag.mimasu.composeapp.generated.resources.login_failure
+import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.login_email_disposable
+import dev.datlag.mimasu.ui.login_failure
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
@@ -14,7 +14,7 @@ import dev.datlag.tooling.compose.platform.colorScheme
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun LoginResult(
+internal fun LoginResult(
     failure: LoginViewModel.LoginResult,
     modifier: Modifier = Modifier,
 ) {
@@ -29,9 +29,9 @@ fun LoginResult(
     ) {
         PlatformText(
             text = if (failure is LoginViewModel.LoginResult.Disposable) {
-                stringResource(Res.string.login_email_disposable)
+                stringResource(UiRes.string.login_email_disposable)
             } else {
-                stringResource(Res.string.login_failure)
+                stringResource(UiRes.string.login_failure)
             },
             color = Platform.colorScheme().error,
             textAlign = TextAlign.Center

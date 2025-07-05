@@ -15,10 +15,11 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.github
 import dev.datlag.mimasu.composeapp.generated.resources.profile_github_repository
 import dev.datlag.mimasu.core.Constants
+import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.github
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.onClick
 import dev.datlag.tooling.compose.platform.shapes
@@ -43,7 +44,7 @@ fun RepositorySection(
         Icon(
             modifier = Modifier.size(24.dp),
             imageVector = MaterialSymbols.Github,
-            contentDescription = stringResource(Res.string.github)
+            contentDescription = stringResource(UiRes.string.github)
         )
         Text(
             text = stringResource(Res.string.profile_github_repository),

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -52,6 +54,7 @@ import coil3.compose.AsyncImage
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_tab_home
 import dev.datlag.mimasu.tv.tv_tab_movies
+import dev.datlag.mimasu.tv.tv_tab_profile
 import dev.datlag.mimasu.tv.tv_tab_search
 import dev.datlag.mimasu.tv.tv_tab_shows
 import dev.datlag.mimasu.tv.ui.navigation.login.Login
@@ -82,7 +85,7 @@ object Navigation {
 }
 
 @Composable
-fun Navigation() {
+internal fun Navigation(appImage: Painter) {
     val accountViewModel = accountViewModel()
     val user by accountViewModel.user.collectAsStateWithLifecycle()
 
@@ -107,7 +110,14 @@ fun Navigation() {
                     decorFitsSystemWindows = false
                 )
             ) {
-                Login()
+                Login(
+                    appImage = appImage,
+                    onSuccess = {
+                        controller.navigate(Navigation.Home) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
             composable<Navigation.Search> {
                 Text(text = "Search Screen")
@@ -181,17 +191,17 @@ private fun TabBar(
 
     TabRow(
         selectedTabIndex = when {
-            isSearch -> 0
-            isHome -> 1
-            isMovies -> 2
-            isShows -> 3
-            else -> 1
+            isSearch -> 1
+            isHome -> 2
+            isMovies -> 3
+            isShows -> 4
+            else -> 2
         },
         modifier = modifier.focusRestorer().padding(16.dp).onGloballyPositioned { coordinates ->
             with(density) {
                 onHeightMeasured(coordinates.size.height.toDp())
             }
-        }.clip(CircleShape)
+        }
     ) {
         Tab(
             modifier = Modifier
@@ -208,17 +218,18 @@ private fun TabBar(
             val user by accountViewModel.user.collectAsStateWithLifecycle()
 
             AsyncImage(
-                modifier = Modifier.size(ButtonDefaults.IconSize),
+                modifier = Modifier.size(ButtonDefaults.IconSize).clip(CircleShape),
                 model = user?.profilePictures?.firstOrNull(),
                 contentScale = ContentScale.Crop,
                 error = rememberNestedImagePainter(
                     models = user?.profilePictures?.drop(1).orEmpty(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    error = MaterialSymbols.rememberPainter(name = MaterialSymbols.ACCOUNT_CIRCLE)
                 ),
                 contentDescription = null
             )
             Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = user?.name ?: "User")
+            Text(text = user?.name ?: stringResource(Res.string.tv_tab_profile))
         }
         Tab(
             modifier = Modifier

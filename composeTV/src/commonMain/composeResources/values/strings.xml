@@ -1,4 +1,5 @@
 <resources>
+    <string name="tv_tab_profile">Profile</string>
     <string name="tv_tab_home">Home</string>
     <string name="tv_tab_search">Search</string>
     <string name="tv_tab_movies">Movies</string>

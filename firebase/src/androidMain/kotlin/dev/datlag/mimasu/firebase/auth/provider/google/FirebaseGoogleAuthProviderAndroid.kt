@@ -19,16 +19,15 @@ import kotlinx.coroutines.delay
 class FirebaseGoogleAuthProviderAndroid(
     firebaseAuthDataSource: FirebaseAuthDataSource,
     serverClientId: String,
-    private val context: Context,
     private val filterByAuthorizedAccounts: Boolean = false
 ) : FirebaseGoogleAuthProvider(
     firebaseAuthDataSource = firebaseAuthDataSource,
     serverClientId = serverClientId
 ) {
 
-    private val credentialManager = CredentialManager.create(context)
+    fun credentialManager(context: Context) = CredentialManager.create(context)
 
-    override suspend fun signIn(params: SignInParams): Result<User> = suspendCatching {
+    override suspend fun signIn(params: GoogleAuthParams): Result<User> = suspendCatching {
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
             .setServerClientId(serverClientId)
@@ -40,7 +39,7 @@ class FirebaseGoogleAuthProviderAndroid(
             .build()
 
         val result = suspendCatching {
-            credentialManager.getCredential(context, request)
+            credentialManager(params.context).getCredential(params.context, request)
         }.onFailure {
             if (it is NoCredentialException && !params.isRetrying) {
                 delay(1000) // Wait 1 second and try again as it's sometimes buggy
@@ -51,7 +50,7 @@ class FirebaseGoogleAuthProviderAndroid(
         handleSignInResponse(result.getOrThrow()).getOrThrow()
     }
 
-    override suspend fun link(params: SignInParams): Result<User> = suspendCatching {
+    override suspend fun link(params: GoogleAuthParams): Result<User> = suspendCatching {
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
             .setServerClientId(serverClientId)
@@ -63,7 +62,7 @@ class FirebaseGoogleAuthProviderAndroid(
             .build()
 
         val result = suspendCatching {
-            credentialManager.getCredential(context, request)
+            credentialManager(params.context).getCredential(params.context, request)
         }.onFailure {
             if (it is NoCredentialException && !params.isRetrying) {
                 delay(1000) // Wait 1 second and try again as it's sometimes buggy

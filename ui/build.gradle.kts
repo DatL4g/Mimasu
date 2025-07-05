@@ -27,10 +27,14 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
+            implementation(compose.material3)
+            implementation(compose.animationGraphics)
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
             implementation(libs.fonticons)
             implementation(libs.tooling.compose)
+
+            implementation("org.jetbrains.compose.ui:ui-backhandler:${libs.versions.compose.asProvider().get()}")
 
             implementation(libs.coroutines)
             implementation(libs.serialization)
@@ -56,8 +60,10 @@ kotlin {
 
         androidMain.dependencies {
             api(libs.paging.compose)
+            implementation(libs.android.startup)
 
             implementation(project(":extension"))
+            implementation(project(":rive"))
         }
 
         val pagingCommonMain by creating {
@@ -73,6 +79,8 @@ compose {
     resources {
         generateResClass = auto
         packageOfResClass = artifact
+        publicResClass = true
+        nameOfResClass = "UiRes"
     }
 }
 

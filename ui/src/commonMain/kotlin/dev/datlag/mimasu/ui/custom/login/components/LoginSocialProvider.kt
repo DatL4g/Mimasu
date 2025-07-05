@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.login.components
+package dev.datlag.mimasu.ui.custom.login.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
@@ -6,16 +6,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.github
-import dev.datlag.mimasu.composeapp.generated.resources.google
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
+import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.custom.GitHubButton
 import dev.datlag.mimasu.ui.custom.GoogleButton
+import dev.datlag.mimasu.ui.github
+import dev.datlag.mimasu.ui.google
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun LoginSocialProvider(
+internal fun LoginSocialProvider(
     hasGitHubProvider: Boolean,
     hasGoogleProvider: Boolean,
     modifier: Modifier = Modifier,
@@ -32,14 +32,14 @@ fun LoginSocialProvider(
             GitHubButton(
                 modifier = Modifier.weight(1F),
                 onClick = onGitHubClicked,
-                text = stringResource(Res.string.github)
+                text = stringResource(UiRes.string.github)
             )
         }
         if (hasGoogleProvider) {
             GoogleButton(
                 modifier = Modifier.weight(1F),
                 onClick = onGoogleClicked,
-                text = stringResource(Res.string.google)
+                text = stringResource(UiRes.string.google)
             )
         }
     }

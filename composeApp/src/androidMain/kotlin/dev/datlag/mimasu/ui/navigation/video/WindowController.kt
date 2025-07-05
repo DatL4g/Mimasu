@@ -10,7 +10,7 @@ import androidx.compose.ui.window.DialogWindowProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import dev.datlag.mimasu.common.findWindow
+import dev.datlag.mimasu.ui.common.findWindow
 
 class WindowController(
     private val view: View,

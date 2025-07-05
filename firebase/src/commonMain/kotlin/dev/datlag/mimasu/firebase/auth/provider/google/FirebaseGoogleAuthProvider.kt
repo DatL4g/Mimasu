@@ -8,11 +8,7 @@ import dev.datlag.sekret.Secret
 abstract class FirebaseGoogleAuthProvider(
     firebaseAuthDataSource: FirebaseAuthDataSource,
     @Secret protected val serverClientId: String
-) : FirebaseAuthProvider<FirebaseGoogleAuthProvider.SignInParams>(firebaseAuthDataSource = firebaseAuthDataSource) {
+) : FirebaseAuthProvider<GoogleAuthParams>(firebaseAuthDataSource = firebaseAuthDataSource) {
 
-    abstract suspend fun link(params: SignInParams): Result<User>
-
-    data class SignInParams(
-        val isRetrying: Boolean
-    )
+    abstract suspend fun link(params: GoogleAuthParams): Result<User>
 }

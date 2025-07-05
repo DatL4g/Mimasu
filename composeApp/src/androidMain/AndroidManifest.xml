@@ -58,7 +58,7 @@
                 <data android:scheme="https" android:host="mimasu.datlag.dev" android:pathPrefix="/auth" />
             </intent-filter>
         </activity>
-        <activity android:name=".tv.TVActivity"
+        <activity android:name=".TVActivity"
             android:launchMode="singleInstance"
             android:configChanges="orientation|smallestScreenSize|screenSize|screenLayout|keyboardHidden"
             android:resizeableActivity="true"
@@ -100,7 +100,7 @@
             android:exported="false"
             tools:node="merge">
 
-            <meta-data android:name="dev.datlag.mimasu.AppInitializer"
+            <meta-data android:name="dev.datlag.mimasu.ui.AppInitializer"
                 android:value="androidx.startup" />
 
             <meta-data android:name="dev.datlag.mimasu.extension.ExtensionInitializer"

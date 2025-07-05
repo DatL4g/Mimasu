@@ -1,16 +1,16 @@
-package dev.datlag.mimasu.ui.navigation.login.components
+package dev.datlag.mimasu.ui.custom.login.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.login_new_password
-import dev.datlag.mimasu.composeapp.generated.resources.login_sign_in
+import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.login_new_password
+import dev.datlag.mimasu.ui.login_sign_in
 import dev.datlag.tooling.compose.platform.PlatformButton
 import dev.datlag.tooling.compose.platform.PlatformText
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun LoginSignInButton(
+internal fun LoginSignInButton(
     enabled: Boolean,
     passwordReset: Boolean,
     modifier: Modifier = Modifier,
@@ -29,9 +29,9 @@ fun LoginSignInButton(
         enabled = enabled
     ) {
         if (passwordReset) {
-            PlatformText(text = stringResource(Res.string.login_new_password))
+            PlatformText(text = stringResource(UiRes.string.login_new_password))
         } else {
-            PlatformText(text = stringResource(Res.string.login_sign_in))
+            PlatformText(text = stringResource(UiRes.string.login_sign_in))
         }
     }
 }

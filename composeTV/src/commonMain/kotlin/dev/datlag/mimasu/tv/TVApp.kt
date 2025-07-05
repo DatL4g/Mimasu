@@ -7,12 +7,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
-import androidx.tv.material3.SurfaceColors
 import androidx.tv.material3.SurfaceDefaults
-import androidx.tv.material3.Text
 import androidx.tv.material3.Typography
 import dev.datlag.mimasu.tv.ui.navigation.Navigation
 import dev.datlag.mimasu.tv.ui.theme.getDarkScheme
@@ -27,8 +26,9 @@ import org.kodein.di.DI
 import org.kodein.di.compose.withDI
 
 @Composable
-fun App(
+fun TVApp(
     di: DI,
+    appImage: Painter,
     typography: Typography = MaterialTheme.typography,
     systemDarkTheme: Boolean = isSystemInDarkTheme() || Platform.rememberIsTv(anyOS = true)
 ) = withDI(di) {
@@ -57,7 +57,7 @@ fun App(
                 when (val current = config) {
                     is Network.Config.Fetching -> { }
                     is Network.Config.Failure -> { }
-                    is Network.Config.Success -> Navigation()
+                    is Network.Config.Success -> Navigation(appImage)
                 }
             }
         }

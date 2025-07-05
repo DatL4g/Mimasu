@@ -132,12 +132,12 @@ kotlin {
             implementation(libs.bundles.android.ads)
             implementation(libs.kermit.crashlytics)
             implementation(libs.youtube.player)
+            implementation(libs.tv.material)
 
             implementation(libs.bundles.android.cast)
             implementation(libs.bundles.android.media)
 
             implementation(project(":composeTV"))
-            implementation(project(":rive"))
         }
 
         jsMain.dependencies {

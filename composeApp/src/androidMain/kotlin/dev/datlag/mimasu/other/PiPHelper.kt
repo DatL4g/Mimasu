@@ -13,8 +13,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import dev.datlag.mimasu.common.findActivity
 import dev.datlag.mimasu.common.isInPiPMode
+import dev.datlag.mimasu.ui.common.findActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

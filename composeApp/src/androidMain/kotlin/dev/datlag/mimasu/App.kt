@@ -15,6 +15,7 @@ import com.appmattus.certificatetransparency.installCertificateTransparencyProvi
 import com.google.android.gms.net.CronetProviderInstaller
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.module.NetworkModule
+import dev.datlag.mimasu.ui.AppInitializer
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.compose.launchIO

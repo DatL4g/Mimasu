@@ -85,8 +85,7 @@ actual object PlatformModule {
             GoogleProvider.basedOn(Sekret.firebaseWebOrAuthId(BuildKonfig.packageName)) { serverClientId ->
                 FirebaseGoogleAuthProviderAndroid(
                     firebaseAuthDataSource = firebaseDataSource(),
-                    serverClientId = serverClientId,
-                    context = instance()
+                    serverClientId = serverClientId
                 )
             }
         }

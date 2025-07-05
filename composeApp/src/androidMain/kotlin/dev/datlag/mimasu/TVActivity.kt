@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.tv
+package dev.datlag.mimasu
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,12 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.tv.material3.MaterialTheme
 import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.common.toExpressiveTypography
+import dev.datlag.mimasu.tv.TVApp
+import dev.datlag.mimasu.ui.navigation.login.rememberAppImage
 import dev.datlag.mimasu.ui.other.Network
-import dev.datlag.tooling.Platform
+import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.tooling.compose.platform.asTv
-import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -25,14 +26,14 @@ import kotlin.reflect.safeCast
 class TVActivity : ComponentActivity() {
 
     private val di: DI?
-        get() = applicationContext.safeCast<DIAware>()?.di
-            ?: application.safeCast<DIAware>()?.di
-            ?: DIAware::class.safeCast(applicationContext)?.di
-            ?: DIAware::class.safeCast(application)?.di
+        get() = this.applicationContext.safeCast<DIAware>()?.di
+            ?: this.application.safeCast<DIAware>()?.di
+            ?: DIAware::class.safeCast(this.applicationContext)?.di
+            ?: DIAware::class.safeCast(this.application)?.di
 
     override fun onCreate(savedInstanceState: Bundle?) {
         fun exit(reason: String?) {
-            reason?.let { Logger.e(messageString = it) }
+            reason?.let { Logger.Companion.e(messageString = it) }
             finishAffinity()
         }
 
@@ -50,12 +51,14 @@ class TVActivity : ComponentActivity() {
 
         setContent {
             Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.aligned(Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.Companion.fillMaxSize(),
+                verticalArrangement = Arrangement.aligned(Alignment.Companion.CenterVertically),
+                horizontalAlignment = Alignment.Companion.CenterHorizontally
             ) {
-                App(
-                    di = di
+                TVApp(
+                    di = di,
+                    appImage = rememberAppImage(),
+                    typography = Font.manrope.toExpressiveTypography().asTv(),
                 )
             }
         }

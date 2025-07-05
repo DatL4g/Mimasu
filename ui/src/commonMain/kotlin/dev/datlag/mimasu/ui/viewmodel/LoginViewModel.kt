@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.api.DisposableDebounce
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
@@ -14,6 +15,7 @@ import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
+import dev.datlag.mimasu.firebase.auth.provider.google.GoogleAuthParams
 import dev.datlag.mimasu.ui.GoogleProvider
 import dev.datlag.tooling.async.suspendCatching
 import kotlinx.coroutines.CoroutineScope
@@ -143,11 +145,9 @@ class LoginViewModel(
         }
     }
 
-    fun googleSignIn(onSuccess: suspend () -> Unit) = startLoginJob {
+    fun googleSignIn(params: GoogleAuthParams, onSuccess: suspend () -> Unit) = startLoginJob {
         _loginResult.update { LoginResult.None }
-        googleAuthProvider?.signIn(
-            FirebaseGoogleAuthProvider.SignInParams(isRetrying = false)
-        ).also { result ->
+        googleAuthProvider?.signIn(params).also { result ->
             _loginResult.update { result?.let { LoginResult.Finish(it.isSuccess) } ?: LoginResult.None }
             if (result?.isSuccess == true) {
                 onSuccess()
@@ -155,10 +155,8 @@ class LoginViewModel(
         }
     }
 
-    fun googleLink() = startLoginJob {
-        googleAuthProvider?.link(
-            FirebaseGoogleAuthProvider.SignInParams(isRetrying = false)
-        )
+    fun googleLink(params: GoogleAuthParams) = startLoginJob {
+        googleAuthProvider?.link(params)
     }
 
     fun githubSignIn(params: GitHubAuthParams, onSuccess: suspend () -> Unit) = startLoginJob {
