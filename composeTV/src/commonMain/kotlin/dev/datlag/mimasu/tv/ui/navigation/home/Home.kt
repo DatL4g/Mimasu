@@ -2,6 +2,7 @@ package dev.datlag.mimasu.tv.ui.navigation.home
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,17 +20,20 @@ import dev.datlag.mimasu.tv.tv_home_trending_series_today
 import dev.datlag.mimasu.tv.tv_home_trending_series_weekly
 import dev.datlag.mimasu.tv.ui.navigation.home.components.MoviesSection
 import dev.datlag.mimasu.tv.ui.navigation.home.components.SeriesSection
+import dev.datlag.mimasu.ui.common.plus
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Home() {
+fun Home(
+    paddingValues: PaddingValues
+) {
     val trendingViewModel = kodeinViewModel<TrendingViewModel>()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = WindowInsets.statusBars.asPaddingValues()
+        contentPadding = paddingValues.plus(PaddingValues(top = 32.dp))
     ) {
         item {
             SeriesSection(

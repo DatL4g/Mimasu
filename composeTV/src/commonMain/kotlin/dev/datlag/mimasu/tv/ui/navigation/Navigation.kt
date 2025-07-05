@@ -1,11 +1,15 @@
 package dev.datlag.mimasu.tv.ui.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,9 +20,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -32,12 +42,14 @@ import dev.datlag.mimasu.tv.ui.navigation.home.Home
 import kotlinx.serialization.Serializable
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.tv.material3.ButtonDefaults
+import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.TabDefaults
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_tab_home
 import dev.datlag.mimasu.tv.tv_tab_movies
 import dev.datlag.mimasu.tv.tv_tab_search
 import dev.datlag.mimasu.tv.tv_tab_shows
+import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import org.jetbrains.compose.resources.stringResource
 
@@ -60,22 +72,24 @@ object Navigation {
 fun Navigation() {
     val controller = rememberNavController()
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        TabBar(
-            navController = controller
-        )
+        var tabBarHeight by remember { mutableStateOf(0.dp) }
+        val navHostFocus = remember { FocusRequester() }
+
         NavHost(
             navController = controller,
-            startDestination = Navigation.Home
+            startDestination = Navigation.Home,
+            modifier = Modifier.focusRequester(navHostFocus)
         ) {
             composable<Navigation.Search> {
                 Text(text = "Search Screen")
             }
             composable<Navigation.Home> {
-                Home()
+                Home(
+                    paddingValues = PaddingValues(top = tabBarHeight)
+                )
             }
             composable<Navigation.Movies> {
                 Text(text = "Movies Screen")
@@ -84,11 +98,22 @@ fun Navigation() {
                 Text(text = "Shows Screen")
             }
         }
+        TabBar(
+            navController = controller,
+            downFocus = navHostFocus,
+            modifier = Modifier.align(Alignment.TopCenter),
+            onHeightMeasured = { tabBarHeight = it }
+        )
     }
 }
 
 @Composable
-private fun TabBar(navController: NavController) {
+private fun TabBar(
+    navController: NavController,
+    downFocus: FocusRequester,
+    modifier: Modifier = Modifier,
+    onHeightMeasured: (Dp) -> Unit
+) {
     val backStack by navController.currentBackStackEntryAsState()
 
     val isSearch = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Search>() ?: false }
@@ -100,6 +125,8 @@ private fun TabBar(navController: NavController) {
     val homeFocus = remember { FocusRequester() }
     val moviesFocus = remember { FocusRequester() }
     val showsFocus = remember { FocusRequester() }
+
+    val density = LocalDensity.current
 
     LaunchedEffect(Unit) {
         when {
@@ -119,11 +146,18 @@ private fun TabBar(navController: NavController) {
             isShows -> 3
             else -> 1
         },
-        modifier = Modifier.focusRestorer().padding(16.dp)
+        modifier = modifier.focusRestorer().padding(16.dp).onGloballyPositioned { coordinates ->
+            with(density) {
+                onHeightMeasured(coordinates.size.height.toDp())
+            }
+        }.clip(CircleShape)
     ) {
         Tab(
             modifier = Modifier
                 .focusRequester(searchFocus)
+                .focusProperties {
+                    down = downFocus
+                }
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             selected = isSearch,
             onFocus = {
@@ -133,7 +167,7 @@ private fun TabBar(navController: NavController) {
                         restoreState = true
                     }
                 }
-            },
+            }
         ) {
             MaterialSymbols(
                 modifier = Modifier.size(ButtonDefaults.IconSize),
@@ -147,6 +181,9 @@ private fun TabBar(navController: NavController) {
         Tab(
             modifier = Modifier
                 .focusRequester(homeFocus)
+                .focusProperties {
+                    down = downFocus
+                }
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             selected = isHome,
             onFocus = {
@@ -156,7 +193,7 @@ private fun TabBar(navController: NavController) {
                         restoreState = true
                     }
                 }
-            },
+            }
         ) {
             MaterialSymbols(
                 modifier = Modifier.size(ButtonDefaults.IconSize),
@@ -170,6 +207,9 @@ private fun TabBar(navController: NavController) {
         Tab(
             modifier = Modifier
                 .focusRequester(moviesFocus)
+                .focusProperties {
+                    down = downFocus
+                }
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             selected = isMovies,
             onFocus = {
@@ -193,6 +233,9 @@ private fun TabBar(navController: NavController) {
         Tab(
             modifier = Modifier
                 .focusRequester(showsFocus)
+                .focusProperties {
+                    down = downFocus
+                }
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             selected = isShows,
             onFocus = {
