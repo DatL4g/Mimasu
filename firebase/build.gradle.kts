@@ -8,6 +8,10 @@ plugins {
     alias(libs.plugins.ktorfit)
 }
 
+ktorfit {
+    kotlinVersion.set("-")
+}
+
 kotlin {
     androidTarget()
     jvm()

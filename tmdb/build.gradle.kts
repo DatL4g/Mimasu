@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.stacktrace.decoroutinator) apply false
 }
 
+ktorfit {
+    kotlinVersion.set("-")
+}
+
 kotlin {
     jvm()
 

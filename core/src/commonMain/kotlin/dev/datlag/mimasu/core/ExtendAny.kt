@@ -11,6 +11,7 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.time.ExperimentalTime
 
 fun Float.round(decimals: Int): Float {
     val factor = 10F.pow(decimals)
@@ -28,11 +29,13 @@ fun LocalTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()
 
 fun LocalDate.toLocalDateTime(timeZone: TimeZone = TimeZone.currentSystemDefault()) = this.atTime(time = LocalTime.now(timeZone))
 
+@OptIn(ExperimentalTime::class)
 fun LocalDate.toEpochMilliseconds(timeZone: TimeZone = TimeZone.currentSystemDefault()): Long {
     val timeNow = LocalDateTime.now(timeZone = timeZone)
     return this.atTime(hour = timeNow.hour, minute = timeNow.minute).toInstant(timeZone = timeZone).toEpochMilliseconds()
 }
 
+@OptIn(ExperimentalTime::class)
 fun LocalDateTime.toEpochMilliseconds(timeZone: TimeZone = TimeZone.currentSystemDefault()): Long {
     return this.toInstant(timeZone = timeZone).toEpochMilliseconds()
 }

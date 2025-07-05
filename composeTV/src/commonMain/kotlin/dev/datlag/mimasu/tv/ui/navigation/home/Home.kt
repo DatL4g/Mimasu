@@ -1,18 +1,13 @@
 package dev.datlag.mimasu.tv.ui.navigation.home
 
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.TabRow
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_home_trending_movies_today
 import dev.datlag.mimasu.tv.tv_home_trending_movies_weekly

@@ -64,11 +64,7 @@ data object Network {
     sealed interface Config {
 
         fun getOrThrow(): Success {
-            return if (this is Success) {
-                this
-            } else {
-                throw AccessException(this)
-            }
+            return this as? Success ?: throw AccessException(this)
         }
 
         fun tolgeeApiKey(): String? = when (this) {
