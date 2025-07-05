@@ -8,4 +8,14 @@
     <string name="tv_home_trending_series_weekly">Weekly TV Shows</string>
     <string name="tv_home_trending_movies_today">Daily Movies</string>
     <string name="tv_home_trending_movies_weekly">Weekly Movies</string>
+
+    <string name="tv_movies_now_playing">Now Playing</string>
+    <string name="tv_movies_popular">Popular</string>
+    <string name="tv_movies_top_rated">Top Rated</string>
+    <string name="tv_movies_upcoming">Upcoming</string>
+
+    <string name="tv_series_airing_today">Airing Today</string>
+    <string name="tv_series_on_the_air">On the Air</string>
+    <string name="tv_series_popular">Popular</string>
+    <string name="tv_series_top_rated">Top Rated</string>
 </resources>

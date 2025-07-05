@@ -49,6 +49,8 @@ import dev.datlag.mimasu.tv.tv_tab_home
 import dev.datlag.mimasu.tv.tv_tab_movies
 import dev.datlag.mimasu.tv.tv_tab_search
 import dev.datlag.mimasu.tv.tv_tab_shows
+import dev.datlag.mimasu.tv.ui.navigation.movies.Movies
+import dev.datlag.mimasu.tv.ui.navigation.series.Series
 import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import org.jetbrains.compose.resources.stringResource
@@ -92,10 +94,14 @@ fun Navigation() {
                 )
             }
             composable<Navigation.Movies> {
-                Text(text = "Movies Screen")
+                Movies(
+                    paddingValues = PaddingValues(top = tabBarHeight)
+                )
             }
             composable<Navigation.Shows> {
-                Text(text = "Shows Screen")
+                Series(
+                    paddingValues = PaddingValues(top = tabBarHeight)
+                )
             }
         }
         TabBar(

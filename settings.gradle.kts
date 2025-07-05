@@ -5,7 +5,6 @@ pluginManagement {
         google()
         gradlePluginPortal()
         mavenCentral()
-        maven(url = "https://central.sonatype.com/repository/maven-snapshots/")
     }
 }
 
@@ -13,7 +12,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://central.sonatype.com/repository/maven-snapshots/")
     }
 }
 

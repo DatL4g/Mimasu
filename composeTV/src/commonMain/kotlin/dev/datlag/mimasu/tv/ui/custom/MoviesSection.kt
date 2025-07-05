@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.tv.ui.navigation.home.components
+package dev.datlag.mimasu.tv.ui.custom
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
