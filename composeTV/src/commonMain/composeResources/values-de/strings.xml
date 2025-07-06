@@ -19,4 +19,10 @@
     <string name="tv_series_on_the_air">Auf Sendung</string>
     <string name="tv_series_popular">Beliebt</string>
     <string name="tv_series_top_rated">Top Bewertet</string>
+
+    <string name="tv_movie_release_date">Veröffentlicht</string>
+    <string name="tv_movie_release_date_format">dd.MM.yyyy</string>
+    <string name="tv_movie_runtime">Spielzeit</string>
+    <string name="tv_movie_rating">Wertung</string>
+    <string name="tv_movie_rating_placeholder">%1$d%</string>
 </resources>

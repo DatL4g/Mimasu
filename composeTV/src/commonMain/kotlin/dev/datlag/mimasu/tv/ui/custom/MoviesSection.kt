@@ -4,6 +4,7 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,11 +21,12 @@ import dev.datlag.mimasu.tmdb.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun MoviesSection(
+internal fun MoviesSection(
     flow: Flow<PagingData<Movie>>,
     title: String,
     orientation: Orientation,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Movie) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -39,7 +41,7 @@ fun MoviesSection(
         }
 
         Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(horizontal = 32.dp),
             text = title,
             style = MaterialTheme.typography.headlineSmall,
             maxLines = 1
@@ -47,12 +49,12 @@ fun MoviesSection(
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = 32.dp)
         ) {
             items(movies.itemCount) { index ->
                 val movie = movies[index]
 
-                MovieCard(movie, orientation)
+                MovieCard(movie, orientation, onClick)
             }
             when {
                 movies.loadState.refresh is LoadState.Loading -> {

@@ -18,6 +18,16 @@ data object YouTubeUtils {
         return videoIdFrom(value) ?: FALLBACK_VIDEO_ID_REGEX.find(value.trim())?.value?.trim()?.ifBlank { null }
     }
 
+    fun videoUrl(urlOrId: String): String? {
+        return if (matches(urlOrId)) {
+            urlOrId
+        } else {
+            videoIdAsItOrFromUrl(urlOrId)?.let {
+                "https://youtube.com/watch?v=$it"
+            }
+        }
+    }
+
     fun thumbnailsForId(videoId: String): Set<String> {
         return setOf(
             "https://img.youtube.com/vi/$videoId/hqdefault.jpg", // highest, working for all

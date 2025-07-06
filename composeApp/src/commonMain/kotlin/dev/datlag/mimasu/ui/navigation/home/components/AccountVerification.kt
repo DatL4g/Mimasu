@@ -35,13 +35,15 @@ import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.compose.withMainContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.abs
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun AccountVerification(
     modifier: Modifier = Modifier,

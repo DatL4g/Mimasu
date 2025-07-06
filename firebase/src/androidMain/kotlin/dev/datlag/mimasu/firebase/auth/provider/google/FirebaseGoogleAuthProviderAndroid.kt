@@ -15,6 +15,7 @@ import dev.datlag.mimasu.firebase.auth.provider.FirebaseProvider
 import dev.datlag.tooling.async.suspendCatching
 import dev.gitlive.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.delay
+import kotlin.time.ExperimentalTime
 
 class FirebaseGoogleAuthProviderAndroid(
     firebaseAuthDataSource: FirebaseAuthDataSource,
@@ -73,6 +74,7 @@ class FirebaseGoogleAuthProviderAndroid(
         handleSignInResponse(result.getOrThrow(), linkOnly = true).getOrThrow()
     }
 
+    @OptIn(ExperimentalTime::class)
     private suspend fun handleSignInResponse(
         result: GetCredentialResponse,
         linkOnly: Boolean = false

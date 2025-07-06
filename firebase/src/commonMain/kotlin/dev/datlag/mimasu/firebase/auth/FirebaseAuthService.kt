@@ -14,7 +14,9 @@ import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 data class FirebaseAuthService(
     private val app: FirebaseApp = Firebase.app
 ) {

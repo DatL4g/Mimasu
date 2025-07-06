@@ -7,7 +7,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.common.formatMedium
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.person_birthday
 import dev.datlag.mimasu.composeapp.generated.resources.person_birthday_date_format
@@ -21,6 +20,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.person_gender_unknown
 import dev.datlag.mimasu.composeapp.generated.resources.person_known_for
 import dev.datlag.mimasu.composeapp.generated.resources.person_place_of_birth
 import dev.datlag.mimasu.tmdb.model.details.Person
+import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import org.jetbrains.compose.resources.stringResource

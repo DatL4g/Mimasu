@@ -32,8 +32,8 @@ data class Movie(
     @SerialName("id") val id: Int,
     @SerialName("imdb_id") private val _imdbId: String? = null,
     @SerialName("original_language") val originalLanguage: String? = null,
-    @SerialName("original_title") val originalTitle: String? = null,
-    @SerialName("overview") val overview: String? = null,
+    @SerialName("original_title") private val _originalTitle: String? = null,
+    @SerialName("overview") private val _overview: String? = null,
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("poster_path") override val posterSource: String? = null,
     @SerialName("production_companies") val productionCompanies: Set<ProductionCompany> = emptySet(),
@@ -43,7 +43,7 @@ data class Movie(
     @SerialName("runtime") val runtime: Int = 0,
     @SerialName("spoken_languages") val spokenLanguages: Set<SpokenLanguage> = emptySet(),
     @SerialName("status") @Serializable(Status.Serializer::class) val status: Status? = null,
-    @SerialName("tagline") val tagline: String? = null,
+    @SerialName("tagline") private val _tagline: String? = null,
     @SerialName("original_tagline") val originalTagline: String? = null,
     @SerialName("title") val title: String,
     @SerialName("video") val video: Boolean = true,
@@ -54,6 +54,15 @@ data class Movie(
     @SerialName("watch/providers") val watchProviders: WatchProviders? = null,
     @SerialName("videos") private val videos: VideoResult? = null,
 ) : HasBackdrop, HasPoster {
+
+    @Transient
+    val originalTitle: String? = _originalTitle?.trim()?.ifBlank { null }
+
+    @Transient
+    val overview: String? = _overview?.trim()?.ifBlank { null }
+
+    @Transient
+    val tagline: String? = _tagline?.trim()?.ifBlank { null }
 
     @Transient
     val imdbId: String? = _imdbId?.ifBlank { null } ?: externalIDs?.imdbId?.ifBlank { null }

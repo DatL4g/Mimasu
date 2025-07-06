@@ -1,5 +1,6 @@
 package dev.datlag.mimasu
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import dev.datlag.mimasu.tv.TVApp
 import dev.datlag.mimasu.ui.navigation.login.rememberAppImage
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.theme.Font
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.asTv
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DI
@@ -38,11 +40,18 @@ class TVActivity : ComponentActivity() {
         }
 
         super.onCreate(savedInstanceState)
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                Network.showSplashscreen
+        if (Platform.isTelevision(this)) {
+            installSplashScreen().apply {
+                setKeepOnScreenCondition {
+                    Network.showSplashscreen
+                }
             }
+        } else {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
+
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()

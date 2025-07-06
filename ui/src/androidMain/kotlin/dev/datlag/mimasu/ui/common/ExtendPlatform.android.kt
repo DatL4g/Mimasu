@@ -15,6 +15,11 @@ import dev.datlag.mimasu.firebase.auth.provider.google.GoogleAuthParams
 import dev.datlag.mimasu.ui.other.ArchUtils
 import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.scopeCatching
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.toJavaLocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 tailrec fun Context.findActivity(): Activity? {
     return when (this) {
@@ -90,4 +95,25 @@ fun Rive.initSafely(
         init(context, defaultRenderer)
         false
     }
+}
+
+@Composable
+actual fun LocalDate?.formatMedium(fallbackFormat: String): String? {
+    if (this == null) {
+        return null
+    }
+    val formatter = remember {
+        DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+    }
+    val fallbackFormatter = remember(fallbackFormat) {
+        LocalDate.Format {
+            byUnicodePattern(fallbackFormat)
+        }
+    }
+
+    return scopeCatching {
+        this.toJavaLocalDate().format(formatter)
+    }.getOrNull()?.ifBlank { null } ?: scopeCatching {
+        fallbackFormatter.format(this)
+    }.getOrNull()?.ifBlank { null }
 }

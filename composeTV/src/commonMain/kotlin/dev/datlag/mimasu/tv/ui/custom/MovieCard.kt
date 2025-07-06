@@ -30,9 +30,10 @@ import dev.datlag.mimasu.tv.common.fadeHighlightColor
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 
 @Composable
-fun MovieCard(
+internal fun MovieCard(
     movie: Movie?,
-    orientation: Orientation
+    orientation: Orientation,
+    onClick: (Movie) -> Unit = { }
 ) {
     val cardModifier = when (orientation) {
         Orientation.Horizontal -> Modifier
@@ -53,7 +54,11 @@ fun MovieCard(
         imageCard = { interactionSource ->
             Card(
                 modifier = cardModifier,
-                onClick = { },
+                onClick = {
+                    if (movie != null) {
+                        onClick(movie)
+                    }
+                },
                 interactionSource = interactionSource
             ) {
                 val backdrops = remember(movie) { movie.backdrops(fallback = null) }

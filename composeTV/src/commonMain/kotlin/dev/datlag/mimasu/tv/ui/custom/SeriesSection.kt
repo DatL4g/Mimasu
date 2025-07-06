@@ -20,7 +20,7 @@ import dev.datlag.mimasu.tmdb.model.TV
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun SeriesSection(
+internal fun SeriesSection(
     flow: Flow<PagingData<TV>>,
     title: String,
     orientation: Orientation,
@@ -39,7 +39,7 @@ fun SeriesSection(
         }
 
         Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(horizontal = 32.dp),
             text = title,
             style = MaterialTheme.typography.headlineSmall,
             maxLines = 1
@@ -47,7 +47,7 @@ fun SeriesSection(
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = 32.dp)
         ) {
             items(shows.itemCount) { index ->
                 val show = shows[index]

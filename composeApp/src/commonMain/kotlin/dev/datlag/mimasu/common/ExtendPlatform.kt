@@ -17,24 +17,6 @@ val Platform.isApple: Boolean by lazy {
     isIOS || isTVOS || isWatchOS || isMacOS
 }
 
-@Composable
-expect fun LocalDate?.formatMedium(fallbackFormat: String): String?
-
-@Composable
-fun LocalDate?.formatMedium(
-    fallbackFormat: String,
-    fallbackValue: String?
-): String? = this.formatMedium(fallbackFormat)?.ifBlank { null } ?: fallbackValue?.ifBlank { null }
-
-@Composable
-fun LocalDate?.formatMedium(
-    fallbackFormat: StringResource,
-    fallbackValue: String?
-): String? = this.formatMedium(
-    fallbackFormat = stringResource(fallbackFormat),
-    fallbackValue = fallbackValue
-)
-
 expect fun Navigation.Video.dialogProperties(): DialogProperties
 
 expect fun Navigation.Login.dialogProperties(): DialogProperties

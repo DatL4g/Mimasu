@@ -36,6 +36,7 @@ kotlin {
             implementation(libs.splashscreen)
             implementation(libs.placeholder)
 
+            implementation(project(":core"))
             implementation(project(":ui"))
         }
     }

@@ -33,7 +33,7 @@ import dev.datlag.tooling.compose.platform.shapes
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
-import dev.datlag.mimasu.common.formatMedium
+import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 
 @Composable

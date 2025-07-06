@@ -7,11 +7,13 @@ import dev.datlag.mimasu.firebase.auth.provider.FirebaseAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.FirebaseProvider
 import dev.datlag.tooling.async.suspendCatching
 import dev.gitlive.firebase.auth.EmailAuthProvider
+import kotlin.time.ExperimentalTime
 
 class FirebaseEmailAuthProvider(
     firebaseAuthDataSource: FirebaseAuthDataSource
 ) : FirebaseAuthProvider<EmailAuthParams>(firebaseAuthDataSource) {
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun signIn(
         params: EmailAuthParams
     ): Result<User> = suspendCatching {

@@ -57,12 +57,14 @@ import dev.datlag.mimasu.tv.tv_tab_movies
 import dev.datlag.mimasu.tv.tv_tab_profile
 import dev.datlag.mimasu.tv.tv_tab_search
 import dev.datlag.mimasu.tv.tv_tab_shows
+import dev.datlag.mimasu.tv.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.tv.ui.navigation.login.Login
 import dev.datlag.mimasu.tv.ui.navigation.movies.Movies
 import dev.datlag.mimasu.tv.ui.navigation.series.Series
 import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -82,6 +84,12 @@ object Navigation {
 
     @Serializable
     data object Shows
+
+    object Detail {
+
+        @Serializable
+        data object Movie
+    }
 }
 
 @Composable
@@ -124,18 +132,35 @@ internal fun Navigation(appImage: Painter) {
             }
             composable<Navigation.Home> {
                 Home(
-                    paddingValues = PaddingValues(top = tabBarHeight)
+                    paddingValues = PaddingValues(top = tabBarHeight),
+                    onMovieClicked = {
+                        MovieViewModel.updateFrom(it)
+
+                        controller.navigate(Navigation.Detail.Movie) {
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
             composable<Navigation.Movies> {
                 Movies(
-                    paddingValues = PaddingValues(top = tabBarHeight)
+                    paddingValues = PaddingValues(top = tabBarHeight),
+                    onMovieClicked = {
+                        MovieViewModel.updateFrom(it)
+
+                        controller.navigate(Navigation.Detail.Movie) {
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
             composable<Navigation.Shows> {
                 Series(
                     paddingValues = PaddingValues(top = tabBarHeight)
                 )
+            }
+            composable<Navigation.Detail.Movie> {
+                MovieDetail()
             }
         }
 
@@ -166,174 +191,177 @@ private fun TabBar(
     onHeightMeasured: (Dp) -> Unit
 ) {
     val backStack by navController.currentBackStackEntryAsState()
+    val isMovieDetail = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Detail.Movie>() ?: false }
 
-    val isSearch = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Search>() ?: false }
-    val isHome = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Home>() ?: false }
-    val isMovies = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Movies>() ?: false }
-    val isShows = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Shows>() ?: false }
+    if (!isMovieDetail) {
+        val isSearch = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Search>() ?: false }
+        val isHome = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Home>() ?: false }
+        val isMovies = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Movies>() ?: false }
+        val isShows = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Shows>() ?: false }
 
-    val searchFocus = remember { FocusRequester() }
-    val homeFocus = remember { FocusRequester() }
-    val moviesFocus = remember { FocusRequester() }
-    val showsFocus = remember { FocusRequester() }
+        val searchFocus = remember { FocusRequester() }
+        val homeFocus = remember { FocusRequester() }
+        val moviesFocus = remember { FocusRequester() }
+        val showsFocus = remember { FocusRequester() }
 
-    val density = LocalDensity.current
+        val density = LocalDensity.current
 
-    LaunchedEffect(Unit) {
-        when {
-            isSearch -> searchFocus.requestFocus()
-            isHome -> homeFocus.requestFocus()
-            isMovies -> moviesFocus.requestFocus()
-            isShows -> showsFocus.requestFocus()
-            else -> homeFocus.requestFocus()
-        }
-    }
-
-    TabRow(
-        selectedTabIndex = when {
-            isSearch -> 1
-            isHome -> 2
-            isMovies -> 3
-            isShows -> 4
-            else -> 2
-        },
-        modifier = modifier.focusRestorer().padding(16.dp).onGloballyPositioned { coordinates ->
-            with(density) {
-                onHeightMeasured(coordinates.size.height.toDp())
+        LaunchedEffect(Unit) {
+            when {
+                isSearch -> searchFocus.requestFocus()
+                isHome -> homeFocus.requestFocus()
+                isMovies -> moviesFocus.requestFocus()
+                isShows -> showsFocus.requestFocus()
+                else -> homeFocus.requestFocus()
             }
         }
-    ) {
-        Tab(
-            modifier = Modifier
-                .focusProperties {
-                    down = downFocus
-                }
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            selected = false,
-            onFocus = {
 
+        TabRow(
+            selectedTabIndex = when {
+                isSearch -> 1
+                isHome -> 2
+                isMovies -> 3
+                isShows -> 4
+                else -> 2
+            },
+            modifier = modifier.focusRestorer().padding(16.dp).onGloballyPositioned { coordinates ->
+                with(density) {
+                    onHeightMeasured(coordinates.size.height.toDp())
+                }
             }
         ) {
-            val accountViewModel = accountViewModel()
-            val user by accountViewModel.user.collectAsStateWithLifecycle()
+            Tab(
+                modifier = Modifier
+                    .focusProperties {
+                        down = downFocus
+                    }
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                selected = false,
+                onFocus = {
 
-            AsyncImage(
-                modifier = Modifier.size(ButtonDefaults.IconSize).clip(CircleShape),
-                model = user?.profilePictures?.firstOrNull(),
-                contentScale = ContentScale.Crop,
-                error = rememberNestedImagePainter(
-                    models = user?.profilePictures?.drop(1).orEmpty(),
+                }
+            ) {
+                val accountViewModel = accountViewModel()
+                val user by accountViewModel.user.collectAsStateWithLifecycle()
+
+                AsyncImage(
+                    modifier = Modifier.size(ButtonDefaults.IconSize).clip(CircleShape),
+                    model = user?.profilePictures?.firstOrNull(),
                     contentScale = ContentScale.Crop,
-                    error = MaterialSymbols.rememberPainter(name = MaterialSymbols.ACCOUNT_CIRCLE)
-                ),
-                contentDescription = null
-            )
-            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = user?.name ?: stringResource(Res.string.tv_tab_profile))
-        }
-        Tab(
-            modifier = Modifier
-                .focusRequester(searchFocus)
-                .focusProperties {
-                    down = downFocus
-                }
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            selected = isSearch,
-            onFocus = {
-                if (!isSearch) {
-                    navController.navigate(Navigation.Search) {
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
+                    error = rememberNestedImagePainter(
+                        models = user?.profilePictures?.drop(1).orEmpty(),
+                        contentScale = ContentScale.Crop,
+                        error = MaterialSymbols.rememberPainter(name = MaterialSymbols.ACCOUNT_CIRCLE)
+                    ),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = user?.name ?: stringResource(Res.string.tv_tab_profile))
             }
-        ) {
-            MaterialSymbols(
-                modifier = Modifier.size(ButtonDefaults.IconSize),
-                name = MaterialSymbols.SEARCH,
-                contentDescription = null,
-                filled = isSearch
-            )
-            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = stringResource(Res.string.tv_tab_search))
-        }
-        Tab(
-            modifier = Modifier
-                .focusRequester(homeFocus)
-                .focusProperties {
-                    down = downFocus
-                }
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            selected = isHome,
-            onFocus = {
-                if (!isHome) {
-                    navController.navigate(Navigation.Home) {
-                        launchSingleTop = true
-                        restoreState = true
+            Tab(
+                modifier = Modifier
+                    .focusRequester(searchFocus)
+                    .focusProperties {
+                        down = downFocus
+                    }
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                selected = isSearch,
+                onFocus = {
+                    if (!isSearch) {
+                        navController.navigate(Navigation.Search) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 }
+            ) {
+                MaterialSymbols(
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                    name = MaterialSymbols.SEARCH,
+                    contentDescription = null,
+                    filled = isSearch
+                )
+                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = stringResource(Res.string.tv_tab_search))
             }
-        ) {
-            MaterialSymbols(
-                modifier = Modifier.size(ButtonDefaults.IconSize),
-                name = MaterialSymbols.HOME,
-                contentDescription = null,
-                filled = isHome
-            )
-            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = stringResource(Res.string.tv_tab_home))
-        }
-        Tab(
-            modifier = Modifier
-                .focusRequester(moviesFocus)
-                .focusProperties {
-                    down = downFocus
-                }
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            selected = isMovies,
-            onFocus = {
-                if (!isMovies) {
-                    navController.navigate(Navigation.Movies) {
-                        launchSingleTop = true
-                        restoreState = true
+            Tab(
+                modifier = Modifier
+                    .focusRequester(homeFocus)
+                    .focusProperties {
+                        down = downFocus
+                    }
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                selected = isHome,
+                onFocus = {
+                    if (!isHome) {
+                        navController.navigate(Navigation.Home) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 }
-            },
-        ) {
-            MaterialSymbols(
-                modifier = Modifier.size(ButtonDefaults.IconSize),
-                name = MaterialSymbols.MOVIE,
-                contentDescription = null,
-                filled = isMovies
-            )
-            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = stringResource(Res.string.tv_tab_movies))
-        }
-        Tab(
-            modifier = Modifier
-                .focusRequester(showsFocus)
-                .focusProperties {
-                    down = downFocus
-                }
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            selected = isShows,
-            onFocus = {
-                if (!isShows) {
-                    navController.navigate(Navigation.Shows) {
-                        launchSingleTop = true
-                        restoreState = true
+            ) {
+                MaterialSymbols(
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                    name = MaterialSymbols.HOME,
+                    contentDescription = null,
+                    filled = isHome
+                )
+                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = stringResource(Res.string.tv_tab_home))
+            }
+            Tab(
+                modifier = Modifier
+                    .focusRequester(moviesFocus)
+                    .focusProperties {
+                        down = downFocus
                     }
-                }
-            },
-        ) {
-            MaterialSymbols(
-                modifier = Modifier.size(ButtonDefaults.IconSize),
-                name = MaterialSymbols.TV,
-                contentDescription = null,
-                filled = isShows
-            )
-            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = stringResource(Res.string.tv_tab_shows))
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                selected = isMovies,
+                onFocus = {
+                    if (!isMovies) {
+                        navController.navigate(Navigation.Movies) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                },
+            ) {
+                MaterialSymbols(
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                    name = MaterialSymbols.MOVIE,
+                    contentDescription = null,
+                    filled = isMovies
+                )
+                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = stringResource(Res.string.tv_tab_movies))
+            }
+            Tab(
+                modifier = Modifier
+                    .focusRequester(showsFocus)
+                    .focusProperties {
+                        down = downFocus
+                    }
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                selected = isShows,
+                onFocus = {
+                    if (!isShows) {
+                        navController.navigate(Navigation.Shows) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                },
+            ) {
+                MaterialSymbols(
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                    name = MaterialSymbols.TV,
+                    contentDescription = null,
+                    filled = isShows
+                )
+                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = stringResource(Res.string.tv_tab_shows))
+            }
         }
     }
 }

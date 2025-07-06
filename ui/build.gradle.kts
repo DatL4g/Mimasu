@@ -75,6 +75,10 @@ kotlin {
     }
 }
 
+dependencies {
+    coreLibraryDesugaring(libs.desugar)
+}
+
 compose {
     resources {
         generateResClass = auto
@@ -85,13 +89,17 @@ compose {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     namespace = "dev.datlag.mimasu.ui"
 
     defaultConfig {
         minSdk = 21
+
+        multiDexEnabled = true
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_21
     }

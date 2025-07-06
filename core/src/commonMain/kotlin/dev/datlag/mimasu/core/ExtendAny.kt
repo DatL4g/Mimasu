@@ -1,7 +1,6 @@
 package dev.datlag.mimasu.core
 
 import dev.datlag.tooling.safeSubList
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -11,6 +10,7 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 fun Float.round(decimals: Int): Float {
@@ -23,6 +23,7 @@ fun Double.round(decimals: Int): Double {
     return (this * factor).roundToInt() / factor
 }
 
+@OptIn(ExperimentalTime::class)
 fun LocalDateTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime = Clock.System.now().toLocalDateTime(timeZone)
 fun LocalDate.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()) = LocalDateTime.now(timeZone).date
 fun LocalTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()) = LocalDateTime.now(timeZone).time

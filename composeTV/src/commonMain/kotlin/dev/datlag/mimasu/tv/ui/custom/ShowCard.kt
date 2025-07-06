@@ -30,7 +30,7 @@ import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
 
 @Composable
-fun ShowCard(
+internal fun ShowCard(
     show: TV?,
     orientation: Orientation
 ) {
