@@ -1,8 +1,6 @@
 package dev.datlag.mimasu.ui.custom.login.components
 
-import androidx.compose.animation.graphics.res.animatedVectorResource
-import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
-import androidx.compose.animation.graphics.vector.AnimatedImageVector
+import android.app.ActivityManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -30,16 +28,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.rive.RiveAnimation
 import dev.datlag.mimasu.ui.AppInitializer
-import dev.datlag.mimasu.ui.R
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.login_rive_bunny_license
 import dev.datlag.mimasu.ui.login_rive_bunny_marketplace
 import dev.datlag.mimasu.ui.login_rive_bunny_owner
 import dev.datlag.mimasu.ui.login_rive_bunny_text
 import dev.datlag.mimasu.ui.login_rive_bunny_title
+import dev.datlag.tooling.scopeCatching
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -52,20 +52,16 @@ internal actual fun LoginAppImage(
     riveModifier: Modifier
 ) {
     val context = LocalContext.current
-    var bytes by rememberSaveable {
-        mutableStateOf(ByteArray(0))
+    val activityManager = remember(context) {
+        scopeCatching {
+            context.getSystemService<ActivityManager>()
+        }.getOrNull() ?: ContextCompat.getSystemService(context, ActivityManager::class.java)
     }
-    val riveLoaded = remember(context) {
-        AppInitializer.isRiveLoaded(context)
-    }
-
-    LaunchedEffect(bytes) {
-        if (bytes.isEmpty()) {
-            bytes = UiRes.readBytes("files/rive/bunny_login.riv")
-        }
+    val isLowRam = remember(activityManager) {
+        activityManager?.isLowRamDevice ?: false
     }
 
-    if (bytes.isEmpty() || !riveLoaded) {
+    if (isLowRam) {
         Image(
             painter = imagePainter,
             contentDescription = null,
@@ -73,64 +69,86 @@ internal actual fun LoginAppImage(
             contentScale = ContentScale.Crop
         )
     } else {
-        val tooltipState = rememberTooltipState()
+        var bytes by rememberSaveable {
+            mutableStateOf(ByteArray(0))
+        }
+        val riveLoaded = remember(context) {
+            AppInitializer.isRiveLoaded(context)
+        }
 
-        TooltipBox(
-            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
-            state = tooltipState,
-            tooltip = {
-                RichTooltip(
-                    caretSize = DpSize(32.dp, 16.dp),
-                    title = {
-                        Text(stringResource(UiRes.string.login_rive_bunny_title))
-                    },
-                    text = {
-                        Text(stringResource(UiRes.string.login_rive_bunny_text, stringResource(UiRes.string.login_rive_bunny_owner)))
-                    },
-                    action = {
-                        val uriHandler = LocalUriHandler.current
+        LaunchedEffect(bytes) {
+            if (bytes.isEmpty()) {
+                bytes = UiRes.readBytes("files/rive/bunny_login.riv")
+            }
+        }
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            TextButton(
-                                onClick = {
-                                    uriHandler.openUri(Constants.RIVE_BUNNY_LINK)
-                                },
-                                shapes = ButtonDefaults.shapes()
+        if (bytes.isEmpty() || !riveLoaded) {
+            Image(
+                painter = imagePainter,
+                contentDescription = null,
+                modifier = imageModifier,
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            val tooltipState = rememberTooltipState()
+
+            TooltipBox(
+                positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
+                state = tooltipState,
+                tooltip = {
+                    RichTooltip(
+                        caretSize = DpSize(32.dp, 16.dp),
+                        title = {
+                            Text(stringResource(UiRes.string.login_rive_bunny_title))
+                        },
+                        text = {
+                            Text(stringResource(UiRes.string.login_rive_bunny_text, stringResource(UiRes.string.login_rive_bunny_owner)))
+                        },
+                        action = {
+                            val uriHandler = LocalUriHandler.current
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Text(stringResource(UiRes.string.login_rive_bunny_marketplace))
-                            }
-                            TextButton(
-                                onClick = {
-                                    uriHandler.openUri(Constants.CREATIVE_COMMONS_4_LICENSE)
-                                },
-                                shapes = ButtonDefaults.shapes()
-                            ) {
-                                Text(stringResource(UiRes.string.login_rive_bunny_license))
+                                TextButton(
+                                    onClick = {
+                                        uriHandler.openUri(Constants.RIVE_BUNNY_LINK)
+                                    },
+                                    shapes = ButtonDefaults.shapes()
+                                ) {
+                                    Text(stringResource(UiRes.string.login_rive_bunny_marketplace))
+                                }
+                                TextButton(
+                                    onClick = {
+                                        uriHandler.openUri(Constants.CREATIVE_COMMONS_4_LICENSE)
+                                    },
+                                    shapes = ButtonDefaults.shapes()
+                                ) {
+                                    Text(stringResource(UiRes.string.login_rive_bunny_license))
+                                }
                             }
                         }
-                    }
-                )
-            }
-        ) {
-            RiveAnimation(
-                bytes = bytes,
-                modifier = riveModifier
-            ) { state ->
+                    )
+                }
+            ) {
+                RiveAnimation(
+                    bytes = bytes,
+                    modifier = riveModifier
+                ) { state ->
 
-                state.setBoolean(
-                    stateMachineName = "State Machine 1",
-                    inputName = "isFocus",
-                    value = typingEmail
-                )
+                    state.setBoolean(
+                        stateMachineName = "State Machine 1",
+                        inputName = "isFocus",
+                        value = typingEmail
+                    )
 
-                state.setBoolean(
-                    stateMachineName = "State Machine 1",
-                    inputName = "IsPassword",
-                    value = typingPassword
-                )
+                    state.setBoolean(
+                        stateMachineName = "State Machine 1",
+                        inputName = "IsPassword",
+                        value = typingPassword
+                    )
+                }
             }
         }
     }
