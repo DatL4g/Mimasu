@@ -1,8 +1,11 @@
 package dev.datlag.mimasu.tv.ui.navigation.detail.movie
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 
@@ -17,7 +20,11 @@ internal fun MovieDetail() {
 
         }
         is MovieViewModel.State.Error -> {
-
+            ErrorState(
+                throwable = current.throwable,
+                additionalInfo = "[TV] MovieDetail",
+                modifier = Modifier.fillMaxSize()
+            )
         }
         is MovieViewModel.State.Success -> {
             MovieContent(

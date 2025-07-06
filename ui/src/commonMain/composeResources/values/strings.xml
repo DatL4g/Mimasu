@@ -25,4 +25,7 @@
 
     <string name="github">GitHub</string>
     <string name="google">Google</string>
+
+    <string name="error_state_text">Something went wrong, please try again later.</string>
+    <string name="error_state_with_throwable_text">Something went wrong and got reported, please try again later.</string>
 </resources>

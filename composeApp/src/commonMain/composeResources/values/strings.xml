@@ -129,9 +129,6 @@
     <string name="show_justwatch_free">Free</string>
     <string name="show_justwatch_ads">Ads</string>
 
-    <string name="error_state_text">Something went wrong, please try again later.</string>
-    <string name="error_state_with_throwable_text">Something went wrong and got reported, please try again later.</string>
-
     <string name="account_verification">Account Verification</string>
     <string name="account_verification_text">Please verify your account within 30 days or it will be deleted, the process may take a while.</string>
     <string name="account_verification_send">Send Verification</string>

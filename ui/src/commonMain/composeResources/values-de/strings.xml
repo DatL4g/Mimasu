@@ -24,4 +24,7 @@
 
     <string name="github">GitHub</string>
     <string name="google">Google</string>
+
+    <string name="error_state_text">Etwas ist schiefgelaufen, bitte versuche es später noch einmal.</string>
+    <string name="error_state_with_throwable_text">Etwas ist schiefgelaufen und wurde gemeldet, bitte versuche es später noch einmal.</string>
 </resources>

@@ -802,7 +802,7 @@ data object MaterialSymbols {
 
             val width = if (maxWidth and MaxLayoutMask != 0) {
                 if (maxHeight and MaxLayoutMask != 0) {
-                    null
+                    constraints.minWidth
                 } else {
                     maxHeight
                 }
@@ -812,7 +812,7 @@ data object MaterialSymbols {
 
             val height = if (maxHeight and MaxLayoutMask != 0) {
                 if (maxWidth and MaxLayoutMask != 0) {
-                    null
+                    constraints.minHeight
                 } else {
                     maxWidth
                 }
@@ -822,11 +822,11 @@ data object MaterialSymbols {
 
             return scopeCatching {
                 layout(
-                    width = width ?: constraints.maxWidth,
-                    height = height ?: constraints.maxHeight,
+                    width = width,
+                    height = height,
                     placementBlock = placementBlock
                 )
-            }.onFailure(onError).getOrNull() ?: layout(0, 0, placementBlock = placementBlock)
+            }.onFailure(onError).getOrNull() ?: layout(constraints.minWidth, constraints.minHeight, placementBlock = placementBlock)
         }
 
         companion object {
