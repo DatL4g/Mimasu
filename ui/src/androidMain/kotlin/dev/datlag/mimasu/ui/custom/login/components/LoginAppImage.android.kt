@@ -34,6 +34,7 @@ import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.rive.RiveAnimation
 import dev.datlag.mimasu.ui.AppInitializer
 import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.common.supportsRive
 import dev.datlag.mimasu.ui.login_rive_bunny_license
 import dev.datlag.mimasu.ui.login_rive_bunny_marketplace
 import dev.datlag.mimasu.ui.login_rive_bunny_owner
@@ -52,16 +53,8 @@ internal actual fun LoginAppImage(
     riveModifier: Modifier
 ) {
     val context = LocalContext.current
-    val activityManager = remember(context) {
-        scopeCatching {
-            context.getSystemService<ActivityManager>()
-        }.getOrNull() ?: ContextCompat.getSystemService(context, ActivityManager::class.java)
-    }
-    val isLowRam = remember(activityManager) {
-        activityManager?.isLowRamDevice ?: false
-    }
 
-    if (isLowRam) {
+    if (!context.supportsRive()) {
         Image(
             painter = imagePainter,
             contentDescription = null,

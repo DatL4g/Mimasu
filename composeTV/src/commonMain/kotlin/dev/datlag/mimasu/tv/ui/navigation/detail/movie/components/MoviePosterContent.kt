@@ -32,15 +32,22 @@ import androidx.tv.material3.IconButton
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
+import com.eygraber.compose.placeholder.PlaceholderDefaults
+import com.eygraber.compose.placeholder.PlaceholderHighlight
+import com.eygraber.compose.placeholder.fade
+import com.eygraber.compose.placeholder.placeholder
 import dev.datlag.mimasu.core.YouTubeUtils
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tv.Res
+import dev.datlag.mimasu.tv.common.color
+import dev.datlag.mimasu.tv.common.fadeHighlightColor
 import dev.datlag.mimasu.tv.tv_movie_rating
 import dev.datlag.mimasu.tv.tv_movie_rating_placeholder
 import dev.datlag.mimasu.tv.tv_movie_release_date
 import dev.datlag.mimasu.tv.tv_movie_release_date_format
 import dev.datlag.mimasu.tv.tv_movie_runtime
+import dev.datlag.mimasu.tv.tv_movie_watch_trailer
 import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -54,7 +61,7 @@ import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable
 internal fun MoviePosterContent(
-    movie: Movie,
+    movie: Movie?,
     initial: CommonMovie?,
     modifier: Modifier = Modifier
 ) {
@@ -66,7 +73,7 @@ internal fun MoviePosterContent(
         val backdrops = remember(movie, initial) { movie.backdrops(fallbackMovie = initial) }
         val gradientColor = MaterialTheme.colorScheme.background
         val trailer = remember(movie) {
-            movie.youtubeTrailer(
+            movie?.youtubeTrailer(
                 language = Locale.current.language,
                 country = Locale.current.region
             )
@@ -113,14 +120,31 @@ internal fun MoviePosterContent(
             modifier = Modifier.fillMaxWidth(0.55F).fillMaxHeight().padding(start = 32.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom)
         ) {
+            val title = remember(movie?.title, initial?.title) {
+                movie?.title?.ifBlank { null } ?: initial?.title?.ifBlank { null }
+            }
+            val originalTitle = remember(movie?.originalTitle, initial?.originalTitle, title) {
+                (movie?.originalTitle?.ifBlank { null } ?: initial?.originalTitle?.ifBlank { null }).takeUnless {
+                    it.equals(title, ignoreCase = true)
+                }
+            }
+
             Text(
-                text = movie.title,
+                modifier = Modifier.fillMaxWidth().placeholder(
+                    visible = title.isNullOrBlank(),
+                    shape = MaterialTheme.shapes.small,
+                    highlight = PlaceholderHighlight.fade(
+                        highlightColor = PlaceholderDefaults.fadeHighlightColor()
+                    ),
+                    color = PlaceholderDefaults.color()
+                ),
+                text = title ?: "",
                 style = MaterialTheme.typography.displayMedium,
                 maxLines = 2,
                 softWrap = true,
                 overflow = TextOverflow.Ellipsis
             )
-            movie.originalTitle?.takeUnless { it.equals(movie.title, ignoreCase = true) }?.let {
+            originalTitle?.let {
                 Text(
                     text = it,
                     maxLines = 1,
@@ -128,11 +152,18 @@ internal fun MoviePosterContent(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            movie.tagline?.let {
+            movie?.tagline?.let {
                 Text(
+                    modifier = Modifier.padding(top = 8.dp).fillMaxWidth().placeholder(
+                        visible = title.isNullOrBlank(),
+                        shape = MaterialTheme.shapes.small,
+                        highlight = PlaceholderHighlight.fade(
+                            highlightColor = PlaceholderDefaults.fadeHighlightColor()
+                        ),
+                        color = PlaceholderDefaults.color()
+                    ),
                     text = it,
                     maxLines = 3,
-                    modifier = Modifier.padding(top = 8.dp),
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -141,9 +172,19 @@ internal fun MoviePosterContent(
                 modifier = Modifier.padding(top = 32.dp),
                 horizontalArrangement = Arrangement.spacedBy(32.dp)
             ) {
-                movie.releaseLocalDate.formatMedium(
+                val releaseLocalDate = remember(movie?.releaseLocalDate, initial?.releaseLocalDate) {
+                    movie?.releaseLocalDate ?: initial?.releaseLocalDate
+                }
+                val releaseDate = remember(movie?.releaseDate, initial?.releaseDate) {
+                    movie?.releaseDate?.ifBlank { null } ?: initial?.releaseDate?.ifBlank { null }
+                }
+                val voteAverage = remember(movie?.voteAverage, initial?.voteAverage) {
+                    movie?.voteAverage?.takeIf { it > 0F } ?: initial?.voteAverage?.takeIf { it > 0F }
+                }
+
+                releaseLocalDate.formatMedium(
                     fallbackFormat = Res.string.tv_movie_release_date_format,
-                    fallbackValue = movie.releaseDate
+                    fallbackValue = releaseDate
                 )?.let {
                     Column(
                         verticalArrangement = Arrangement.SpaceEvenly,
@@ -159,7 +200,7 @@ internal fun MoviePosterContent(
                         )
                     }
                 }
-                movie.runtime.takeIf { it > 0 }?.let {
+                movie?.runtime?.takeIf { it > 0 }?.let {
                     Column(
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -174,7 +215,7 @@ internal fun MoviePosterContent(
                         )
                     }
                 }
-                movie.voteAverage.takeIf { it > 0F }?.let {
+                voteAverage?.let {
                     Column(
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -196,12 +237,15 @@ internal fun MoviePosterContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                var bookmarked by remember(movie.id) {
+                var bookmarked by remember(movie?.id, initial?.id) {
                     mutableStateOf(false)
                 }
 
-                LaunchedEffect(firebaseViewModel, movie.id) {
-                    bookmarked = firebaseViewModel.isMovieBookmarked(movie.id)
+                LaunchedEffect(firebaseViewModel, movie?.id, initial?.id) {
+                    val id = movie?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
+                    bookmarked = id?.let {
+                        firebaseViewModel.isMovieBookmarked(it)
+                    } ?: bookmarked
                 }
 
                 Button(
@@ -217,13 +261,17 @@ internal fun MoviePosterContent(
                         modifier = Modifier.size(ButtonDefaults.IconSize)
                     )
                     Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(text = "Watch Trailer")
+                    Text(text = stringResource(Res.string.tv_movie_watch_trailer))
                 }
                 IconButton(
                     onClick = {
                         bookmarked = !bookmarked
-                        firebaseViewModel.bookmark(bookmarked, movie)
-                    }
+
+                        if (movie != null) {
+                            firebaseViewModel.bookmark(bookmarked, movie)
+                        }
+                    },
+                    enabled = movie != null
                 ) {
                     if (bookmarked) {
                         MaterialSymbols(

@@ -9,6 +9,7 @@ import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.serviceLoaderEnabled
 import coil3.svg.SvgDecoder
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.core.now
 import dev.datlag.mimasu.core.toEpochMilliseconds
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
@@ -19,7 +20,9 @@ import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.viewmodel.KodeinViewModelFactory
 import dev.datlag.sekret.Secret
+import dev.datlag.tooling.compose.TargetIO
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -75,6 +78,7 @@ data object NetworkModule {
             TMDB.init {
                 network {
                     client(instance<HttpClient>())
+                    context(Dispatchers.Virtual ?: Dispatchers.TargetIO)
                 }
                 apiKey(Network.tmdbApiKey)
                 language(Locale.current.language)

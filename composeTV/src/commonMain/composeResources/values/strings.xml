@@ -25,4 +25,5 @@
     <string name="tv_movie_runtime">Runtime</string>
     <string name="tv_movie_rating">Rating</string>
     <string name="tv_movie_rating_placeholder">%1$d%</string>
+    <string name="tv_movie_watch_trailer">Watch Trailer</string>
 </resources>

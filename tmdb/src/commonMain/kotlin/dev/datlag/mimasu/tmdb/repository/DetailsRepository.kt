@@ -1,6 +1,5 @@
 package dev.datlag.mimasu.tmdb.repository
 
-import co.touchlab.kermit.Logger
 import com.mayakapps.kache.InMemoryKache
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.kache.async
@@ -12,7 +11,6 @@ import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import io.ktor.client.call.body
-import io.ktor.client.statement.request
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.days

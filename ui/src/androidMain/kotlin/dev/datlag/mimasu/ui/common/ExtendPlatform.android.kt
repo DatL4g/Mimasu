@@ -1,13 +1,17 @@
 package dev.datlag.mimasu.ui.common
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Build
 import android.provider.Settings
 import android.view.Window
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import app.rive.runtime.kotlin.core.RendererType
 import app.rive.runtime.kotlin.core.Rive
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
@@ -55,7 +59,7 @@ actual fun rememberGoogleAuthParams(): GoogleAuthParams {
     }
 }
 
-fun Context.isRunningInTestLab(): Boolean {
+private fun Context.isRunningInTestLab(): Boolean {
     val testLabSetting = Settings.System.getString(contentResolver, "firebase.test.lab") ?: return false
     return when {
         testLabSetting.equals("true", ignoreCase = true) -> true
@@ -64,11 +68,32 @@ fun Context.isRunningInTestLab(): Boolean {
     }
 }
 
+@Suppress("DEPRECATION")
+private fun isRunningInTestHarness(): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        ActivityManager.isRunningInUserTestHarness()
+    } else {
+        ActivityManager.isRunningInTestHarness()
+    }
+}
+
+private fun Context.isLowRam(): Boolean {
+    val activityManager = scopeCatching {
+        this.getSystemService<ActivityManager>()
+    }.getOrNull() ?: ContextCompat.getSystemService(this, ActivityManager::class.java)
+
+    return activityManager?.isLowRamDevice ?: false
+}
+
+fun Context.supportsRive(): Boolean {
+    return !isRunningInTestLab() && !isRunningInTestHarness() && !isLowRam() && ArchUtils.supportsRive()
+}
+
 fun Rive.initSafely(
     context: Context,
     defaultRenderer: RendererType = defaultRendererType
 ): Boolean {
-    if (context.isRunningInTestLab() || !ArchUtils.supportsRive()) {
+    if (!context.supportsRive()) {
         return false
     }
 

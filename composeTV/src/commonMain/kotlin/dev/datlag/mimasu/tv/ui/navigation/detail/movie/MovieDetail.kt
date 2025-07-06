@@ -16,9 +16,6 @@ internal fun MovieDetail() {
     val initial by movieViewModel.initialMovie.collectAsStateWithLifecycle()
 
     when (val current = movieState) {
-        is MovieViewModel.State.Loading -> {
-
-        }
         is MovieViewModel.State.Error -> {
             ErrorState(
                 throwable = current.throwable,
@@ -26,9 +23,9 @@ internal fun MovieDetail() {
                 modifier = Modifier.fillMaxSize()
             )
         }
-        is MovieViewModel.State.Success -> {
+        is MovieViewModel.State.Loading, is MovieViewModel.State.Success -> {
             MovieContent(
-                movie = current.movie,
+                movie = current.getOrNull(),
                 initial = initial
             )
         }
