@@ -32,7 +32,8 @@ import dev.datlag.mimasu.tv.common.fadeHighlightColor
 @Composable
 internal fun ShowCard(
     show: TV?,
-    orientation: Orientation
+    orientation: Orientation,
+    onClick: (TV) -> Unit = { }
 ) {
     val cardModifier = when (orientation) {
         Orientation.Horizontal -> Modifier
@@ -53,7 +54,11 @@ internal fun ShowCard(
         imageCard = { interactionSource ->
             Card(
                 modifier = cardModifier,
-                onClick = { },
+                onClick = {
+                    if (show != null) {
+                        onClick(show)
+                    }
+                },
                 interactionSource = interactionSource
             ) {
                 val backdrops = remember(show) { show.backdrops(fallback = null) }

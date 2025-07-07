@@ -1,20 +1,14 @@
-package dev.datlag.mimasu.tv.ui.navigation.detail.movie.components
+package dev.datlag.mimasu.tv.ui.navigation.detail.show.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -22,13 +16,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.Button
-import androidx.tv.material3.ButtonDefaults
-import androidx.tv.material3.IconButton
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
@@ -36,33 +25,23 @@ import com.eygraber.compose.placeholder.PlaceholderDefaults
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.fade
 import com.eygraber.compose.placeholder.placeholder
-import dev.datlag.mimasu.core.YouTubeUtils
 import dev.datlag.mimasu.tmdb.common.backdrops
-import dev.datlag.mimasu.tmdb.model.details.Movie
-import dev.datlag.mimasu.tv.Res
+import dev.datlag.mimasu.tmdb.model.TV
+import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
-import dev.datlag.mimasu.tv.tv_movie_rating
-import dev.datlag.mimasu.tv.tv_movie_rating_placeholder
-import dev.datlag.mimasu.tv.tv_movie_release_date
-import dev.datlag.mimasu.tv.tv_movie_release_date_format
-import dev.datlag.mimasu.tv.tv_movie_runtime
-import dev.datlag.mimasu.tv.tv_movie_watch_trailer
 import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
-import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
-import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
-import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable
-internal fun MoviePosterContent(
-    movie: Movie?,
-    initial: CommonMovie?,
+internal fun ShowPosterContent(
+    show: Show?,
+    initial: TV?,
     modifier: Modifier = Modifier
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
@@ -70,18 +49,8 @@ internal fun MoviePosterContent(
     Box(
         modifier = modifier
     ) {
-        val backdrops = remember(movie, initial) { movie.backdrops(fallbackMovie = initial) }
+        val backdrops = remember(show, initial) { show.backdrops(fallback = initial) }
         val gradientColor = MaterialTheme.colorScheme.background
-        val trailer = remember(movie) {
-            movie?.youtubeTrailer(
-                language = Locale.current.language,
-                country = Locale.current.region
-            )
-        }
-        val trailerUrl = remember(trailer) {
-            trailer?.let { YouTubeUtils.videoUrl(it.key) }
-        }
-        val uriHandler = LocalUriHandler.current
 
         AsyncImage(
             model = backdrops.firstOrNull(),
@@ -89,28 +58,28 @@ internal fun MoviePosterContent(
             contentDescription = null,
             error = rememberNestedImagePainter(
                 models = backdrops.drop(1),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Crop
             ),
             modifier = Modifier.matchParentSize().drawWithContent {
                 drawContent()
                 drawRect(
                     Brush.verticalGradient(
                         colors = listOf(Color.Transparent, gradientColor),
-                        startY = 300f
+                        startY = 300F
                     )
                 )
                 drawRect(
                     Brush.horizontalGradient(
                         colors = listOf(gradientColor, Color.Transparent),
-                        endX = 1000f,
-                        startX = 300f
+                        endX = 1000F,
+                        startX = 300F
                     )
                 )
                 drawRect(
                     Brush.linearGradient(
                         colors = listOf(gradientColor, Color.Transparent),
-                        start = Offset(x = 500f, y = 500f),
-                        end = Offset(x = 1000f, y = 0f)
+                        start = Offset(x = 500F, y = 500F),
+                        end = Offset(x = 1000F, y = 0F)
                     )
                 )
             }
@@ -120,16 +89,16 @@ internal fun MoviePosterContent(
             modifier = Modifier.fillMaxWidth(0.55F).fillMaxHeight().padding(start = 32.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom)
         ) {
-            val title = remember(movie?.title, initial?.title) {
-                movie?.title?.ifBlank { null } ?: initial?.title?.ifBlank { null }
+            val title = remember(show?.name, initial?.name) {
+                show?.name?.ifBlank { null } ?: initial?.name?.ifBlank { null }
             }
-            val originalTitle = remember(movie?.originalTitle, initial?.originalTitle, title) {
-                (movie?.originalTitle?.ifBlank { null } ?: initial?.originalTitle?.ifBlank { null }).takeUnless {
+            val originalTitle = remember(show?.originalName, initial?.originalName) {
+                (show?.originalName?.ifBlank { null } ?: initial?.originalName?.ifBlank { null }).takeUnless {
                     it.equals(title, ignoreCase = true)
                 }
             }
-            val tagline = remember(movie?.tagline, movie?.originalTagline) {
-                movie?.tagline?.ifBlank { null } ?: movie?.originalTagline?.ifBlank { null }
+            val tagline = remember(show?.tagline, show?.originalTagline) {
+                show?.tagline?.ifBlank { null } ?: show?.originalTagline?.ifBlank { null }
             }
 
             Text(
@@ -168,26 +137,26 @@ internal fun MoviePosterContent(
                 modifier = Modifier.padding(top = 32.dp),
                 horizontalArrangement = Arrangement.spacedBy(32.dp)
             ) {
-                val releaseLocalDate = remember(movie?.releaseLocalDate, initial?.releaseLocalDate) {
-                    movie?.releaseLocalDate ?: initial?.releaseLocalDate
+                val firstAirLocalDate = remember(show?.firstAirLocalDate, initial?.firstAirLocalDate) {
+                    show?.firstAirLocalDate ?: initial?.firstAirLocalDate
                 }
-                val releaseDate = remember(movie?.releaseDate, initial?.releaseDate) {
-                    movie?.releaseDate?.ifBlank { null } ?: initial?.releaseDate?.ifBlank { null }
+                val firstAirDate = remember(show?.firstAirDate, initial?.firstAirDate) {
+                    show?.firstAirDate?.ifBlank { null } ?: initial?.firstAirDate?.ifBlank { null }
                 }
-                val voteAverage = remember(movie?.voteAverage, initial?.voteAverage) {
-                    movie?.voteAverage?.takeIf { it > 0F } ?: initial?.voteAverage?.takeIf { it > 0F }
+                val voteAverage = remember(show?.voteAverage, initial?.voteAverage) {
+                    show?.voteAverage?.takeIf { it > 0F } ?: initial?.voteAverage?.takeIf { it > 0F }
                 }
 
-                releaseLocalDate.formatMedium(
-                    fallbackFormat = Res.string.tv_movie_release_date_format,
-                    fallbackValue = releaseDate
+                firstAirLocalDate.formatMedium(
+                    fallbackFormat = "dd.MM.yyyy",
+                    fallbackValue = firstAirDate
                 )?.let {
                     Column(
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = stringResource(Res.string.tv_movie_release_date),
+                            text = "First Air Date",
                             style = MaterialTheme.typography.labelSmall
                         )
                         Text(
@@ -196,13 +165,13 @@ internal fun MoviePosterContent(
                         )
                     }
                 }
-                movie?.runtime?.takeIf { it > 0 }?.let {
+                show?.runtimeAverage?.takeIf { it > 0 }?.let {
                     Column(
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = stringResource(Res.string.tv_movie_runtime),
+                            text = "Average Runtime",
                             style = MaterialTheme.typography.labelSmall
                         )
                         Text(
@@ -217,68 +186,12 @@ internal fun MoviePosterContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = stringResource(Res.string.tv_movie_rating),
+                            text = "Rating",
                             style = MaterialTheme.typography.labelSmall
                         )
                         Text(
-                            text = stringResource(Res.string.tv_movie_rating_placeholder, (it * 10F).roundToInt()),
+                            text = "${(it * 10F).roundToInt()}%",
                             style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                }
-            }
-
-            Row(
-                modifier = Modifier.padding(top = 32.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                var bookmarked by remember(movie?.id, initial?.id) {
-                    mutableStateOf(false)
-                }
-
-                LaunchedEffect(firebaseViewModel, movie?.id, initial?.id) {
-                    val id = movie?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
-                    bookmarked = id?.let {
-                        firebaseViewModel.isMovieBookmarked(it)
-                    } ?: bookmarked
-                }
-
-                Button(
-                    onClick = {
-                        trailerUrl?.let(uriHandler::openUri)
-                    },
-                    enabled = !trailerUrl.isNullOrBlank()
-                ) {
-                    MaterialSymbols(
-                        name = MaterialSymbols.PLAY_ARROW,
-                        contentDescription = null,
-                        filled = true,
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
-                    )
-                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(text = stringResource(Res.string.tv_movie_watch_trailer))
-                }
-                IconButton(
-                    onClick = {
-                        bookmarked = !bookmarked
-
-                        if (movie != null) {
-                            firebaseViewModel.bookmark(bookmarked, movie)
-                        }
-                    },
-                    enabled = movie != null
-                ) {
-                    if (bookmarked) {
-                        MaterialSymbols(
-                            name = MaterialSymbols.BOOKMARK,
-                            contentDescription = null,
-                            filled = true
-                        )
-                    } else {
-                        MaterialSymbols(
-                            name = MaterialSymbols.BOOKMARK_ADD,
-                            contentDescription = null
                         )
                     }
                 }

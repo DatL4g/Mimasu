@@ -24,7 +24,8 @@ internal fun SeriesSection(
     flow: Flow<PagingData<TV>>,
     title: String,
     orientation: Orientation,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (TV) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -52,7 +53,7 @@ internal fun SeriesSection(
             items(shows.itemCount) { index ->
                 val show = shows[index]
 
-                ShowCard(show, orientation)
+                ShowCard(show, orientation, onClick)
             }
             when {
                 shows.loadState.refresh is LoadState.Loading -> {

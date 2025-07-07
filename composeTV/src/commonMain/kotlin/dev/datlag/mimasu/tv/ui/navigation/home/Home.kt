@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.tmdb.model.Movie
+import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_home_trending_movies_today
 import dev.datlag.mimasu.tv.tv_home_trending_movies_weekly
@@ -24,7 +25,8 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun Home(
     paddingValues: PaddingValues,
-    onMovieClicked: (Movie) -> Unit
+    onMovieClicked: (Movie) -> Unit,
+    onShowClicked: (TV) -> Unit
 ) {
     val trendingViewModel = kodeinViewModel<TrendingViewModel>()
 
@@ -37,7 +39,8 @@ fun Home(
                 flow = trendingViewModel.dayTV,
                 title = stringResource(Res.string.tv_home_trending_series_today),
                 orientation = Orientation.Horizontal,
-                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp)
+                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp),
+                onClick = onShowClicked
             )
         }
         item {
@@ -54,7 +57,8 @@ fun Home(
                 flow = trendingViewModel.weekTV,
                 title = stringResource(Res.string.tv_home_trending_series_weekly),
                 orientation = Orientation.Vertical,
-                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp)
+                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp),
+                onClick = onShowClicked
             )
         }
         item {

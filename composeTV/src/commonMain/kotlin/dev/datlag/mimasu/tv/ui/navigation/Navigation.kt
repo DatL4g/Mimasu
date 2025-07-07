@@ -58,6 +58,7 @@ import dev.datlag.mimasu.tv.tv_tab_profile
 import dev.datlag.mimasu.tv.tv_tab_search
 import dev.datlag.mimasu.tv.tv_tab_shows
 import dev.datlag.mimasu.tv.ui.navigation.detail.movie.MovieDetail
+import dev.datlag.mimasu.tv.ui.navigation.detail.show.ShowDetail
 import dev.datlag.mimasu.tv.ui.navigation.login.Login
 import dev.datlag.mimasu.tv.ui.navigation.movies.Movies
 import dev.datlag.mimasu.tv.ui.navigation.series.Series
@@ -65,6 +66,7 @@ import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
+import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -89,6 +91,9 @@ object Navigation {
 
         @Serializable
         data object Movie
+
+        @Serializable
+        data object Show
     }
 }
 
@@ -139,6 +144,13 @@ internal fun Navigation(appImage: Painter) {
                         controller.navigate(Navigation.Detail.Movie) {
                             launchSingleTop = true
                         }
+                    },
+                    onShowClicked = {
+                        ShowViewModel.updateFrom(it)
+
+                        controller.navigate(Navigation.Detail.Show) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -156,11 +168,21 @@ internal fun Navigation(appImage: Painter) {
             }
             composable<Navigation.Shows> {
                 Series(
-                    paddingValues = PaddingValues(top = tabBarHeight)
+                    paddingValues = PaddingValues(top = tabBarHeight),
+                    onShowClicked = {
+                        ShowViewModel.updateFrom(it)
+
+                        controller.navigate(Navigation.Detail.Show) {
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
             composable<Navigation.Detail.Movie> {
                 MovieDetail()
+            }
+            composable<Navigation.Detail.Show> {
+                ShowDetail()
             }
         }
 
@@ -192,8 +214,9 @@ private fun TabBar(
 ) {
     val backStack by navController.currentBackStackEntryAsState()
     val isMovieDetail = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Detail.Movie>() ?: false }
+    val isShowDetail = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Detail.Show>() ?: false }
 
-    if (!isMovieDetail) {
+    if (!isMovieDetail && !isShowDetail) {
         val isSearch = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Search>() ?: false }
         val isHome = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Home>() ?: false }
         val isMovies = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Movies>() ?: false }
