@@ -2,10 +2,10 @@ package dev.datlag.mimasu.tv.ui.navigation.detail.show
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
@@ -14,9 +14,9 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 internal fun ShowDetail() {
     val showViewModel = kodeinViewModel<ShowViewModel>()
-    val showState by showViewModel.show.collectAsStateWithLifecycle(ShowViewModel.ShowState.Loading)
-    val initial by showViewModel.initialShow.collectAsStateWithLifecycle()
-    val showSeason by showViewModel.showSeason.collectAsStateWithLifecycle()
+    val showState by showViewModel.show.collectAsState(ShowViewModel.ShowState.Loading)
+    val initial by showViewModel.initialShow.collectAsState()
+    val showSeason by showViewModel.showSeason.collectAsState()
     val initialSeasonState = remember(showSeason) {
         if (showSeason == null) {
             ShowViewModel.SeasonState.Empty
@@ -24,8 +24,8 @@ internal fun ShowDetail() {
             ShowViewModel.SeasonState.Loading
         }
     }
-    val seasonState by showViewModel.season.collectAsStateWithLifecycle(initialSeasonState)
-    val episodeData by showViewModel.episodesData.collectAsStateWithLifecycle(null)
+    val seasonState by showViewModel.season.collectAsState(initialSeasonState)
+    val episodeData by showViewModel.episodesData.collectAsState(null)
 
     when (val current = showState) {
         is ShowViewModel.ShowState.Error -> {

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -34,7 +35,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -100,7 +100,7 @@ object Navigation {
 @Composable
 internal fun Navigation(appImage: Painter) {
     val accountViewModel = accountViewModel()
-    val user by accountViewModel.user.collectAsStateWithLifecycle()
+    val user by accountViewModel.user.collectAsState()
 
     val controller = rememberNavController()
 
@@ -265,7 +265,7 @@ private fun TabBar(
                 }
             ) {
                 val accountViewModel = accountViewModel()
-                val user by accountViewModel.user.collectAsStateWithLifecycle()
+                val user by accountViewModel.user.collectAsState()
 
                 AsyncImage(
                     modifier = Modifier.size(ButtonDefaults.IconSize).clip(CircleShape),

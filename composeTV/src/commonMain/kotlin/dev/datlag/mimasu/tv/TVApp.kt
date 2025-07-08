@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.SurfaceDefaults
@@ -47,7 +47,7 @@ fun TVApp(
                 )
             ) {
                 val accountViewModel = accountViewModel()
-                val config by Network.config.collectAsStateWithLifecycle()
+                val config by Network.config.collectAsState()
 
                 LaunchedEffect(accountViewModel) {
                     // Force account loading, while startup

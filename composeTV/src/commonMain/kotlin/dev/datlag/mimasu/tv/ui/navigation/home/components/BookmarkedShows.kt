@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardDefaults
@@ -64,12 +64,9 @@ internal fun BookmarkedShows(
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
     val bookmarked = firebaseViewModel.bookmarkedShows.collectAsLazyPagingItems()
-    val hasBookmarks by firebaseViewModel.hasBookmarkedShows.collectAsStateWithLifecycle(false)
-    val showBookmarks = remember(hasBookmarks, bookmarked) {
-        hasBookmarks || bookmarked.itemCount > 0 || (!bookmarked.loadState.isIdle && bookmarked.loadState.refresh is LoadState.Loading)
-    }
+    val hasBookmarks by firebaseViewModel.hasBookmarkedShows.collectAsState(false)
 
-    if (showBookmarks) {
+    if (hasBookmarks || bookmarked.itemCount > 0) {
         Box(
             modifier = modifier.animateContentSize()
         ) {
