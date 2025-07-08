@@ -1,5 +1,8 @@
 package dev.datlag.mimasu.tv.ui.navigation.detail.show.components
 
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +12,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +53,7 @@ import kotlin.time.toDuration
 internal fun ShowPosterContent(
     show: Show?,
     initial: TV?,
+    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
@@ -201,8 +208,18 @@ internal fun ShowPosterContent(
                     }
                 }
             }
+            val buttonInteraction = remember { MutableInteractionSource() }
+            val isFocused by buttonInteraction.collectIsFocusedAsState()
+
+            LaunchedEffect(isFocused) {
+                if (isFocused) {
+                    listState.animateScrollToItem(listState.firstVisibleItemIndex)
+                }
+            }
+
             Button(
-                onClick = { }
+                onClick = { },
+                interactionSource = buttonInteraction
             ) {
                 MaterialSymbols(
                     modifier = Modifier.size(ButtonDefaults.IconSize),

@@ -2,6 +2,7 @@ package dev.datlag.mimasu.tv.ui.navigation.detail.show
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -79,10 +81,11 @@ internal fun ShowContent(
                     }
                     .focusRequester(drawerFocus),
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+                contentPadding = PaddingValues(16.dp)
             ) {
                 itemsIndexed(seasons) { index, season ->
                     NavigationDrawerItem(
-                        modifier = Modifier.padding(horizontal = 16.dp).focusProperties {
+                        modifier = Modifier.focusProperties {
                             end = contentFocus
                             if (index == seasons.size - 1) {
                                 next = contentFocus
@@ -124,6 +127,8 @@ internal fun ShowContent(
             }
         }
     ) {
+        val listState = rememberLazyListState()
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -131,12 +136,14 @@ internal fun ShowContent(
                 .focusRequester(contentFocus)
                 .focusProperties {
                     start = drawerFocus
-                }
+                },
+            state = listState
         ) {
             item {
                 ShowPosterContent(
                     show = show,
                     initial = initial,
+                    listState = listState,
                     modifier = Modifier.fillParentMaxWidth().fillParentMaxHeight(0.8F)
                 )
             }
