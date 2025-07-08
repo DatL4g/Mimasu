@@ -234,7 +234,7 @@ internal fun ShowPosterContent(
 
                 LaunchedEffect(isFocused) {
                     if (isFocused) {
-                        listState.animateScrollToItem(listState.firstVisibleItemIndex)
+                        listState.animateScrollToItem(0)
                     }
                 }
 

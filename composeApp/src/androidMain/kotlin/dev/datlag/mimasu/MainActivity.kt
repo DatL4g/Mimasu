@@ -71,7 +71,7 @@ class MainActivity : AdActivity() {
         val di = this.di ?: return exit("Could not find dependency injection.")
         val nullableAdManager by di.instanceOrNull<AdManager>()
         (nullableAdManager ?: AdManager(this)).requestConsentUpdate(this)
-        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
+        bindExtension()
         PiPHelper.setActive(this.isInPiPMode())
         Kast.setup(this)
 
@@ -101,28 +101,28 @@ class MainActivity : AdActivity() {
             registerReceiver(appInstallReceiver, intentFilter)
         }
 
-        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
+        bindExtension()
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onResume() {
         super.onResume()
 
-        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
+        bindExtension()
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onPause() {
         super.onPause()
 
-        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
+        bindExtension()
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onRestart() {
         super.onRestart()
 
-        ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
+        bindExtension()
         PiPHelper.setActive(this.isInPiPMode())
     }
 
@@ -159,6 +159,12 @@ class MainActivity : AdActivity() {
             }
         }
         setIntent(Intent())
+    }
+
+    private fun bindExtension() {
+        if (!Platform.isTelevision(this)) {
+            ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
+        }
     }
 
     override fun onPictureInPictureUiStateChanged(pipState: PictureInPictureUiState) {

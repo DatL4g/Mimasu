@@ -1,11 +1,16 @@
 package dev.datlag.mimasu.tv.ui.custom
 
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -26,14 +31,69 @@ import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.fade
 import com.eygraber.compose.placeholder.placeholder
+import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun ShowCard(
-    show: TV?,
+    tv: TV?,
     orientation: Orientation,
     onClick: (TV) -> Unit = { }
+) {
+    val posters = remember(tv) { tv.posters(fallbackShow = null).toImmutableList() }
+    val backdrops = remember(tv) { tv.backdrops(fallback = null).toImmutableList() }
+
+    ShowCard(
+        onClick = { tv?.let(onClick) },
+        placeholder = tv == null,
+        orientation = orientation,
+        posters = posters,
+        backdrops = backdrops,
+        name = tv?.name,
+        originalName = tv?.originalName
+    )
+}
+
+@Composable
+internal fun ShowCard(
+    show: Show?,
+    orientation: Orientation,
+    onClick: (Show) -> Unit = { },
+    onFocus: suspend (Show?) -> Unit = { }
+) {
+    val posters = remember(show) { show.posters(fallbackShow = null).toImmutableList() }
+    val backdrops = remember(show) { show.backdrops(fallback = null).toImmutableList() }
+
+    ShowCard(
+        onClick = { show?.let(onClick) },
+        onFocusChange = {
+            if (it) {
+                onFocus(show)
+            } else {
+                onFocus(null)
+            }
+        },
+        placeholder = show == null,
+        orientation = orientation,
+        posters = posters,
+        backdrops = backdrops,
+        name = show?.name,
+        originalName = show?.originalName
+    )
+}
+
+@Composable
+private fun ShowCard(
+    placeholder: Boolean,
+    orientation: Orientation,
+    posters: Collection<String>,
+    backdrops: Collection<String>,
+    name: String?,
+    originalName: String?,
+    onClick: () -> Unit = { },
+    onFocusChange: suspend (Boolean) -> Unit = {}
 ) {
     val cardModifier = when (orientation) {
         Orientation.Horizontal -> Modifier
@@ -49,20 +109,21 @@ internal fun ShowCard(
         Orientation.Horizontal -> Modifier.width(200.dp)
         Orientation.Vertical -> Modifier.width(120.dp)
     }
+    val interaction = remember { MutableInteractionSource() }
+    val isFocused by interaction.collectIsFocusedAsState()
+
+    LaunchedEffect(isFocused) {
+        onFocusChange(isFocused)
+    }
 
     StandardCardContainer(
+        interactionSource = interaction,
         imageCard = { interactionSource ->
             Card(
                 modifier = cardModifier,
-                onClick = {
-                    if (show != null) {
-                        onClick(show)
-                    }
-                },
+                onClick = onClick,
                 interactionSource = interactionSource
             ) {
-                val backdrops = remember(show) { show.backdrops(fallback = null) }
-                val posters = remember(show) { show.posters(fallbackShow = null) }
                 val (mainImages, fallbackImages) = remember(backdrops, posters, orientation) {
                     when (orientation) {
                         Orientation.Horizontal -> backdrops to posters
@@ -74,7 +135,7 @@ internal fun ShowCard(
                     modifier = Modifier
                         .fillMaxSize()
                         .placeholder(
-                            visible = show == null,
+                            visible = placeholder,
                             highlight = PlaceholderHighlight.fade(
                                 highlightColor = PlaceholderDefaults.fadeHighlightColor()
                             ),
@@ -90,21 +151,21 @@ internal fun ShowCard(
                         contentScale = ContentScale.Crop,
                     ),
                     contentScale = ContentScale.Crop,
-                    contentDescription = show?.name
+                    contentDescription = name
                 )
             }
         },
         title = {
             Text(
                 modifier = textModifier.placeholder(
-                    visible = show == null,
+                    visible = placeholder || name.isNullOrBlank(),
                     shape = MaterialTheme.shapes.small,
                     highlight = PlaceholderHighlight.fade(
                         highlightColor = PlaceholderDefaults.fadeHighlightColor()
                     ),
                     color = PlaceholderDefaults.color()
                 ),
-                text = show?.name ?: "",
+                text = name ?: "",
                 textAlign = TextAlign.Center,
                 softWrap = true,
                 maxLines = 1,
@@ -112,8 +173,8 @@ internal fun ShowCard(
             )
         },
         subtitle = {
-            show?.originalName?.takeUnless {
-                it.equals(show.name, ignoreCase = true)
+            originalName?.takeUnless {
+                it.equals(name, ignoreCase = true)
             }?.let {
                 Text(
                     modifier = textModifier,

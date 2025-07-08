@@ -12,8 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.common.toExpressiveTypography
+import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.tv.TVApp
 import dev.datlag.mimasu.ui.navigation.login.rememberAppImage
 import dev.datlag.mimasu.ui.other.Network
@@ -57,6 +59,7 @@ class TVActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val di = this.di ?: return exit("Could not find dependency injection.")
+        bindExtension()
 
         setContent {
             Column(
@@ -70,6 +73,42 @@ class TVActivity : ComponentActivity() {
                     typography = Font.manrope.toExpressiveTypography().asTv(),
                 )
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        bindExtension()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        bindExtension()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        bindExtension()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        bindExtension()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        ExtensionInitializer.unbindAll(this)
+    }
+
+    private fun bindExtension() {
+        if (Platform.isTelevision(this)) {
+            ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
         }
     }
 }

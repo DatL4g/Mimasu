@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -17,6 +18,7 @@ import dev.datlag.mimasu.tv.tv_home_trending_series_today
 import dev.datlag.mimasu.tv.tv_home_trending_series_weekly
 import dev.datlag.mimasu.tv.ui.custom.MoviesSection
 import dev.datlag.mimasu.tv.ui.custom.SeriesSection
+import dev.datlag.mimasu.tv.ui.navigation.home.components.BookmarkedShows
 import dev.datlag.mimasu.ui.common.plus
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
@@ -29,11 +31,22 @@ fun Home(
     onShowClicked: (TV) -> Unit
 ) {
     val trendingViewModel = kodeinViewModel<TrendingViewModel>()
+    val listState = rememberLazyListState()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = paddingValues.plus(PaddingValues(top = 32.dp))
+        state = listState
     ) {
+        item {
+            BookmarkedShows(
+                paddingValues = paddingValues,
+                listState = listState,
+                modifier = Modifier.fillParentMaxWidth().fillParentMaxHeight(0.9F),
+                onClick = {
+                    onShowClicked(it.asCommon())
+                }
+            )
+        }
         item {
             SeriesSection(
                 flow = trendingViewModel.dayTV,
