@@ -37,7 +37,11 @@ internal fun ShowDetail() {
             ShowContent(
                 show = current.getOrNull(),
                 initial = initial,
-                seasonState = seasonState
+                showSeason = showSeason,
+                seasonState = seasonState,
+                onSelectSeason = {
+                    showViewModel.select(it)
+                }
             )
         }
     }

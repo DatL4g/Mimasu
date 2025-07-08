@@ -63,7 +63,9 @@ fun EpisodeItem(
             {
                 Text(
                     text = overview,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
+                    softWrap = true
                 )
             }
         },

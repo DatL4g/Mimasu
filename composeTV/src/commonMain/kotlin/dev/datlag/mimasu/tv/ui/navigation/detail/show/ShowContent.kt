@@ -48,6 +48,7 @@ import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_show_episodes_count
 import dev.datlag.mimasu.tv.ui.navigation.detail.show.components.EpisodeItem
+import dev.datlag.mimasu.tv.ui.navigation.detail.show.components.ShowDrawerContent
 import dev.datlag.mimasu.tv.ui.navigation.detail.show.components.ShowPosterContent
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -61,80 +62,31 @@ import org.jetbrains.compose.resources.stringResource
 internal fun ShowContent(
     show: Show?,
     initial: TV?,
-    seasonState: ShowViewModel.SeasonState
+    showSeason: Show.Season?,
+    seasonState: ShowViewModel.SeasonState,
+    onSelectSeason: (Show.Season) -> Unit
 ) {
     var selectedEpisode by remember(seasonState) { mutableStateOf<Season.Episode?>(null) }
     val drawerFocus = remember { FocusRequester() }
     val contentFocus = remember { FocusRequester() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    // use drawer for season selection
-
     ModalNavigationDrawer(
         modifier = Modifier.fillMaxHeight(),
         drawerState = drawerState,
         drawerContent = {
-            val seasons = remember(show) { show?.displaySeasons.orEmpty().toImmutableList() }
-            var selectedSeason by remember { mutableStateOf<Show.Season?>(null) }
-
-            LazyColumn(
+            ShowDrawerContent(
+                show = show,
+                season = showSeason,
+                contentFocus = contentFocus,
                 modifier = Modifier
                     .fillMaxHeight()
                     .ifTrue(drawerState.currentValue == DrawerValue.Open) {
                         background(MaterialTheme.colorScheme.background)
                     }
                     .focusRequester(drawerFocus),
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                itemsIndexed(seasons) { index, season ->
-                    NavigationDrawerItem(
-                        modifier = Modifier.focusProperties {
-                            end = contentFocus
-                            if (index == seasons.size - 1) {
-                                next = contentFocus
-                                down = contentFocus
-                            }
-                        },
-                        selected = selectedSeason == season,
-                        onClick = {
-                            selectedSeason = season
-                        },
-                        leadingContent = {
-                            if (season.seasonNumber <= 0) {
-                                MaterialSymbols(
-                                    name = MaterialSymbols.STAR_SHINE,
-                                    contentDescription = null,
-                                    filled = selectedSeason == season
-                                )
-                            } else {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = season.seasonNumber.toString(),
-                                    fontWeight = FontWeight.ExtraBold,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        },
-                        content = {
-                            Text(
-                                text = season.name,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                text = pluralStringResource(
-                                    Res.plurals.tv_show_episodes_count,
-                                    season.episodeCount,
-                                    season.episodeCount
-                                )
-                            )
-                        }
-                    )
-                }
-            }
+                onSelect = onSelectSeason
+            )
         }
     ) {
         val listState = rememberLazyListState()
