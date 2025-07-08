@@ -17,7 +17,7 @@ data class TV(
     @SerialName("name") val name: String,
     @SerialName("original_language") val originalLanguage: String? = null,
     @SerialName("original_name") val originalName: String? = null,
-    @SerialName("overview") val overview: String? = null,
+    @SerialName("overview") private val _overview: String? = null,
     @SerialName("poster_path") override val posterSource: String? = null,
     @SerialName("media_type") @EncodeDefault(EncodeDefault.Mode.ALWAYS) override val mediaType: String? = "tv",
     @SerialName("genre_ids") val genreIds: Set<Int> = emptySet(),
@@ -27,6 +27,9 @@ data class TV(
     @SerialName("vote_count") val voteCount: Int = 0,
     @SerialName("origin_country") val originCountry: Set<String> = emptySet()
 ): Response, HasBackdrop, HasPoster {
+
+    @Transient
+    val overview: String? = _overview?.trim()?.ifBlank { null }
 
     @Transient
     val firstAirLocalDate = firstAirDate?.ifBlank { null }?.let { scopeCatching {

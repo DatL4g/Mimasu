@@ -27,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.datlag.mimasu.common.header
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.justwatch
 import dev.datlag.mimasu.composeapp.generated.resources.show_justwatch_ads
@@ -38,6 +37,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.show_justwatch_free
 import dev.datlag.mimasu.composeapp.generated.resources.show_justwatch_rent
 import dev.datlag.mimasu.tmdb.common.logos
 import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.mimasu.ui.common.header
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform

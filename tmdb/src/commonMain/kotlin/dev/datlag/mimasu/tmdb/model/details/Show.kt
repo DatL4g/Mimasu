@@ -94,7 +94,7 @@ data class Show(
         name = name,
         originalLanguage = originalLanguage,
         originalName = originalName,
-        overview = overview,
+        _overview = overview,
         popularity = popularity,
         posterSource = posterSource,
         genreIds = genres.map { it.id }.toImmutableSet(),

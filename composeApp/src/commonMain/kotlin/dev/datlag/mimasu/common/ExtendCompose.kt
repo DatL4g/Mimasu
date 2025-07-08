@@ -93,12 +93,6 @@ fun LazyListState.isSticking(index: Int): Boolean {
     }.value
 }
 
-fun LazyGridScope.header(
-    content: @Composable LazyGridItemScope.() -> Unit
-) {
-    item(span = { GridItemSpan(this.maxLineSpan) }, content = content)
-}
-
 suspend fun PointerInputScope.detectPinchGestures(
     pass: PointerEventPass = PointerEventPass.Main,
     onGestureStart: (PointerInputChange) -> Unit = { },
