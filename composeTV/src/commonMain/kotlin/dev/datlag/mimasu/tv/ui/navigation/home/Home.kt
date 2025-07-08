@@ -18,6 +18,7 @@ import dev.datlag.mimasu.tv.tv_home_trending_series_today
 import dev.datlag.mimasu.tv.tv_home_trending_series_weekly
 import dev.datlag.mimasu.tv.ui.custom.MoviesSection
 import dev.datlag.mimasu.tv.ui.custom.SeriesSection
+import dev.datlag.mimasu.tv.ui.navigation.home.components.BookmarkedMovies
 import dev.datlag.mimasu.tv.ui.navigation.home.components.BookmarkedShows
 import dev.datlag.mimasu.ui.common.plus
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
@@ -43,6 +44,14 @@ fun Home(
                 listState = listState,
                 onClick = {
                     onShowClicked(it.asCommon())
+                }
+            )
+        }
+        item {
+            BookmarkedMovies(
+                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp),
+                onClick = {
+                    onMovieClicked(it.asCommon())
                 }
             )
         }

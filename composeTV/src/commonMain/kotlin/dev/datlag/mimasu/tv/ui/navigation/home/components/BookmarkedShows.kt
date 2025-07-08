@@ -49,14 +49,17 @@ import com.eygraber.compose.placeholder.placeholder
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
+import dev.datlag.mimasu.tv.tv_home_your_series
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.ifTrue
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun LazyItemScope.BookmarkedShows(
@@ -122,14 +125,14 @@ internal fun LazyItemScope.BookmarkedShows(
             )
             Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Bottom)
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom)
             ) {
                 Column(
                     modifier = Modifier
                         .weight(1F)
                         .fillMaxWidth(0.55F)
                         .padding(paddingValues)
-                        .padding(start = 32.dp),
+                        .padding(start = 32.dp, bottom = 32.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom)
                 ) {
                     val title = remember(focusedShow?.name) {
@@ -170,10 +173,28 @@ internal fun LazyItemScope.BookmarkedShows(
                         )
                     }
                 }
+                if (focusedShow == null) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = 32.dp,
+                                start = 32.dp,
+                                end = 32.dp
+                            ),
+                        text = stringResource(Res.string.tv_home_your_series),
+                        style = MaterialTheme.typography.headlineSmall,
+                        maxLines = 1
+                    )
+                }
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(32.dp)
+                    contentPadding = PaddingValues(
+                        start = 32.dp,
+                        end = 32.dp,
+                        bottom = 16.dp
+                    )
                 ) {
                     items(bookmarked.itemCount) { index ->
                         val show = bookmarked[index]

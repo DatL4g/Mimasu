@@ -9,6 +9,8 @@
     <string name="tv_home_trending_series_weekly">Wöchentliche Serien</string>
     <string name="tv_home_trending_movies_today">Tägliche Filme</string>
     <string name="tv_home_trending_movies_weekly">Wöchentliche Filme</string>
+    <string name="tv_home_your_series">Deine Serien</string>
+    <string name="tv_home_your_movies">Deine Filme</string>
 
     <string name="tv_movies_now_playing">Jetzt im Kino</string>
     <string name="tv_movies_popular">Beliebt</string>
