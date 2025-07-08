@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,25 +22,35 @@ import androidx.tv.material3.Switch
 import androidx.tv.material3.SwitchDefaults
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
+import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_show_episode_placeholder
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.tooling.compose.launchIO
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EpisodeItem(
     selected: Boolean,
     episode: Season.Episode,
+    episodeData: ShowData.EpisodeData?,
     modifier: Modifier = Modifier,
     markAsWatched: suspend () -> Unit,
     markAsUnWatched: suspend () -> Unit,
 ) {
-    var watched by remember(episode) { mutableStateOf(false) }
+    val watched = remember(episodeData) {
+        if (episodeData?.markedAsWatched == false) {
+            false
+        } else {
+            episodeData?.markedAsWatched == true || episodeData?.finished == true
+        }
+    }
     val overview = remember(episode.overview) { episode.overview }
     val posters = remember(episode) { episode.posters(fallbackShow = null) }
+    val scope = rememberCoroutineScope()
 
     ListItem(
         modifier = modifier,
@@ -48,7 +59,13 @@ fun EpisodeItem(
 
         },
         onLongClick = {
-            watched = !watched
+            scope.launchIO {
+                if (watched) {
+                    markAsUnWatched()
+                } else {
+                    markAsWatched()
+                }
+            }
         },
         headlineContent = {
             Text(
@@ -88,9 +105,7 @@ fun EpisodeItem(
         trailingContent = {
             Switch(
                 checked = watched,
-                onCheckedChange = {
-                    watched = it
-                },
+                onCheckedChange = { },
                 thumbContent = if (watched) {
                     {
                         MaterialSymbols(

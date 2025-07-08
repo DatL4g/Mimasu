@@ -130,8 +130,6 @@ fun ShowDetail(
                             seasonNumber = seasonNumber,
                             episode = it
                         )
-                    } else {
-                        null
                     }
                 },
                 markAsUnWatched = {
@@ -143,8 +141,6 @@ fun ShowDetail(
                             seasonNumber = seasonNumber,
                             episode = it
                         )
-                    } else {
-                        null
                     }
                 },
                 onDiscover = onDiscover
