@@ -53,7 +53,11 @@ internal fun SeriesSection(
             items(shows.itemCount) { index ->
                 val show = shows[index]
 
-                ShowCard(show, orientation, onClick)
+                ShowCard(
+                    tv = show,
+                    orientation = orientation,
+                    onClick = onClick,
+                )
             }
             when {
                 shows.loadState.refresh is LoadState.Loading -> {

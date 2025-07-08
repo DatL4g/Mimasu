@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
@@ -54,23 +55,31 @@ import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.compose.ifFalse
+import dev.datlag.tooling.compose.ifTrue
 
 @Composable
-internal fun BookmarkedShows(
+internal fun LazyItemScope.BookmarkedShows(
     paddingValues: PaddingValues,
     listState: LazyListState,
-    modifier: Modifier = Modifier,
     onClick: (Show) -> Unit
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
     val bookmarked = firebaseViewModel.bookmarkedShows.collectAsLazyPagingItems()
     val hasBookmarks by firebaseViewModel.hasBookmarkedShows.collectAsState(false)
+    var focusedShow by remember { mutableStateOf<Show?>(null) }
 
     if (hasBookmarks || bookmarked.itemCount > 0) {
         Box(
-            modifier = modifier.animateContentSize()
+            modifier = Modifier
+                .fillParentMaxWidth()
+                .ifTrue(focusedShow != null) {
+                    fillParentMaxHeight(0.9F).animateContentSize()
+                }
+                .ifFalse(focusedShow != null) {
+                    padding(paddingValues)
+                }
         ) {
-            var focusedShow by remember { mutableStateOf<Show?>(null) }
             val backdrops = remember(focusedShow) { focusedShow.backdrops(fallback = null) }
             val posters = remember(focusedShow) { focusedShow.posters(fallbackShow = null) }
             val gradientColor = MaterialTheme.colorScheme.background

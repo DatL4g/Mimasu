@@ -41,7 +41,6 @@ fun Home(
             BookmarkedShows(
                 paddingValues = paddingValues,
                 listState = listState,
-                modifier = Modifier.fillParentMaxWidth().fillParentMaxHeight(0.9F),
                 onClick = {
                     onShowClicked(it.asCommon())
                 }

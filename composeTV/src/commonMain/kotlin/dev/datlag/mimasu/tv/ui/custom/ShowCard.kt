@@ -40,13 +40,21 @@ import kotlinx.collections.immutable.toImmutableList
 internal fun ShowCard(
     tv: TV?,
     orientation: Orientation,
-    onClick: (TV) -> Unit = { }
+    onClick: (TV) -> Unit = { },
+    onFocus: suspend (TV?) -> Unit = { }
 ) {
     val posters = remember(tv) { tv.posters(fallbackShow = null).toImmutableList() }
     val backdrops = remember(tv) { tv.backdrops(fallback = null).toImmutableList() }
 
     ShowCard(
         onClick = { tv?.let(onClick) },
+        onFocusChange = {
+            if (it) {
+                onFocus(tv)
+            } else {
+                onFocus(null)
+            }
+        },
         placeholder = tv == null,
         orientation = orientation,
         posters = posters,
