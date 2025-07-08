@@ -26,4 +26,17 @@
     <string name="tv_movie_rating">Wertung</string>
     <string name="tv_movie_rating_placeholder">%1$d%</string>
     <string name="tv_movie_watch_trailer">Trailer ansehen</string>
+
+    <string name="tv_show_first_air_date">Erstausstrahlung</string>
+    <string name="tv_show_first_air_date_format">dd.MM.yyyy</string>
+    <string name="tv_show_average_runtime">Durchschnittliche Länge</string>
+    <string name="tv_show_rating">Wertung</string>
+    <string name="tv_show_rating_placeholder">%1$d%</string>
+    <string name="tv_show_bookmark">Speichern</string>
+    <string name="tv_show_bookmarked">Gespeichert</string>
+    <plurals name="tv_show_episodes_count">
+        <item quantity="one">%1$d Folge</item>
+        <item quantity="other">%1$d Folgen</item>
+    </plurals>
+    <string name="tv_show_episode_placeholder">Folge %1$d</string>
 </resources>

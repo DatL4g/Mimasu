@@ -45,6 +45,8 @@ import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.mimasu.tv.Res
+import dev.datlag.mimasu.tv.tv_show_episodes_count
 import dev.datlag.mimasu.tv.ui.navigation.detail.show.components.EpisodeItem
 import dev.datlag.mimasu.tv.ui.navigation.detail.show.components.ShowPosterContent
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
@@ -52,6 +54,8 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.tooling.compose.ifTrue
 import kotlinx.collections.immutable.toImmutableList
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun ShowContent(
@@ -120,7 +124,13 @@ internal fun ShowContent(
                             )
                         },
                         supportingContent = {
-                            Text(text = "Episodes: ${season.episodeCount}")
+                            Text(
+                                text = pluralStringResource(
+                                    Res.plurals.tv_show_episodes_count,
+                                    season.episodeCount,
+                                    season.episodeCount
+                                )
+                            )
                         }
                     )
                 }

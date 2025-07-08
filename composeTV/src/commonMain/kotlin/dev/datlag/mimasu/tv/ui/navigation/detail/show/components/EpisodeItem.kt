@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.tv.ui.navigation.detail.show.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -22,8 +23,11 @@ import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
+import dev.datlag.mimasu.tv.Res
+import dev.datlag.mimasu.tv.tv_show_episode_placeholder
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EpisodeItem(
@@ -48,7 +52,7 @@ fun EpisodeItem(
         },
         headlineContent = {
             Text(
-                text = episode.name ?: "Episode ${episode.episodeNumber}",
+                text = episode.name ?: stringResource(Res.string.tv_show_episode_placeholder, episode.episodeNumber),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -68,6 +72,7 @@ fun EpisodeItem(
                 modifier = Modifier
                     .height(84.dp)
                     .aspectRatio(1.75F, true)
+                    .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
                     .clip(MaterialTheme.shapes.medium),
                 model = posters.firstOrNull(),
                 contentDescription = null,

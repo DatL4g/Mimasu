@@ -16,7 +16,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -38,13 +40,22 @@ import com.eygraber.compose.placeholder.placeholder
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
+import dev.datlag.mimasu.tv.tv_show_average_runtime
+import dev.datlag.mimasu.tv.tv_show_bookmark
+import dev.datlag.mimasu.tv.tv_show_bookmarked
+import dev.datlag.mimasu.tv.tv_show_first_air_date
+import dev.datlag.mimasu.tv.tv_show_first_air_date_format
+import dev.datlag.mimasu.tv.tv_show_rating
+import dev.datlag.mimasu.tv.tv_show_rating_placeholder
 import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -160,7 +171,7 @@ internal fun ShowPosterContent(
                 }
 
                 firstAirLocalDate.formatMedium(
-                    fallbackFormat = "dd.MM.yyyy",
+                    fallbackFormat = Res.string.tv_show_first_air_date_format,
                     fallbackValue = firstAirDate
                 )?.let {
                     Column(
@@ -168,7 +179,7 @@ internal fun ShowPosterContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "First Air Date",
+                            text = stringResource(Res.string.tv_show_first_air_date),
                             style = MaterialTheme.typography.labelSmall
                         )
                         Text(
@@ -183,7 +194,7 @@ internal fun ShowPosterContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Average Runtime",
+                            text = stringResource(Res.string.tv_show_average_runtime),
                             style = MaterialTheme.typography.labelSmall
                         )
                         Text(
@@ -198,37 +209,67 @@ internal fun ShowPosterContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Rating",
+                            text = stringResource(Res.string.tv_show_rating),
                             style = MaterialTheme.typography.labelSmall
                         )
                         Text(
-                            text = "${(it * 10F).roundToInt()}%",
+                            text = stringResource(Res.string.tv_show_rating_placeholder, (it * 10F).roundToInt()),
                             style = MaterialTheme.typography.titleLarge
                         )
                     }
                 }
             }
-            val buttonInteraction = remember { MutableInteractionSource() }
-            val isFocused by buttonInteraction.collectIsFocusedAsState()
-
-            LaunchedEffect(isFocused) {
-                if (isFocused) {
-                    listState.animateScrollToItem(listState.firstVisibleItemIndex)
-                }
-            }
-
-            Button(
-                onClick = { },
-                interactionSource = buttonInteraction
+            Row(
+                modifier = Modifier.padding(top = 32.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                MaterialSymbols(
-                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                    name = MaterialSymbols.BOOKMARK,
-                    contentDescription = null,
-                    filled = true
-                )
-                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                Text(text = "Bookmark")
+                var bookmarked by remember(show?.id, initial?.id) { mutableStateOf(false) }
+                val buttonInteraction = remember { MutableInteractionSource() }
+                val isFocused by buttonInteraction.collectIsFocusedAsState()
+
+                LaunchedEffect(firebaseViewModel, show?.id, initial?.id) {
+                    bookmarked = firebaseViewModel.isShowBookmarked(show?.id ?: initial?.id ?: 0)
+                }
+
+                LaunchedEffect(isFocused) {
+                    if (isFocused) {
+                        listState.animateScrollToItem(listState.firstVisibleItemIndex)
+                    }
+                }
+
+                Button(
+                    onClick = {
+                        bookmarked = !bookmarked
+
+                        if (show != null) {
+                            firebaseViewModel.bookmark(bookmarked, show)
+                        }
+                    },
+                    interactionSource = buttonInteraction,
+                    enabled = show != null
+                ) {
+                    if (bookmarked) {
+                        MaterialSymbols(
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
+                            name = MaterialSymbols.BOOKMARK,
+                            contentDescription = null,
+                            filled = true
+                        )
+                    } else {
+                        MaterialSymbols(
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
+                            name = MaterialSymbols.BOOKMARK_ADD,
+                            contentDescription = null
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(text = if (bookmarked) {
+                        stringResource(Res.string.tv_show_bookmarked)
+                    } else {
+                        stringResource(Res.string.tv_show_bookmark)
+                    })
+                }
             }
         }
     }
