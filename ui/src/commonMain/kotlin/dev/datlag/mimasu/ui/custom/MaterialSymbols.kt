@@ -70,6 +70,7 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SettingsEthernet
 import androidx.compose.material.icons.rounded.Speaker
 import androidx.compose.material.icons.rounded.Speed
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material.icons.rounded.Tune
@@ -221,6 +222,7 @@ data object MaterialSymbols {
     const val CAST_CONNECTED = "cast_connected"
     const val SPEAKER = "speaker"
     const val COMPUTER = "computer"
+    const val STAR_SHINE = "star_shine"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -666,6 +668,7 @@ data object MaterialSymbols {
         name.equals(CAST_CONNECTED, ignoreCase = true) -> Icons.Rounded.CastConnected
         name.equals(SPEAKER, ignoreCase = true) -> Icons.Rounded.Speaker
         name.equals(COMPUTER, ignoreCase = true) -> Icons.Rounded.Computer
+        name.equals(STAR_SHINE, ignoreCase = true) -> Icons.Rounded.Star
         else -> null
     }
 
@@ -826,7 +829,7 @@ data object MaterialSymbols {
                     height = height,
                     placementBlock = placementBlock
                 )
-            }.onFailure(onError).getOrNull() ?: layout(constraints.minWidth, constraints.minHeight, placementBlock = placementBlock)
+            }.onFailure(onError).getOrNull() ?: layout(0, 0, placementBlock = placementBlock)
         }
 
         companion object {

@@ -94,12 +94,20 @@ internal fun ShowContent(
                             selectedSeason = season
                         },
                         leadingContent = {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = season.seasonNumber.toString(),
-                                fontWeight = FontWeight.ExtraBold,
-                                textAlign = TextAlign.Center
-                            )
+                            if (season.seasonNumber <= 0) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.STAR_SHINE,
+                                    contentDescription = null,
+                                    filled = selectedSeason == season
+                                )
+                            } else {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = season.seasonNumber.toString(),
+                                    fontWeight = FontWeight.ExtraBold,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         },
                         content = {
                             Text(
