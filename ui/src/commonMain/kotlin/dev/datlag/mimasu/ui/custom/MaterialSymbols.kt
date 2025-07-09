@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
+import androidx.compose.material.icons.automirrored.rounded.KeyboardBackspace
 import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.automirrored.rounded.Redo
 import androidx.compose.material.icons.automirrored.rounded.Undo
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.rounded.Beenhere
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.BookmarkAdd
 import androidx.compose.material.icons.rounded.Cake
+import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Cast
 import androidx.compose.material.icons.rounded.CastConnected
 import androidx.compose.material.icons.rounded.Check
@@ -68,6 +70,7 @@ import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SettingsEthernet
+import androidx.compose.material.icons.rounded.SpaceBar
 import androidx.compose.material.icons.rounded.Speaker
 import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material.icons.rounded.Star
@@ -223,6 +226,9 @@ data object MaterialSymbols {
     const val SPEAKER = "speaker"
     const val COMPUTER = "computer"
     const val STAR_SHINE = "star_shine"
+    const val SPACE_BAR = "space_bar"
+    const val KEYBOARD_BACKSPACE = "keyboard_backspace"
+    const val CANCEL = "cancel"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -669,6 +675,9 @@ data object MaterialSymbols {
         name.equals(SPEAKER, ignoreCase = true) -> Icons.Rounded.Speaker
         name.equals(COMPUTER, ignoreCase = true) -> Icons.Rounded.Computer
         name.equals(STAR_SHINE, ignoreCase = true) -> Icons.Rounded.Star
+        name.equals(SPACE_BAR, ignoreCase = true) -> Icons.Rounded.SpaceBar
+        name.equals(KEYBOARD_BACKSPACE, ignoreCase = true) -> Icons.AutoMirrored.Rounded.KeyboardBackspace
+        name.equals(CANCEL, ignoreCase = true) -> Icons.Rounded.Cancel
         else -> null
     }
 

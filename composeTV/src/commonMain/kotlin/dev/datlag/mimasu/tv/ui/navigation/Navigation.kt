@@ -61,6 +61,7 @@ import dev.datlag.mimasu.tv.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.tv.ui.navigation.detail.show.ShowDetail
 import dev.datlag.mimasu.tv.ui.navigation.login.Login
 import dev.datlag.mimasu.tv.ui.navigation.movies.Movies
+import dev.datlag.mimasu.tv.ui.navigation.search.Search
 import dev.datlag.mimasu.tv.ui.navigation.series.Series
 import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
@@ -133,7 +134,9 @@ internal fun Navigation(appImage: Painter) {
                 )
             }
             composable<Navigation.Search> {
-                Text(text = "Search Screen")
+                Search(
+                    paddingValues = PaddingValues(top = tabBarHeight)
+                )
             }
             composable<Navigation.Home> {
                 Home(
