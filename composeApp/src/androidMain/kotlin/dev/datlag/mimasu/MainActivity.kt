@@ -17,12 +17,14 @@ import dev.datlag.mimasu.common.isInPiPMode
 import dev.datlag.mimasu.common.toExpressiveTypography
 import dev.datlag.mimasu.extension.AppInstallReceiver
 import dev.datlag.mimasu.extension.ExtensionInitializer
+import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.safeCast
 import dev.datlag.tooling.scopeCatching
 import org.kodein.di.DI
@@ -153,8 +155,23 @@ class MainActivity : AdActivity() {
                 val oobCode = data.getQueryParameter("oobCode")?.ifBlank { null }
                 val mode = data.getQueryParameter("mode")?.ifBlank { null }
 
-                if (mode.equals("resetPassword", ignoreCase = true) && !oobCode.isNullOrBlank()) {
-                    LoginViewModel.setResetCode(oobCode)
+                if (!oobCode.isNullOrBlank()) {
+                    when {
+                        mode.equals("resetPassword", ignoreCase = true) -> {
+                            LoginViewModel.setResetCode(oobCode)
+                        }
+                        mode.equals("verify", ignoreCase = true) || mode.equals("verifyEmail", ignoreCase = true) -> {
+                            val authService = di?.let {
+                                val instance by it.instanceOrNull<FirebaseAuthService>()
+                                instance
+                            }
+
+                            lifecycleScope.launchIO {
+                                authService?.verifyEmail(oobCode)
+                                authService?.currentUser?.reload()
+                            }
+                        }
+                    }
                 }
             }
         }

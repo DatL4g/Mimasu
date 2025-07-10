@@ -110,6 +110,10 @@ data class FirebaseAuthService(
         return auth.confirmPasswordReset(code, newPassword)
     }
 
+    suspend fun verifyEmail(code: String) {
+        return auth.applyActionCode(code)
+    }
+
     companion object {
         private val _triggerUserReload = MutableStateFlow(false)
         val triggerUserReload = _triggerUserReload.asStateFlow()
