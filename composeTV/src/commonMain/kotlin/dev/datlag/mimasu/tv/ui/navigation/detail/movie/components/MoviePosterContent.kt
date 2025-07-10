@@ -1,5 +1,7 @@
 package dev.datlag.mimasu.tv.ui.navigation.detail.movie.components
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,6 +66,7 @@ import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 internal fun MoviePosterContent(
     movie: Movie?,
     initial: CommonMovie?,
+    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
@@ -236,6 +240,8 @@ internal fun MoviePosterContent(
                 var bookmarked by remember(movie?.id, initial?.id) {
                     mutableStateOf(false)
                 }
+                val trailerInteraction = remember { MutableInteractionSource() }
+                val isTrailerFocused by trailerInteraction.collectIsFocusedAsState()
 
                 LaunchedEffect(firebaseViewModel, movie?.id, initial?.id) {
                     val id = movie?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
@@ -244,11 +250,18 @@ internal fun MoviePosterContent(
                     } ?: bookmarked
                 }
 
+                LaunchedEffect(isTrailerFocused) {
+                    if (isTrailerFocused) {
+                        listState.animateScrollToItem(0)
+                    }
+                }
+
                 Button(
                     onClick = {
                         trailerUrl?.let(uriHandler::openUri)
                     },
-                    enabled = !trailerUrl.isNullOrBlank()
+                    enabled = !trailerUrl.isNullOrBlank(),
+                    interactionSource = trailerInteraction
                 ) {
                     MaterialSymbols(
                         name = MaterialSymbols.PLAY_ARROW,

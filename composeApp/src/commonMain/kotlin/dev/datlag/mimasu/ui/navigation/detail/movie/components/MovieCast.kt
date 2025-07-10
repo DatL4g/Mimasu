@@ -44,7 +44,7 @@ fun MovieCast(
                 maxLines = 1
             )
             LazyRow(
-                modifier = modifier,
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
