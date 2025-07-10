@@ -31,6 +31,7 @@ import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_search_info_default
 import dev.datlag.mimasu.tv.tv_search_info_error
+import dev.datlag.mimasu.tv.tv_search_start_typing
 import dev.datlag.mimasu.tv.ui.custom.Keyboard
 import dev.datlag.mimasu.tv.ui.custom.MovieCard
 import dev.datlag.mimasu.tv.ui.custom.ShowCard
@@ -66,7 +67,7 @@ fun Search(
             Text(
                 modifier = Modifier
                     .width(300.dp),
-                text = query?.trim() ?: "Start searching...",
+                text = query?.trim() ?: stringResource(Res.string.tv_search_start_typing),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleMedium
