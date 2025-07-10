@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.video
+package dev.datlag.mimasu.ui.custom
 
 import android.view.View
 import android.view.Window

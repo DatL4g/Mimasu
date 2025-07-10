@@ -38,27 +38,6 @@ fun Activity.isInPiPMode(): Boolean {
     }
 }
 
-@OptIn(UnstableApi::class)
-fun DIAware.cronetEngine(): CronetEngine? {
-    val instance by this.instanceOrNull<PlatformModule.Cronet>()
-    return instance?.engine
-}
-
-fun DirectDI.cronetEngine(): CronetEngine? {
-    return this.instanceOrNull<PlatformModule.Cronet>()?.engine
-}
-
-@OptIn(UnstableApi::class)
-fun DIAware.videoCache(): Cache {
-    val instance by this.instance<Cache>()
-    return instance
-}
-
-@OptIn(UnstableApi::class)
-fun DirectDI.videoCache(): Cache {
-    return this.instance<Cache>()
-}
-
 actual fun Navigation.Video.dialogProperties(): DialogProperties {
     return DialogProperties(
         dismissOnBackPress = false,

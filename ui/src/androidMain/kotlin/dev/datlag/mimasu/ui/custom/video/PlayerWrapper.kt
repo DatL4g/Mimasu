@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.video
+package dev.datlag.mimasu.ui.custom.video
 
 import android.content.Context
 import android.os.Looper
@@ -14,9 +14,7 @@ import androidx.media3.cast.CastPlayer
 import androidx.media3.cast.DefaultMediaItemConverter
 import androidx.media3.cast.SessionAvailabilityListener
 import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
 import androidx.media3.common.C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-import androidx.media3.common.C.VOLUME_FLAG_SHOW_UI
 import androidx.media3.common.C.VideoScalingMode
 import androidx.media3.common.DeviceInfo
 import androidx.media3.common.MediaItem
@@ -48,8 +46,8 @@ import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ENABLE_HD
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
 import dev.datlag.kast.Kast
-import dev.datlag.mimasu.common.cronetEngine
-import dev.datlag.mimasu.common.videoCache
+import dev.datlag.mimasu.ui.common.cronetEngine
+import dev.datlag.mimasu.ui.common.videoCache
 import dev.datlag.tooling.scopeCatching
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,7 +57,6 @@ import org.chromium.net.CronetEngine
 import org.kodein.di.compose.localDI
 import java.util.concurrent.Executors
 
-// ToDo("Kast")
 @UnstableApi
 class PlayerWrapper(
     private val context: Context,

@@ -11,13 +11,15 @@ import com.appmattus.certificatetransparency.certificateTransparencyInterceptor
 import com.google.net.cronet.okhttptransport.CronetInterceptor
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
-import dev.datlag.mimasu.common.cronetEngine
 import dev.datlag.mimasu.common.firebaseDataSource
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProviderAndroid
 import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderAndroid
 import dev.datlag.mimasu.other.AdManager
+import dev.datlag.mimasu.ui.Cronet
 import dev.datlag.mimasu.ui.GoogleProvider
+import dev.datlag.mimasu.ui.common.cronetEngine
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.scopeCatching
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -63,7 +65,7 @@ actual object PlatformModule {
             HttpClient(OkHttp) {
                 followRedirects = true
                 engine {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA && !Platform.isTelevision(instance<Context>())) {
                         addNetworkInterceptor(instance(TAG_CERT_TRANSPARENT))
                     }
                     // Add the Cronet interceptor last, otherwise the subsequent interceptors will be skipped.
@@ -95,13 +97,5 @@ actual object PlatformModule {
         bindSingleton<AdManager> {
             AdManager(context = instance())
         }
-    }
-
-    sealed interface Cronet {
-        val engine: CronetEngine?
-            get() = null
-
-        data class Available(override val engine: CronetEngine) : Cronet
-        data object NonAvailable : Cronet
     }
 }

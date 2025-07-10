@@ -3,12 +3,19 @@ package dev.datlag.mimasu.ui.common
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
@@ -107,4 +114,64 @@ fun LazyGridScope.header(
     content: @Composable LazyGridItemScope.() -> Unit
 ) {
     item(span = { GridItemSpan(this.maxLineSpan) }, content = content)
+}
+
+@Composable
+fun Modifier.handleDPadKeyEvents(
+    onLeft: (() -> Boolean)? = null,
+    onRight: (() -> Boolean)? = null,
+    onUp: (() -> Boolean)? = null,
+    onDown: (() -> Boolean)? = null,
+    onEnter: (() -> Boolean)? = null
+): Modifier = onKeyEvent { event ->
+    if (event.type == KeyEventType.KeyUp) {
+        when (event.key) {
+            Key.DirectionLeft, Key.SystemNavigationLeft -> {
+                onLeft?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+            Key.DirectionRight, Key.SystemNavigationRight -> {
+                onRight?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+            Key.DirectionUp, Key.SystemNavigationUp -> {
+                onUp?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+            Key.DirectionDown, Key.SystemNavigationDown -> {
+                onDown?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+            Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> {
+                onEnter?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+        }
+    }
+    return@onKeyEvent false
+}
+
+@Composable
+fun Modifier.handlePlayerKeyEvents(
+    play: (() -> Boolean)? = null,
+    playPause: (() -> Boolean)? = null,
+    pause: (() -> Boolean)? = null,
+    rewind: (() -> Boolean)? = null,
+    forward: (() -> Boolean)? = null
+): Modifier = onKeyEvent { event ->
+    if (event.type == KeyEventType.KeyUp) {
+        when (event.key) {
+            Key.MediaPlay -> {
+                play?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+            Key.MediaPlayPause, Key.K, Key.Spacebar -> {
+                playPause?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+            Key.MediaPause -> {
+                pause?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+            Key.MediaRewind, Key.J -> {
+                rewind?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+            Key.MediaFastForward, Key.L -> {
+                forward?.invoke().also { consume -> return@onKeyEvent consume ?: false }
+            }
+        }
+    }
+    return@onKeyEvent false
 }

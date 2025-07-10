@@ -24,8 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.common.toDuration
-import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
-import dev.datlag.mimasu.ui.navigation.video.states.ProgressState
+import dev.datlag.mimasu.ui.custom.video.ProgressBar
+import dev.datlag.mimasu.ui.custom.video.states.ControlsState
+import dev.datlag.mimasu.ui.custom.video.states.ProgressState
 import kotlin.math.roundToLong
 
 @Composable
@@ -48,49 +49,9 @@ fun BottomControls(
             containerColor = Color.Transparent,
             contentColor = Color.White
         ) {
-            val interactionSource = remember { MutableInteractionSource() }
-            val isDragging by interactionSource.collectIsDraggedAsState()
-            val enabled by state.enabled.collectAsStateWithLifecycle()
-            val position by state.position.collectAsStateWithLifecycle()
-            val duration by state.duration.collectAsStateWithLifecycle()
-            var progress by remember { mutableFloatStateOf(0F) }
-            val progressForText by remember(progress, duration) {
-                derivedStateOf {
-                    duration.times(progress).roundToLong()
-                }
-            }
-
-            LaunchedEffect(position, duration) {
-                if (!isDragging) {
-                    progress = if (position <= 0L || duration <= 0L) {
-                        0F
-                    } else {
-                        position.toFloat() / duration.toFloat()
-                    }
-                }
-            }
-
-            Text(
-                text = progressForText.toDuration(),
-                maxLines = 1
-            )
-            Slider(
-                modifier = Modifier.padding(horizontal = 8.dp).weight(1F),
-                value = progress,
-                enabled = enabled,
-                onValueChange = {
-                    controlsState.showControls()
-
-                    progress = it
-                },
-                onValueChangeFinished = {
-                    state.seekTo(duration.times(progress).roundToLong())
-                },
-                interactionSource = interactionSource
-            )
-            Text(
-                text = duration.toDuration(),
-                maxLines = 1
+            ProgressBar(
+                controlsState = controlsState,
+                state = state
             )
         }
     }

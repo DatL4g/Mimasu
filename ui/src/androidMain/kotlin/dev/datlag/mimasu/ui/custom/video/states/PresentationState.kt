@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.video.states
+package dev.datlag.mimasu.ui.custom.video.states
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,9 +11,7 @@ import androidx.media3.common.VideoSize
 import androidx.media3.common.listen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
 
 class PresentationState(private val player: Player) {
 

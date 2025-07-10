@@ -42,7 +42,7 @@ import androidx.media3.common.util.UnstableApi
 import dev.datlag.mimasu.other.AudioHelper
 import dev.datlag.mimasu.other.rememberBrightnessHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
+import dev.datlag.mimasu.ui.custom.video.states.ControlsState
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.platform.colorScheme

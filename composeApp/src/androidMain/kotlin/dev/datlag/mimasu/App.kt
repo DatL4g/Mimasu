@@ -17,6 +17,7 @@ import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.AppInitializer
 import dev.datlag.mimasu.ui.other.Network
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.compose.launchIO
 import dev.gitlive.firebase.Firebase
@@ -52,7 +53,7 @@ class App : MultiDexApplication(), DIAware {
     override fun onCreate() {
         super.onCreate()
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA && !Platform.isTelevision(this)) {
             installCertificateTransparencyProvider {
                 logger = BasicAndroidCTLogger(BuildConfig.DEBUG)
                 diskCache = AndroidDiskCache(applicationContext)

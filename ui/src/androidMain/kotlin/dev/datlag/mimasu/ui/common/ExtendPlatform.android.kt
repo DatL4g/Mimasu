@@ -7,23 +7,39 @@ import android.content.ContextWrapper
 import android.os.Build
 import android.provider.Settings
 import android.view.Window
+import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.cache.Cache
 import app.rive.runtime.kotlin.core.RendererType
 import app.rive.runtime.kotlin.core.Rive
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.google.GoogleAuthParams
+import dev.datlag.mimasu.ui.Cronet
+import dev.datlag.mimasu.ui.custom.video.states.ControlsState
+import dev.datlag.mimasu.ui.custom.video.states.PlayPauseButtonState
+import dev.datlag.mimasu.ui.custom.video.states.SeekState
 import dev.datlag.mimasu.ui.other.ArchUtils
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.sekret.NativeLoader
 import dev.datlag.tooling.scopeCatching
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.toJavaLocalDate
+import org.chromium.net.CronetEngine
+import org.kodein.di.DIAware
+import org.kodein.di.DirectDI
+import org.kodein.di.instance
+import org.kodein.di.instanceOrNull
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.getValue
 
 tailrec fun Context.findActivity(): Activity? {
     return when (this) {
@@ -141,4 +157,114 @@ actual fun LocalDate?.formatMedium(fallbackFormat: String): String? {
     }.getOrNull()?.ifBlank { null } ?: scopeCatching {
         fallbackFormatter.format(this)
     }.getOrNull()?.ifBlank { null }
+}
+
+fun DIAware.cronetEngine(): CronetEngine? {
+    val instance by this.instanceOrNull<Cronet>()
+    return instance?.engine
+}
+
+fun DirectDI.cronetEngine(): CronetEngine? {
+    return this.instanceOrNull<Cronet>()?.engine
+}
+
+@OptIn(UnstableApi::class)
+fun DIAware.videoCache(): Cache {
+    val instance by this.instance<Cache>()
+    return instance
+}
+
+@OptIn(UnstableApi::class)
+fun DirectDI.videoCache(): Cache {
+    return this.instance<Cache>()
+}
+
+@OptIn(UnstableApi::class)
+@Composable
+fun Modifier.handleDPadKeyEvents(
+    controlsState: ControlsState,
+    playPauseButtonState: PlayPauseButtonState,
+    seekState: SeekState
+): Modifier = handleDPadKeyEvents(
+    onLeft = {
+        if (!controlsState.controlsVisible) {
+            seekState.seekBack()
+        }
+        !controlsState.controlsVisible
+    },
+    onRight = {
+        if (!controlsState.controlsVisible) {
+            seekState.seekForward()
+        }
+        !controlsState.controlsVisible
+    },
+    onUp = {
+        if (!controlsState.controlsVisible) {
+            controlsState.showControls()
+            true
+        } else {
+            false
+        }
+    },
+    onDown = {
+        if (!controlsState.controlsVisible) {
+            controlsState.showControls()
+            true
+        } else {
+            false
+        }
+    },
+    onEnter = {
+        if (playPauseButtonState.isEnabled.value) {
+            playPauseButtonState.onClick()
+            true
+        } else {
+            if (!controlsState.controlsVisible) {
+                controlsState.showControls()
+                true
+            } else {
+                false
+            }
+        }
+    }
+)
+
+@OptIn(UnstableApi::class)
+@Composable
+fun Modifier.handlePlayerKeyEvents(
+    playPauseButtonState: PlayPauseButtonState,
+    seekState: SeekState
+): Modifier = handlePlayerKeyEvents(
+    play = {
+        playPauseButtonState.play()
+        true
+    },
+    playPause = {
+        if (playPauseButtonState.isEnabled.value) {
+            playPauseButtonState.onClick()
+        }
+        true
+    },
+    pause = {
+        playPauseButtonState.pause()
+        true
+    },
+    rewind = {
+        seekState.seekBack()
+        true
+    },
+    forward = {
+        seekState.seekForward()
+        true
+    }
+)
+
+fun VideoViewModel.WatchType?.asMediaMetaData(): MediaMetadata {
+    return MediaMetadata.Builder()
+        .setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
+        .setTitle(this?.title)
+        .setSubtitle(this?.subTitle)
+        .setGenre(this?.genre)
+        .setAlbumTitle(this?.albumTitle)
+        .build()
 }

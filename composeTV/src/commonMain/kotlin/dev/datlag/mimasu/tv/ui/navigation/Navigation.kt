@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -63,6 +65,7 @@ import dev.datlag.mimasu.tv.ui.navigation.login.Login
 import dev.datlag.mimasu.tv.ui.navigation.movies.Movies
 import dev.datlag.mimasu.tv.ui.navigation.search.Search
 import dev.datlag.mimasu.tv.ui.navigation.series.Series
+import dev.datlag.mimasu.tv.ui.navigation.video.Video
 import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -87,6 +90,9 @@ object Navigation {
 
     @Serializable
     data object Shows
+
+    @Serializable
+    data object Video
 
     object Detail {
 
@@ -201,6 +207,16 @@ internal fun Navigation(appImage: Painter) {
             composable<Navigation.Detail.Show> {
                 ShowDetail()
             }
+            dialog<Navigation.Video>(
+                dialogProperties = DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = false,
+                    usePlatformDefaultWidth = false,
+                    decorFitsSystemWindows = false
+                )
+            ) {
+                Video()
+            }
         }
 
         LaunchedEffect(user) {
@@ -270,6 +286,8 @@ private fun TabBar(
                 }
             }
         ) {
+            val focusManager = LocalFocusManager.current
+
             Tab(
                 modifier = Modifier
                     .focusProperties {
@@ -277,7 +295,9 @@ private fun TabBar(
                     }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 selected = false,
-                onFocus = { },
+                onFocus = {
+                    focusManager.moveFocus(FocusDirection.Right)
+                },
                 enabled = false
             ) {
                 val accountViewModel = accountViewModel()

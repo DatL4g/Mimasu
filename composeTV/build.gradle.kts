@@ -35,6 +35,8 @@ kotlin {
             implementation(libs.splashscreen)
             implementation(libs.placeholder)
 
+            implementation(libs.bundles.android.media)
+
             implementation(project(":core"))
             implementation(project(":ui"))
         }

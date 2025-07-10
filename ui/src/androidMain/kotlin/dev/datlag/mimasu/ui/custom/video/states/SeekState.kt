@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.video.states
+package dev.datlag.mimasu.ui.custom.video.states
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

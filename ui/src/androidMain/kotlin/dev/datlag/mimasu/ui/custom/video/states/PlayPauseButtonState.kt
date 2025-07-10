@@ -1,4 +1,4 @@
-package dev.datlag.mimasu.ui.navigation.video.states
+package dev.datlag.mimasu.ui.custom.video.states
 
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
@@ -23,6 +23,18 @@ class PlayPauseButtonState(private val player: Player) {
 
     fun onClick() {
         Util.handlePlayPauseButtonAction(player)
+    }
+
+    fun play() {
+        if (isEnabled.value) {
+            player.play()
+        }
+    }
+
+    fun pause() {
+        if (isEnabled.value) {
+            player.pause()
+        }
     }
 
     suspend fun observe(): Nothing = player.listen { events ->

@@ -1,10 +1,9 @@
-package dev.datlag.mimasu.ui.navigation.video.states
+package dev.datlag.mimasu.ui.custom.video.states
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.media3.common.Player
-import androidx.media3.common.listen
 import dev.datlag.tooling.compose.withDefaultContext
 import dev.datlag.tooling.compose.withMainContext
 import kotlinx.coroutines.delay

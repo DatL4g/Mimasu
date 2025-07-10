@@ -61,6 +61,10 @@ kotlin {
         androidMain.dependencies {
             api(libs.paging.compose)
             implementation(libs.android.startup)
+            implementation(libs.cronet)
+
+            implementation(libs.bundles.android.cast)
+            implementation(libs.bundles.android.media)
 
             implementation(project(":extension"))
             implementation(project(":rive"))

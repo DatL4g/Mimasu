@@ -1,9 +1,8 @@
-package dev.datlag.mimasu.ui.navigation.video.states
+package dev.datlag.mimasu.ui.custom.video.states
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.media3.common.Player
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.onFailure

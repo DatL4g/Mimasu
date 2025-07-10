@@ -34,7 +34,7 @@ import dev.datlag.kast.Kast
 import dev.datlag.kast.UnselectReason
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
+import dev.datlag.mimasu.ui.custom.video.states.ControlsState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import kotlinx.collections.immutable.toImmutableList
 

@@ -21,9 +21,9 @@ import androidx.media3.common.util.UnstableApi
 import dev.datlag.mimasu.common.mediumLargeContainerSize
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
-import dev.datlag.mimasu.ui.navigation.video.states.PlayPauseButtonState
-import dev.datlag.mimasu.ui.navigation.video.states.SeekState
+import dev.datlag.mimasu.ui.custom.video.states.ControlsState
+import dev.datlag.mimasu.ui.custom.video.states.PlayPauseButtonState
+import dev.datlag.mimasu.ui.custom.video.states.SeekState
 
 @ExperimentalMaterial3ExpressiveApi
 @OptIn(UnstableApi::class)

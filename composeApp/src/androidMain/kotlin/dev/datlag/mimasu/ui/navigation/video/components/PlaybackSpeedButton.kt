@@ -22,7 +22,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.state.rememberPlaybackSpeedState
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.navigation.video.states.ControlsState
+import dev.datlag.mimasu.ui.custom.video.states.ControlsState
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.localContentColor
 import kotlinx.collections.immutable.ImmutableCollection
