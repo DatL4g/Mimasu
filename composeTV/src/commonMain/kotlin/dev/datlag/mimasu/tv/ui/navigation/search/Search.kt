@@ -66,7 +66,7 @@ fun Search(
         ) {
             Text(
                 modifier = Modifier
-                    .width(300.dp),
+                    .width(280.dp),
                 text = query?.trim() ?: stringResource(Res.string.tv_search_start_typing),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
@@ -74,7 +74,7 @@ fun Search(
             )
             Keyboard(
                 modifier = Modifier
-                    .width(300.dp),
+                    .width(280.dp),
                 value = query ?: "",
                 onValueChange = {
                     searchViewModel.updateQuery(it)

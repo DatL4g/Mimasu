@@ -277,9 +277,8 @@ private fun TabBar(
                     }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 selected = false,
-                onFocus = {
-
-                }
+                onFocus = { },
+                enabled = false
             ) {
                 val accountViewModel = accountViewModel()
                 val user by accountViewModel.user.collectAsState()
