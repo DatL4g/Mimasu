@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.updateAndGet
@@ -37,15 +39,45 @@ data class SearchViewModel(
     }.distinctUntilChanged()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val searchResult = searchInfo.flatMapLatest { info ->
-        searchRepository.querySearch(
-            query = info.query,
-            includeAdult = info.includeAdult
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SearchRepository.SearchResult.Empty)
+    val people = searchInfo.flatMapLatest { info ->
+        if (info.query.isBlank()) {
+            return@flatMapLatest flowOf(PagingData.empty())
+        }
+
+        Pager(
+            config = PagingConfig(pageSize = 1)
+        ) {
+            searchRepository.PersonPaging(info.query)
+        }.flow.cachedIn(viewModelScope)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val movies = searchInfo.flatMapLatest { info ->
+        if (info.query.isBlank()) {
+            return@flatMapLatest flowOf(PagingData.empty())
+        }
+
+        Pager(
+            config = PagingConfig(pageSize = 1)
+        ) {
+            searchRepository.MoviePaging(info.query)
+        }.flow.cachedIn(viewModelScope)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val tv = searchInfo.flatMapLatest { info ->
+        if (info.query.isBlank()) {
+            return@flatMapLatest flowOf(PagingData.empty())
+        }
+
+        Pager(
+            config = PagingConfig(pageSize = 1)
+        ) {
+            searchRepository.TVPaging(info.query)
+        }.flow.cachedIn(viewModelScope)
+    }
 
     fun updateQuery(query: String) = _query.updateAndGet { query.ifBlank { null } }
-    fun updateIncludeAdult(value: Boolean) = _includeAdult.updateAndGet { value }
 
     private data class SearchInfo(
         val query: String,

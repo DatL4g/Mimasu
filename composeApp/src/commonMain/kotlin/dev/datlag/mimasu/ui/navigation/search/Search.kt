@@ -100,20 +100,42 @@ fun Search(
             )
         }
     ) { padding ->
-        val result by searchViewModel.searchResult.collectAsStateWithLifecycle()
+        val people = searchViewModel.people.collectAsLazyPagingItems()
+        val movies = searchViewModel.movies.collectAsLazyPagingItems()
+        val tv = searchViewModel.tv.collectAsLazyPagingItems()
+        val isEmpty = people.itemCount <= 0 && movies.itemCount <= 0 && tv.itemCount <= 0
+        val isError = people.loadState.hasError || movies.loadState.hasError || tv.loadState.hasError
 
-        when (val current = result) {
-            is SearchRepository.SearchResult.Loading -> {
-                SearchContent(
-                    padding = padding,
-                    query = query,
-                    result = current,
-                    onShowClicked = onShowClicked,
-                    onMovieClicked = onMovieClicked
-                )
+        when {
+            isEmpty && query.isNullOrEmpty() -> {
+                val tvResult = discoverViewModel.discoverTV.collectAsLazyPagingItems()
+
+                if (tvResult.itemCount <= 0) {
+                    SearchInfo(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                            .padding(horizontal = 16.dp),
+                        iconName = MaterialSymbols.SEARCH,
+                        text = stringResource(Res.string.search_info_default),
+                    )
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(100.dp),
+                        contentPadding = padding.merge(PaddingValues(horizontal = 8.dp)),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(tvResult.itemCount) { index ->
+                            ShowCard(
+                                tv = tvResult[index],
+                                onClick = onShowClicked
+                            )
+                        }
+                    }
+                }
             }
-
-            is SearchRepository.SearchResult.Error -> {
+            isEmpty && isError -> {
                 SearchInfo(
                     modifier = Modifier
                         .fillMaxSize()
@@ -124,55 +146,16 @@ fun Search(
                     text = stringResource(Res.string.search_info_error),
                 )
             }
-
-            is SearchRepository.SearchResult.Success -> {
-                if (current.isEmpty()) {
-                    if (query?.trim()?.takeIf { it.length >= 2 }?.isNotBlank() == true) {
-                        SearchInfo(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(padding)
-                                .padding(horizontal = 16.dp),
-                            iconName = MaterialSymbols.HELP,
-                            text = stringResource(Res.string.search_info_empty),
-                        )
-                    } else {
-                        val tvResult = discoverViewModel.discoverTV.collectAsLazyPagingItems()
-
-                        if (tvResult.itemCount <= 0) {
-                            SearchInfo(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(padding)
-                                    .padding(horizontal = 16.dp),
-                                iconName = MaterialSymbols.SEARCH,
-                                text = stringResource(Res.string.search_info_default),
-                            )
-                        } else {
-                            LazyVerticalGrid(
-                                columns = GridCells.Adaptive(100.dp),
-                                contentPadding = padding.merge(PaddingValues(horizontal = 8.dp)),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                items(tvResult.itemCount) { index ->
-                                    ShowCard(
-                                        tv = tvResult[index],
-                                        onClick = onShowClicked
-                                    )
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    SearchContent(
-                        padding = padding,
-                        query = query,
-                        result = current,
-                        onShowClicked = onShowClicked,
-                        onMovieClicked = onMovieClicked
-                    )
-                }
+            else -> {
+                SearchContent(
+                    padding = padding,
+                    people = people,
+                    movies = movies,
+                    tv = tv,
+                    onPersonClicked = { },
+                    onMovieClicked = onMovieClicked,
+                    onShowClicked = onShowClicked,
+                )
             }
         }
     }

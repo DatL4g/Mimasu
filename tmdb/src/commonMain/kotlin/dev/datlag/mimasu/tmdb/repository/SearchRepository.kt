@@ -3,6 +3,7 @@ package dev.datlag.mimasu.tmdb.repository
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import co.touchlab.kermit.Logger
+import dev.datlag.mimasu.core.typeOf
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Search
 import dev.datlag.mimasu.tmdb.model.Movie
@@ -12,6 +13,7 @@ import dev.datlag.mimasu.tmdb.model.Response
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
+import dev.datlag.tooling.safeCast
 import io.ktor.client.call.body
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -52,6 +54,169 @@ class SearchRepository(
         }
 
         return@flow emit(SearchResult.from(result))
+    }
+
+    private suspend inline fun <reified T : Response> pagedRequest(
+        page: Int,
+        query: String
+    ): Result<PagedResponse<T>?> = when {
+        T::class typeOf People::class -> suspendCatching {
+            val response = search.person(
+                apiKey = apiKey,
+                query = query,
+                language = language,
+                page = page
+            )
+
+            response.body<PagedResponse<People>>()
+        }
+        T::class typeOf Movie::class -> suspendCatching {
+            val response = search.movie(
+                apiKey = apiKey,
+                query = query,
+                language = language,
+                page = page
+            )
+
+            response.body<PagedResponse<Movie>>()
+        }
+        T::class typeOf TV::class -> suspendCatching {
+            val response = search.tv(
+                apiKey = apiKey,
+                query = query,
+                language = language,
+                page = page
+            )
+
+            response.body<PagedResponse<TV>>()
+        }
+        else -> throw IllegalArgumentException("Unsupported type: ${T::class}")
+    }.mapCatching { result ->
+        result.safeCast() ?: result.results.filterIsInstance<T>().ifEmpty { null }?.let {
+            PagedResponse(
+                page = result.page,
+                results = it,
+                totalPages = result.totalPages,
+                totalResults = result.totalResults
+            )
+        } ?: result as? PagedResponse<T>
+    }
+
+    inner class PersonPaging(
+        private val query: String
+    ) : PagingSource<Int, People>() {
+        override fun getRefreshKey(state: PagingState<Int, People>): Int? {
+            return state.anchorPosition?.let { anchorPos ->
+                val anchorPage = state.closestPageToPosition(anchorPos)
+
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            }
+        }
+
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, People> {
+            val key = params.key ?: 1
+            val result = withNonEmptyContext(context) {
+                pagedRequest<People>(key, query)
+            }
+
+            val data = result.getOrNull()
+
+            return when {
+                data != null -> LoadResult.Page(
+                    data = data.results,
+                    prevKey = (data.page - 1).takeIf { it >= 1 },
+                    nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
+                        null
+                    } else {
+                        data.page + 1
+                    }
+                )
+                else -> {
+                    LoadResult.Error(
+                        result.exceptionOrNull()
+                            ?: IllegalStateException("Could not load paging data of person search.")
+                    )
+                }
+            }
+        }
+    }
+
+    inner class MoviePaging(
+        private val query: String
+    ) : PagingSource<Int, Movie>() {
+        override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+            return state.anchorPosition?.let { anchorPos ->
+                val anchorPage = state.closestPageToPosition(anchorPos)
+
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            }
+        }
+
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+            val key = params.key ?: 1
+            val result = withNonEmptyContext(context) {
+                pagedRequest<Movie>(key, query)
+            }
+
+            val data = result.getOrNull()
+
+            return when {
+                data != null -> LoadResult.Page(
+                    data = data.results,
+                    prevKey = (data.page - 1).takeIf { it >= 1 },
+                    nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
+                        null
+                    } else {
+                        data.page + 1
+                    }
+                )
+                else -> {
+                    LoadResult.Error(
+                        result.exceptionOrNull()
+                            ?: IllegalStateException("Could not load paging data of movie search.")
+                    )
+                }
+            }
+        }
+    }
+
+    inner class TVPaging(
+        private val query: String
+    ) : PagingSource<Int, TV>() {
+        override fun getRefreshKey(state: PagingState<Int, TV>): Int? {
+            return state.anchorPosition?.let { anchorPos ->
+                val anchorPage = state.closestPageToPosition(anchorPos)
+
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            }
+        }
+
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TV> {
+            val key = params.key ?: 1
+            val result = withNonEmptyContext(context) {
+                pagedRequest<TV>(key, query)
+            }
+
+            val data = result.getOrNull()
+
+            return when {
+                data != null -> LoadResult.Page(
+                    data = data.results,
+                    prevKey = (data.page - 1).takeIf { it >= 1 },
+                    nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
+                        null
+                    } else {
+                        data.page + 1
+                    }
+                )
+                else -> {
+                    LoadResult.Error(
+                        result.exceptionOrNull()
+                            ?: IllegalStateException("Could not load paging data of tv search.")
+                    )
+                }
+            }
+        }
     }
 
     @Serializable

@@ -15,4 +15,28 @@ interface Search {
         @Query("language") language: String,
         @Query("page") page: Int
     ): HttpResponse
+
+    @GET("search/person")
+    suspend fun person(
+        @Query("api_key") apiKey: String,
+        @Query("query") query: String,
+        @Query("language") language: String,
+        @Query("page") page: Int
+    ): HttpResponse
+
+    @GET("search/movie")
+    suspend fun movie(
+        @Query("api_key") apiKey: String,
+        @Query("query") query: String,
+        @Query("language") language: String,
+        @Query("page") page: Int
+    ): HttpResponse
+
+    @GET("search/tv")
+    suspend fun tv(
+        @Query("api_key") apiKey: String,
+        @Query("query") query: String,
+        @Query("language") language: String,
+        @Query("page") page: Int
+    ): HttpResponse
 }

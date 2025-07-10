@@ -15,38 +15,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.search_movies
 import dev.datlag.mimasu.composeapp.generated.resources.search_people
 import dev.datlag.mimasu.composeapp.generated.resources.search_series
 import dev.datlag.mimasu.tmdb.model.Movie
+import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.repository.SearchRepository
+import dev.datlag.mimasu.ui.LazyPagingItems
 import dev.datlag.mimasu.ui.common.plus
 import dev.datlag.mimasu.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.custom.PersonCard
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
-import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SearchContent(
     padding: PaddingValues,
-    query: String?,
-    result: SearchRepository.SearchResult,
+    people: LazyPagingItems<People>,
+    movies: LazyPagingItems<Movie>,
+    tv: LazyPagingItems<TV>,
+    onPersonClicked: (People) -> Unit,
+    onMovieClicked: (Movie) -> Unit,
     onShowClicked: (TV) -> Unit,
-    onMovieClicked: (Movie) -> Unit
 ) {
-    val loading = remember(result) { result is SearchRepository.SearchResult.Loading }
-    val success = remember(result) { result as? SearchRepository.SearchResult.Success }
-
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = padding + PaddingValues(top = 16.dp)
     ) {
-        if (loading || success?.hasPeople() == true) {
+        if (people.itemCount > 0 || people.loadState.refresh is LoadState.Loading) {
             item {
                 Column(
                     modifier = Modifier
@@ -67,26 +68,29 @@ fun SearchContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
-                        if (success != null) {
-                            items(success.people.toImmutableList()) {
-                                PersonCard(
-                                    person = it,
-                                    placeholder = false
-                                )
+                        items(people.itemCount) { index ->
+                            PersonCard(
+                                person = people[index],
+                                onClick = onPersonClicked
+                            )
+                        }
+                        when {
+                            people.loadState.refresh is LoadState.Loading -> {
+                                items(5) {
+                                    PersonCard(person = null)
+                                }
                             }
-                        } else {
-                            items(5) {
-                                PersonCard(
-                                    person = null,
-                                    placeholder = true
-                                )
+                            people.loadState.append is LoadState.Loading -> {
+                                items(3) {
+                                    PersonCard(person = null)
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        if (loading || success?.hasSeries() == true) {
+        if (tv.itemCount > 0 || tv.loadState.refresh is LoadState.Loading) {
             item {
                 Column(
                     modifier = Modifier
@@ -107,23 +111,29 @@ fun SearchContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
-                        if (success != null) {
-                            items(success.series.toImmutableList()) {
-                                ShowCard(
-                                    tv = it,
-                                    onClick = onShowClicked
-                                )
+                        items(tv.itemCount) { index ->
+                            ShowCard(
+                                tv = tv[index],
+                                onClick = onShowClicked
+                            )
+                        }
+                        when {
+                            tv.loadState.refresh is LoadState.Loading -> {
+                                items(5) {
+                                    ShowCard(tv = null)
+                                }
                             }
-                        } else {
-                            items(5) {
-                                ShowCard(tv = null)
+                            tv.loadState.append is LoadState.Loading -> {
+                                items(3) {
+                                    ShowCard(tv = null)
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        if (loading || success?.hasMovies() == true) {
+        if (movies.itemCount > 0 || movies.loadState.refresh is LoadState.Loading) {
             item {
                 Column(
                     modifier = Modifier
@@ -144,16 +154,22 @@ fun SearchContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
-                        if (success != null) {
-                            items(success.movies.toImmutableList()) {
-                                MovieCard(
-                                    movie = it,
-                                    onClick = onMovieClicked
-                                )
+                        items(movies.itemCount) { index ->
+                            MovieCard(
+                                movie = movies[index],
+                                onClick = onMovieClicked
+                            )
+                        }
+                        when {
+                            movies.loadState.refresh is LoadState.Loading -> {
+                                items(5) {
+                                    MovieCard(movie = null)
+                                }
                             }
-                        } else {
-                            items(5) {
-                                MovieCard(movie = null)
+                            movies.loadState.append is LoadState.Loading -> {
+                                items(3) {
+                                    MovieCard(movie = null)
+                                }
                             }
                         }
                     }
