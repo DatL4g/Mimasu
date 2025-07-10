@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.updateAndGet
@@ -75,6 +76,23 @@ data class SearchViewModel(
         ) {
             searchRepository.TVPaging(info.query)
         }.flow.cachedIn(viewModelScope)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val showsAndMovies = searchInfo.flatMapLatest { info ->
+        if (info.query.isBlank()) {
+            return@flatMapLatest flowOf(PagingData.empty())
+        }
+
+        Pager(
+            config = PagingConfig(pageSize = 1)
+        ) {
+            searchRepository.MultiPaging(info.query)
+        }.flow.map { pagingData ->
+            pagingData.filter { item ->
+                item is Movie || item is TV
+            }
+        }.cachedIn(viewModelScope)
     }
 
     fun updateQuery(query: String) = _query.updateAndGet { query.ifBlank { null } }

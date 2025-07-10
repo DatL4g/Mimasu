@@ -61,6 +61,11 @@ fun SearchNavigation(
         value = controller.scaffoldValue,
         listPane = {
             Search(
+                onPersonClicked = {
+                    PersonViewModel.updateFrom(it)
+
+                    controller.navigateToDetail(Navigation.Search.Detail.Person)
+                },
                 onShowClicked = {
                     ShowViewModel.updateFrom(it)
 

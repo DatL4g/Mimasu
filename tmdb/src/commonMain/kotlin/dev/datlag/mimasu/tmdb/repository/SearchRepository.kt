@@ -30,31 +30,6 @@ class SearchRepository(
     private val context: CoroutineContext
 ) {
 
-    suspend fun querySearch(
-        query: String,
-        includeAdult: Boolean
-    ): Flow<SearchResult> = flow {
-        if (query.isBlank()) {
-            return@flow emit(SearchResult.Empty)
-        }
-
-        emit(SearchResult.Loading)
-        val result = withNonEmptyContext(context) {
-            suspendCatching {
-                val response = search.multi(
-                    apiKey = apiKey,
-                    query = query,
-                    includeAdult = includeAdult,
-                    language = language,
-                    page = 1
-                )
-
-                response.body<PagedResponse<Response>>()
-            }
-        }
-
-        return@flow emit(SearchResult.from(result))
-    }
 
     private suspend inline fun <reified T : Response> pagedRequest(
         page: Int,
@@ -89,6 +64,16 @@ class SearchRepository(
             )
 
             response.body<PagedResponse<TV>>()
+        }
+        T::class typeOf Response::class -> suspendCatching {
+            val response = search.multi(
+                apiKey = apiKey,
+                query = query,
+                language = language,
+                page = page
+            )
+
+            response.body<PagedResponse<Response>>()
         }
         else -> throw IllegalArgumentException("Unsupported type: ${T::class}")
     }.mapCatching { result ->
@@ -219,63 +204,39 @@ class SearchRepository(
         }
     }
 
-    @Serializable
-    sealed interface SearchResult {
+    inner class MultiPaging(
+        private val query: String
+    ) : PagingSource<Int, Response>() {
+        override fun getRefreshKey(state: PagingState<Int, Response>): Int? {
+            return state.anchorPosition?.let { anchorPos ->
+                val anchorPage = state.closestPageToPosition(anchorPos)
 
-        @Serializable
-        data object Loading : SearchResult
-
-        @Serializable
-        data object Error : SearchResult
-
-        @Serializable
-        data class Success(
-            val people: ImmutableList<People>,
-            val movies: ImmutableList<Movie>,
-            val series: ImmutableList<TV>
-        ) : SearchResult {
-            fun hasPeople(): Boolean {
-                return people.isNotEmpty()
-            }
-
-            fun hasMovies(): Boolean {
-                return movies.isNotEmpty()
-            }
-
-            fun hasSeries(): Boolean {
-                return series.isNotEmpty()
-            }
-
-            fun isEmpty(): Boolean {
-                return this == Empty || (!hasPeople() && !hasMovies() && !hasSeries())
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
             }
         }
 
-        companion object {
-            val Empty = Success(
-                people = persistentListOf(),
-                movies = persistentListOf(),
-                series = persistentListOf()
-            )
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Response> {
+            val key = params.key ?: 1
+            val result = withNonEmptyContext(context) {
+                pagedRequest<Response>(key, query)
+            }
 
-            internal fun from(result: Result<PagedResponse<Response>>): SearchResult {
-                if (result.isFailure) {
-                    Logger.e("Search Result Failure", result.exceptionOrNull())
-                    return Error
-                }
-                val saveResult = result.getOrNull() ?: return Empty
+            val data = result.getOrNull()
 
-                val people = saveResult.results.filterIsInstance<People>()
-                val movies = saveResult.results.filterIsInstance<Movie>()
-                val series = saveResult.results.filterIsInstance<TV>()
-
-                return if (people.isEmpty() && movies.isEmpty() && series.isEmpty()) {
-                    Empty
-                } else {
-                    Success(
-                        people = people.toImmutableList(),
-                        movies = movies.toImmutableList(),
-                        series = series.toImmutableList()
+            return when {
+                data != null -> LoadResult.Page(
+                    data = data.results,
+                    prevKey = (data.page - 1).takeIf { it >= 1 },
+                    nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
+                        null
+                    } else {
+                        data.page + 1
+                    }
+                )
+                else -> {
+                    LoadResult.Error(
+                        result.exceptionOrNull()
+                            ?: IllegalStateException("Could not load paging data of multi search.")
                     )
                 }
             }

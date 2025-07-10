@@ -135,7 +135,21 @@ internal fun Navigation(appImage: Painter) {
             }
             composable<Navigation.Search> {
                 Search(
-                    paddingValues = PaddingValues(top = tabBarHeight)
+                    paddingValues = PaddingValues(top = tabBarHeight),
+                    onMovieClicked = {
+                        MovieViewModel.updateFrom(it)
+
+                        controller.navigate(Navigation.Detail.Movie) {
+                            launchSingleTop = true
+                        }
+                    },
+                    onShowClicked = {
+                        ShowViewModel.updateFrom(it)
+
+                        controller.navigate(Navigation.Detail.Show) {
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
             composable<Navigation.Home> {

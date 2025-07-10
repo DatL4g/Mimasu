@@ -23,14 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.search_info_default
-import dev.datlag.mimasu.composeapp.generated.resources.search_info_empty
 import dev.datlag.mimasu.composeapp.generated.resources.search_info_error
 import dev.datlag.mimasu.tmdb.model.Movie
+import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.TV
-import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.common.merge
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.custom.SearchInfo
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel
 import dev.datlag.mimasu.ui.viewmodel.SearchViewModel
@@ -42,6 +42,7 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun Search(
+    onPersonClicked: (People) -> Unit,
     onShowClicked: (TV) -> Unit,
     onMovieClicked: (Movie) -> Unit
 ) {
@@ -152,7 +153,7 @@ fun Search(
                     people = people,
                     movies = movies,
                     tv = tv,
-                    onPersonClicked = { },
+                    onPersonClicked = onPersonClicked,
                     onMovieClicked = onMovieClicked,
                     onShowClicked = onShowClicked,
                 )

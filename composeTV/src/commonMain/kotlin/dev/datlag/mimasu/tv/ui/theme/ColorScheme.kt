@@ -6,7 +6,7 @@ import androidx.tv.material3.darkColorScheme
 import androidx.tv.material3.lightColorScheme
 import dev.datlag.mimasu.ui.theme.Colors
 
-fun Colors.getDarkScheme(): ColorScheme = darkColorScheme(
+internal fun Colors.getDarkScheme(): ColorScheme = darkColorScheme(
     primary = Color(THEME_DARK_PRIMARY),
     onPrimary = Color(THEME_DARK_ON_PRIMARY),
     primaryContainer = Color(THEME_DARK_PRIMARY_CONTAINER),
@@ -41,7 +41,7 @@ fun Colors.getDarkScheme(): ColorScheme = darkColorScheme(
     inversePrimary = Color(THEME_DARK_INVERSE_PRIMARY)
 )
 
-fun Colors.getLightScheme() = lightColorScheme(
+internal fun Colors.getLightScheme() = lightColorScheme(
     primary = Color(THEME_LIGHT_PRIMARY),
     onPrimary = Color(THEME_LIGHT_ON_PRIMARY),
     primaryContainer = Color(THEME_LIGHT_PRIMARY_CONTAINER),

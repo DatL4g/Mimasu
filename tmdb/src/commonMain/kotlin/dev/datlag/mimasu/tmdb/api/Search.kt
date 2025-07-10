@@ -11,7 +11,6 @@ interface Search {
     suspend fun multi(
         @Query("api_key") apiKey: String,
         @Query("query") query: String,
-        @Query("include_adult") @RequestType(String::class) includeAdult: Boolean,
         @Query("language") language: String,
         @Query("page") page: Int
     ): HttpResponse

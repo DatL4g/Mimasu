@@ -41,4 +41,8 @@
         <item quantity="other">%1$d Episodes</item>
     </plurals>
     <string name="tv_show_episode_placeholder">Episode %1$d</string>
+
+    <string name="tv_search_info_default">Search for people, series or movies.</string>
+    <string name="tv_search_info_empty">Could not find anything for your query.</string>
+    <string name="tv_search_info_error">Something went wrong, please try again later.</string>
 </resources>
