@@ -13,6 +13,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import co.touchlab.kermit.Logger
 import dev.datlag.kast.Kast
+import dev.datlag.kast.UnselectReason
 import dev.datlag.mimasu.common.isInPiPMode
 import dev.datlag.mimasu.common.toExpressiveTypography
 import dev.datlag.mimasu.extension.AppInstallReceiver
@@ -136,6 +137,9 @@ class MainActivity : AdActivity() {
         }.isSuccess
         ExtensionInitializer.unbindAll(this)
         PiPHelper.setActive(this.isInPiPMode())
+
+        Kast.castContext?.sessionManager?.endCurrentSession(true)
+        Kast.unselect(UnselectReason.disconnected)
         Kast.dispose()
     }
 

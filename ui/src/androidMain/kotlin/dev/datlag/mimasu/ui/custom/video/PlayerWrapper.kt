@@ -517,10 +517,13 @@ class PlayerWrapper(
         return player.stop()
     }
 
-    /**
-     * Releasing player objects.
-     * Does not release [CastPlayer] to keep the connection open, but stops playing.
-     */
+    fun releaseCasting() {
+        release()
+
+        castPlayer?.stop()
+        castPlayer?.clearMediaItems()
+    }
+
     override fun release() {
         localPlayer.removeListener(this)
         localPlayer.removeListener(localPlayerListener)
@@ -529,8 +532,6 @@ class PlayerWrapper(
         castPlayer?.setSessionAvailabilityListener(null)
 
         localPlayer.release()
-        castPlayer?.stop()
-        castPlayer?.clearMediaItems()
     }
 
     override fun getCurrentTracks(): Tracks {

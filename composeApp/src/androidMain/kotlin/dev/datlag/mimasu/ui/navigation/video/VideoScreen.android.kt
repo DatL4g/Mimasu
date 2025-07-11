@@ -43,6 +43,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toRect
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
@@ -120,6 +123,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
     }
 
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     var mediaSession by remember { mutableStateOf<MediaSession?>(null) }
 
     val pipHelper = rememberPiPHelper()
@@ -161,9 +165,21 @@ actual fun VideoScreen(onBack: () -> Unit) {
         }
     }
 
-    DisposableEffect(playerWrapper) {
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_DESTROY -> {
+                    playerWrapper.releaseCasting()
+                }
+                else -> { }
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
         onDispose {
             playerWrapper.release()
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -353,8 +369,6 @@ actual fun VideoScreen(onBack: () -> Unit) {
 
     DisposableEffect(Unit) {
         onDispose {
-            Kast.unselect(UnselectReason.stopped)
-
             mediaSession?.release()
             mediaSession = null
         }
