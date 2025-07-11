@@ -26,7 +26,9 @@ import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
+import androidx.tv.material3.DrawerValue
 import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.rememberDrawerState
 import dev.datlag.mimasu.ui.common.asMediaMetaData
 import dev.datlag.mimasu.ui.common.handleDPadKeyEvents
 import dev.datlag.mimasu.ui.common.handlePlayerKeyEvents
@@ -38,6 +40,8 @@ import dev.datlag.mimasu.ui.custom.video.states.rememberProgressState
 import dev.datlag.mimasu.ui.custom.video.states.rememberSeekState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.compose.ifTrue
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -45,10 +49,11 @@ internal fun Video() {
     val videoViewModel = kodeinViewModel<VideoViewModel>()
     val windowController = rememberWindowController()
     val playerWrapper = rememberPlayerWrapper()
-    val controlsState = rememberControlsState()
+    val controlsState = rememberControlsState(5.seconds)
     val playPauseState = rememberPlayPauseButtonState(playerWrapper)
     val seekState = rememberSeekState(playerWrapper)
     val progressState = rememberProgressState(playerWrapper)
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     val type by videoViewModel.watchType.collectAsState()
     val sources by videoViewModel.selectedSource.collectAsState(emptyList())
@@ -114,11 +119,13 @@ internal fun Video() {
             .background(
                 color = MaterialTheme.colorScheme.background
             )
-            .handleDPadKeyEvents(
-                controlsState = controlsState,
-                playPauseButtonState = playPauseState,
-                seekState = seekState
-            )
+            .ifTrue(drawerState.currentValue == DrawerValue.Closed) {
+                handleDPadKeyEvents(
+                    controlsState = controlsState,
+                    playPauseButtonState = playPauseState,
+                    seekState = seekState
+                )
+            }
             .handlePlayerKeyEvents(
                 playPauseButtonState = playPauseState,
                 seekState = seekState
@@ -141,11 +148,13 @@ internal fun Video() {
             }
         )
         PlayerControls(
+            videoViewModel = videoViewModel,
             playPauseButtonState = playPauseState,
             progressState = progressState,
             controlsState = controlsState,
             watchType = type,
-            modifier = Modifier.fillMaxSize().padding(32.dp)
+            drawerState = drawerState,
+            modifier = Modifier.fillMaxSize()
         )
     }
 
