@@ -1,10 +1,14 @@
 package dev.datlag.mimasu.tmdb.model.details
 
+import dev.datlag.mimasu.core.serialization.SerializableImmutableMap
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.model.HasBackdrop
 import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.tooling.scopeCatching
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -24,29 +28,29 @@ data class Show(
     @SerialName("adult") val adult: Boolean = true,
     @SerialName("backdrop_path") override val backdropSource: String? = null,
 
-    @SerialName("episode_run_time") val episodeRuntime: Set<Int> = emptySet(),
+    @SerialName("episode_run_time") val episodeRuntime: SerializableImmutableSet<Int> = persistentSetOf(),
     @SerialName("first_air_date") val firstAirDate: String? = null,
-    @SerialName("genres") val genres: Set<Genre> = emptySet(),
+    @SerialName("genres") val genres: SerializableImmutableSet<Genre> = persistentSetOf(),
     @SerialName("homepage") val homepage: String? = null,
     @SerialName("id") val id: Int,
     @SerialName("imdb_id") private val _imdbId: String? = null,
     @SerialName("in_production") val inProduction: Boolean = true,
-    @SerialName("languages") val languages: Set<String> = emptySet(),
+    @SerialName("languages") val languages: SerializableImmutableSet<String> = persistentSetOf(),
     @SerialName("last_air_date") val lastAirDate: String? = null,
 
     @SerialName("name") val name: String,
     // @SerialName("next_episode_to_air") val nextEpisodeToAir: String? = null, // not a string
     @SerialName("number_of_episodes") val numberOfEpisodes: Int = 0,
     @SerialName("number_of_seasons") val numberOfSeasons: Int = 0,
-    @SerialName("origin_country") val originCountry: Set<String> = emptySet(),
+    @SerialName("origin_country") val originCountry: SerializableImmutableSet<String> = persistentSetOf(),
     @SerialName("original_language") val originalLanguage: String? = null,
     @SerialName("original_name") val originalName: String? = null,
     @SerialName("overview") private val _overview: String? = null,
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("poster_path") override val posterSource: String? = null,
-    @SerialName("production_companies") val productionCompanies: Set<ProductionCompany> = emptySet(),
-    @SerialName("production_countries") val productionCountries: Set<ProductionCountries> = emptySet(),
-    @SerialName("seasons") val seasons: Set<Season> = emptySet(),
+    @SerialName("production_companies") val productionCompanies: SerializableImmutableSet<ProductionCompany> = persistentSetOf(),
+    @SerialName("production_countries") val productionCountries: SerializableImmutableSet<ProductionCountries> = persistentSetOf(),
+    @SerialName("seasons") val seasons: SerializableImmutableSet<Season> = persistentSetOf(),
     @SerialName("status") @Serializable(Status.Serializer::class) val status: Status? = null,
     @SerialName("tagline") val tagline: String? = null,
     @SerialName("original_tagline") val originalTagline: String? = null,
@@ -253,7 +257,7 @@ data class Show(
 
     @Serializable
     data class WatchProviders(
-        @SerialName("results") val results: Map<String, Providers> = emptyMap()
+        @SerialName("results") val results: SerializableImmutableMap<String, Providers> = persistentMapOf()
     ) {
 
         fun providerFor(locale: String) = (results[locale] ?: results[locale.uppercase()])?.takeUnless { it.isEmpty() }
@@ -261,11 +265,11 @@ data class Show(
         @Serializable
         data class Providers(
             @SerialName("link") val link: String? = null,
-            @SerialName("flatrate") val flatrate: Set<Info> = emptySet(),
-            @SerialName("buy") val buy: Set<Info> = emptySet(),
-            @SerialName("ads") val ads: Set<Info> = emptySet(),
-            @SerialName("free") val free: Set<Info> = emptySet(),
-            @SerialName("rent") val rent: Set<Info> = emptySet(),
+            @SerialName("flatrate") val flatrate: SerializableImmutableSet<Info> = persistentSetOf(),
+            @SerialName("buy") val buy: SerializableImmutableSet<Info> = persistentSetOf(),
+            @SerialName("ads") val ads: SerializableImmutableSet<Info> = persistentSetOf(),
+            @SerialName("free") val free: SerializableImmutableSet<Info> = persistentSetOf(),
+            @SerialName("rent") val rent: SerializableImmutableSet<Info> = persistentSetOf(),
         ) {
 
             fun isEmpty(): Boolean {

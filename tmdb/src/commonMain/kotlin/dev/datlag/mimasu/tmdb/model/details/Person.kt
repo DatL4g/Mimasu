@@ -1,7 +1,9 @@
 package dev.datlag.mimasu.tmdb.model.details
 
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.tooling.scopeCatching
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -10,7 +12,7 @@ import kotlinx.serialization.Transient
 @Serializable
 data class Person(
     @SerialName("adult") val adult: Boolean = true,
-    @SerialName("also_known_as") val alsoKnownAs: Set<String> = emptySet(),
+    @SerialName("also_known_as") val alsoKnownAs: SerializableImmutableSet<String> = persistentSetOf(),
     @SerialName("biography") val biography: String? = null,
     @SerialName("birthday") val birthday: String? = null,
     @SerialName("deathday") val deathday: String? = null,

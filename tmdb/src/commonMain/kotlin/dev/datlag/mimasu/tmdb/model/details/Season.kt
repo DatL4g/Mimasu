@@ -1,8 +1,10 @@
 package dev.datlag.mimasu.tmdb.model.details
 
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.mimasu.tmdb.model.details.Show.WatchProviders
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -11,7 +13,7 @@ import kotlinx.serialization.Transient
 data class Season(
     @SerialName("_id") val _id: String? = null,
     @SerialName("air_date") val airDate: String? = null,
-    @SerialName("episodes") val episodes: Set<Episode> = emptySet(),
+    @SerialName("episodes") val episodes: SerializableImmutableSet<Episode> = persistentSetOf(),
     @SerialName("name") val name: String? = null,
     @SerialName("overview") private val _overview: String? = null,
     @SerialName("id") val id: Int = 0,

@@ -27,7 +27,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import kotlin.reflect.safeCast
 
-class TVActivity : ComponentActivity() {
+class TVActivity : MimasuActivity() {
 
     private val di: DI?
         get() = this.applicationContext.safeCast<DIAware>()?.di
@@ -59,7 +59,7 @@ class TVActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val di = this.di ?: return exit("Could not find dependency injection.")
-        bindExtension()
+        bindExtension { Platform.isTelevision(this) }
 
         setContent {
             Column(
@@ -79,36 +79,25 @@ class TVActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
 
-        bindExtension()
+        registerExtension { Platform.isTelevision(this) }
+        bindExtension { Platform.isTelevision(this) }
     }
 
     override fun onResume() {
         super.onResume()
 
-        bindExtension()
+        bindExtension { Platform.isTelevision(this) }
     }
 
     override fun onPause() {
         super.onPause()
 
-        bindExtension()
+        bindExtension { Platform.isTelevision(this) }
     }
 
     override fun onRestart() {
         super.onRestart()
 
-        bindExtension()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        ExtensionInitializer.unbindAll(this)
-    }
-
-    private fun bindExtension() {
-        if (Platform.isTelevision(this)) {
-            ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
-        }
+        bindExtension { Platform.isTelevision(this) }
     }
 }

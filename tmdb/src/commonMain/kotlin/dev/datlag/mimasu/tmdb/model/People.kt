@@ -1,5 +1,8 @@
 package dev.datlag.mimasu.tmdb.model
 
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
@@ -19,14 +22,14 @@ data class People internal constructor(
     @SerialName("gender") val gender: Int = 0,
     @SerialName("known_for_department") val knownForDepartment: String? = null,
     @SerialName("profile_path") override val logoSource: String? = null,
-    @SerialName("known_for") private val knownFor: Set<Response> = emptySet(),
+    @SerialName("known_for") private val knownFor: SerializableImmutableSet<Response> = persistentSetOf(),
 ): Response, HasLogo {
 
     @Transient
-    val knownForMovie = knownFor.filterIsInstance<Movie>()
+    val knownForMovie = knownFor.filterIsInstance<Movie>().toImmutableList()
 
     @Transient
-    val knownForTV = knownFor.filterIsInstance<TV>()
+    val knownForTV = knownFor.filterIsInstance<TV>().toImmutableList()
 
     @Transient
     val isFemale = gender == 1

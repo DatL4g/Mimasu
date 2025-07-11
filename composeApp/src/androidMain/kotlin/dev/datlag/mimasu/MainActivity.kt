@@ -41,8 +41,6 @@ class MainActivity : AdActivity() {
             ?: DIAware::class.safeCast(applicationContext)?.di
             ?: DIAware::class.safeCast(application)?.di
 
-    private val appInstallReceiver = AppInstallReceiver()
-
     // ToDo("use Tolgee wrapper")
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
@@ -74,7 +72,7 @@ class MainActivity : AdActivity() {
         val di = this.di ?: return exit("Could not find dependency injection.")
         val nullableAdManager by di.instanceOrNull<AdManager>()
         (nullableAdManager ?: AdManager(this)).requestConsentUpdate(this)
-        bindExtension()
+        bindExtension { !Platform.isTelevision(this) }
         PiPHelper.setActive(this.isInPiPMode())
         Kast.setup(this)
 
@@ -91,51 +89,35 @@ class MainActivity : AdActivity() {
     override fun onStart() {
         super.onStart()
 
-        val intentFilter = IntentFilter().apply {
-            addAction(Intent.ACTION_PACKAGE_ADDED)
-            addAction(Intent.ACTION_PACKAGE_REPLACED)
-            addAction(Intent.ACTION_PACKAGE_REMOVED)
-            addDataScheme("package")
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(appInstallReceiver, intentFilter, RECEIVER_EXPORTED)
-        } else {
-            registerReceiver(appInstallReceiver, intentFilter)
-        }
-
-        bindExtension()
+        registerExtension { !Platform.isTelevision(this) }
+        bindExtension { !Platform.isTelevision(this) }
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onResume() {
         super.onResume()
 
-        bindExtension()
+        bindExtension { !Platform.isTelevision(this) }
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onPause() {
         super.onPause()
 
-        bindExtension()
+        bindExtension { !Platform.isTelevision(this) }
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onRestart() {
         super.onRestart()
 
-        bindExtension()
+        bindExtension { !Platform.isTelevision(this) }
         PiPHelper.setActive(this.isInPiPMode())
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        scopeCatching {
-            unregisterReceiver(appInstallReceiver)
-        }.isSuccess
-        ExtensionInitializer.unbindAll(this)
         PiPHelper.setActive(this.isInPiPMode())
 
         Kast.castContext?.sessionManager?.endCurrentSession(true)
@@ -180,12 +162,6 @@ class MainActivity : AdActivity() {
             }
         }
         setIntent(Intent())
-    }
-
-    private fun bindExtension() {
-        if (!Platform.isTelevision(this)) {
-            ExtensionInitializer.rebindIfNoneAvailable(lifecycleScope, this)
-        }
     }
 
     override fun onPictureInPictureUiStateChanged(pipState: PictureInPictureUiState) {

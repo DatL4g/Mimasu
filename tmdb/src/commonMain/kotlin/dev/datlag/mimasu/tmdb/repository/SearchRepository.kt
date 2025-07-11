@@ -2,7 +2,6 @@ package dev.datlag.mimasu.tmdb.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.core.typeOf
 import dev.datlag.mimasu.core.withNonEmptyContext
 import dev.datlag.mimasu.tmdb.api.Search
@@ -80,7 +79,7 @@ class SearchRepository(
         result.safeCast() ?: result.results.filterIsInstance<T>().ifEmpty { null }?.let {
             PagedResponse(
                 page = result.page,
-                results = it,
+                results = it.toImmutableList(),
                 totalPages = result.totalPages,
                 totalResults = result.totalResults
             )

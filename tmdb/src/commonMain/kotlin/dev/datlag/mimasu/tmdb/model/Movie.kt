@@ -1,6 +1,8 @@
 package dev.datlag.mimasu.tmdb.model
 
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.tooling.scopeCatching
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -21,7 +23,7 @@ data class Movie internal constructor(
     @SerialName("overview") val overview: String? = null,
     @SerialName("poster_path") override val posterSource: String? = null,
     @SerialName("media_type") @EncodeDefault(EncodeDefault.Mode.ALWAYS) override val mediaType: String? = "movie",
-    @SerialName("genre_ids") val genreIds: Set<Int> = emptySet(),
+    @SerialName("genre_ids") val genreIds: SerializableImmutableSet<Int> = persistentSetOf(),
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("release_date") val releaseDate: String? = null,
     @SerialName("video") val video: Boolean = true,

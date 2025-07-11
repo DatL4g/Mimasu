@@ -18,6 +18,7 @@ import dev.datlag.sekret.Secret
 import dev.datlag.tooling.async.suspendCatching
 import dev.datlag.tooling.safeCast
 import io.ktor.client.call.body
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.days
 
@@ -132,7 +133,7 @@ data class TrendingRepository internal constructor(
         result.safeCast() ?: result?.results?.filterIsInstance<T>()?.ifEmpty { null }?.let {
             PagedResponse(
                 page = result.page,
-                results = it,
+                results = it.toImmutableList(),
                 totalPages = result.totalPages,
                 totalResults = result.totalResults
             )

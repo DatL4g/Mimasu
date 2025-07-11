@@ -1,12 +1,17 @@
 package dev.datlag.mimasu.tmdb.model.details
 
+import dev.datlag.mimasu.core.serialization.SerializableImmutableMap
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.model.HasBackdrop
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.Response
 import dev.datlag.tooling.scopeCatching
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -27,7 +32,7 @@ data class Movie(
     @SerialName("backdrop_path") override val backdropSource: String? = null,
     // @SerialName("belongs_to_collection") val belongsToCollection: String? = null, // is not string
     @SerialName("budget") val budget: Int = 0,
-    @SerialName("genres") val genres: Set<Genre> = emptySet(),
+    @SerialName("genres") val genres: SerializableImmutableSet<Genre> = persistentSetOf(),
     @SerialName("homepage") val homepage: String? = null,
     @SerialName("id") val id: Int,
     @SerialName("imdb_id") private val _imdbId: String? = null,
@@ -36,12 +41,12 @@ data class Movie(
     @SerialName("overview") private val _overview: String? = null,
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("poster_path") override val posterSource: String? = null,
-    @SerialName("production_companies") val productionCompanies: Set<ProductionCompany> = emptySet(),
-    @SerialName("production_countries") val productionCountries: Set<ProductionCountries> = emptySet(),
+    @SerialName("production_companies") val productionCompanies: SerializableImmutableSet<ProductionCompany> = persistentSetOf(),
+    @SerialName("production_countries") val productionCountries: SerializableImmutableSet<ProductionCountries> = persistentSetOf(),
     @SerialName("release_date") val releaseDate: String? = null,
     @SerialName("revenue") val revenue: Int = 0,
     @SerialName("runtime") val runtime: Int = 0,
-    @SerialName("spoken_languages") val spokenLanguages: Set<SpokenLanguage> = emptySet(),
+    @SerialName("spoken_languages") val spokenLanguages: SerializableImmutableSet<SpokenLanguage> = persistentSetOf(),
     @SerialName("status") @Serializable(Status.Serializer::class) val status: Status? = null,
     @SerialName("tagline") private val _tagline: String? = null,
     @SerialName("original_tagline") val originalTagline: String? = null,
@@ -73,11 +78,11 @@ data class Movie(
     }.getOrNull() }
 
     @Transient
-    val trailer: Set<VideoResult.Video> = videos?.results?.filter {
+    val trailer: SerializableImmutableSet<VideoResult.Video> = videos?.results?.filter {
         it.type.equals("Trailer", ignoreCase = true)
     }?.let { list ->
         list.filter { it.official }.ifEmpty { list }
-    }?.toImmutableSet() ?: emptySet()
+    }?.toImmutableSet() ?: persistentSetOf()
 
     fun youtubeTrailer(language: String, country: String): VideoResult.Video? {
         val youtubeVideos = trailer.filter {
@@ -226,15 +231,25 @@ data class Movie(
 
     @Serializable
     data class Credits(
-        @SerialName("cast") private val _cast: Set<Cast> = emptySet(),
-        @SerialName("crew") private val _crew: Set<Crew> = emptySet()
+        @SerialName("cast") private val _cast: SerializableImmutableSet<Cast> = persistentSetOf(),
+        @SerialName("crew") private val _crew: SerializableImmutableSet<Crew> = persistentSetOf()
     ) {
 
         @Transient
-        val cast = _cast.distinctBy { it.id }.sortedWith(compareBy<Cast> { it.order }.thenBy { it.popularity })
+        val cast: SerializableImmutableSet<Cast> = _cast.distinctBy {
+            it.id
+        }.sortedWith(compareBy<Cast> {
+            it.order
+        }.thenBy {
+            it.popularity
+        }).toImmutableSet()
 
         @Transient
-        val crew = _crew.distinctBy { it.id }.sortedBy { it.popularity }
+        val crew: SerializableImmutableSet<Crew> = _crew.distinctBy {
+            it.id
+        }.sortedBy {
+            it.popularity
+        }.toImmutableSet()
 
         @Serializable
         data class Cast(
@@ -246,7 +261,7 @@ data class Movie(
             @SerialName("gender") val gender: Int = 0,
             @SerialName("known_for_department") val knownForDepartment: String? = null,
             @SerialName("profile_path") override val logoSource: String? = null,
-            @SerialName("known_for") private val knownFor: Set<Response> = emptySet(),
+            @SerialName("known_for") private val knownFor: SerializableImmutableSet<Response> = persistentSetOf(),
             @SerialName("cast_id") val castId: Int = 0,
             @SerialName("character") private val _character: String? = null,
             @SerialName("credit_id") val creditId: String? = null,
@@ -308,7 +323,7 @@ data class Movie(
 
     @Serializable
     data class WatchProviders(
-        @SerialName("results") val results: Map<String, Providers> = emptyMap()
+        @SerialName("results") val results: SerializableImmutableMap<String, Providers> = persistentMapOf()
     ) {
 
         fun providerFor(locale: String) = (results[locale] ?: results[locale.uppercase()])?.takeUnless { it.isEmpty() }
@@ -316,11 +331,11 @@ data class Movie(
         @Serializable
         data class Providers(
             @SerialName("link") val link: String? = null,
-            @SerialName("flatrate") val flatrate: Set<Info> = emptySet(),
-            @SerialName("buy") val buy: Set<Info> = emptySet(),
-            @SerialName("rent") val rent: Set<Info> = emptySet(),
-            @SerialName("free") val free: Set<Info> = emptySet(),
-            @SerialName("ads") val ads: Set<Info> = emptySet(),
+            @SerialName("flatrate") val flatrate: SerializableImmutableSet<Info> = persistentSetOf(),
+            @SerialName("buy") val buy: SerializableImmutableSet<Info> = persistentSetOf(),
+            @SerialName("rent") val rent: SerializableImmutableSet<Info> = persistentSetOf(),
+            @SerialName("free") val free: SerializableImmutableSet<Info> = persistentSetOf(),
+            @SerialName("ads") val ads: SerializableImmutableSet<Info> = persistentSetOf(),
         ) {
 
             fun isEmpty(): Boolean {
@@ -347,7 +362,7 @@ data class Movie(
 
     @Serializable
     data class VideoResult(
-        @SerialName("results") val results: Set<Video>
+        @SerialName("results") val results: SerializableImmutableSet<Video> = persistentSetOf()
     ) {
 
         @Serializable

@@ -1,6 +1,8 @@
 package dev.datlag.mimasu.tmdb.model
 
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.tooling.scopeCatching
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -20,12 +22,12 @@ data class TV(
     @SerialName("overview") private val _overview: String? = null,
     @SerialName("poster_path") override val posterSource: String? = null,
     @SerialName("media_type") @EncodeDefault(EncodeDefault.Mode.ALWAYS) override val mediaType: String? = "tv",
-    @SerialName("genre_ids") val genreIds: Set<Int> = emptySet(),
+    @SerialName("genre_ids") val genreIds: SerializableImmutableSet<Int> = persistentSetOf(),
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("first_air_date") val firstAirDate: String? = null,
     @SerialName("vote_average") val voteAverage: Float = 0F,
     @SerialName("vote_count") val voteCount: Int = 0,
-    @SerialName("origin_country") val originCountry: Set<String> = emptySet()
+    @SerialName("origin_country") val originCountry: SerializableImmutableSet<String> = persistentSetOf()
 ): Response, HasBackdrop, HasPoster {
 
     @Transient
