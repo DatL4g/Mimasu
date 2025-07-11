@@ -3,20 +3,17 @@ package dev.datlag.mimasu.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.datlag.mimasu.tmdb.model.details.Movie
-import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 import dev.datlag.mimasu.tmdb.repository.DetailsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 class MovieViewModel(
     val detailsRepository: DetailsRepository

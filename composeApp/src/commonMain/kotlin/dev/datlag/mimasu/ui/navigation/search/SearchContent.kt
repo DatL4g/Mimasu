@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,7 +21,6 @@ import dev.datlag.mimasu.composeapp.generated.resources.search_series
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.TV
-import dev.datlag.mimasu.tmdb.repository.SearchRepository
 import dev.datlag.mimasu.ui.LazyPagingItems
 import dev.datlag.mimasu.ui.common.plus
 import dev.datlag.mimasu.ui.custom.MovieCard

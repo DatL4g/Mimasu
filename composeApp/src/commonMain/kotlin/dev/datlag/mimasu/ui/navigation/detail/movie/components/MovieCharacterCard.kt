@@ -26,7 +26,6 @@ import coil3.compose.AsyncImage
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
 import kotlinx.collections.immutable.ImmutableList

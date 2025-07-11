@@ -26,7 +26,6 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.People
-import dev.datlag.mimasu.tmdb.model.Response
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_search_info_default

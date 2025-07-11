@@ -3,10 +3,12 @@ package dev.datlag.mimasu.ui.viewmodel
 import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
 import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.model.details.Season
-import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.tooling.compose.TargetIO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -50,7 +52,7 @@ class VideoViewModel(
 
     fun selectInfo(info: SourceInfo) = _selectedInfo.update { info }
 
-    fun finish(watchType: WatchType) = viewModelScope.launch {
+    fun finish(watchType: WatchType) = viewModelScope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
         when (watchType) {
             is WatchType.Show -> {
                 firestoreWrapper.updateEpisode(

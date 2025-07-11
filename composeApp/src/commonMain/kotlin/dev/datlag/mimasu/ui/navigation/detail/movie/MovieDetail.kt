@@ -14,22 +14,22 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
-import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisbanes.haze.HazeState
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieWatchProviderFAB
+import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
+import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable

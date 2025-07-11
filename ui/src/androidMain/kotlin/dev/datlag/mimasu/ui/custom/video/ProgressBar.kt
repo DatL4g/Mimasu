@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -18,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.datlag.mimasu.ui.LaunchedDefault
 import dev.datlag.mimasu.ui.common.toDuration
 import dev.datlag.mimasu.ui.custom.video.states.ControlsState
 import dev.datlag.mimasu.ui.custom.video.states.ProgressState
@@ -43,7 +42,7 @@ fun RowScope.ProgressBar(
         }
     }
 
-    LaunchedEffect(position, duration) {
+    LaunchedDefault(position, duration) {
         if (!isDragging) {
             progress = if (position <= 0L || duration <= 0L) {
                 0F

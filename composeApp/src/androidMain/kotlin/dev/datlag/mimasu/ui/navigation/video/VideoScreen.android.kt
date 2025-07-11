@@ -19,7 +19,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -51,32 +50,34 @@ import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
-import dev.datlag.kast.Kast
-import dev.datlag.kast.UnselectReason
 import dev.datlag.mimasu.common.detectPinchGestures
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.other.rememberPiPHelper
+import dev.datlag.mimasu.ui.LaunchedDefault
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.asMediaMetaData
 import dev.datlag.mimasu.ui.common.handleDPadKeyEvents
 import dev.datlag.mimasu.ui.common.handlePlayerKeyEvents
 import dev.datlag.mimasu.ui.common.merge
 import dev.datlag.mimasu.ui.custom.rememberWindowController
 import dev.datlag.mimasu.ui.custom.video.rememberPlayerWrapper
-import dev.datlag.mimasu.ui.navigation.video.components.BottomControls
-import dev.datlag.mimasu.ui.navigation.video.components.CenterControls
-import dev.datlag.mimasu.ui.navigation.video.components.ExtraControls
-import dev.datlag.mimasu.ui.navigation.video.components.TopControls
-import dev.datlag.mimasu.ui.navigation.video.components.VolumeBrightnessControl
 import dev.datlag.mimasu.ui.custom.video.states.rememberControlsState
 import dev.datlag.mimasu.ui.custom.video.states.rememberPlayPauseButtonState
 import dev.datlag.mimasu.ui.custom.video.states.rememberPresentationState
 import dev.datlag.mimasu.ui.custom.video.states.rememberProgressState
 import dev.datlag.mimasu.ui.custom.video.states.rememberSeekState
+import dev.datlag.mimasu.ui.navigation.video.components.BottomControls
+import dev.datlag.mimasu.ui.navigation.video.components.CenterControls
+import dev.datlag.mimasu.ui.navigation.video.components.ExtraControls
+import dev.datlag.mimasu.ui.navigation.video.components.TopControls
+import dev.datlag.mimasu.ui.navigation.video.components.VolumeBrightnessControl
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.compose.ifFalse
 import kotlin.math.max
 
+@MainThread
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -132,7 +133,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
     var handleWindowController by remember(playerWrapper) { mutableStateOf(false) }
     var isInCompactMode by remember { mutableStateOf(false) }
 
-    LaunchedEffect(playerWrapper) {
+    LaunchedMain(playerWrapper) {
         mediaSession?.release()
         mediaSession = MediaSession.Builder(context, ForwardingPlayer(playerWrapper)).build()
 
@@ -143,7 +144,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
         }
     }
 
-    LaunchedEffect(playerWrapper) {
+    LaunchedMain(playerWrapper) {
         playerWrapper.onFinish {
             type?.let {
                 videoViewModel.finish(it)
@@ -151,14 +152,14 @@ actual fun VideoScreen(onBack: () -> Unit) {
         }
     }
 
-    LaunchedEffect(playerWrapper) {
+    LaunchedMain(playerWrapper) {
         playerWrapper.onFirstFrame {
             handleWindowController = true
             windowController.addWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 
-    LaunchedEffect(playerWrapper, mediaItem) {
+    LaunchedMain(playerWrapper, mediaItem) {
         if (mediaItem != null) {
             playerWrapper.setMediaItem(mediaItem)
             playerWrapper.prepare()
@@ -240,7 +241,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
             contentPadding = contentPadding,
             forceCompact = LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE
         ) { info ->
-            LaunchedEffect(handleWindowController, info, windowController) {
+            LaunchedMain(handleWindowController, info, windowController) {
                 isInCompactMode = info.showingCompact
 
                 if (handleWindowController) {

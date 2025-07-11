@@ -1,6 +1,5 @@
 package dev.datlag.mimasu.tv.ui.navigation.detail.show.components
 
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +48,9 @@ import dev.datlag.mimasu.tv.tv_show_first_air_date
 import dev.datlag.mimasu.tv.tv_show_first_air_date_format
 import dev.datlag.mimasu.tv.tv_show_rating
 import dev.datlag.mimasu.tv.tv_show_rating_placeholder
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -60,6 +61,7 @@ import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+@OptIn(MainThread::class)
 @Composable
 internal fun ShowPosterContent(
     show: Show?,
@@ -228,11 +230,11 @@ internal fun ShowPosterContent(
                 val buttonInteraction = remember { MutableInteractionSource() }
                 val isFocused by buttonInteraction.collectIsFocusedAsState()
 
-                LaunchedEffect(firebaseViewModel, show?.id, initial?.id) {
+                LaunchedVirtualIO(firebaseViewModel, show?.id, initial?.id) {
                     bookmarked = firebaseViewModel.isShowBookmarked(show?.id ?: initial?.id ?: 0)
                 }
 
-                LaunchedEffect(isFocused) {
+                LaunchedMain(isFocused) {
                     if (isFocused) {
                         listState.animateScrollToItem(0)
                     }

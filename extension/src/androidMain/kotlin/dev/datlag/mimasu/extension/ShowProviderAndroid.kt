@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.extension
 
 import android.content.Context
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.extension.model.Show
 import dev.datlag.mimasu.extension.service.ShowService
 import dev.datlag.tooling.async.suspendCatching
@@ -47,7 +48,7 @@ class ShowProviderAndroid(private val context: Context) : ShowProvider {
             unbind(context)
         }
 
-        extensionPackages = withContext(Dispatchers.IO) {
+        extensionPackages = withContext(Dispatchers.Virtual ?: Dispatchers.IO) {
             AIDLService.extensions(
                 packageManager = context.packageManager,
                 action = ShowService.ACTION

@@ -3,7 +3,6 @@ package dev.datlag.mimasu
 import android.app.PictureInPictureUiState
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -16,8 +15,6 @@ import dev.datlag.kast.Kast
 import dev.datlag.kast.UnselectReason
 import dev.datlag.mimasu.common.isInPiPMode
 import dev.datlag.mimasu.common.toExpressiveTypography
-import dev.datlag.mimasu.extension.AppInstallReceiver
-import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.other.PiPHelper
@@ -27,7 +24,6 @@ import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.safeCast
-import dev.datlag.tooling.scopeCatching
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.instanceOrNull

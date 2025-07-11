@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +36,8 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import dev.datlag.mimasu.core.serialization.SerializableImmutableList
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
@@ -53,6 +53,7 @@ internal object Keyboard {
 
     private const val TYPE_TEXT = "&123"
 
+    @OptIn(MainThread::class)
     @Composable
     operator fun invoke(
         value: String,
@@ -74,7 +75,7 @@ internal object Keyboard {
             mutableStateOf<Type>(Type.UpperCase)
         }
 
-        LaunchedEffect(typed) {
+        LaunchedMain(typed) {
             if (keyboardType !is Type.NumberAndSpecial) {
                 keyboardType = if (typed.isBlank()) {
                     Type.UpperCase

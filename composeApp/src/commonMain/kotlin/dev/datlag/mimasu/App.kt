@@ -4,18 +4,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import co.touchlab.kermit.Logger
-import dev.datlag.mimasu.module.NetworkModule
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.custom.FailureConfigState
 import dev.datlag.mimasu.ui.custom.FetchConfigState
@@ -60,7 +55,7 @@ fun App(
                     val accountViewModel = accountViewModel()
                     val config by Network.config.collectAsStateWithLifecycle()
 
-                    LaunchedEffect(accountViewModel) {
+                    LaunchedVirtualIO(accountViewModel) {
                         // Force account loading, while startup
                         accountViewModel.isSignedIn
                     }

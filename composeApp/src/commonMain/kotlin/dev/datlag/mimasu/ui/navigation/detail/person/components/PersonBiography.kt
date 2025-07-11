@@ -19,7 +19,6 @@ import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.person_biography
 import dev.datlag.mimasu.tmdb.model.details.Person
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
 import org.jetbrains.compose.resources.stringResource

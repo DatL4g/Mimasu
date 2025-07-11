@@ -4,20 +4,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import dev.datlag.mimasu.ui.navigation.Navigation
-import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
-import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
-import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
-import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.movies
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.navigation.Navigation
+import dev.datlag.mimasu.ui.navigation.detail.movie.MovieDetail
+import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
 import dev.datlag.mimasu.ui.navigation.rememberListDetailController
+import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
+import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import org.jetbrains.compose.resources.stringResource
 
 fun NavigationSuiteScope.movieItem(

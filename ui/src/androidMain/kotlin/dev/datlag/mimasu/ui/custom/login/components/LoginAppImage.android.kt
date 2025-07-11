@@ -1,6 +1,5 @@
 package dev.datlag.mimasu.ui.custom.login.components
 
-import android.app.ActivityManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -14,7 +13,6 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,11 +26,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
 import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.rive.RiveAnimation
 import dev.datlag.mimasu.ui.AppInitializer
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.supportsRive
 import dev.datlag.mimasu.ui.login_rive_bunny_license
@@ -40,7 +37,6 @@ import dev.datlag.mimasu.ui.login_rive_bunny_marketplace
 import dev.datlag.mimasu.ui.login_rive_bunny_owner
 import dev.datlag.mimasu.ui.login_rive_bunny_text
 import dev.datlag.mimasu.ui.login_rive_bunny_title
-import dev.datlag.tooling.scopeCatching
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -69,7 +65,7 @@ internal actual fun LoginAppImage(
             AppInitializer.isRiveLoaded(context)
         }
 
-        LaunchedEffect(bytes) {
+        LaunchedVirtualIO(bytes) {
             if (bytes.isEmpty()) {
                 bytes = UiRes.readBytes("files/rive/bunny_login.riv")
             }

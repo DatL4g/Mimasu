@@ -3,15 +3,13 @@ package dev.datlag.mimasu.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import dev.datlag.mimasu.firebase.firestore.UserData
-import dev.datlag.mimasu.ui.viewmodel.accountViewModel
-import kotlinx.serialization.Serializable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import co.touchlab.kermit.Logger
-import dev.datlag.mimasu.extension.model.Show
+import dev.datlag.mimasu.firebase.firestore.UserData
 import dev.datlag.mimasu.ui.ads.RewardAdManager
 import dev.datlag.mimasu.ui.ads.rememberAdManager
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
+import dev.datlag.mimasu.ui.viewmodel.accountViewModel
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class VideoNavigationController(

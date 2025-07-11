@@ -3,7 +3,6 @@ package dev.datlag.mimasu.ui.ads
 import android.app.Activity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,6 +16,8 @@ import dev.datlag.mimasu.BuildConfig
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.other.AdManager
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.findActivity
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -62,6 +63,7 @@ actual class RewardAdManager(
     }
 }
 
+@OptIn(MainThread::class)
 @Composable
 actual fun rememberAdManager(): RewardAdManager = with(localDI()) {
     val nullableAdManager by instanceOrNull<AdManager>()
@@ -73,7 +75,7 @@ actual fun rememberAdManager(): RewardAdManager = with(localDI()) {
     val adsInitialized by adManager.adsInitialized.collectAsStateWithLifecycle()
     val displayAd by remember(adManager) { mutableStateOf(adManager.adsPermitted) }
 
-    LaunchedEffect(adManager) {
+    LaunchedMain(adManager) {
         adManager.initializeAds(activity)
     }
 

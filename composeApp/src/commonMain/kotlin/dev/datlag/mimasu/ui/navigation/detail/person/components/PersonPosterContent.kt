@@ -18,7 +18,6 @@ import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tmdb.model.details.Person
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 
 @Composable
 fun PersonPosterContent(

@@ -7,18 +7,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
-import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.clip
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.ui.custom.ErrorState
+import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
+import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.async.suspendCatching
 
 @OptIn(ExperimentalComposeUiApi::class)

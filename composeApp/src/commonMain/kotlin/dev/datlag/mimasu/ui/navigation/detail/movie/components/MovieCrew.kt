@@ -3,7 +3,6 @@ package dev.datlag.mimasu.ui.navigation.detail.movie.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.movie_cast
 import dev.datlag.mimasu.composeapp.generated.resources.movie_crew
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.tooling.Platform

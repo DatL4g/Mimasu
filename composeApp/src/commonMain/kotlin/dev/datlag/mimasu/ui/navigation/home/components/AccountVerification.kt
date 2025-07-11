@@ -12,7 +12,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,6 +27,8 @@ import dev.datlag.mimasu.composeapp.generated.resources.account_verification
 import dev.datlag.mimasu.composeapp.generated.resources.account_verification_check
 import dev.datlag.mimasu.composeapp.generated.resources.account_verification_send
 import dev.datlag.mimasu.composeapp.generated.resources.account_verification_text
+import dev.datlag.mimasu.ui.LaunchedDefault
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.Platform
@@ -52,7 +53,7 @@ fun AccountVerification(
     val accountViewModel = accountViewModel()
     val user by accountViewModel.user.collectAsStateWithLifecycle()
 
-    LaunchedEffect(user) {
+    LaunchedVirtualIO(user) {
         when (val current = user) {
             null -> { }
             else -> {
@@ -97,14 +98,14 @@ fun AccountVerification(
                     var delaySend by rememberSaveable { mutableStateOf(false) }
                     var delayCheck by rememberSaveable { mutableStateOf(false) }
 
-                    LaunchedEffect(delaySend) {
+                    LaunchedDefault(delaySend) {
                         if (delaySend) {
                             delay(30.seconds)
                             delaySend = false
                         }
                     }
 
-                    LaunchedEffect(delayCheck) {
+                    LaunchedDefault(delayCheck) {
                         if (delayCheck) {
                             delay(30.seconds)
                             delayCheck = false

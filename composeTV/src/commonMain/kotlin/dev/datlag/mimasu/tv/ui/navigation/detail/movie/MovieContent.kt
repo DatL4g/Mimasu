@@ -7,14 +7,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Text
 import dev.datlag.mimasu.tmdb.model.details.Movie
-import dev.datlag.mimasu.tv.ui.navigation.detail.movie.components.MoviePosterContent
-import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
-import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.tv.ui.navigation.detail.movie.components.MovieCast
-import kotlinx.collections.immutable.toImmutableList
+import dev.datlag.mimasu.tv.ui.navigation.detail.movie.components.MoviePosterContent
 import kotlinx.collections.immutable.toImmutableSet
+import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable
 internal fun MovieContent(

@@ -2,7 +2,6 @@ package dev.datlag.mimasu.ui.ads
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,11 +17,13 @@ import dev.datlag.mimasu.BuildConfig
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.other.AdManager
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.findActivity
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
-import kotlin.getValue
 
+@OptIn(MainThread::class)
 @Composable
 actual fun BannerAd(modifier: Modifier) = with(localDI()) {
     val bannerId = remember {
@@ -39,7 +40,7 @@ actual fun BannerAd(modifier: Modifier) = with(localDI()) {
     val adsInitialized by adManager.adsInitialized.collectAsStateWithLifecycle()
     var displayAd by remember(adManager) { mutableStateOf(adManager.adsPermitted) }
 
-    LaunchedEffect(adManager) {
+    LaunchedMain(adManager) {
         adManager.initializeAds(activity)
     }
 

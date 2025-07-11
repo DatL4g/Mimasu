@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -39,7 +37,8 @@ import androidx.tv.material3.ModalNavigationDrawer
 import androidx.tv.material3.NavigationDrawerItem
 import androidx.tv.material3.NavigationDrawerItemDefaults
 import androidx.tv.material3.Text
-import androidx.tv.material3.rememberDrawerState
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.video.ProgressBar
 import dev.datlag.mimasu.ui.custom.video.states.ControlsState
@@ -48,6 +47,7 @@ import dev.datlag.mimasu.ui.custom.video.states.ProgressState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import kotlinx.collections.immutable.toImmutableList
 
+@MainThread
 @OptIn(UnstableApi::class)
 @Composable
 internal fun PlayerControls(
@@ -112,7 +112,7 @@ internal fun PlayerControls(
             val isVisible by controlsState.controlsVisibility.collectAsState()
             val focusRequester = remember { FocusRequester() }
 
-            LaunchedEffect(isVisible) {
+            LaunchedMain(isVisible) {
                 if (isVisible && drawerState.currentValue != DrawerValue.Open) {
                     focusRequester.requestFocus()
                 }

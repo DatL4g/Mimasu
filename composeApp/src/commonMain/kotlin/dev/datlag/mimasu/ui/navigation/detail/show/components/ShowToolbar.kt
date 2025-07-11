@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +35,7 @@ import dev.datlag.mimasu.common.hazeEffect
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.CollapsingToolbar
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -177,7 +177,7 @@ fun ShowToolbar(
             ) {
                 var bookmarked by remember(show?.id, initial?.id) { mutableStateOf(false) }
 
-                LaunchedEffect(firebaseViewModel, show?.id, initial?.id) {
+                LaunchedVirtualIO(firebaseViewModel, show?.id, initial?.id) {
                     bookmarked = firebaseViewModel.isShowBookmarked(show?.id ?: initial?.id ?: 0)
                 }
 

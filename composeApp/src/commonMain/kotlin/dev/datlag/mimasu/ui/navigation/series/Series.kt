@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.movies_now_playing
 import dev.datlag.mimasu.composeapp.generated.resources.series_airing_today
 import dev.datlag.mimasu.composeapp.generated.resources.series_on_the_air
 import dev.datlag.mimasu.composeapp.generated.resources.series_popular

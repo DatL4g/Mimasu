@@ -26,11 +26,10 @@ import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Movie
-import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
-import kotlinx.collections.immutable.toImmutableList
+import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable
 internal fun MovieCard(

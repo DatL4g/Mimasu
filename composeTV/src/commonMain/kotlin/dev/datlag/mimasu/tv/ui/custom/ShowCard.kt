@@ -3,13 +3,11 @@ package dev.datlag.mimasu.tv.ui.custom
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,18 +22,19 @@ import androidx.tv.material3.StandardCardContainer
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import com.eygraber.compose.placeholder.PlaceholderDefaults
-import dev.datlag.mimasu.tmdb.common.backdrops
-import dev.datlag.mimasu.tmdb.common.posters
-import dev.datlag.mimasu.tmdb.model.TV
-import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.fade
 import com.eygraber.compose.placeholder.placeholder
 import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
+import dev.datlag.mimasu.tmdb.common.backdrops
+import dev.datlag.mimasu.tmdb.common.posters
+import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
-import kotlinx.collections.immutable.toImmutableList
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.MainThread
+import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 
 @Composable
 internal fun ShowCard(
@@ -93,6 +92,7 @@ internal fun ShowCard(
     )
 }
 
+@OptIn(MainThread::class)
 @Composable
 private fun ShowCard(
     placeholder: Boolean,
@@ -121,7 +121,7 @@ private fun ShowCard(
     val interaction = remember { MutableInteractionSource() }
     val isFocused by interaction.collectIsFocusedAsState()
 
-    LaunchedEffect(isFocused) {
+    LaunchedMain(isFocused) {
         onFocusChange(isFocused)
     }
 

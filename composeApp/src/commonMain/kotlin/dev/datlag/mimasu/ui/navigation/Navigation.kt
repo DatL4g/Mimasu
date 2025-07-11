@@ -1,15 +1,9 @@
 package dev.datlag.mimasu.ui.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
@@ -17,10 +11,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
-import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.common.dialogProperties
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.navigation.home.HomeNavigation
 import dev.datlag.mimasu.ui.navigation.home.homeItem
+import dev.datlag.mimasu.ui.navigation.login.Login
 import dev.datlag.mimasu.ui.navigation.movies.MoviesNavigation
 import dev.datlag.mimasu.ui.navigation.movies.movieItem
 import dev.datlag.mimasu.ui.navigation.profile.Profile
@@ -30,14 +26,9 @@ import dev.datlag.mimasu.ui.navigation.search.searchItem
 import dev.datlag.mimasu.ui.navigation.series.SeriesNavigation
 import dev.datlag.mimasu.ui.navigation.series.seriesItem
 import dev.datlag.mimasu.ui.navigation.video.VideoScreen
-import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
+import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import kotlinx.serialization.Serializable
-import dev.datlag.mimasu.ui.ads.rememberAdManager
-import dev.datlag.mimasu.ui.navigation.login.Login
-import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel
-import dev.datlag.mimasu.ui.viewmodel.SearchViewModel
-import dev.datlag.mimasu.ui.viewmodel.loginViewModel
 
 object Navigation {
 
@@ -129,7 +120,7 @@ object Navigation {
     data object Video
 }
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveApi::class, MainThread::class)
 @Composable
 fun Navigation() {
     val accountViewModel = accountViewModel()
@@ -292,7 +283,7 @@ fun Navigation() {
             }
         }
 
-        LaunchedEffect(user) {
+        LaunchedMain(user) {
             if (user == null) {
                 controller.navigate(Navigation.Login) {
                     launchSingleTop = true

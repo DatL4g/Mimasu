@@ -26,15 +26,15 @@ import dev.datlag.mimasu.composeapp.generated.resources.movie_status_released
 import dev.datlag.mimasu.composeapp.generated.resources.movie_status_rumored
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Movie
+import dev.datlag.mimasu.ui.common.formatMedium
+import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
-import dev.datlag.mimasu.ui.common.formatMedium
-import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
+import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable
 fun MoviePosterContent(

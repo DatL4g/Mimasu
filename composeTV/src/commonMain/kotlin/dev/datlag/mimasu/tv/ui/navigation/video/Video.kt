@@ -8,11 +8,8 @@ import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -21,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -29,6 +25,8 @@ import androidx.media3.session.MediaSession
 import androidx.tv.material3.DrawerValue
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.rememberDrawerState
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.asMediaMetaData
 import dev.datlag.mimasu.ui.common.handleDPadKeyEvents
 import dev.datlag.mimasu.ui.common.handlePlayerKeyEvents
@@ -43,6 +41,7 @@ import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.compose.ifTrue
 import kotlin.time.Duration.Companion.seconds
 
+@MainThread
 @OptIn(UnstableApi::class)
 @Composable
 internal fun Video() {
@@ -75,7 +74,7 @@ internal fun Video() {
     val context = LocalContext.current
     var mediaSession by remember { mutableStateOf<MediaSession?>(null) }
 
-    LaunchedEffect(playerWrapper) {
+    LaunchedMain(playerWrapper) {
         mediaSession?.release()
         mediaSession = MediaSession.Builder(context, ForwardingPlayer(playerWrapper)).build()
 
@@ -86,7 +85,7 @@ internal fun Video() {
         }
     }
 
-    LaunchedEffect(playerWrapper) {
+    LaunchedMain(playerWrapper) {
         playerWrapper.onFinish {
             type?.let {
                 videoViewModel.finish(it)
@@ -94,13 +93,13 @@ internal fun Video() {
         }
     }
 
-    LaunchedEffect(playerWrapper) {
+    LaunchedMain(playerWrapper) {
         playerWrapper.onFirstFrame {
             windowController.addWindowFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 
-    LaunchedEffect(playerWrapper, mediaItem) {
+    LaunchedMain(playerWrapper, mediaItem) {
         if (mediaItem != null) {
             playerWrapper.setMediaItem(mediaItem)
             playerWrapper.prepare()

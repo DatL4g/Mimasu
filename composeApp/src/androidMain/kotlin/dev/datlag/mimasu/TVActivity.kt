@@ -2,7 +2,6 @@ package dev.datlag.mimasu
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
@@ -12,10 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
 import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.common.toExpressiveTypography
-import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.tv.TVApp
 import dev.datlag.mimasu.ui.navigation.login.rememberAppImage
 import dev.datlag.mimasu.ui.other.Network

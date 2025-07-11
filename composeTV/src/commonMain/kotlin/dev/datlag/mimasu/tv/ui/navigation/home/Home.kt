@@ -20,7 +20,6 @@ import dev.datlag.mimasu.tv.ui.custom.MoviesSection
 import dev.datlag.mimasu.tv.ui.custom.SeriesSection
 import dev.datlag.mimasu.tv.ui.navigation.home.components.BookmarkedMovies
 import dev.datlag.mimasu.tv.ui.navigation.home.components.BookmarkedShows
-import dev.datlag.mimasu.ui.common.plus
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import org.jetbrains.compose.resources.stringResource

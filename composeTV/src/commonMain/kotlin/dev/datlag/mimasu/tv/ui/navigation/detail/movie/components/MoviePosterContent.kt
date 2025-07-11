@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +50,9 @@ import dev.datlag.mimasu.tv.tv_movie_release_date
 import dev.datlag.mimasu.tv.tv_movie_release_date_format
 import dev.datlag.mimasu.tv.tv_movie_runtime
 import dev.datlag.mimasu.tv.tv_movie_watch_trailer
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -62,6 +64,7 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
+@OptIn(MainThread::class)
 @Composable
 internal fun MoviePosterContent(
     movie: Movie?,
@@ -243,14 +246,14 @@ internal fun MoviePosterContent(
                 val trailerInteraction = remember { MutableInteractionSource() }
                 val isTrailerFocused by trailerInteraction.collectIsFocusedAsState()
 
-                LaunchedEffect(firebaseViewModel, movie?.id, initial?.id) {
+                LaunchedVirtualIO(firebaseViewModel, movie?.id, initial?.id) {
                     val id = movie?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
                     bookmarked = id?.let {
                         firebaseViewModel.isMovieBookmarked(it)
                     } ?: bookmarked
                 }
 
-                LaunchedEffect(isTrailerFocused) {
+                LaunchedMain(isTrailerFocused) {
                     if (isTrailerFocused) {
                         listState.animateScrollToItem(0)
                     }

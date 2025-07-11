@@ -1,22 +1,15 @@
 package dev.datlag.mimasu.tv.ui.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,7 +21,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -38,20 +30,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.Text
-import dev.datlag.mimasu.tv.ui.navigation.home.Home
-import kotlinx.serialization.Serializable
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.compose.dialog
-import androidx.tv.material3.ButtonDefaults
-import androidx.tv.material3.LocalContentColor
-import androidx.tv.material3.TabDefaults
 import coil3.compose.AsyncImage
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_tab_home
@@ -61,18 +49,21 @@ import dev.datlag.mimasu.tv.tv_tab_search
 import dev.datlag.mimasu.tv.tv_tab_shows
 import dev.datlag.mimasu.tv.ui.navigation.detail.movie.MovieDetail
 import dev.datlag.mimasu.tv.ui.navigation.detail.show.ShowDetail
+import dev.datlag.mimasu.tv.ui.navigation.home.Home
 import dev.datlag.mimasu.tv.ui.navigation.login.Login
 import dev.datlag.mimasu.tv.ui.navigation.movies.Movies
 import dev.datlag.mimasu.tv.ui.navigation.search.Search
 import dev.datlag.mimasu.tv.ui.navigation.series.Series
 import dev.datlag.mimasu.tv.ui.navigation.video.Video
-import dev.datlag.mimasu.ui.LocalDarkMode
+import dev.datlag.mimasu.ui.LaunchedMain
+import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
+import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.stringResource
 
 object Navigation {
@@ -105,6 +96,7 @@ object Navigation {
     }
 }
 
+@OptIn(MainThread::class)
 @Composable
 internal fun Navigation(appImage: Painter) {
     val accountViewModel = accountViewModel()
@@ -228,7 +220,7 @@ internal fun Navigation(appImage: Painter) {
             }
         }
 
-        LaunchedEffect(user) {
+        LaunchedMain(user) {
             if (user == null) {
                 controller.navigate(Navigation.Login) {
                     launchSingleTop = true
@@ -247,6 +239,7 @@ internal fun Navigation(appImage: Painter) {
     }
 }
 
+@OptIn(MainThread::class)
 @Composable
 private fun TabBar(
     navController: NavController,
@@ -272,7 +265,7 @@ private fun TabBar(
 
         val density = LocalDensity.current
 
-        LaunchedEffect(Unit) {
+        LaunchedMain(Unit) {
             when {
                 isSearch -> searchFocus.requestFocus()
                 isHome -> homeFocus.requestFocus()

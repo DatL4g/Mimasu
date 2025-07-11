@@ -22,7 +22,6 @@ import dev.datlag.mimasu.composeapp.generated.resources.person_place_of_birth
 import dev.datlag.mimasu.tmdb.model.details.Person
 import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

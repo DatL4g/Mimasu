@@ -1,8 +1,6 @@
 package dev.datlag.mimasu.ui.other
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.intl.Locale
@@ -12,6 +10,9 @@ import dev.datlag.mimasu.extension.ShowProviderAndroid
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
+import dev.datlag.mimasu.ui.LaunchedDefault
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
+import dev.datlag.mimasu.ui.produceVirtualIOState
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
 import dev.datlag.mimasu.extension.model.Show as Extension
@@ -29,7 +30,7 @@ actual fun rememberShowAvailability(
         ExtensionInitializer.getShowProvider(context)
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedDefault(Unit) {
         (showProvider as? ShowProviderAndroid)?.rebindIfNoneAvailable(context)
     }
 
@@ -46,7 +47,7 @@ actual fun rememberShowAvailability(
         )
     }
 
-    return produceState<ShowState>(initialValue = ShowState.Initializing, request) {
+    return produceVirtualIOState<ShowState>(initialValue = ShowState.Initializing, request) {
         val anyWatchProvider = showProvider.requestId(request)
 
         value = ShowState.Available(anyWatchProvider)
@@ -66,7 +67,7 @@ actual fun rememberEpisodeStream(
         ExtensionInitializer.getShowProvider(context)
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedDefault(Unit) {
         (showProvider as? ShowProviderAndroid)?.rebindIfNoneAvailable(context)
     }
 
@@ -87,7 +88,7 @@ actual fun rememberEpisodeStream(
         )
     }
 
-    LaunchedEffect(state) {
+    LaunchedVirtualIO(state) {
         state.requestEpisodeAvailability()
     }
 

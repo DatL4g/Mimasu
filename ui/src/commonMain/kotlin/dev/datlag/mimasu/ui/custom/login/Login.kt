@@ -5,7 +5,6 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -45,7 +44,6 @@ import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.rememberGoogleAuthParams
 import dev.datlag.mimasu.ui.custom.EMailTextField
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import dev.datlag.mimasu.ui.custom.login.components.LoginAgreement
 import dev.datlag.mimasu.ui.custom.login.components.LoginAppImage
 import dev.datlag.mimasu.ui.custom.login.components.LoginPasswordCriteriaSection

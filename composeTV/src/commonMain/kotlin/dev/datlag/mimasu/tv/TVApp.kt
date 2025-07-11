@@ -4,7 +4,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,6 +15,7 @@ import androidx.tv.material3.Typography
 import dev.datlag.mimasu.tv.ui.navigation.Navigation
 import dev.datlag.mimasu.tv.ui.theme.getDarkScheme
 import dev.datlag.mimasu.tv.ui.theme.getLightScheme
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.theme.Colors
@@ -49,7 +49,7 @@ fun TVApp(
                 val accountViewModel = accountViewModel()
                 val config by Network.config.collectAsState()
 
-                LaunchedEffect(accountViewModel) {
+                LaunchedVirtualIO(accountViewModel) {
                     // Force account loading, while startup
                     accountViewModel.isSignedIn
                 }

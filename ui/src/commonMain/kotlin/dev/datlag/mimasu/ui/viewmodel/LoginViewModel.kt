@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.api.DisposableDebounce
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
@@ -183,7 +182,7 @@ class LoginViewModel(
         }
     }
 
-    fun verifyPasswordResetCode(code: String?) = startLoginJob {
+    suspend fun verifyPasswordResetCode(code: String?) {
         val resetEmail = code?.ifBlank { null }?.let {
             suspendCatching {
                 service.verifyPasswordResetCode(code)

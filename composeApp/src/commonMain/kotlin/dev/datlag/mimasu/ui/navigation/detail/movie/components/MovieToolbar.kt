@@ -15,10 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +34,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.datlag.mimasu.common.hazeEffect
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.details.Movie
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.CollapsingToolbar
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -177,7 +177,7 @@ fun MovieToolbar(
             ) {
                 var bookmarked by remember(movie?.id, initial?.id) { mutableStateOf(false) }
 
-                LaunchedEffect(firebaseViewModel, movie?.id, initial?.id) {
+                LaunchedVirtualIO(firebaseViewModel, movie?.id, initial?.id) {
                     bookmarked = firebaseViewModel.isMovieBookmarked(movie?.id ?: initial?.id ?: 0)
                 }
 

@@ -1,0 +1,98 @@
+package dev.datlag.mimasu.ui
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ProduceStateScope
+import androidx.compose.runtime.State
+import dev.datlag.mimasu.core.Virtual
+import dev.datlag.tooling.compose.TargetIO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+@Composable
+fun <T> produceVirtualIOState(
+    initialValue: T,
+    producer: suspend ProduceStateScope<T>.() -> Unit,
+): State<T> {
+    return produceCoroutineState(
+        initialValue = initialValue,
+        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO
+    ) {
+        withContext(coroutineContext) {
+            producer()
+        }
+    }
+}
+
+@Composable
+fun <T> produceVirtualIOState(
+    initialValue: T,
+    key1: Any?,
+    producer: suspend ProduceStateScope<T>.() -> Unit,
+): State<T> {
+    return produceCoroutineState(
+        initialValue = initialValue,
+        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO,
+        key1 = key1
+    ) {
+        withContext(coroutineContext) {
+            producer()
+        }
+    }
+}
+
+@Composable
+fun <T> produceVirtualIOState(
+    initialValue: T,
+    key1: Any?,
+    key2: Any?,
+    producer: suspend ProduceStateScope<T>.() -> Unit,
+): State<T> {
+    return produceCoroutineState(
+        initialValue = initialValue,
+        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO,
+        key1 = key1,
+        key2 = key2
+    ) {
+        withContext(coroutineContext) {
+            producer()
+        }
+    }
+}
+
+@Composable
+fun <T> produceVirtualIOState(
+    initialValue: T,
+    key1: Any?,
+    key2: Any?,
+    key3: Any?,
+    producer: suspend ProduceStateScope<T>.() -> Unit,
+): State<T> {
+    return produceCoroutineState(
+        initialValue = initialValue,
+        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO,
+        key1 = key1,
+        key2 = key2,
+        key3 = key3
+    ) {
+        withContext(coroutineContext) {
+            producer()
+        }
+    }
+}
+
+@Composable
+fun <T> produceVirtualIOState(
+    initialValue: T,
+    vararg keys: Any?,
+    producer: suspend ProduceStateScope<T>.() -> Unit,
+): State<T> {
+    return produceCoroutineState(
+        initialValue = initialValue,
+        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO,
+        keys = keys
+    ) {
+        withContext(coroutineContext) {
+            producer()
+        }
+    }
+}

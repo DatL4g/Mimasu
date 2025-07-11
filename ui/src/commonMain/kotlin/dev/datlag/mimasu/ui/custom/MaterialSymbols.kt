@@ -40,7 +40,6 @@ import androidx.compose.material.icons.rounded.Face4
 import androidx.compose.material.icons.rounded.Face5
 import androidx.compose.material.icons.rounded.Face6
 import androidx.compose.material.icons.rounded.Handshake
-import androidx.compose.material.icons.rounded.HelpOutline
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.InstallMobile
@@ -50,7 +49,6 @@ import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.Link
 import androidx.compose.material.icons.rounded.LinkOff
 import androidx.compose.material.icons.rounded.LocalFlorist
-import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Mail
 import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.Movie
@@ -83,12 +81,10 @@ import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material.icons.rounded.Work
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -118,12 +114,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.details.Movie
+import dev.datlag.mimasu.ui.LaunchedDefault
 import dev.datlag.mimasu.ui.MaterialSymbolsRounded
 import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.produceVirtualIOState
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.localContentColor
-import dev.datlag.tooling.compose.withIOContext
 import dev.datlag.tooling.scopeCatching
 import dev.tclement.fonticons.ExperimentalFontIconsApi
 import dev.tclement.fonticons.IconFont
@@ -548,7 +545,7 @@ data object MaterialSymbols {
             }
         }
 
-        LaunchedEffect(triggerRedraw) {
+        LaunchedDefault(triggerRedraw) {
             delay(200)
             redrawn++
             triggerRedraw = false
@@ -691,17 +688,15 @@ data object MaterialSymbols {
     ): VariableIconFont? {
         val density = LocalDensity.current
 
-        return produceState<VariableIconFont?>(initialValue = null, key1 = fontResource) {
-            value = withIOContext {
-                createVariableIconFont(
-                    fontResource = fontResource,
-                    weights = weights,
-                    fontVariationSettings = fontVariationSettings,
-                    fontFeatureSettings = fontFeatureSettings,
-                    resourceEnvironment = getSystemResourceEnvironment(),
-                    density = density
-                )
-            }
+        return produceVirtualIOState<VariableIconFont?>(initialValue = null, key1 = fontResource) {
+            value = createVariableIconFont(
+                fontResource = fontResource,
+                weights = weights,
+                fontVariationSettings = fontVariationSettings,
+                fontFeatureSettings = fontFeatureSettings,
+                resourceEnvironment = getSystemResourceEnvironment(),
+                density = density
+            )
         }.value
     }
 

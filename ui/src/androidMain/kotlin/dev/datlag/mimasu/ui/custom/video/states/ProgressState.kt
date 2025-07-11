@@ -1,9 +1,9 @@
 package dev.datlag.mimasu.ui.custom.video.states
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.media3.common.Player
+import dev.datlag.mimasu.ui.LaunchedDefault
 import dev.datlag.tooling.compose.withDefaultContext
 import dev.datlag.tooling.compose.withMainContext
 import kotlinx.coroutines.delay
@@ -123,6 +123,6 @@ class ProgressState(private val player: Player) {
 @Composable
 fun rememberProgressState(player: Player): ProgressState {
     val progressState = remember(player) { ProgressState(player) }
-    LaunchedEffect(player) { progressState.observe() }
+    LaunchedDefault(player) { progressState.observe() }
     return progressState
 }

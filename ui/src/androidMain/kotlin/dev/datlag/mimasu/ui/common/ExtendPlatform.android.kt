@@ -39,7 +39,6 @@ import org.kodein.di.instance
 import org.kodein.di.instanceOrNull
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import kotlin.getValue
 
 tailrec fun Context.findActivity(): Activity? {
     return when (this) {

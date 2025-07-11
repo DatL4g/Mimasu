@@ -1,7 +1,6 @@
 package dev.datlag.mimasu.ui.custom.video.states
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.media3.common.C
@@ -9,6 +8,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.VideoSize
 import androidx.media3.common.listen
+import dev.datlag.mimasu.ui.LaunchedDefault
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -109,7 +109,7 @@ class PresentationState(private val player: Player) {
 @Composable
 fun rememberPresentationState(player: Player): PresentationState {
     val presentationState = remember(player) { PresentationState(player) }
-    LaunchedEffect(player) {
+    LaunchedDefault(player) {
         presentationState.observe()
     }
     return presentationState

@@ -38,8 +38,6 @@ import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.collections.immutable.toImmutableSet
 
 @Composable
 fun ShowContent(
