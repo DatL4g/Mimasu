@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
@@ -43,11 +44,13 @@ import dev.datlag.mimasu.ui.other.EpisodeStreamState
 import dev.datlag.mimasu.ui.other.ShowState
 import dev.datlag.mimasu.ui.other.rememberEpisodeStream
 import dev.datlag.tooling.Platform
-import dev.datlag.tooling.compose.launchIO
+import dev.datlag.tooling.compose.TargetIO
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.compose.withMainContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 import dev.datlag.mimasu.extension.model.Show as Extension
@@ -87,8 +90,8 @@ fun EpisodeItem(
         modifier = modifier,
         isRevealed = isRevealed,
         onCardClick = {
-            scope.launchIO {
-                val stream = episodeStream.getStream() ?: return@launchIO
+            scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
+                val stream = episodeStream.getStream() ?: return@launch
 
                 withMainContext {
                     onStream(stream)
@@ -109,7 +112,7 @@ fun EpisodeItem(
                 modifier = Modifier.padding(start = 4.dp).fillMaxHeight(),
                 onClick = {
                     isRevealed = false
-                    scope.launchIO {
+                    scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
                         if (watched) {
                             markAsUnWatched()
                         } else {

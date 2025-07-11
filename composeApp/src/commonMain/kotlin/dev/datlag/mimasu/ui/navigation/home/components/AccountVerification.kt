@@ -27,13 +27,16 @@ import dev.datlag.mimasu.composeapp.generated.resources.account_verification
 import dev.datlag.mimasu.composeapp.generated.resources.account_verification_check
 import dev.datlag.mimasu.composeapp.generated.resources.account_verification_send
 import dev.datlag.mimasu.composeapp.generated.resources.account_verification_text
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.ui.LaunchedDefault
 import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.TargetIO
 import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.compose.withMainContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
@@ -114,7 +117,7 @@ fun AccountVerification(
 
                     Button(
                         onClick = {
-                            scope.launch {
+                            scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
                                 delaySend = true
                                 user?.sendVerification()
                             }
@@ -135,7 +138,7 @@ fun AccountVerification(
                     }
                     Button(
                         onClick = {
-                            scope.launch {
+                            scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
                                 delayCheck = true
                                 user?.reload()
                             }

@@ -26,6 +26,7 @@ import androidx.tv.material3.Switch
 import androidx.tv.material3.SwitchDefaults
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Season
@@ -36,8 +37,10 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.other.EpisodeStreamState
 import dev.datlag.mimasu.ui.other.ShowState
 import dev.datlag.mimasu.ui.other.rememberEpisodeStream
-import dev.datlag.tooling.compose.launchIO
+import dev.datlag.tooling.compose.TargetIO
 import dev.datlag.tooling.compose.withMainContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -79,8 +82,8 @@ fun EpisodeItem(
         modifier = modifier,
         selected = selected,
         onClick = {
-            scope.launchIO {
-                val stream = episodeStream.getStream() ?: return@launchIO
+            scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
+                val stream = episodeStream.getStream() ?: return@launch
 
                 withMainContext {
                     onStream(stream)
@@ -88,7 +91,7 @@ fun EpisodeItem(
             }
         },
         onLongClick = {
-            scope.launchIO {
+            scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
                 if (watched) {
                     markAsUnWatched()
                 } else {
