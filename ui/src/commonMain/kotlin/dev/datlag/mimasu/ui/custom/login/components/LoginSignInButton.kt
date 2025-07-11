@@ -6,6 +6,7 @@ import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.login_new_password
 import dev.datlag.mimasu.ui.login_sign_in
 import dev.datlag.tooling.compose.platform.PlatformButton
+import dev.datlag.tooling.compose.platform.PlatformButtonScale
 import dev.datlag.tooling.compose.platform.PlatformText
 import org.jetbrains.compose.resources.stringResource
 
@@ -26,7 +27,11 @@ internal fun LoginSignInButton(
                 onSignIn()
             }
         },
-        enabled = enabled
+        enabled = enabled,
+        scale = PlatformButtonScale.default(
+            scale = 1F,
+            focusedScale = 1F
+        )
     ) {
         if (passwordReset) {
             PlatformText(text = stringResource(UiRes.string.login_new_password))

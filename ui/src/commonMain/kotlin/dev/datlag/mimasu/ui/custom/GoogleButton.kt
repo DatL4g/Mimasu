@@ -19,6 +19,7 @@ import dev.datlag.tooling.compose.platform.PlatformBorder
 import dev.datlag.tooling.compose.platform.PlatformButton
 import dev.datlag.tooling.compose.platform.PlatformButtonBorder
 import dev.datlag.tooling.compose.platform.PlatformButtonColors
+import dev.datlag.tooling.compose.platform.PlatformButtonScale
 import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.PlatformIconButton
 import dev.datlag.tooling.compose.platform.PlatformText
@@ -72,6 +73,10 @@ fun GoogleButton(
             border = PlatformBorder(
                 border = border
             )
+        ),
+        scale = PlatformButtonScale.default(
+            scale = 1F,
+            focusedScale = 1F
         )
     ) {
         PlatformIcon(
