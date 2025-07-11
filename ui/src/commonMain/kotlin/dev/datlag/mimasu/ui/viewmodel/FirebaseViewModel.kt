@@ -89,7 +89,7 @@ class FirebaseViewModel(
     fun bookmark(bookmarked: Boolean, show: Show) = viewModelScope.launch {
         firestoreWrapper.bookmark(
             ShowData(
-                bookmarked = bookmarked,
+                _bookmarked = bookmarked,
                 tmdbId = show.id,
                 imdbId = show.imdbId,
                 numberOfSeasons = show.numberOfSeasons.takeIf { it > 0 }

@@ -8,12 +8,13 @@ import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlin.math.max
 
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
 data class ShowData(
-    @EncodeDefault(EncodeDefault.Mode.ALWAYS) @SerialName(BOOKMARKED) val bookmarked: Boolean = false,
+    @SerialName(BOOKMARKED) private val _bookmarked: Boolean? = null,
     @SerialName(TMDB_ID) val tmdbId: Int,
     @SerialName(IMDB_ID) val imdbId: String? = null,
     @SerialName(SEASON) val season: Int? = null,
@@ -21,10 +22,13 @@ data class ShowData(
     @EncodeDefault(EncodeDefault.Mode.ALWAYS) @SerialName(LAST_UPDATED) val lastUpdated: BaseTimestamp = Timestamp.ServerTimestamp,
 ) {
 
+    @Transient
+    val bookmarked = _bookmarked ?: false
+
     internal fun mergeWith(other: ShowData): ShowData {
         return if (tmdbId == other.tmdbId) {
             ShowData(
-                bookmarked = bookmarked,
+                _bookmarked = bookmarked,
                 tmdbId = tmdbId,
                 imdbId = imdbId?.ifBlank { null } ?: other.imdbId,
                 season = season?.takeIf { it >= 0 } ?: other.season,

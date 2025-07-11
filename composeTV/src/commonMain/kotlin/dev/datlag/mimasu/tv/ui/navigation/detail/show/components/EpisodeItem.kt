@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,7 +39,11 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.other.EpisodeStreamState
 import dev.datlag.mimasu.ui.other.ShowState
 import dev.datlag.mimasu.ui.other.rememberEpisodeStream
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.launchIO
+import dev.datlag.tooling.compose.platform.colorScheme
+import dev.datlag.tooling.compose.platform.shapes
+import dev.datlag.tooling.compose.platform.typography
 import dev.datlag.tooling.compose.withMainContext
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
@@ -98,34 +103,6 @@ fun EpisodeItem(
                 }
             }
         },
-        overlineContent = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                when (val current = episodeStreamState) {
-                    is EpisodeStreamState.Available -> MaterialSymbols(
-                        modifier = Modifier.size(12.dp),
-                        name = if (current.state) {
-                            MaterialSymbols.PLAY_ARROW
-                        } else {
-                            MaterialSymbols.WARNING
-                        },
-                        contentDescription = null,
-                        filled = true,
-                    )
-                    else -> { }
-                }
-                episode.runtime.takeIf { it > 0 }?.let { runtime ->
-                    Text(
-                        text = runtime.toDuration(DurationUnit.MINUTES).toString(),
-                        maxLines = 1,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
-        },
         headlineContent = {
             Text(
                 text = episode.name ?: stringResource(Res.string.tv_show_episode_placeholder, episode.episodeNumber),
@@ -146,20 +123,66 @@ fun EpisodeItem(
             }
         },
         leadingContent = {
-            AsyncImage(
+            Box(
                 modifier = Modifier
                     .height(84.dp)
                     .aspectRatio(1.75F, true)
-                    .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
                     .clip(MaterialTheme.shapes.medium),
-                model = posters.firstOrNull(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                error = rememberNestedImagePainter(
-                    models = posters.drop(1),
-                    contentScale = ContentScale.Crop
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.surface,
+                            MaterialTheme.shapes.medium
+                        ),
+                    model = posters.firstOrNull(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    error = rememberNestedImagePainter(
+                        models = posters.drop(1),
+                        contentScale = ContentScale.Crop
+                    )
                 )
-            )
+
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(Alignment.BottomEnd),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    when (val current = episodeStreamState) {
+                        is EpisodeStreamState.Available -> MaterialSymbols(
+                            modifier = Modifier.size(24.dp).background(
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = MaterialTheme.shapes.small
+                            ).padding(4.dp),
+                            name = if (current.state) {
+                                MaterialSymbols.PLAY_ARROW
+                            } else {
+                                MaterialSymbols.WARNING
+                            },
+                            contentDescription = null,
+                            filled = true,
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                        else -> { }
+                    }
+                    episode.runtime.takeIf { it > 0 }?.let { runtime ->
+                        Text(
+                            modifier = Modifier.height(24.dp).background(
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = MaterialTheme.shapes.small
+                            ).padding(4.dp),
+                            text = runtime.toDuration(DurationUnit.MINUTES).toString(),
+                            maxLines = 1,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
+                }
+            }
         },
         trailingContent = {
             Switch(
