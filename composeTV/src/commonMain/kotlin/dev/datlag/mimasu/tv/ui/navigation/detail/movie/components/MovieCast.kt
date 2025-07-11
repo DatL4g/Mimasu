@@ -24,6 +24,7 @@ import androidx.tv.material3.ClassicCard
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_movie_cast
@@ -33,7 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MovieCast(
-    casting: Collection<Movie.Credits.Cast>,
+    casting: SerializableImmutableSet<Movie.Credits.Cast>,
     modifier: Modifier = Modifier,
 ) {
     if (casting.isNotEmpty()) {

@@ -31,6 +31,7 @@ import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.fade
 import com.eygraber.compose.placeholder.placeholder
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
@@ -43,8 +44,8 @@ internal fun ShowCard(
     onClick: (TV) -> Unit = { },
     onFocus: suspend (TV?) -> Unit = { }
 ) {
-    val posters = remember(tv) { tv.posters(fallbackShow = null).toImmutableList() }
-    val backdrops = remember(tv) { tv.backdrops(fallback = null).toImmutableList() }
+    val posters = remember(tv) { tv.posters(fallbackShow = null) }
+    val backdrops = remember(tv) { tv.backdrops(fallback = null) }
 
     ShowCard(
         onClick = { tv?.let(onClick) },
@@ -71,8 +72,8 @@ internal fun ShowCard(
     onClick: (Show) -> Unit = { },
     onFocus: suspend (Show?) -> Unit = { }
 ) {
-    val posters = remember(show) { show.posters(fallbackShow = null).toImmutableList() }
-    val backdrops = remember(show) { show.backdrops(fallback = null).toImmutableList() }
+    val posters = remember(show) { show.posters(fallbackShow = null) }
+    val backdrops = remember(show) { show.backdrops(fallback = null) }
 
     ShowCard(
         onClick = { show?.let(onClick) },
@@ -96,8 +97,8 @@ internal fun ShowCard(
 private fun ShowCard(
     placeholder: Boolean,
     orientation: Orientation,
-    posters: Collection<String>,
-    backdrops: Collection<String>,
+    posters: SerializableImmutableSet<String>,
+    backdrops: SerializableImmutableSet<String>,
     name: String?,
     originalName: String?,
     onClick: () -> Unit = { },

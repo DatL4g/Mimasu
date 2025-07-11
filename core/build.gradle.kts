@@ -46,8 +46,8 @@ kotlin {
             implementation(libs.datetime)
             implementation(libs.reflection)
             implementation(libs.tooling)
-            implementation(libs.immutable)
-            implementation(libs.serialization)
+            api(libs.immutable)
+            api(libs.serialization)
         }
     }
 }

@@ -22,6 +22,7 @@ import com.eygraber.compose.placeholder.PlaceholderDefaults
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.fade
 import com.eygraber.compose.placeholder.placeholder
+import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.details.Movie
@@ -37,8 +38,8 @@ internal fun MovieCard(
     orientation: Orientation,
     onClick: (Movie) -> Unit = { }
 ) {
-    val posters = remember(detail) { detail.posters(fallbackMovie = null).toImmutableList() }
-    val backdrops = remember(detail) { detail.backdrops(fallbackMovie = null).toImmutableList() }
+    val posters = remember(detail) { detail.posters(fallbackMovie = null) }
+    val backdrops = remember(detail) { detail.backdrops(fallbackMovie = null) }
 
     MovieCard(
         onClick = { detail?.let(onClick) },
@@ -57,8 +58,8 @@ internal fun MovieCard(
     orientation: Orientation,
     onClick: (CommonMovie) -> Unit = { }
 ) {
-    val posters = remember(movie) { movie.posters(fallbackMovie = null).toImmutableList() }
-    val backdrops = remember(movie) { movie.backdrops(fallbackMovie = null).toImmutableList() }
+    val posters = remember(movie) { movie.posters(fallbackMovie = null) }
+    val backdrops = remember(movie) { movie.backdrops(fallbackMovie = null) }
 
     MovieCard(
         onClick = { movie?.let(onClick) },
@@ -75,8 +76,8 @@ internal fun MovieCard(
 private fun MovieCard(
     placeholder: Boolean,
     orientation: Orientation,
-    posters: Collection<String>,
-    backdrops: Collection<String>,
+    posters: SerializableImmutableSet<String>,
+    backdrops: SerializableImmutableSet<String>,
     title: String?,
     originalTitle: String?,
     onClick: () -> Unit = { }

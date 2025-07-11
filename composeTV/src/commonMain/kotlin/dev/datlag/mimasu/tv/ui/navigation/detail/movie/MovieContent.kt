@@ -14,6 +14,7 @@ import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.tv.ui.navigation.detail.movie.components.MovieCast
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 
 @Composable
 internal fun MovieContent(
@@ -48,7 +49,7 @@ internal fun MovieContent(
             }
         }
         item {
-            val cast = remember(movie?.credits) { movie?.credits?.cast.orEmpty().toImmutableList() }
+            val cast = remember(movie?.credits) { movie?.credits?.cast.orEmpty().toImmutableSet() }
 
             MovieCast(
                 casting = cast,

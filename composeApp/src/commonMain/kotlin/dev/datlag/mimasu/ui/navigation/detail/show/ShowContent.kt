@@ -36,7 +36,10 @@ import dev.datlag.mimasu.ui.other.ShowState
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.toImmutableSet
 
 @Composable
 fun ShowContent(
@@ -146,7 +149,7 @@ fun ShowContent(
                             showInfo = show,
                             seasonInfo = seasonState.season,
                             episodeInfo = episode,
-                            sources = emptyMap()
+                            sources = persistentMapOf()
                         )
                     }
                     val episodeData = remember(episodesData, episode) {
