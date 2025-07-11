@@ -1,8 +1,7 @@
-package dev.datlag.mimasu.ui.navigation.detail.show
+package dev.datlag.mimasu.ui.other
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -13,9 +12,6 @@ import dev.datlag.mimasu.extension.ShowProviderAndroid
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
 import dev.datlag.mimasu.extension.model.Show as Extension
@@ -50,7 +46,7 @@ actual fun rememberShowAvailability(
         )
     }
 
-    return produceState<ShowState>(initialValue = ShowState.Initializing) {
+    return produceState<ShowState>(initialValue = ShowState.Initializing, request) {
         val anyWatchProvider = showProvider.requestId(request)
 
         value = ShowState.Available(anyWatchProvider)
@@ -74,7 +70,7 @@ actual fun rememberEpisodeStream(
         (showProvider as? ShowProviderAndroid)?.rebindIfNoneAvailable(context)
     }
 
-    val request = remember(tmdbId, episode) {
+    val request = remember(episode, seasonNumber) {
         Extension.EpisodeRequest(
             episodeNumber = episode.episodeNumber,
             episodeTitle = episode.name,
@@ -82,7 +78,7 @@ actual fun rememberEpisodeStream(
         )
     }
 
-    val state = remember(showProvider, tmdbId, request) {
+    val state = remember(showState, showProvider, tmdbId, request) {
         EpisodeStream(
             showState = showState,
             provider = showProvider,
@@ -96,48 +92,4 @@ actual fun rememberEpisodeStream(
     }
 
     return state
-}
-
-actual class EpisodeStream(
-    private val showState: ShowState,
-    private val provider: ShowProvider?,
-    private val tmdbId: Int?,
-    private val request: Extension.EpisodeRequest
-) {
-    private val _available = MutableStateFlow(coreAvailability(EpisodeStreamState.Initializing))
-    actual val state = _available.asStateFlow()
-
-    actual suspend fun getStream(): Extension.Response? {
-        if (showState is ShowState.Available && showState.state) {
-            if (provider != null && tmdbId?.takeIf { it > 0 } != null) {
-                return provider.requestStream(tmdbId, request)
-            }
-        }
-        return null
-    }
-
-    internal suspend fun requestEpisodeAvailability() {
-        if (showState is ShowState.Available && showState.state) {
-            _available.emit(EpisodeStreamState.Requesting)
-
-            val state = if (provider != null && tmdbId?.takeIf { it > 0 } != null) {
-                EpisodeStreamState.Available(provider.requestEpisode(tmdbId, request))
-            } else {
-                EpisodeStreamState.Unavailable
-            }
-            _available.emit(state)
-        }
-    }
-
-    private fun coreAvailability(available: EpisodeStreamState): EpisodeStreamState {
-        return when (showState) {
-            is ShowState.Initializing -> EpisodeStreamState.Initializing
-            is ShowState.Unavailable -> EpisodeStreamState.Unavailable
-            else -> if (provider == null || tmdbId?.takeIf { it > 0 } == null) {
-                EpisodeStreamState.Unavailable
-            } else {
-                available
-            }
-        }
-    }
 }

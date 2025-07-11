@@ -13,7 +13,7 @@ import kotlin.math.max
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
 data class ShowData(
-    @SerialName(BOOKMARKED) val bookmarked: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.ALWAYS) @SerialName(BOOKMARKED) val bookmarked: Boolean = false,
     @SerialName(TMDB_ID) val tmdbId: Int,
     @SerialName(IMDB_ID) val imdbId: String? = null,
     @SerialName(SEASON) val season: Int? = null,

@@ -50,6 +50,7 @@ kotlin {
 
             implementation(project(":core"))
 
+            api(project(":extension"))
             api(project(":tmdb"))
             api(project(":firebase"))
             api(libs.kodein)
@@ -66,7 +67,6 @@ kotlin {
             implementation(libs.bundles.android.cast)
             implementation(libs.bundles.android.media)
 
-            implementation(project(":extension"))
             implementation(project(":rive"))
         }
 

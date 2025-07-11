@@ -25,6 +25,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowToolbar
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowWatchProviderFAB
+import dev.datlag.mimasu.ui.other.rememberShowAvailability
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel

@@ -31,7 +31,9 @@ import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tv.ui.navigation.detail.show.components.EpisodeItem
 import dev.datlag.mimasu.tv.ui.navigation.detail.show.components.ShowDrawerContent
 import dev.datlag.mimasu.tv.ui.navigation.detail.show.components.ShowPosterContent
+import dev.datlag.mimasu.ui.other.ShowState
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.tooling.compose.ifTrue
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -42,8 +44,10 @@ internal fun ShowContent(
     initial: TV?,
     showSeason: Show.Season?,
     seasonState: ShowViewModel.SeasonState,
+    showAvailability: ShowState,
     episodesData: ImmutableList<ShowData.EpisodeData>,
     onSelectSeason: (Show.Season) -> Unit,
+    onStream: (VideoViewModel.WatchType.Show) -> Unit,
     markAsWatched: suspend (Season.Episode) -> Unit,
     markAsUnWatched: suspend (Season.Episode) -> Unit,
 ) {
@@ -106,15 +110,39 @@ internal fun ShowContent(
             when (seasonState) {
                 is ShowViewModel.SeasonState.Success -> {
                     items(seasonState.season.episodes.toImmutableList()) { episode ->
+                        val watchData = remember(show, episode) {
+                            show?.let {
+                                VideoViewModel.WatchType.Show(
+                                    showInfo = show,
+                                    seasonInfo = seasonState.season,
+                                    episodeInfo = episode,
+                                    sources = emptyMap()
+                                )
+                            }
+                        }
                         val episodeData = remember(episodesData, episode) {
                             episodesData.findAroundPositionOrNull(episode.episodeNumber) { it.number }
                         }
 
                         EpisodeItem(
                             selected = selectedEpisode == episode,
+                            tmdbId = show?.id?.takeIf { it > 0 } ?: initial?.id,
                             episode = episode,
                             episodeData = episodeData,
+                            seasonNumber = seasonState.season.seasonNumber,
+                            showAvailability = showAvailability,
                             modifier = Modifier.fillParentMaxWidth().padding(horizontal = 32.dp),
+                            onStream = {
+                                watchData?.copy(
+                                    sources = it.sources.map { (k, v) ->
+                                        VideoViewModel.SourceInfo(
+                                            sourceTitle = k.sourceTitle,
+                                            sourceLocale = k.sourceLocale,
+                                            locale = k.locale
+                                        ) to v
+                                    }.toMap()
+                                )?.let { s -> onStream(s)}
+                            },
                             markAsWatched = {
                                 markAsWatched(episode)
                             },

@@ -39,9 +39,9 @@ import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.RevealingCard
-import dev.datlag.mimasu.ui.navigation.detail.show.EpisodeStreamState
-import dev.datlag.mimasu.ui.navigation.detail.show.ShowState
-import dev.datlag.mimasu.ui.navigation.detail.show.rememberEpisodeStream
+import dev.datlag.mimasu.ui.other.EpisodeStreamState
+import dev.datlag.mimasu.ui.other.ShowState
+import dev.datlag.mimasu.ui.other.rememberEpisodeStream
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.launchIO
 import dev.datlag.tooling.compose.platform.colorScheme

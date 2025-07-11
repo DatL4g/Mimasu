@@ -32,6 +32,7 @@ import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowOverview
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowPosterContent
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowProduction
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowSeason
+import dev.datlag.mimasu.ui.other.ShowState
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import kotlinx.collections.immutable.ImmutableList

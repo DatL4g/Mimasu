@@ -37,6 +37,7 @@ kotlin {
 
             implementation(libs.bundles.android.media)
 
+            implementation(project(":extension"))
             implementation(project(":core"))
             implementation(project(":ui"))
         }

@@ -7,12 +7,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import dev.datlag.mimasu.ui.custom.ErrorState
+import dev.datlag.mimasu.ui.other.rememberShowAvailability
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
-internal fun ShowDetail() {
+internal fun ShowDetail(
+    onStream: (VideoViewModel.WatchType.Show) -> Unit,
+) {
     val showViewModel = kodeinViewModel<ShowViewModel>()
     val showState by showViewModel.show.collectAsState(ShowViewModel.ShowState.Loading)
     val initial by showViewModel.initialShow.collectAsState()
@@ -25,6 +29,10 @@ internal fun ShowDetail() {
         }
     }
     val seasonState by showViewModel.season.collectAsState(initialSeasonState)
+    val showAvailability = rememberShowAvailability(
+        show = showState.getOrNull(),
+        initial = initial
+    )
     val episodeData by showViewModel.episodesData.collectAsState(null)
 
     when (val current = showState) {
@@ -41,10 +49,12 @@ internal fun ShowDetail() {
                 initial = initial,
                 showSeason = showSeason,
                 seasonState = seasonState,
+                showAvailability = showAvailability,
                 episodesData = episodeData.orEmpty().toImmutableList(),
                 onSelectSeason = {
                     showViewModel.select(it)
                 },
+                onStream = onStream,
                 markAsWatched = {
                     val seasonNumber = seasonState.getOrNull()?.seasonNumber ?: showSeason?.seasonNumber
                     val showId = current.getOrNull()?.id ?: initial?.id

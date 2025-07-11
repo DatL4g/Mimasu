@@ -71,6 +71,7 @@ import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
+import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -205,7 +206,15 @@ internal fun Navigation(appImage: Painter) {
                 MovieDetail()
             }
             composable<Navigation.Detail.Show> {
-                ShowDetail()
+                ShowDetail(
+                    onStream = {
+                        if (VideoViewModel.watch(it)) {
+                            controller.navigate(Navigation.Video) {
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
             }
             dialog<Navigation.Video>(
                 dialogProperties = DialogProperties(
@@ -248,8 +257,9 @@ private fun TabBar(
     val backStack by navController.currentBackStackEntryAsState()
     val isMovieDetail = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Detail.Movie>() ?: false }
     val isShowDetail = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Detail.Show>() ?: false }
+    val isVideo = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Video>() ?: false }
 
-    if (!isMovieDetail && !isShowDetail) {
+    if (!isMovieDetail && !isShowDetail && !isVideo) {
         val isSearch = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Search>() ?: false }
         val isHome = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Home>() ?: false }
         val isMovies = remember(backStack) { backStack?.destination?.hasRoute<Navigation.Movies>() ?: false }
