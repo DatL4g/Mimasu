@@ -25,6 +25,7 @@ plugins {
     alias(libs.plugins.crashlytics)
     alias(libs.plugins.google.services)
     alias(libs.plugins.performance)
+    alias(libs.plugins.compose.report)
 }
 
 val artifact = "dev.datlag.mimasu"
