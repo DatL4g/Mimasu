@@ -37,35 +37,19 @@ import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
+import dev.datlag.mimasu.core.serialization.SerializableImmutableList
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.Serializable
 
 internal object Keyboard {
-    private val alphabet by lazy {
-        ('A'..'Z').toImmutableList()
-    }
-
-    private val specialCharV1 by lazy {
-        persistentSetOf('-', '\'').toImmutableList()
-    }
-
-    private val specialCharV2 by lazy {
-        persistentSetOf('_', ',').toImmutableList()
-    }
-
-    private val specialCharV3 by lazy {
-        persistentSetOf('&', '?', '!', '%', ':', '.', ';', '#', '+').toImmutableList()
-    }
-
-    private val alphabetLower by lazy {
-        ('a'..'z').toImmutableList()
-    }
-
-    private val numbers by lazy {
-        ('0'..'9').toImmutableList()
-    }
+    private val alphabet: SerializableImmutableList<Char> = ('A'..'Z').toImmutableList()
+    private val specialCharV1: SerializableImmutableList<Char> = persistentSetOf('-', '\'').toImmutableList()
+    private val specialCharV2: SerializableImmutableList<Char> = persistentSetOf('_', ',').toImmutableList()
+    private val specialCharV3: SerializableImmutableList<Char> = persistentSetOf('&', '?', '!', '%', ':', '.', ';', '#', '+').toImmutableList()
+    private val alphabetLower: SerializableImmutableList<Char> = ('a'..'z').toImmutableList()
+    private val numbers: SerializableImmutableList<Char> = ('0'..'9').toImmutableList()
 
     private const val TYPE_TEXT = "&123"
 

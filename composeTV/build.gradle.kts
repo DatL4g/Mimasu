@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.serialization)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.report)
 }
 
 val artifact = "dev.datlag.mimasu.tv"
