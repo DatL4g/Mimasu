@@ -53,7 +53,6 @@ import androidx.media3.session.MediaSession
 import dev.datlag.mimasu.common.detectPinchGestures
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.other.rememberPiPHelper
-import dev.datlag.mimasu.ui.LaunchedDefault
 import dev.datlag.mimasu.ui.LaunchedMain
 import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.asMediaMetaData

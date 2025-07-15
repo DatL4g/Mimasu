@@ -101,14 +101,14 @@ fun AccountVerification(
                     var delaySend by rememberSaveable { mutableStateOf(false) }
                     var delayCheck by rememberSaveable { mutableStateOf(false) }
 
-                    LaunchedDefault(delaySend) {
+                    LaunchedVirtualIO(delaySend) {
                         if (delaySend) {
                             delay(30.seconds)
                             delaySend = false
                         }
                     }
 
-                    LaunchedDefault(delayCheck) {
+                    LaunchedVirtualIO(delayCheck) {
                         if (delayCheck) {
                             delay(30.seconds)
                             delayCheck = false

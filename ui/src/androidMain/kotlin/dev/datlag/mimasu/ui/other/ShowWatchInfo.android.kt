@@ -11,6 +11,7 @@ import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.ui.LaunchedDefault
+import dev.datlag.mimasu.ui.LaunchedMain
 import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.produceVirtualIOState
 import org.kodein.di.compose.localDI
@@ -30,7 +31,7 @@ actual fun rememberShowAvailability(
         ExtensionInitializer.getShowProvider(context)
     }
 
-    LaunchedDefault(Unit) {
+    LaunchedVirtualIO(Unit) {
         (showProvider as? ShowProviderAndroid)?.rebindIfNoneAvailable(context)
     }
 
@@ -67,7 +68,7 @@ actual fun rememberEpisodeStream(
         ExtensionInitializer.getShowProvider(context)
     }
 
-    LaunchedDefault(Unit) {
+    LaunchedVirtualIO(Unit) {
         (showProvider as? ShowProviderAndroid)?.rebindIfNoneAvailable(context)
     }
 

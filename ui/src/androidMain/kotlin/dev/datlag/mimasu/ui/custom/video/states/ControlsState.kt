@@ -3,6 +3,7 @@ package dev.datlag.mimasu.ui.custom.video.states
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import dev.datlag.mimasu.ui.LaunchedDefault
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.onFailure
@@ -64,7 +65,7 @@ class ControlsState(
 @Composable
 fun rememberControlsState(duration: Duration = 2.seconds): ControlsState {
     val controlsState = remember(duration) { ControlsState(duration) }
-    LaunchedDefault(duration) {
+    LaunchedVirtualIO(duration) {
         controlsState.observe()
     }
     return controlsState

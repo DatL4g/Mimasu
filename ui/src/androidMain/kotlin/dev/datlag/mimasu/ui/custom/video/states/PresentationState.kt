@@ -9,6 +9,7 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.VideoSize
 import androidx.media3.common.listen
 import dev.datlag.mimasu.ui.LaunchedDefault
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -109,7 +110,7 @@ class PresentationState(private val player: Player) {
 @Composable
 fun rememberPresentationState(player: Player): PresentationState {
     val presentationState = remember(player) { PresentationState(player) }
-    LaunchedDefault(player) {
+    LaunchedVirtualIO(player) {
         presentationState.observe()
     }
     return presentationState

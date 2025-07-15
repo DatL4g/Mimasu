@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.media3.common.Player
 import dev.datlag.mimasu.ui.LaunchedDefault
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.tooling.compose.withDefaultContext
 import dev.datlag.tooling.compose.withMainContext
 import kotlinx.coroutines.delay
@@ -123,6 +124,6 @@ class ProgressState(private val player: Player) {
 @Composable
 fun rememberProgressState(player: Player): ProgressState {
     val progressState = remember(player) { ProgressState(player) }
-    LaunchedDefault(player) { progressState.observe() }
+    LaunchedVirtualIO(player) { progressState.observe() }
     return progressState
 }

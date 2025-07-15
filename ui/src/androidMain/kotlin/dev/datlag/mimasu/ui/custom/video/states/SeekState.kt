@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.media3.common.Player
 import androidx.media3.common.listen
 import dev.datlag.mimasu.ui.LaunchedDefault
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -53,7 +54,7 @@ class SeekState(private val player: Player) {
 fun rememberSeekState(player: Player): SeekState {
     val seekState = remember(player) { SeekState(player) }
 
-    LaunchedDefault(player) {
+    LaunchedVirtualIO(player) {
         seekState.observe()
     }
 

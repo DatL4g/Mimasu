@@ -115,6 +115,7 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.LaunchedDefault
+import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.MaterialSymbolsRounded
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.produceVirtualIOState
@@ -545,7 +546,7 @@ data object MaterialSymbols {
             }
         }
 
-        LaunchedDefault(triggerRedraw) {
+        LaunchedVirtualIO(triggerRedraw) {
             delay(200)
             redrawn++
             triggerRedraw = false
