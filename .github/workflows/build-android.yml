@@ -21,6 +21,7 @@ jobs:
 
       - name: Create Sekrets
         run: |
+          touch composeApp/sekret.properties
           ./gradlew composeApp:createSekretValue -Pkey=ADMOB_HOME_BANNER -Pvalue=${{ secrets.ADMOB_HOME_BANNER }}
           ./gradlew composeApp:createSekretValue -Pkey=ADMOB_VIDEO_REWARD -Pvalue=${{ secrets.ADMOB_VIDEO_REWARD }}
 
