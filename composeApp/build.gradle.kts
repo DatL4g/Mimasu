@@ -277,9 +277,11 @@ private fun getAdmobAppId(): String? {
                 props.load(it)
             }
         }.onSuccess {
-            return props.getProperty("admob.app.id")?.ifBlank { null } ?: systemEnv("ADMOB_APP_ID")?.ifBlank { null }
+            return props.getProperty("admob.app.id")?.ifBlank {
+                null
+            } ?: systemEnv("ADMOB_APP_ID")?.ifBlank { null }?.trim()
         }
     }
 
-    return systemEnv("ADMOB_APP_ID")?.ifBlank { null }
+    return systemEnv("ADMOB_APP_ID")?.ifBlank { null }?.trim()
 }

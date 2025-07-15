@@ -50,6 +50,7 @@ jobs:
       - name: Build Release APK
         run: ./gradlew composeApp:assembleRelease
         env:
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -57,6 +58,7 @@ jobs:
       - name: Build Release AAB
         run: ./gradlew composeApp:bundleRelease
         env:
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
