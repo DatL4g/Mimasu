@@ -189,11 +189,20 @@ android {
     androidResources {
         generateLocaleConfig = true
     }
+    signingConfigs {
+        maybeCreate("release").apply {
+            storeFile = rootProject.layout.projectDirectory.file("keystore.jks").asFile
+            storePassword = systemEnv("KEYSTORE_PASSWORD")
+            keyAlias = systemEnv("KEY_ALIAS")
+            keyPassword = systemEnv("KEY_PASSWORD")
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             manifestPlaceholders["admob_app_id"] = getAdmobAppId() ?: ADMOB_ANDROID_TESTING
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 file("src/androidMain/proguard-rules.pro")
@@ -201,14 +210,6 @@ android {
         }
         debug {
             manifestPlaceholders["admob_app_id"] = ADMOB_ANDROID_TESTING
-        }
-    }
-    signingConfigs {
-        maybeCreate("release").apply {
-            storeFile = rootProject.layout.projectDirectory.file("keystore.jks").asFile
-            storePassword = systemEnv("KEYSTORE_PASSWORD")
-            keyAlias = systemEnv("KEY_ALIAS")
-            keyPassword = systemEnv("KEY_PASSWORD")
         }
     }
 }
