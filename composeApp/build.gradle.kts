@@ -170,8 +170,8 @@ android {
         targetSdk = 36
 
         applicationId = "dev.datlag.mimasu"
-        versionCode = 120
-        versionName = "1.2.0"
+        versionCode = 121
+        versionName = "1.2.1"
 
         multiDexEnabled = true
 
@@ -201,6 +201,14 @@ android {
         }
         debug {
             manifestPlaceholders["admob_app_id"] = ADMOB_ANDROID_TESTING
+        }
+    }
+    signingConfigs {
+        maybeCreate("release").apply {
+            storeFile = rootProject.layout.projectDirectory.file("keystore.jks").asFile
+            storePassword = systemEnv("KEYSTORE_PASSWORD")
+            keyAlias = systemEnv("KEY_ALIAS")
+            keyPassword = systemEnv("KEY_PASSWORD")
         }
     }
 }
