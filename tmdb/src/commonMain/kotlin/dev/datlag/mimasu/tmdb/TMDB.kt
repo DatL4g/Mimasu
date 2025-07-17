@@ -21,8 +21,6 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.datetime.TimeZone
 import kotlin.coroutines.CoroutineContext
 
 @ConsistentCopyVisibility
@@ -135,7 +133,7 @@ data class TMDB internal constructor(
         class Builder {
             lateinit var client: HttpClient
             var fallbackClient: HttpClient? = null
-            var context: CoroutineContext = Dispatchers.IO
+            lateinit var context: CoroutineContext
 
             fun client(client: HttpClient) = apply {
                 this.client = client

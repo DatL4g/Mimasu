@@ -22,6 +22,10 @@ kotlin {
     // macosX64() // not supported by kodein compose and firebase
     // macosArm64() // not supported by kodein compose and firebase
 
+    js(IR) {
+        browser()
+    }
+
     applyDefaultHierarchyTemplate()
 
     sourceSets {
@@ -75,6 +79,8 @@ kotlin {
 
             jvmMain.orNull?.dependsOn(this)
             nativeMain.orNull?.dependsOn(this)
+            jsMain.orNull?.dependsOn(this)
+            wasmJsMain.orNull?.dependsOn(this)
         }
     }
 }

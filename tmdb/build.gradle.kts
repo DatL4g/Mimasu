@@ -33,6 +33,11 @@ kotlin {
     linuxX64()
     linuxArm64()
 
+    js(IR) {
+        browser()
+        nodejs()
+    }
+
     applyDefaultHierarchyTemplate()
 
     sourceSets {
@@ -57,7 +62,7 @@ kotlin {
             implementation(libs.coroutines.test)
             implementation(libs.ktor.test)
 
-            implementation(libs.paging.test)
+            // implementation(libs.paging.test)
 
             implementation(libs.assertk)
             implementation(libs.assertk.coroutines)

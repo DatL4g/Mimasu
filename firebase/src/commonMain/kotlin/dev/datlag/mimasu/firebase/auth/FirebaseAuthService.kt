@@ -18,7 +18,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 data class FirebaseAuthService(
-    private val app: FirebaseApp = Firebase.app
+    val app: FirebaseApp = Firebase.app
 ) {
 
     val auth: FirebaseAuth
