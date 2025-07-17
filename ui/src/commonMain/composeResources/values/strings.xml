@@ -28,4 +28,16 @@
 
     <string name="error_state_text">Something went wrong, please try again later.</string>
     <string name="error_state_with_throwable_text">Something went wrong and got reported, please try again later.</string>
+
+    <string name="fetch_title">App is getting ready</string>
+    <string name="fetch_description">We are setting everything up for you. This will only take a moment.</string>
+    <string name="fetch_loading_data">Your data is being loaded.</string>
+    <string name="fetch_connecting_services">Connecting to services.</string>
+    <string name="fetch_initialize_app">Initializing and starting app.</string>
+
+    <string name="config_fail_initialize_title">Initialization Failure</string>
+    <string name="config_fail_config_title">Configuration Failure</string>
+    <string name="config_fail_description">We were unable to start the app. Please try again later or report this behavior on GitHub.</string>
+    <string name="config_fail_data">Could not load your data.</string>
+    <string name="config_fail_connecting_services">Could not connect to services.</string>
 </resources>

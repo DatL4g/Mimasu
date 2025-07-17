@@ -14,13 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.fetch_connecting_services
-import dev.datlag.mimasu.composeapp.generated.resources.fetch_description
-import dev.datlag.mimasu.composeapp.generated.resources.fetch_initialize_app
-import dev.datlag.mimasu.composeapp.generated.resources.fetch_loading_data
-import dev.datlag.mimasu.composeapp.generated.resources.fetch_title
+import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.fetch_connecting_services
+import dev.datlag.mimasu.ui.fetch_description
+import dev.datlag.mimasu.ui.fetch_initialize_app
+import dev.datlag.mimasu.ui.fetch_loading_data
+import dev.datlag.mimasu.ui.fetch_title
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.typography
 import org.jetbrains.compose.resources.stringResource
 
@@ -34,17 +35,17 @@ fun FetchConfigState() {
         verticalArrangement = Arrangement.aligned(Alignment.CenterVertically)
     ) {
         item {
-            Text(
+            PlatformText(
                 modifier = Modifier.fillParentMaxWidth().padding(horizontal = 16.dp),
-                text = stringResource(Res.string.fetch_title),
+                text = stringResource(UiRes.string.fetch_title),
                 style = Platform.typography().headlineMedium,
                 textAlign = TextAlign.Center
             )
         }
         item {
-            Text(
+            PlatformText(
                 modifier = Modifier.fillParentMaxWidth().padding(vertical = 32.dp, horizontal = 16.dp),
-                text = stringResource(Res.string.fetch_description),
+                text = stringResource(UiRes.string.fetch_description),
                 textAlign = TextAlign.Center,
                 softWrap = true
             )
@@ -59,7 +60,7 @@ fun FetchConfigState() {
                     name = MaterialSymbols.CLOUD_DOWNLOAD,
                     contentDescription = null,
                 )
-                Text(text = stringResource(Res.string.fetch_loading_data))
+                PlatformText(text = stringResource(UiRes.string.fetch_loading_data))
             }
         }
         item {
@@ -72,7 +73,7 @@ fun FetchConfigState() {
                     name = MaterialSymbols.SETTINGS_ETHERNET,
                     contentDescription = null,
                 )
-                Text(text = stringResource(Res.string.fetch_connecting_services))
+                PlatformText(text = stringResource(UiRes.string.fetch_connecting_services))
             }
         }
         item {
@@ -85,7 +86,7 @@ fun FetchConfigState() {
                     name = MaterialSymbols.PLAY_CIRCLE,
                     contentDescription = null,
                 )
-                Text(text = stringResource(Res.string.fetch_initialize_app))
+                PlatformText(text = stringResource(UiRes.string.fetch_initialize_app))
             }
         }
     }

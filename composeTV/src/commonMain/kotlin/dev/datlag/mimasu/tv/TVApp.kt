@@ -17,6 +17,8 @@ import dev.datlag.mimasu.tv.ui.theme.getDarkScheme
 import dev.datlag.mimasu.tv.ui.theme.getLightScheme
 import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.LocalDarkMode
+import dev.datlag.mimasu.ui.custom.FailureConfigState
+import dev.datlag.mimasu.ui.custom.FetchConfigState
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
@@ -55,8 +57,8 @@ fun TVApp(
                 }
 
                 when (val current = config) {
-                    is Network.Config.Fetching -> { }
-                    is Network.Config.Failure -> { }
+                    is Network.Config.Fetching -> FetchConfigState()
+                    is Network.Config.Failure -> FailureConfigState(current)
                     is Network.Config.Success -> Navigation(appImage)
                 }
             }

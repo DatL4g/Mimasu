@@ -13,22 +13,28 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.composeapp.generated.resources.Res
-import dev.datlag.mimasu.composeapp.generated.resources.config_fail_config_title
-import dev.datlag.mimasu.composeapp.generated.resources.config_fail_connecting_services
-import dev.datlag.mimasu.composeapp.generated.resources.config_fail_data
-import dev.datlag.mimasu.composeapp.generated.resources.config_fail_description
-import dev.datlag.mimasu.composeapp.generated.resources.config_fail_initialize_title
 import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.common.clipEntryOf
+import dev.datlag.mimasu.ui.config_fail_config_title
+import dev.datlag.mimasu.ui.config_fail_connecting_services
+import dev.datlag.mimasu.ui.config_fail_data
+import dev.datlag.mimasu.ui.config_fail_description
+import dev.datlag.mimasu.ui.config_fail_initialize_title
 import dev.datlag.mimasu.ui.github
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.launchMain
+import dev.datlag.tooling.compose.platform.PlatformCard
+import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.typography
 import org.jetbrains.compose.resources.stringResource
 
@@ -44,31 +50,39 @@ fun FailureConfigState(
         verticalArrangement = Arrangement.aligned(Alignment.CenterVertically)
     ) {
         item {
-            Text(
+            PlatformText(
                 modifier = Modifier.fillParentMaxWidth().padding(horizontal = 16.dp),
                 text = when (state) {
-                    is Network.Config.Failure.Initialize -> stringResource(Res.string.config_fail_initialize_title)
-                    is Network.Config.Failure.Fetching -> stringResource(Res.string.config_fail_config_title)
+                    is Network.Config.Failure.Initialize -> stringResource(UiRes.string.config_fail_initialize_title)
+                    is Network.Config.Failure.Fetching -> stringResource(UiRes.string.config_fail_config_title)
                 },
                 style = Platform.typography().headlineMedium,
                 textAlign = TextAlign.Center
             )
         }
         item {
-            Text(
+            PlatformText(
                 modifier = Modifier.fillParentMaxWidth().padding(vertical = 32.dp, horizontal = 16.dp),
-                text = stringResource(Res.string.config_fail_description),
+                text = stringResource(UiRes.string.config_fail_description),
                 textAlign = TextAlign.Center,
                 softWrap = true
             )
         }
         (state as? Network.Config.Failure.Fetching)?.throwable?.message?.ifBlank { null }?.let { message ->
             item {
-                ElevatedCard(
+                val clipboardManager = LocalClipboard.current
+                val scope = rememberCoroutineScope()
+
+                PlatformCard(
+                    onClick = {
+                        scope.launchMain {
+                            clipboardManager.setClipEntry(clipEntryOf(message))
+                        }
+                    },
                     modifier = Modifier.fillParentMaxWidth().padding(vertical = 32.dp, horizontal = 16.dp)
                 ) {
                     SelectionContainer {
-                        Text(
+                        PlatformText(
                             modifier = Modifier.fillMaxWidth().padding(16.dp),
                             textAlign = TextAlign.Center,
                             softWrap = true,
@@ -89,7 +103,7 @@ fun FailureConfigState(
                     name = MaterialSymbols.CLOUD_OFF,
                     contentDescription = null,
                 )
-                Text(text = stringResource(Res.string.config_fail_data))
+                PlatformText(text = stringResource(UiRes.string.config_fail_data))
             }
         }
         item {
@@ -102,7 +116,7 @@ fun FailureConfigState(
                     name = MaterialSymbols.WARNING,
                     contentDescription = null
                 )
-                Text(text = stringResource(Res.string.config_fail_connecting_services))
+                PlatformText(text = stringResource(UiRes.string.config_fail_connecting_services))
             }
         }
         item {

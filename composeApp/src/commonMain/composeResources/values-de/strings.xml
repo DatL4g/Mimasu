@@ -142,16 +142,4 @@
     <string name="update_extension_dialog_cancel">Abbrechen</string>
 
     <string name="feature_temporarily_disabled">Funktion vorübergehend deaktiviert.</string>
-
-    <string name="fetch_title">App wird vorbereitet</string>
-    <string name="fetch_description">Wir richten alles für dich ein. Das dauert nur einen Moment.</string>
-    <string name="fetch_loading_data">Deine Daten werden geladen.</string>
-    <string name="fetch_connecting_services">Stellt Verbindung zu Diensten her.</string>
-    <string name="fetch_initialize_app">Initialisiert und startet App.</string>
-
-    <string name="config_fail_initialize_title">Fehler bei Initialisierung</string>
-    <string name="config_fail_config_title">Fehler bei Konfiguration</string>
-    <string name="config_fail_description">Wir konnten die App nicht starten. Bitte versuche es später erneut oder melde dieses Verhalten auf GitHub.</string>
-    <string name="config_fail_data">Deine Daten konnten nicht geladen werden.</string>
-    <string name="config_fail_connecting_services">Verbindung zu Diensten fehlgeschlagen.</string>
 </resources>

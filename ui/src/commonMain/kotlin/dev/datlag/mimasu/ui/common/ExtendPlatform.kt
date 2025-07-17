@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.ui.common
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ClipEntry
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.google.GoogleAuthParams
 import kotlinx.datetime.LocalDate
@@ -30,3 +31,5 @@ fun LocalDate?.formatMedium(
     fallbackFormat = stringResource(fallbackFormat),
     fallbackValue = fallbackValue
 )
+
+expect fun clipEntryOf(text: String): ClipEntry

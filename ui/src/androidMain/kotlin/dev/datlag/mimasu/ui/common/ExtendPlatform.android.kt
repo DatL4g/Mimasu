@@ -2,6 +2,7 @@ package dev.datlag.mimasu.ui.common
 
 import android.app.Activity
 import android.app.ActivityManager
+import android.content.ClipData
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
@@ -11,6 +12,7 @@ import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
@@ -267,3 +269,5 @@ fun VideoViewModel.WatchType?.asMediaMetaData(): MediaMetadata {
         .setAlbumTitle(this?.albumTitle)
         .build()
 }
+
+actual fun clipEntryOf(text: String): ClipEntry = ClipEntry(ClipData.newPlainText(null, text))

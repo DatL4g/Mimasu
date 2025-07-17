@@ -13,19 +13,23 @@ import com.appmattus.certificatetransparency.BasicAndroidCTLogger
 import com.appmattus.certificatetransparency.cache.AndroidDiskCache
 import com.appmattus.certificatetransparency.installCertificateTransparencyProvider
 import com.google.android.gms.net.CronetProviderInstaller
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.AppInitializer
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.TargetIO
 import dev.datlag.tooling.compose.ioDispatcher
 import dev.datlag.tooling.compose.launchIO
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions
 import dev.gitlive.firebase.initialize
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.bindSingleton
@@ -92,7 +96,7 @@ class App : MultiDexApplication(), DIAware {
         }
 
         val config by di.instance<FirebaseRemoteConfigService>()
-        applicationScope.launchIO {
+        applicationScope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
             Network.fetchConfig(config)
         }
     }
