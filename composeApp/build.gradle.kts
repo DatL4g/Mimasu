@@ -187,7 +187,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
     androidResources {
-        generateLocaleConfig = true
+        generateLocaleConfig = false
     }
     signingConfigs {
         maybeCreate("release").apply {

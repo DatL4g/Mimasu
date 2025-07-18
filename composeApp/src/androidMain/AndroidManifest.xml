@@ -34,7 +34,8 @@
         android:resizeableActivity="true"
         android:networkSecurityConfig="@xml/network_security"
         android:largeHeap="true"
-        android:theme="@style/SplashScreenTheme">
+        android:theme="@style/SplashScreenTheme"
+        android:localeConfig="@xml/locales_config">
 
         <!-- TV Activity at top! I do not know why, but else it launches MainActivity -->
         <activity
