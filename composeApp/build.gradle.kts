@@ -47,11 +47,13 @@ kotlin {
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
     }
 
-    /*js {
+    js {
+        outputModuleName.set("composeApp.js")
         browser()
         binaries.executable()
     }
 
+    /*
     wasmJs {
         browser()
         binaries.executable()

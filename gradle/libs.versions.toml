@@ -33,7 +33,7 @@ fonticons = "2.1.1"
 google-fonts = "1.8.3"
 google-identity = "1.1.1"
 google-services = "4.4.3"
-haze = "1.6.7"
+haze = "1.6.9"
 immutable = "0.4.0"
 jetads = "1.0.6"
 kache = "2.1.1"
@@ -101,6 +101,7 @@ collection = { group = "androidx.collection", name = "collection", version.ref =
 constraint-layout = { group = "tech.annexflow.compose", name = "constraintlayout-compose-multiplatform", version.ref = "constraint-layout" }
 coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-js = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-js", version.ref = "coroutines" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 cronet = { group = "com.google.android.gms", name = "play-services-cronet", version.ref = "cronet" }
 cronet-okhttp = { group = "com.google.net.cronet", name = "cronet-okhttp", version.ref = "cronet-okhttp" }
