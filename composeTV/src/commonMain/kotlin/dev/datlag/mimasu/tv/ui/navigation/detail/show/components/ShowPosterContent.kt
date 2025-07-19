@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +57,7 @@ import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
@@ -229,6 +231,7 @@ internal fun ShowPosterContent(
                 var bookmarked by remember(show?.id, initial?.id) { mutableStateOf(false) }
                 val buttonInteraction = remember { MutableInteractionSource() }
                 val isFocused by buttonInteraction.collectIsFocusedAsState()
+                val scope = rememberCoroutineScope()
 
                 LaunchedVirtualIO(firebaseViewModel, show?.id, initial?.id) {
                     bookmarked = firebaseViewModel.isShowBookmarked(show?.id ?: initial?.id ?: 0)
@@ -245,7 +248,9 @@ internal fun ShowPosterContent(
                         bookmarked = !bookmarked
 
                         if (show != null) {
-                            firebaseViewModel.bookmark(bookmarked, show)
+                            scope.launch {
+                                firebaseViewModel.bookmark(bookmarked, show)
+                            }
                         }
                     },
                     interactionSource = buttonInteraction,

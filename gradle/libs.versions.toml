@@ -57,6 +57,7 @@ paging = "3.4.0-alpha01"
 performance = "1.4.2"
 placeholder = "1.0.11"
 play-services = "21.3.0"
+review = "2.0.2"
 rive = "10.2.1"
 sekret = "2.2.0"
 serialization = "1.9.0"
@@ -154,6 +155,7 @@ paging-compose = { group = "androidx.paging", name = "paging-compose", version.r
 placeholder = { group = "com.eygraber", name = "compose-placeholder", version.ref = "placeholder" }
 placeholder-material3 = { group = "com.eygraber", name = "compose-placeholder-material3", version.ref = "placeholder" }
 reflection = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+review = { group = "com.google.android.play", name = "review-ktx", version.ref = "review" }
 rive-android = { group = "app.rive", name = "rive-android", version.ref = "rive" }
 sekret = { group = "dev.datlag.sekret", name = "sekret", version.ref = "sekret" }
 serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "serialization" }

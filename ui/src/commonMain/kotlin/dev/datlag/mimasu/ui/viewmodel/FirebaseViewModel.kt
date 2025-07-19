@@ -7,13 +7,16 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import androidx.paging.cachedIn
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
 import dev.datlag.mimasu.firebase.firestore.MovieData
 import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tmdb.repository.DetailsRepository
+import dev.datlag.tooling.compose.TargetIO
 import dev.datlag.tooling.safeSubSet
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -22,6 +25,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FirebaseViewModel(
     val firestoreWrapper: FirebaseFirestoreWrapper,
@@ -83,15 +87,20 @@ class FirebaseViewModel(
         )
     }
 
-    fun bookmark(bookmarked: Boolean, show: Show) = viewModelScope.launch {
-        firestoreWrapper.bookmark(
+    /**
+     * Bookmarks or unbookmarks show.
+     *
+     * @return amount of bookmarked items.
+     */
+    suspend fun bookmark(bookmarked: Boolean, show: Show): Int = withContext(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
+        return@withContext firestoreWrapper.bookmark(
             ShowData(
                 _bookmarked = bookmarked,
                 tmdbId = show.id,
                 imdbId = show.imdbId,
                 numberOfSeasons = show.numberOfSeasons.takeIf { it > 0 }
             )
-        )
+        ).size
     }
 
     suspend fun isMovieBookmarked(tmdbId: Int): Boolean {

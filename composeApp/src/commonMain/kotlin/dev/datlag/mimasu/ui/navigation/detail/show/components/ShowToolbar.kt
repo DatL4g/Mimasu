@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,12 +40,14 @@ import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.CollapsingToolbar
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.other.rememberReviewManager
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.typography
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -176,6 +179,8 @@ fun ShowToolbar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var bookmarked by remember(show?.id, initial?.id) { mutableStateOf(false) }
+                val scope = rememberCoroutineScope()
+                val reviewManager = rememberReviewManager()
 
                 LaunchedVirtualIO(firebaseViewModel, show?.id, initial?.id) {
                     bookmarked = firebaseViewModel.isShowBookmarked(show?.id ?: initial?.id ?: 0)
@@ -186,9 +191,16 @@ fun ShowToolbar(
                         bookmarked = !bookmarked
 
                         if (show != null) {
-                            firebaseViewModel.bookmark(bookmarked, show)
+                            scope.launch {
+                                val amount = firebaseViewModel.bookmark(bookmarked, show)
+
+                                if (bookmarked && amount > 10) {
+                                    reviewManager.requestReview()
+                                }
+                            }
                         }
-                    }
+                    },
+                    enabled = show != null
                 ) {
                     if (bookmarked) {
                         MaterialSymbols(

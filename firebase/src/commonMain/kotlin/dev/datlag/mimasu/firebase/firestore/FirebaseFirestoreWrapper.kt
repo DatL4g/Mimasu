@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable
@@ -186,8 +187,8 @@ data class FirebaseFirestoreWrapper(
         )
     }
 
-    suspend fun bookmark(show: ShowData, db: FirebaseFirestore = firestore) {
-        val uid = authService.currentUser?.uid ?: return
+    suspend fun bookmark(show: ShowData, db: FirebaseFirestore = firestore): SerializableImmutableSet<ShowData> {
+        val uid = authService.currentUser?.uid ?: return _bookmarkedShows.value
         val doc = db.collection(ShowData.COLLECTION)
             .document(uid)
             .collection(ShowData.GROUP)
@@ -199,12 +200,12 @@ data class FirebaseFirestoreWrapper(
             }
         })
 
-        _bookmarkedShows.emit(
+        return _bookmarkedShows.updateAndGet {
             Companion.bookmarkedShows.asyncPutAndGet(
                 key = uid,
                 value = show.mergeWithCollection(getBookmarkedShows())
             ).toImmutableSet()
-        )
+        }
     }
 
     suspend fun isMovieBookmarked(tmdbId: Int): Boolean {
@@ -378,12 +379,8 @@ data class FirebaseFirestoreWrapper(
                         }
                     )
                 }
-            )?.ifEmpty { null }?.let { MutableEpisodeData(it) }
-        }?.ifEmpty { null } ?: getOfflineData(
-            block = { db ->
-                request(db)
-            }
-        ).orEmpty().let { MutableEpisodeData(it.toImmutableList()) }
+            ).orEmpty().let { MutableEpisodeData(it.toImmutableList()) }
+        } ?: MutableEpisodeData(persistentListOf())
 
         return value
     }
