@@ -143,7 +143,11 @@ data class TrendingRepository internal constructor(
     inner class MoviesPaging(
         private val window: TimeWindow
     ) : PagingSource<Int, Movie>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -162,7 +166,11 @@ data class TrendingRepository internal constructor(
             return when {
                 data != null -> {
                     LoadResult.Page(
-                        data = data.results,
+                        data = data.results.distinctBy { it.id }.filterNot {
+                            loadedKeys.contains(it.id)
+                        }.also {
+                            loadedKeys.addAll(it.map { p -> p.id })
+                        },
                         prevKey = (data.page - 1).takeIf { it >= 1 },
                         nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                             null
@@ -184,7 +192,11 @@ data class TrendingRepository internal constructor(
     inner class TVPaging(
         private val window: TimeWindow
     ) : PagingSource<Int, TV>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, TV>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -203,7 +215,11 @@ data class TrendingRepository internal constructor(
             return when {
                 data != null -> {
                     LoadResult.Page(
-                        data = data.results,
+                        data = data.results.distinctBy { it.id }.filterNot {
+                            loadedKeys.contains(it.id)
+                        }.also {
+                            loadedKeys.addAll(it.map { p -> p.id })
+                        },
                         prevKey = (data.page - 1).takeIf { it >= 1 },
                         nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                             null
@@ -225,7 +241,11 @@ data class TrendingRepository internal constructor(
     inner class PeoplePaging(
         private val window: TimeWindow
     ): PagingSource<Int, People>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, People>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -244,7 +264,11 @@ data class TrendingRepository internal constructor(
             return when {
                 data != null -> {
                     LoadResult.Page(
-                        data = data.results,
+                        data = data.results.distinctBy { it.id }.filterNot {
+                            loadedKeys.contains(it.id)
+                        }.also {
+                            loadedKeys.addAll(it.map { p -> p.id })
+                        },
                         prevKey = (data.page - 1).takeIf { it >= 1 },
                         nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                             null

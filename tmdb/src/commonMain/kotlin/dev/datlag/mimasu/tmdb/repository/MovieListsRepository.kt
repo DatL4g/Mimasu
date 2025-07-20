@@ -102,7 +102,11 @@ class MovieListsRepository(
     }
 
     inner class NowPlayingPaging : PagingSource<Int, Movie>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -121,7 +125,11 @@ class MovieListsRepository(
             return when {
                 data != null -> {
                     LoadResult.Page(
-                        data = data.results,
+                        data = data.results.distinctBy { it.id }.filterNot {
+                            loadedKeys.contains(it.id)
+                        }.also {
+                            loadedKeys.addAll(it.map { p -> p.id })
+                        },
                         prevKey = (data.page - 1).takeIf { it >= 1 },
                         nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                             null
@@ -142,7 +150,11 @@ class MovieListsRepository(
     }
 
     inner class PopularPaging : PagingSource<Int, Movie>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -161,7 +173,11 @@ class MovieListsRepository(
             return when {
                 data != null -> {
                     LoadResult.Page(
-                        data = data.results,
+                        data = data.results.distinctBy { it.id }.filterNot {
+                            loadedKeys.contains(it.id)
+                        }.also {
+                            loadedKeys.addAll(it.map { p -> p.id })
+                        },
                         prevKey = (data.page - 1).takeIf { it >= 1 },
                         nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                             null
@@ -181,7 +197,11 @@ class MovieListsRepository(
     }
 
     inner class TopRatedPaging : PagingSource<Int, Movie>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -200,7 +220,11 @@ class MovieListsRepository(
             return when {
                 data != null -> {
                     LoadResult.Page(
-                        data = data.results,
+                        data = data.results.distinctBy { it.id }.filterNot {
+                            loadedKeys.contains(it.id)
+                        }.also {
+                            loadedKeys.addAll(it.map { p -> p.id })
+                        },
                         prevKey = (data.page - 1).takeIf { it >= 1 },
                         nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                             null
@@ -220,7 +244,11 @@ class MovieListsRepository(
     }
 
     inner class UpcomingPaging : PagingSource<Int, Movie>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -239,7 +267,11 @@ class MovieListsRepository(
             return when {
                 data != null -> {
                     LoadResult.Page(
-                        data = data.results,
+                        data = data.results.distinctBy { it.id }.filterNot {
+                            loadedKeys.contains(it.id)
+                        }.also {
+                            loadedKeys.addAll(it.map { p -> p.id })
+                        },
                         prevKey = (data.page - 1).takeIf { it >= 1 },
                         nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                             null

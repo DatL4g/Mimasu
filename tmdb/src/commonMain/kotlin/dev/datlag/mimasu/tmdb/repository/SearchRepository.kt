@@ -89,7 +89,11 @@ class SearchRepository(
     inner class PersonPaging(
         private val query: String
     ) : PagingSource<Int, People>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, People>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -107,7 +111,11 @@ class SearchRepository(
 
             return when {
                 data != null -> LoadResult.Page(
-                    data = data.results,
+                    data = data.results.distinctBy { it.id }.filterNot {
+                        loadedKeys.contains(it.id)
+                    }.also {
+                        loadedKeys.addAll(it.map { p -> p.id })
+                    },
                     prevKey = (data.page - 1).takeIf { it >= 1 },
                     nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                         null
@@ -128,7 +136,11 @@ class SearchRepository(
     inner class MoviePaging(
         private val query: String
     ) : PagingSource<Int, Movie>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -146,7 +158,11 @@ class SearchRepository(
 
             return when {
                 data != null -> LoadResult.Page(
-                    data = data.results,
+                    data = data.results.distinctBy { it.id }.filterNot {
+                        loadedKeys.contains(it.id)
+                    }.also {
+                        loadedKeys.addAll(it.map { p -> p.id })
+                    },
                     prevKey = (data.page - 1).takeIf { it >= 1 },
                     nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                         null
@@ -167,7 +183,11 @@ class SearchRepository(
     inner class TVPaging(
         private val query: String
     ) : PagingSource<Int, TV>() {
+        private val loadedKeys = hashSetOf<Int>()
+
         override fun getRefreshKey(state: PagingState<Int, TV>): Int? {
+            loadedKeys.clear()
+
             return state.anchorPosition?.let { anchorPos ->
                 val anchorPage = state.closestPageToPosition(anchorPos)
 
@@ -185,7 +205,11 @@ class SearchRepository(
 
             return when {
                 data != null -> LoadResult.Page(
-                    data = data.results,
+                    data = data.results.distinctBy { it.id }.filterNot {
+                        loadedKeys.contains(it.id)
+                    }.also {
+                        loadedKeys.addAll(it.map { p -> p.id })
+                    },
                     prevKey = (data.page - 1).takeIf { it >= 1 },
                     nextKey = if (data.page >= data.totalPages || data.results.isEmpty()) {
                         null

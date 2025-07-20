@@ -110,7 +110,10 @@ internal fun ShowContent(
             }
             when (seasonState) {
                 is ShowViewModel.SeasonState.Success -> {
-                    items(seasonState.season.episodes.toImmutableList()) { episode ->
+                    items(
+                        items = seasonState.season.episodes.toImmutableList(),
+                        key = { it.identifier }
+                    ) { episode ->
                         val watchData = remember(show, episode) {
                             show?.let {
                                 VideoViewModel.WatchType.Show(
@@ -121,7 +124,7 @@ internal fun ShowContent(
                                 )
                             }
                         }
-                        val episodeData = remember(episodesData, episode) {
+                        val episodeData = remember(episodesData, episode.episodeNumber) {
                             episodesData.findAroundPositionOrNull(episode.episodeNumber) { it.number }
                         }
 

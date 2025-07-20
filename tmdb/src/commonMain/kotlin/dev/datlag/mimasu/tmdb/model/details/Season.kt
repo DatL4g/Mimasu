@@ -44,5 +44,8 @@ data class Season(
 
         @Transient
         val runtime = _runtime ?: 0
+
+        @Transient
+        val identifier: Int = id.takeIf { it > 0 } ?: hashCode()
     }
 }
