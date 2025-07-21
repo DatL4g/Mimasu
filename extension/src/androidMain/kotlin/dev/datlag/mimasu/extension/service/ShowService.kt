@@ -8,6 +8,7 @@ import dev.datlag.mimasu.extension.model.Show
 import dev.datlag.mimasu.extension.show.EpisodeCallback
 import dev.datlag.mimasu.extension.show.ShowCallback
 import dev.datlag.mimasu.extension.show.StreamCallback
+import dev.datlag.tooling.scopeCatching
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -17,7 +18,9 @@ internal class ShowService(context: Context) : AIDLService<IShowInfoProvider>(co
     private val mappedIds by atomic<MutableMap<Int, Int>>(mutableMapOf())
 
     override fun bind(service: IBinder?): IShowInfoProvider? {
-        return IShowInfoProvider.Stub.asInterface(service)
+        return scopeCatching {
+            IShowInfoProvider.Stub.asInterface(service)
+        }.getOrNull()
     }
 
     override fun onConnected(service: IShowInfoProvider) { }
