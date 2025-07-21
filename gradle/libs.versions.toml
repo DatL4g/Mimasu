@@ -1,5 +1,5 @@
 [versions]
-app = "1.2.2"
+app = "1.2.3"
 about = "12.2.4"
 activity = "1.10.1"
 adaptive = "1.2.0-alpha03"
@@ -83,6 +83,7 @@ android-autofill = { group = "androidx.autofill", name = "autofill", version.ref
 android-firebase = { group = "com.google.firebase", name = "firebase-bom", version.ref = "android-firebase" }
 android-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 android-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+android-firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
 android-firebase-performance = { module = "com.google.firebase:firebase-perf" }
 android-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "android-startup" }
 activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }

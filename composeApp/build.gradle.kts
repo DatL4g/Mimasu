@@ -1,4 +1,6 @@
+import com.android.build.gradle.internal.dsl.NdkOptions
 import com.codingfeline.buildkonfig.compiler.FieldSpec
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import com.mikepenz.aboutlibraries.plugin.DuplicateMode
 import com.mikepenz.aboutlibraries.plugin.DuplicateRule
 import dev.datlag.tolgee.common.set
@@ -172,8 +174,8 @@ android {
         targetSdk = 36
 
         applicationId = "dev.datlag.mimasu"
-        versionCode = 122
-        versionName = "1.2.2"
+        versionCode = 123
+        versionName = "1.2.3"
 
         multiDexEnabled = true
 
@@ -209,9 +211,18 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 file("src/androidMain/proguard-rules.pro")
             )
+            ndk {
+                debugSymbolLevel = NdkOptions.DebugSymbolLevel.SYMBOL_TABLE.name
+            }
+            configure<CrashlyticsExtension> {
+                nativeSymbolUploadEnabled = true
+            }
         }
         debug {
             manifestPlaceholders["admob_app_id"] = ADMOB_ANDROID_TESTING
+            ndk {
+                debugSymbolLevel = NdkOptions.DebugSymbolLevel.FULL.name
+            }
         }
     }
 }
