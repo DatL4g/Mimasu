@@ -1,5 +1,6 @@
 -keepattributes SourceFile,LineNumberTable        # Keep file names and line numbers.
 -keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.
+-dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite # Faulty Review Dependency Release
 
 # Keep `Companion` object fields of serializable classes.
 # This avoids serializer lookup through `getDeclaredClasses` as done for named companion objects.
