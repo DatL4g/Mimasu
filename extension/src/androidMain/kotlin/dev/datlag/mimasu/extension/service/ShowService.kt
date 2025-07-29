@@ -84,7 +84,7 @@ internal class ShowService(context: Context) : AIDLService<IShowInfoProvider>(co
                 val response = Show.Response(info)
 
                 continuation.resumeWith(when (response) {
-                    null -> Result.failure(IllegalArgumentException())
+                    null -> Result.failure(IllegalArgumentException("Malformed response"))
                     else -> Result.success(response)
                 })
             }
