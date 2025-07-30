@@ -77,12 +77,13 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.material3AdaptiveNavigationSuite)
             implementation(compose.materialIconsExtended)
             implementation(compose.animationGraphics)
+
+            implementation(libs.material3)
             implementation("org.jetbrains.compose.ui:ui-backhandler:${libs.versions.compose.asProvider().get()}")
 
             implementation(libs.lifecycle)

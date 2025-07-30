@@ -31,13 +31,13 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
-            implementation(compose.material3)
             implementation(compose.animationGraphics)
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
             implementation(libs.fonticons)
             implementation(libs.tooling.compose)
 
+            implementation(libs.material3)
             implementation("org.jetbrains.compose.ui:ui-backhandler:${libs.versions.compose.asProvider().get()}")
 
             implementation(libs.coroutines)
