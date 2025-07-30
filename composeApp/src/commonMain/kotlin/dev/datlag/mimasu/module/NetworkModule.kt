@@ -11,6 +11,7 @@ import coil3.svg.SvgDecoder
 import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.api.DisposableDebounce
+import dev.datlag.mimasu.firebase.auth.api.GoogleDoH
 import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.ui.other.Network
@@ -83,6 +84,11 @@ data object NetworkModule {
         }
         bindSingleton<DisposableDebounce> {
             DisposableDebounce.create(
+                client = instance()
+            )
+        }
+        bindSingleton<GoogleDoH> {
+            GoogleDoH.create(
                 client = instance()
             )
         }

@@ -21,7 +21,7 @@ interface GoogleDoH {
             return ktorfit {
                 baseUrl(BASE_URL)
                 httpClient(client)
-            }.create()
+            }.createGoogleDoH()
         }
     }
 }

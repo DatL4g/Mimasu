@@ -40,7 +40,6 @@ class LoginViewModel(
     private val emailAuthProvider: FirebaseEmailAuthProvider,
     private val _googleAuthProvider: FirebaseGoogleAuthProvider?,
     private val gitHubAuthProvider: FirebaseGitHubAuthProvider?,
-    private val disposableDebounce: DisposableDebounce?
 ) : ViewModel(), DirectDIAware {
 
     private val _email = MutableStateFlow("")
@@ -125,22 +124,19 @@ class LoginViewModel(
     fun emailSignIn(params: EmailAuthParams, onSuccess: suspend () -> Unit) = startLoginJob {
         _loginResult.update { LoginResult.None }
 
-        val disposable = suspendCatching {
-            disposableDebounce?.checkDisposable(
-                url = DisposableDebounce.BASE_URL,
-                email = params.email
-            )?.disposable
+        val emailValid = suspendCatching {
+            emailAuthProvider.emailValidity(params.email)
         }.getOrNull() ?: false
 
-        if (disposable) {
-            _loginResult.update { LoginResult.Disposable }
-        } else {
+        if (emailValid) {
             emailAuthProvider.signIn(params).also { result ->
                 _loginResult.update { LoginResult.Finish(result.isSuccess) }
                 if (result.isSuccess) {
                     onSuccess()
                 }
             }
+        } else {
+            _loginResult.update { LoginResult.Disposable }
         }
     }
 

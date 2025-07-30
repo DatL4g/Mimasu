@@ -11,12 +11,19 @@ interface DisposableDebounce {
 
     @GET
     suspend fun checkDisposable(
-        @Url url: String,
+        @Url url: String = BASE_URL,
         @Query("email") email: String
     ): DisposableInfo
 
+    @GET
+    suspend fun disposableDomains(
+        @Url url: String = DOMAINS_URL
+    ): Set<String>
+
     companion object {
         const val BASE_URL = "https://disposable.debounce.io/"
+
+        const val DOMAINS_URL = "https://disposable.github.io/disposable-email-domains/domains.json"
 
         fun create(client: HttpClient): DisposableDebounce {
             return ktorfit {

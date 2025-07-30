@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.datlag.mimasu.core.typeOf
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.api.DisposableDebounce
+import dev.datlag.mimasu.firebase.auth.api.GoogleDoH
 import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.email.FirebaseEmailAuthProvider
 import dev.datlag.mimasu.firebase.auth.provider.github.FirebaseGitHubAuthProvider
@@ -18,6 +19,7 @@ import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvide
 import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.ui.GoogleProvider
+import io.ktor.client.HttpClient
 import org.kodein.di.DI
 import org.kodein.di.DirectDI
 import org.kodein.di.compose.localDI
@@ -79,17 +81,22 @@ class KodeinViewModelFactory(private val di: DirectDI) : ViewModelProvider.Facto
             modelClass typeOf LoginViewModel::class -> {
                 val service = di.instanceOrNull<FirebaseAuthService>() ?: FirebaseAuthService()
                 val dataSource = di.instanceOrNull<FirebaseAuthDataSource>() ?: FirebaseAuthDataSource(service)
-                val emailProvider = di.instanceOrNull<FirebaseEmailAuthProvider>() ?: FirebaseEmailAuthProvider(dataSource)
+                val httpClient = di.instanceOrNull<HttpClient>()
+                val googleDoH = di.instanceOrNull<GoogleDoH>() ?: httpClient?.let(GoogleDoH::create)
+                val disposableDebounce = di.instanceOrNull<DisposableDebounce>() ?: httpClient?.let(DisposableDebounce::create)
+                val emailProvider = di.instanceOrNull<FirebaseEmailAuthProvider>() ?: FirebaseEmailAuthProvider(
+                    firebaseAuthDataSource = dataSource,
+                    googleDoH = googleDoH,
+                    disposableDebounce = disposableDebounce
+                )
                 val googleProvider = di.instanceOrNull<FirebaseGoogleAuthProvider>() ?: di.instanceOrNull<GoogleProvider>()?.getOrNull()
                 val githubProvider = di.instanceOrNull<FirebaseGitHubAuthProvider>()
-                val disposableDebounce = di.instanceOrNull<DisposableDebounce>()
                 val model = LoginViewModel(
                     directDI = di,
                     service = service,
                     emailAuthProvider = emailProvider,
                     _googleAuthProvider = googleProvider,
-                    gitHubAuthProvider = githubProvider,
-                    disposableDebounce = disposableDebounce
+                    gitHubAuthProvider = githubProvider
                 )
 
                 (model as? T) ?: super.create(modelClass, extras)
