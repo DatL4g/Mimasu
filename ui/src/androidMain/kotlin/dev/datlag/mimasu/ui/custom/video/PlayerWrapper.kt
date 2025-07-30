@@ -452,11 +452,6 @@ class PlayerWrapper(
         return player.hasPreviousMediaItem()
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun seekToPreviousWindow() {
-        return player.seekToPreviousWindow()
-    }
-
     override fun seekToPreviousMediaItem() {
         return player.seekToPreviousMediaItem()
     }
@@ -469,28 +464,8 @@ class PlayerWrapper(
         return player.seekToPrevious()
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun hasNext(): Boolean {
-        return player.hasNext()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun hasNextWindow(): Boolean {
-        return player.hasNextWindow()
-    }
-
     override fun hasNextMediaItem(): Boolean {
         return player.hasNextMediaItem()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun next() {
-        return player.next()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun seekToNextWindow() {
-        return player.seekToNextWindow()
     }
 
     override fun seekToNextMediaItem() {
