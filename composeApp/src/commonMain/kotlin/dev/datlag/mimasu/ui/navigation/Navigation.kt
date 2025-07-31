@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import dev.datlag.mimasu.common.dialogProperties
 import dev.datlag.mimasu.ui.LaunchedMain
 import dev.datlag.mimasu.ui.MainThread
+import dev.datlag.mimasu.ui.common.bringToFront
 import dev.datlag.mimasu.ui.navigation.home.HomeNavigation
 import dev.datlag.mimasu.ui.navigation.home.homeItem
 import dev.datlag.mimasu.ui.navigation.login.Login
@@ -142,16 +143,22 @@ fun Navigation() {
                 selected = isProfile,
                 user = user,
                 onClick = {
-                    controller.navigate(Navigation.Profile) {
-                        launchSingleTop = true
-                        restoreState = true
+                    if (user == null) {
+                        controller.bringToFront(Navigation.Login) {
+                            launchSingleTop = true
+                        }
+                    } else {
+                        controller.bringToFront(Navigation.Profile) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 }
             )
             movieItem(
                 selected = isMovies,
                 onClick = {
-                    controller.navigate(Navigation.Movies) {
+                    controller.bringToFront(Navigation.Movies) {
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -160,7 +167,7 @@ fun Navigation() {
             homeItem(
                 selected = isHome,
                 onClick = {
-                    controller.navigate(Navigation.Home) {
+                    controller.bringToFront(Navigation.Home) {
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -169,7 +176,7 @@ fun Navigation() {
             seriesItem(
                 selected = isSeries,
                 onClick = {
-                    controller.navigate(Navigation.Series) {
+                    controller.bringToFront(Navigation.Series) {
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -178,7 +185,7 @@ fun Navigation() {
             searchItem(
                 selected = isSearch,
                 onClick = {
-                    controller.navigate(Navigation.Search) {
+                    controller.bringToFront(Navigation.Search) {
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -194,7 +201,7 @@ fun Navigation() {
                 dialogProperties = Navigation.Login.dialogProperties()
             ) {
                 Login {
-                    controller.navigate(Navigation.Home) {
+                    controller.bringToFront(Navigation.Home) {
                         launchSingleTop = true
                     }
                 }
@@ -202,14 +209,20 @@ fun Navigation() {
             composable<Navigation.Profile> {
                 Profile(
                     onLogout = {
-                        controller.navigate(Navigation.Login) {
+                        controller.bringToFront(Navigation.Login) {
                             popUpTo(Navigation.Home)
                         }
                     }
                 )
             }
             composable<Navigation.Movies> {
-                MoviesNavigation()
+                MoviesNavigation(
+                    onLogin = {
+                        controller.bringToFront(Navigation.Login) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
             composable<Navigation.Home> {
                 HomeNavigation(
@@ -217,21 +230,21 @@ fun Navigation() {
                         videoNavigationController.loadSources(
                             data = it,
                             navigate = {
-                                controller.navigate(Navigation.Video) {
+                                controller.bringToFront(Navigation.Video) {
                                     launchSingleTop = true
                                 }
                             }
                         )
                     },
-                    onLogout = {
-                        controller.navigate(Navigation.Login) {
+                    onLogin = {
+                        controller.bringToFront(Navigation.Login) {
                             popUpTo(Navigation.Home)
                         }
                     },
                     navigateToDiscoverTV = {
                         DiscoverViewModel.updateTVGenre(it)
 
-                        controller.navigate(Navigation.Search) {
+                        controller.bringToFront(Navigation.Search) {
                             launchSingleTop = true
                         }
                     }
@@ -243,7 +256,7 @@ fun Navigation() {
                         videoNavigationController.loadSources(
                             data = it,
                             navigate = {
-                                controller.navigate(Navigation.Video) {
+                                controller.bringToFront(Navigation.Video) {
                                     launchSingleTop = true
                                 }
                             }
@@ -252,7 +265,12 @@ fun Navigation() {
                     navigateToDiscover = {
                         DiscoverViewModel.updateTVGenre(it)
 
-                        controller.navigate(Navigation.Search) {
+                        controller.bringToFront(Navigation.Search) {
+                            launchSingleTop = true
+                        }
+                    },
+                    onLogin = {
+                        controller.bringToFront(Navigation.Login) {
                             launchSingleTop = true
                         }
                     }
@@ -264,11 +282,16 @@ fun Navigation() {
                         videoNavigationController.loadSources(
                             data = it,
                             navigate = {
-                                controller.navigate(Navigation.Video) {
+                                controller.bringToFront(Navigation.Video) {
                                     launchSingleTop = true
                                 }
                             }
                         )
+                    },
+                    onLogin = {
+                        controller.bringToFront(Navigation.Login) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -285,7 +308,7 @@ fun Navigation() {
 
         LaunchedMain(user) {
             if (user == null) {
-                controller.navigate(Navigation.Login) {
+                controller.bringToFront(Navigation.Login) {
                     launchSingleTop = true
                 }
             }

@@ -50,8 +50,8 @@ fun NavigationSuiteScope.homeItem(
 @Composable
 fun HomeNavigation(
     navigateToVideo: (VideoViewModel.WatchType) -> Unit,
-    onLogout: () -> Unit,
-    navigateToDiscoverTV: (Int) -> Unit
+    onLogin: () -> Unit,
+    navigateToDiscoverTV: (Int) -> Unit,
 ) {
     val controller = rememberListDetailController<Any, Navigation.Home.Detail, Navigation.Home.Extra>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
@@ -77,7 +77,7 @@ fun HomeNavigation(
 
                     controller.navigateToDetail(Navigation.Home.Detail.Movie)
                 },
-                onLogout = onLogout
+                onLogout = onLogin
             )
         },
         detailPane = {
@@ -92,7 +92,8 @@ fun HomeNavigation(
                                 PersonViewModel.updateFrom(it)
 
                                 controller.navigateToExtra(Navigation.Home.Extra.Person)
-                            }
+                            },
+                            onLogin = onLogin
                         )
                     }
                 }
@@ -112,7 +113,8 @@ fun HomeNavigation(
                                 controller.navigateBack()
                             },
                             onStream = navigateToVideo,
-                            onDiscover = navigateToDiscoverTV
+                            onDiscover = navigateToDiscoverTV,
+                            onLogin = onLogin
                         )
                     }
                 }

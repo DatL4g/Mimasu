@@ -50,7 +50,8 @@ fun NavigationSuiteScope.searchItem(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SearchNavigation(
-    navigateToVideo: (VideoViewModel.WatchType) -> Unit
+    navigateToVideo: (VideoViewModel.WatchType) -> Unit,
+    onLogin: () -> Unit
 ) {
     val controller = rememberListDetailController<Any, Navigation.Search.Detail, Navigation.Search.Extra>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
@@ -90,7 +91,8 @@ fun SearchNavigation(
                                 PersonViewModel.updateFrom(it)
 
                                 controller.navigateToExtra(Navigation.Search.Extra.Person)
-                            }
+                            },
+                            onLogin = onLogin
                         )
                     }
                     is Navigation.Search.Detail.Person -> {
@@ -110,7 +112,8 @@ fun SearchNavigation(
                                 DiscoverViewModel.updateTVGenre(it)
 
                                 controller.navigateToList()
-                            }
+                            },
+                            onLogin = onLogin
                         )
                     }
                     else -> controller.navigateBack()

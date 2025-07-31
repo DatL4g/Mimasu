@@ -63,8 +63,10 @@ fun ShowToolbar(
     listState: LazyListState,
     show: Show?,
     initial: TV?,
+    loggedIn: Boolean,
     modifier: Modifier = Modifier,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onLogin: () -> Unit
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
 
@@ -187,6 +189,7 @@ fun ShowToolbar(
                     initialValue = false,
                     key1 = show?.id,
                     key2 = initial?.id,
+                    key3 = loggedIn,
                     context = Dispatchers.Virtual ?: Dispatchers.TargetIO
                 ) { current ->
                     val id = show?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
@@ -200,16 +203,20 @@ fun ShowToolbar(
 
                 IconButton(
                     onClick = {
-                        bookmarked = !bookmarked
+                        if (loggedIn) {
+                            bookmarked = !bookmarked
 
-                        if (show != null) {
-                            scope.launch {
-                                val amount = firebaseViewModel.bookmark(bookmarked, show)
+                            if (show != null) {
+                                scope.launch {
+                                    val amount = firebaseViewModel.bookmark(bookmarked, show)
 
-                                if (bookmarked && amount > 10) {
-                                    reviewManager.requestReview()
+                                    if (bookmarked && amount > 10) {
+                                        reviewManager.requestReview()
+                                    }
                                 }
                             }
+                        } else {
+                            onLogin()
                         }
                     },
                     enabled = show != null

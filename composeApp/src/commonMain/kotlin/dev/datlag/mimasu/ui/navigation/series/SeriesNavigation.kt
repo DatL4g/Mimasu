@@ -46,7 +46,8 @@ fun NavigationSuiteScope.seriesItem(
 @Composable
 fun SeriesNavigation(
     navigateToVideo: (VideoViewModel.WatchType) -> Unit,
-    navigateToDiscover: (Int) -> Unit
+    navigateToDiscover: (Int) -> Unit,
+    onLogin: () -> Unit
 ) {
     val controller = rememberListDetailController<Any, Navigation.Series.Detail, Nothing>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
@@ -72,7 +73,8 @@ fun SeriesNavigation(
                                 controller.navigateBack()
                             },
                             onStream = navigateToVideo,
-                            onDiscover = navigateToDiscover
+                            onDiscover = navigateToDiscover,
+                            onLogin = onLogin
                         )
                     }
                     else -> controller.navigateBack()

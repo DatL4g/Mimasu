@@ -19,9 +19,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.max
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import coil3.compose.AsyncImagePainter
 import coil3.compose.AsyncImagePainter.State
 import coil3.compose.rememberAsyncImagePainter
+import dev.datlag.tooling.scopeCatching
+import kotlin.reflect.KClass
 
 @Composable
 operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
@@ -173,4 +178,16 @@ fun Modifier.handlePlayerKeyEvents(
         }
     }
     return@onKeyEvent false
+}
+
+fun <T : Any> NavController.bringToFront(route: T, builder: NavOptionsBuilder.() -> Unit) {
+    val isRouteOnBackStack = scopeCatching {
+        getBackStackEntry(route)
+    }.isSuccess
+
+    if (isRouteOnBackStack) {
+        popBackStack(route = route, inclusive = false)
+    } else {
+        navigate(route, builder)
+    }
 }

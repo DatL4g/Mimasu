@@ -36,6 +36,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(libs.fonticons)
             implementation(libs.tooling.compose)
+            implementation(libs.navigation)
 
             implementation(libs.material3)
             implementation("org.jetbrains.compose.ui:ui-backhandler:${libs.versions.compose.asProvider().get()}")

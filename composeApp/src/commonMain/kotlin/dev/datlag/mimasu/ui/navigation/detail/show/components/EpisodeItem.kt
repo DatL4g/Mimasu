@@ -63,10 +63,12 @@ fun EpisodeItem(
     episodeData: ShowData.EpisodeData?,
     seasonNumber: Int?,
     showAvailability: ShowState,
+    loggedIn: Boolean,
     modifier: Modifier = Modifier,
     onStream: (Extension.Response) -> Unit,
     markAsWatched: suspend () -> Unit,
-    markAsUnWatched: suspend () -> Unit
+    markAsUnWatched: suspend () -> Unit,
+    onLogin: () -> Unit
 ) {
     val episodeStream = rememberEpisodeStream(
         showState = showAvailability,
@@ -112,12 +114,16 @@ fun EpisodeItem(
                 modifier = Modifier.padding(start = 4.dp).fillMaxHeight(),
                 onClick = {
                     isRevealed = false
-                    scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
-                        if (watched) {
-                            markAsUnWatched()
-                        } else {
-                            markAsWatched()
+                    if (loggedIn) {
+                        scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
+                            if (watched) {
+                                markAsUnWatched()
+                            } else {
+                                markAsWatched()
+                            }
                         }
+                    } else {
+                        onLogin()
                     }
                 },
                 shapes = IconButtonDefaults.shapes(),

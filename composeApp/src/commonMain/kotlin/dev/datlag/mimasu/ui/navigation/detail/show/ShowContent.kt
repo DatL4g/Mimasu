@@ -50,11 +50,13 @@ fun ShowContent(
     showAvailability: ShowState,
     padding: PaddingValues,
     episodesData: ImmutableList<ShowData.EpisodeData>,
+    loggedIn: Boolean,
     onSelectSeason: (Show.Season) -> Unit = {},
     onStream: (VideoViewModel.WatchType.Show) -> Unit,
     markAsWatched: suspend (Season.Episode) -> Unit,
     markAsUnWatched: suspend (Season.Episode) -> Unit,
-    onDiscover: (Int) -> Unit
+    onDiscover: (Int) -> Unit,
+    onLogin: () -> Unit
 ) {
     LazyColumn(
         state = listState,
@@ -163,6 +165,7 @@ fun ShowContent(
                         episodeData = episodeData,
                         seasonNumber = seasonState.season.seasonNumber,
                         showAvailability = showAvailability,
+                        loggedIn = loggedIn,
                         modifier = Modifier.fillParentMaxWidth().padding(4.dp),
                         onStream = {
                             onStream(watchData.copy(
@@ -180,7 +183,8 @@ fun ShowContent(
                         },
                         markAsUnWatched = {
                             markAsUnWatched(episode)
-                        }
+                        },
+                        onLogin = onLogin
                     )
                 }
             }

@@ -74,7 +74,9 @@ internal fun MoviePosterContent(
     movie: Movie?,
     initial: CommonMovie?,
     listState: LazyListState,
-    modifier: Modifier = Modifier
+    loggedIn: Boolean,
+    modifier: Modifier = Modifier,
+    onLogin: () -> Unit
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
 
@@ -248,6 +250,7 @@ internal fun MoviePosterContent(
                     initialValue = false,
                     key1 = movie?.id,
                     key2 = initial?.id,
+                    key3 = loggedIn,
                     context = Dispatchers.Virtual ?: Dispatchers.TargetIO
                 ) { current ->
                     val id = movie?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
@@ -283,10 +286,14 @@ internal fun MoviePosterContent(
                 }
                 IconButton(
                     onClick = {
-                        bookmarked = !bookmarked
+                        if (loggedIn) {
+                            bookmarked = !bookmarked
 
-                        if (movie != null) {
-                            firebaseViewModel.bookmark(bookmarked, movie)
+                            if (movie != null) {
+                                firebaseViewModel.bookmark(bookmarked, movie)
+                            }
+                        } else {
+                            onLogin()
                         }
                     },
                     enabled = movie != null

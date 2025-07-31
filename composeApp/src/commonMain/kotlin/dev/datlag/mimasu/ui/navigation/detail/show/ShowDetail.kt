@@ -28,6 +28,7 @@ import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowWatchProviderF
 import dev.datlag.mimasu.ui.other.rememberShowAvailability
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
+import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import kotlinx.collections.immutable.toImmutableList
 
@@ -36,9 +37,12 @@ import kotlinx.collections.immutable.toImmutableList
 fun ShowDetail(
     onBack: () -> Unit,
     onStream: (VideoViewModel.WatchType.Show) -> Unit,
-    onDiscover: (Int) -> Unit
+    onDiscover: (Int) -> Unit,
+    onLogin: () -> Unit
 ) {
     val showViewModel = kodeinViewModel<ShowViewModel>()
+    val accountViewModel = accountViewModel()
+    val user by accountViewModel.user.collectAsStateWithLifecycle()
     val showState by showViewModel.show.collectAsStateWithLifecycle(ShowViewModel.ShowState.Loading)
     val initial by showViewModel.initialShow.collectAsStateWithLifecycle()
     val showSeason by showViewModel.showSeason.collectAsStateWithLifecycle()
@@ -79,8 +83,10 @@ fun ShowDetail(
                 listState = listState,
                 show = showState.getOrNull(),
                 initial = initial,
+                loggedIn = user != null,
                 modifier = Modifier.fillMaxWidth(),
-                onBack = onBack
+                onBack = onBack,
+                onLogin = onLogin
             )
         },
         floatingActionButton = {
@@ -118,6 +124,7 @@ fun ShowDetail(
                 showAvailability = showAvailability,
                 padding = padding,
                 episodesData = episodesData.orEmpty().toImmutableList(),
+                loggedIn = user != null,
                 onSelectSeason = {
                     showViewModel.select(it)
                 },
@@ -144,7 +151,8 @@ fun ShowDetail(
                         )
                     }
                 },
-                onDiscover = onDiscover
+                onDiscover = onDiscover,
+                onLogin = onLogin
             )
         }
     }

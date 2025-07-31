@@ -18,7 +18,9 @@ import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 @Composable
 internal fun MovieContent(
     movie: Movie?,
-    initial: CommonMovie?
+    initial: CommonMovie?,
+    loggedIn: Boolean,
+    onLogin: () -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -31,7 +33,9 @@ internal fun MovieContent(
                 movie = movie,
                 initial = initial,
                 listState = listState,
-                modifier = Modifier.fillParentMaxWidth().fillParentMaxHeight(0.8F)
+                loggedIn = loggedIn,
+                modifier = Modifier.fillParentMaxWidth().fillParentMaxHeight(0.8F),
+                onLogin = onLogin
             )
         }
         item {

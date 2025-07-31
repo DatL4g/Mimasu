@@ -7,11 +7,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
+import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 
 @Composable
-internal fun MovieDetail() {
+internal fun MovieDetail(
+    onLogin: () -> Unit
+) {
     val movieViewModel = kodeinViewModel<MovieViewModel>()
+    val accountViewModel = accountViewModel()
+    val user by accountViewModel.user.collectAsState()
     val movieState by movieViewModel.movie.collectAsState(MovieViewModel.State.Loading)
     val initial by movieViewModel.initialMovie.collectAsState()
 
@@ -26,7 +31,9 @@ internal fun MovieDetail() {
         is MovieViewModel.State.Loading, is MovieViewModel.State.Success -> {
             MovieContent(
                 movie = current.getOrNull(),
-                initial = initial
+                initial = initial,
+                loggedIn = user != null,
+                onLogin = onLogin
             )
         }
     }

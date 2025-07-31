@@ -3,10 +3,13 @@ package dev.datlag.mimasu.ui.custom.login
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -56,6 +59,10 @@ import dev.datlag.mimasu.ui.login_password
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.mimasu.ui.viewmodel.loginViewModel
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.platform.PlatformButton
+import dev.datlag.tooling.compose.platform.PlatformIcon
+import dev.datlag.tooling.compose.platform.PlatformIconButton
+import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.localTextStyle
 import dev.datlag.tooling.compose.platform.rememberIsTv
 import dev.datlag.tooling.compose.withMainContext
@@ -100,177 +107,194 @@ fun Login(
         focusManager.clearFocus(true)
     }
 
-    LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 16.dp)
+    Box(
+        modifier = modifier
     ) {
-        item {
-            Column(
-                modifier = Modifier.fillParentMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LoginAppImage(
-                    imagePainter = appImage,
-                    imageModifier = Modifier.size(200.dp).clip(CircleShape),
-                    riveModifier = Modifier.fillMaxWidth(),
-                    typingEmail = typingEmail && !typingPassword,
-                    typingPassword = typingPassword && !typingEmail
-                )
-                EMailTextField(
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) {
+            item {
+                Column(
                     modifier = Modifier.fillParentMaxWidth(),
-                    value = emailValue,
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LoginAppImage(
+                        imagePainter = appImage,
+                        imageModifier = Modifier.size(200.dp).clip(CircleShape),
+                        riveModifier = Modifier.fillMaxWidth(),
+                        typingEmail = typingEmail && !typingPassword,
+                        typingPassword = typingPassword && !typingEmail
+                    )
+                    EMailTextField(
+                        modifier = Modifier.fillParentMaxWidth(),
+                        value = emailValue,
+                        onValueChange = {
+                            loginViewModel.updateEmail(it)
+                        },
+                        label = {
+                            Text(text = stringResource(UiRes.string.login_email))
+                        },
+                        textStyle = textStyle,
+                        isError = emailHasError || loginResult is LoginViewModel.LoginResult.Disposable,
+                        interactionSource = emailInteractionSource
+                    )
+                }
+            }
+            item {
+                var showPassword by remember { mutableStateOf(false) }
+
+                OutlinedTextField(
+                    modifier = Modifier.fillParentMaxWidth().semantics {
+                        contentType = ContentType.Password // + ContentType.NewPassword // not supported yet?
+                        contentDataType = ContentDataType.Text
+                    },
+                    value = passwordValue,
                     onValueChange = {
-                        loginViewModel.updateEmail(it)
+                        loginViewModel.updatePassword(it)
+                    },
+                    leadingIcon = {
+                        MaterialSymbols(
+                            name = MaterialSymbols.PASSWORD,
+                            contentDescription = null
+                        )
                     },
                     label = {
-                        Text(text = stringResource(UiRes.string.login_email))
+                        Text(text = stringResource(UiRes.string.login_password))
                     },
                     textStyle = textStyle,
-                    isError = emailHasError || loginResult is LoginViewModel.LoginResult.Disposable,
-                    interactionSource = emailInteractionSource
-                )
-            }
-        }
-        item {
-            var showPassword by remember { mutableStateOf(false) }
-
-            OutlinedTextField(
-                modifier = Modifier.fillParentMaxWidth().semantics {
-                    contentType = ContentType.Password // + ContentType.NewPassword // not supported yet?
-                    contentDataType = ContentDataType.Text
-                },
-                value = passwordValue,
-                onValueChange = {
-                    loginViewModel.updatePassword(it)
-                },
-                leadingIcon = {
-                    MaterialSymbols(
-                        name = MaterialSymbols.PASSWORD,
-                        contentDescription = null
-                    )
-                },
-                label = {
-                    Text(text = stringResource(UiRes.string.login_password))
-                },
-                textStyle = textStyle,
-                trailingIcon = if (passwordValue.isBlank()) null else {
-                    {
-                        IconButton(
-                            onClick = {
-                                showPassword = !showPassword
-                            }
-                        ) {
-                            MaterialSymbols(
-                                name = if (showPassword) {
-                                    MaterialSymbols.VISIBILITY_OFF
-                                } else {
-                                    MaterialSymbols.VISIBILITY
-                                },
-                                contentDescription = null
-                            )
-                        }
-                    }
-                },
-                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.None,
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Go
-                ),
-                maxLines = 1,
-                singleLine = true,
-                isError = passwordHasError,
-                readOnly = emailReadonly,
-                interactionSource = passwordInteractionSource
-            )
-        }
-        item {
-            LoginPasswordCriteriaSection(
-                emailValid = emailValid,
-                criteriaVisible = passwordValue.isNotEmpty(),
-                passwordErrorState = passwordErrorState,
-                modifier = Modifier.fillParentMaxWidth(),
-                onPasswordReset = {
-                    loginViewModel.resetPassword(emailValue)
-                }
-            )
-        }
-        item {
-            LoginSignInButton(
-                enabled = emailValid && passwordValid,
-                passwordReset = passwordResetUi,
-                modifier = Modifier.fillParentMaxWidth(),
-                onSignIn = {
-                    loginViewModel.emailSignIn(
-                        params = EmailAuthParams(
-                            email = emailValue,
-                            password = passwordValue
-                        ),
-                        onSuccess = {
-                            withMainContext {
-                                onSuccess()
-                            }
-                        }
-                    )
-                },
-                onPasswordReset = {
-                    loginViewModel.changePassword(
-                        code = passwordResetCode,
-                        email = emailValue,
-                        newPassword = passwordValue,
-                        onSuccess = {
-                            withMainContext {
-                                onSuccess()
-                            }
-                        }
-                    )
-                }
-            )
-        }
-        if (!passwordResetUi) {
-            item {
-                LoginSocialProviderDivider(
-                    hasGitHubProvider = loginViewModel.hasGitHubProvider,
-                    hasGoogleProvider = loginViewModel.hasGoogleProvider,
-                    modifier = Modifier.fillParentMaxWidth().padding(vertical = 8.dp)
-                )
-            }
-            item {
-                val googleSignInParams = rememberGoogleAuthParams()
-
-                LoginSocialProvider(
-                    hasGitHubProvider = loginViewModel.hasGitHubProvider,
-                    hasGoogleProvider = loginViewModel.hasGoogleProvider,
-                    modifier = Modifier.fillParentMaxWidth(),
-                    onGitHubClicked = { params ->
-                        loginViewModel.githubSignIn(params) {
-                            withMainContext {
-                                onSuccess()
+                    trailingIcon = if (passwordValue.isBlank()) null else {
+                        {
+                            IconButton(
+                                onClick = {
+                                    showPassword = !showPassword
+                                }
+                            ) {
+                                MaterialSymbols(
+                                    name = if (showPassword) {
+                                        MaterialSymbols.VISIBILITY_OFF
+                                    } else {
+                                        MaterialSymbols.VISIBILITY
+                                    },
+                                    contentDescription = null
+                                )
                             }
                         }
                     },
-                    onGoogleClicked = {
-                        loginViewModel.googleSignIn(googleSignInParams) {
-                            withMainContext {
-                                onSuccess()
-                            }
-                        }
+                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.None,
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Go
+                    ),
+                    maxLines = 1,
+                    singleLine = true,
+                    isError = passwordHasError,
+                    readOnly = emailReadonly,
+                    interactionSource = passwordInteractionSource
+                )
+            }
+            item {
+                LoginPasswordCriteriaSection(
+                    emailValid = emailValid,
+                    criteriaVisible = passwordValue.isNotEmpty(),
+                    passwordErrorState = passwordErrorState,
+                    modifier = Modifier.fillParentMaxWidth(),
+                    onPasswordReset = {
+                        loginViewModel.resetPassword(emailValue)
                     }
                 )
             }
             item {
-                LoginResult(
-                    failure = loginResult,
-                    modifier = Modifier.fillParentMaxWidth()
+                LoginSignInButton(
+                    enabled = emailValid && passwordValid,
+                    passwordReset = passwordResetUi,
+                    modifier = Modifier.fillParentMaxWidth(),
+                    onSignIn = {
+                        loginViewModel.emailSignIn(
+                            params = EmailAuthParams(
+                                email = emailValue,
+                                password = passwordValue
+                            ),
+                            onSuccess = {
+                                withMainContext {
+                                    onSuccess()
+                                }
+                            }
+                        )
+                    },
+                    onPasswordReset = {
+                        loginViewModel.changePassword(
+                            code = passwordResetCode,
+                            email = emailValue,
+                            newPassword = passwordValue,
+                            onSuccess = {
+                                withMainContext {
+                                    onSuccess()
+                                }
+                            }
+                        )
+                    }
+                )
+            }
+            if (!passwordResetUi) {
+                item {
+                    LoginSocialProviderDivider(
+                        hasGitHubProvider = loginViewModel.hasGitHubProvider,
+                        hasGoogleProvider = loginViewModel.hasGoogleProvider,
+                        modifier = Modifier.fillParentMaxWidth().padding(vertical = 8.dp)
+                    )
+                }
+                item {
+                    val googleSignInParams = rememberGoogleAuthParams()
+
+                    LoginSocialProvider(
+                        hasGitHubProvider = loginViewModel.hasGitHubProvider,
+                        hasGoogleProvider = loginViewModel.hasGoogleProvider,
+                        modifier = Modifier.fillParentMaxWidth(),
+                        onGitHubClicked = { params ->
+                            loginViewModel.githubSignIn(params) {
+                                withMainContext {
+                                    onSuccess()
+                                }
+                            }
+                        },
+                        onGoogleClicked = {
+                            loginViewModel.googleSignIn(googleSignInParams) {
+                                withMainContext {
+                                    onSuccess()
+                                }
+                            }
+                        }
+                    )
+                }
+                item {
+                    LoginResult(
+                        failure = loginResult,
+                        modifier = Modifier.fillParentMaxWidth()
+                    )
+                }
+            }
+            item {
+                LoginAgreement(
+                    modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp)
                 )
             }
         }
-        item {
-            LoginAgreement(
-                modifier = Modifier.fillParentMaxWidth().padding(vertical = 16.dp)
+        PlatformIconButton(
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.TopEnd),
+            onClick = {
+                onSuccess()
+            }
+        ) {
+            MaterialSymbols(
+                name = MaterialSymbols.CLOSE,
+                contentDescription = null
             )
         }
     }

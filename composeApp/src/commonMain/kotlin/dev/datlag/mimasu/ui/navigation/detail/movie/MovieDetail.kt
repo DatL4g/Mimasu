@@ -29,6 +29,7 @@ import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieWatchProviderFAB
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
+import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -36,9 +37,12 @@ import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 fun MovieDetail(
     onBack: () -> Unit,
     onCastClick: (Movie.Credits.Cast) -> Unit,
-    onWatchClick: () -> Unit = {}
+    onWatchClick: () -> Unit = {},
+    onLogin: () -> Unit
 ) {
     val movieViewModel = kodeinViewModel<MovieViewModel>()
+    val accountViewModel = accountViewModel()
+    val user by accountViewModel.user.collectAsStateWithLifecycle()
     val movieState by movieViewModel.movie.collectAsStateWithLifecycle(MovieViewModel.State.Loading)
     val initial by movieViewModel.initialMovie.collectAsStateWithLifecycle()
 
@@ -66,8 +70,10 @@ fun MovieDetail(
                 listState = listState,
                 movie = movieState.getOrNull(),
                 initial = initial,
+                loggedIn = user != null,
                 modifier = Modifier.fillMaxWidth(),
-                onBack = onBack
+                onBack = onBack,
+                onLogin = onLogin
             )
         },
         floatingActionButton = {

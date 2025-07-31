@@ -10,14 +10,18 @@ import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.other.rememberShowAvailability
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
+import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun ShowDetail(
     onStream: (VideoViewModel.WatchType.Show) -> Unit,
+    onLogin: () -> Unit
 ) {
     val showViewModel = kodeinViewModel<ShowViewModel>()
+    val accountViewModel = accountViewModel()
+    val user by accountViewModel.user.collectAsState()
     val showState by showViewModel.show.collectAsState(ShowViewModel.ShowState.Loading)
     val initial by showViewModel.initialShow.collectAsState()
     val showSeason by showViewModel.showSeason.collectAsState()
@@ -51,6 +55,7 @@ internal fun ShowDetail(
                 seasonState = seasonState,
                 showAvailability = showAvailability,
                 episodesData = episodeData.orEmpty().toImmutableList(),
+                loggedIn = user != null,
                 onSelectSeason = {
                     showViewModel.select(it)
                 },
@@ -78,7 +83,8 @@ internal fun ShowDetail(
                             episode = it
                         )
                     }
-                }
+                },
+                onLogin = onLogin
             )
         }
     }

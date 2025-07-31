@@ -47,10 +47,12 @@ internal fun ShowContent(
     seasonState: ShowViewModel.SeasonState,
     showAvailability: ShowState,
     episodesData: ImmutableList<ShowData.EpisodeData>,
+    loggedIn: Boolean,
     onSelectSeason: (Show.Season) -> Unit,
     onStream: (VideoViewModel.WatchType.Show) -> Unit,
     markAsWatched: suspend (Season.Episode) -> Unit,
     markAsUnWatched: suspend (Season.Episode) -> Unit,
+    onLogin: () -> Unit
 ) {
     var selectedEpisode by remember(seasonState) { mutableStateOf<Season.Episode?>(null) }
     val drawerFocus = remember { FocusRequester() }
@@ -92,7 +94,9 @@ internal fun ShowContent(
                     show = show,
                     initial = initial,
                     listState = listState,
-                    modifier = Modifier.fillParentMaxWidth().fillParentMaxHeight(0.8F)
+                    loggedIn = loggedIn,
+                    modifier = Modifier.fillParentMaxWidth().fillParentMaxHeight(0.8F),
+                    onLogin = onLogin
                 )
             }
             item {
@@ -135,6 +139,7 @@ internal fun ShowContent(
                             episodeData = episodeData,
                             seasonNumber = seasonState.season.seasonNumber,
                             showAvailability = showAvailability,
+                            loggedIn = loggedIn,
                             modifier = Modifier.fillParentMaxWidth().padding(horizontal = 32.dp),
                             onStream = {
                                 watchData?.copy(
@@ -152,7 +157,8 @@ internal fun ShowContent(
                             },
                             markAsUnWatched = {
                                 markAsUnWatched(episode)
-                            }
+                            },
+                            onLogin = onLogin
                         )
                     }
                 }

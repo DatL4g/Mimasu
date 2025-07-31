@@ -60,8 +60,10 @@ fun MovieToolbar(
     listState: LazyListState,
     movie: Movie?,
     initial: CommonMovie?,
+    loggedIn: Boolean,
     modifier: Modifier = Modifier,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onLogin: () -> Unit
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
 
@@ -184,6 +186,7 @@ fun MovieToolbar(
                     initialValue = false,
                     key1 = movie?.id,
                     key2 = initial?.id,
+                    key3 = loggedIn,
                     context = Dispatchers.Virtual ?: Dispatchers.TargetIO
                 ) { current ->
                     val id = movie?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
@@ -195,9 +198,13 @@ fun MovieToolbar(
 
                 IconButton(
                     onClick = {
-                        bookmarked = !bookmarked
-                        if (movie != null) {
-                            firebaseViewModel.bookmark(bookmarked, movie)
+                        if (loggedIn) {
+                            bookmarked = !bookmarked
+                            if (movie != null) {
+                                firebaseViewModel.bookmark(bookmarked, movie)
+                            }
+                        } else {
+                            onLogin()
                         }
                     }
                 ) {

@@ -57,6 +57,7 @@ import dev.datlag.mimasu.tv.ui.navigation.series.Series
 import dev.datlag.mimasu.tv.ui.navigation.video.Video
 import dev.datlag.mimasu.ui.LaunchedMain
 import dev.datlag.mimasu.ui.MainThread
+import dev.datlag.mimasu.ui.common.bringToFront
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
@@ -126,7 +127,7 @@ internal fun Navigation(appImage: Painter) {
                 Login(
                     appImage = appImage,
                     onSuccess = {
-                        controller.navigate(Navigation.Home) {
+                        controller.bringToFront(Navigation.Home) {
                             launchSingleTop = true
                         }
                     }
@@ -138,14 +139,14 @@ internal fun Navigation(appImage: Painter) {
                     onMovieClicked = {
                         MovieViewModel.updateFrom(it)
 
-                        controller.navigate(Navigation.Detail.Movie) {
+                        controller.bringToFront(Navigation.Detail.Movie) {
                             launchSingleTop = true
                         }
                     },
                     onShowClicked = {
                         ShowViewModel.updateFrom(it)
 
-                        controller.navigate(Navigation.Detail.Show) {
+                        controller.bringToFront(Navigation.Detail.Show) {
                             launchSingleTop = true
                         }
                     }
@@ -157,14 +158,14 @@ internal fun Navigation(appImage: Painter) {
                     onMovieClicked = {
                         MovieViewModel.updateFrom(it)
 
-                        controller.navigate(Navigation.Detail.Movie) {
+                        controller.bringToFront(Navigation.Detail.Movie) {
                             launchSingleTop = true
                         }
                     },
                     onShowClicked = {
                         ShowViewModel.updateFrom(it)
 
-                        controller.navigate(Navigation.Detail.Show) {
+                        controller.bringToFront(Navigation.Detail.Show) {
                             launchSingleTop = true
                         }
                     }
@@ -176,7 +177,7 @@ internal fun Navigation(appImage: Painter) {
                     onMovieClicked = {
                         MovieViewModel.updateFrom(it)
 
-                        controller.navigate(Navigation.Detail.Movie) {
+                        controller.bringToFront(Navigation.Detail.Movie) {
                             launchSingleTop = true
                         }
                     }
@@ -188,22 +189,33 @@ internal fun Navigation(appImage: Painter) {
                     onShowClicked = {
                         ShowViewModel.updateFrom(it)
 
-                        controller.navigate(Navigation.Detail.Show) {
+                        controller.bringToFront(Navigation.Detail.Show) {
                             launchSingleTop = true
                         }
                     }
                 )
             }
             composable<Navigation.Detail.Movie> {
-                MovieDetail()
+                MovieDetail(
+                    onLogin = {
+                        controller.bringToFront(Navigation.Login) {
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
             composable<Navigation.Detail.Show> {
                 ShowDetail(
                     onStream = {
                         if (VideoViewModel.watch(it)) {
-                            controller.navigate(Navigation.Video) {
+                            controller.bringToFront(Navigation.Video) {
                                 launchSingleTop = true
                             }
+                        }
+                    },
+                    onLogin = {
+                        controller.bringToFront(Navigation.Login) {
+                            launchSingleTop = true
                         }
                     }
                 )
@@ -222,7 +234,7 @@ internal fun Navigation(appImage: Painter) {
 
         LaunchedMain(user) {
             if (user == null) {
-                controller.navigate(Navigation.Login) {
+                controller.bringToFront(Navigation.Login) {
                     launchSingleTop = true
                 }
             }
@@ -330,7 +342,7 @@ private fun TabBar(
                 selected = isSearch,
                 onFocus = {
                     if (!isSearch) {
-                        navController.navigate(Navigation.Search) {
+                        navController.bringToFront(Navigation.Search) {
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -356,7 +368,7 @@ private fun TabBar(
                 selected = isHome,
                 onFocus = {
                     if (!isHome) {
-                        navController.navigate(Navigation.Home) {
+                        navController.bringToFront(Navigation.Home) {
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -382,7 +394,7 @@ private fun TabBar(
                 selected = isMovies,
                 onFocus = {
                     if (!isMovies) {
-                        navController.navigate(Navigation.Movies) {
+                        navController.bringToFront(Navigation.Movies) {
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -408,7 +420,7 @@ private fun TabBar(
                 selected = isShows,
                 onFocus = {
                     if (!isShows) {
-                        navController.navigate(Navigation.Shows) {
+                        navController.bringToFront(Navigation.Shows) {
                             launchSingleTop = true
                             restoreState = true
                         }

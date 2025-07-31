@@ -73,7 +73,9 @@ internal fun ShowPosterContent(
     show: Show?,
     initial: TV?,
     listState: LazyListState,
-    modifier: Modifier = Modifier
+    loggedIn: Boolean,
+    modifier: Modifier = Modifier,
+    onLogin: () -> Unit
 ) {
     val firebaseViewModel = kodeinViewModel<FirebaseViewModel>()
 
@@ -236,6 +238,7 @@ internal fun ShowPosterContent(
                     initialValue = false,
                     key1 = show?.id,
                     key2 = initial?.id,
+                    key3 = loggedIn,
                     context = Dispatchers.Virtual ?: Dispatchers.TargetIO
                 ) { current ->
                     val id = show?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
@@ -256,12 +259,16 @@ internal fun ShowPosterContent(
 
                 Button(
                     onClick = {
-                        bookmarked = !bookmarked
+                        if (loggedIn) {
+                            bookmarked = !bookmarked
 
-                        if (show != null) {
-                            scope.launch {
-                                firebaseViewModel.bookmark(bookmarked, show)
+                            if (show != null) {
+                                scope.launch {
+                                    firebaseViewModel.bookmark(bookmarked, show)
+                                }
                             }
+                        } else {
+                            onLogin()
                         }
                     },
                     interactionSource = buttonInteraction,

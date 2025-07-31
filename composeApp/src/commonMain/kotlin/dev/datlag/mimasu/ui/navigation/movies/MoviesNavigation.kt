@@ -45,7 +45,9 @@ fun NavigationSuiteScope.movieItem(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun MoviesNavigation() {
+fun MoviesNavigation(
+    onLogin: () -> Unit
+) {
     val controller = rememberListDetailController<Any, Navigation.Movies.Detail, Navigation.Movies.Extra>()
     val detailNavigation by controller.detailValue.collectAsStateWithLifecycle()
     val extraNavigation by controller.extraValue.collectAsStateWithLifecycle()
@@ -75,7 +77,8 @@ fun MoviesNavigation() {
                                 PersonViewModel.updateFrom(it)
 
                                 controller.navigateToExtra(Navigation.Movies.Extra.Person)
-                            }
+                            },
+                            onLogin = onLogin
                         )
                     }
                     else -> controller.navigateBack()
