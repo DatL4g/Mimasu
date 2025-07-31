@@ -36,6 +36,7 @@ import com.eygraber.compose.placeholder.PlaceholderDefaults
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.fade
 import com.eygraber.compose.placeholder.placeholder
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
@@ -55,8 +56,11 @@ import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.rememberAdjustableState
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.compose.TargetIO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
@@ -228,14 +232,21 @@ internal fun ShowPosterContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                var bookmarked by remember(show?.id, initial?.id) { mutableStateOf(false) }
+                var bookmarked by rememberAdjustableState(
+                    initialValue = false,
+                    key1 = show?.id,
+                    key2 = initial?.id,
+                    context = Dispatchers.Virtual ?: Dispatchers.TargetIO
+                ) { current ->
+                    val id = show?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
+
+                    id?.let {
+                        firebaseViewModel.isShowBookmarked(it)
+                    } ?: current
+                }
                 val buttonInteraction = remember { MutableInteractionSource() }
                 val isFocused by buttonInteraction.collectIsFocusedAsState()
                 val scope = rememberCoroutineScope()
-
-                LaunchedVirtualIO(firebaseViewModel, show?.id, initial?.id) {
-                    bookmarked = firebaseViewModel.isShowBookmarked(show?.id ?: initial?.id ?: 0)
-                }
 
                 LaunchedMain(isFocused) {
                     if (isFocused) {

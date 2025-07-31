@@ -33,6 +33,7 @@ import com.eygraber.compose.placeholder.material3.fade
 import com.eygraber.compose.placeholder.material3.placeholder
 import dev.chrisbanes.haze.HazeState
 import dev.datlag.mimasu.common.hazeEffect
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
@@ -41,13 +42,17 @@ import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.CollapsingToolbar
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.other.rememberReviewManager
+import dev.datlag.mimasu.ui.rememberAdjustableState
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.TargetIO
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.typography
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -178,13 +183,20 @@ fun ShowToolbar(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                var bookmarked by remember(show?.id, initial?.id) { mutableStateOf(false) }
+                var bookmarked by rememberAdjustableState(
+                    initialValue = false,
+                    key1 = show?.id,
+                    key2 = initial?.id,
+                    context = Dispatchers.Virtual ?: Dispatchers.TargetIO
+                ) { current ->
+                    val id = show?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
+
+                    id?.let {
+                        firebaseViewModel.isShowBookmarked(it)
+                    } ?: current
+                }
                 val scope = rememberCoroutineScope()
                 val reviewManager = rememberReviewManager()
-
-                LaunchedVirtualIO(firebaseViewModel, show?.id, initial?.id) {
-                    bookmarked = firebaseViewModel.isShowBookmarked(show?.id ?: initial?.id ?: 0)
-                }
 
                 IconButton(
                     onClick = {

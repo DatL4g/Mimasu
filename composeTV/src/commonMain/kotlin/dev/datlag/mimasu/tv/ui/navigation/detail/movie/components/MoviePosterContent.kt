@@ -38,6 +38,7 @@ import com.eygraber.compose.placeholder.PlaceholderDefaults
 import com.eygraber.compose.placeholder.PlaceholderHighlight
 import com.eygraber.compose.placeholder.fade
 import com.eygraber.compose.placeholder.placeholder
+import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.core.YouTubeUtils
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.details.Movie
@@ -56,8 +57,11 @@ import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.rememberAdjustableState
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.compose.TargetIO
+import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
@@ -240,18 +244,20 @@ internal fun MoviePosterContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                var bookmarked by remember(movie?.id, initial?.id) {
-                    mutableStateOf(false)
+                var bookmarked by rememberAdjustableState(
+                    initialValue = false,
+                    key1 = movie?.id,
+                    key2 = initial?.id,
+                    context = Dispatchers.Virtual ?: Dispatchers.TargetIO
+                ) { current ->
+                    val id = movie?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
+
+                    id?.let {
+                        firebaseViewModel.isMovieBookmarked(it)
+                    } ?: current
                 }
                 val trailerInteraction = remember { MutableInteractionSource() }
                 val isTrailerFocused by trailerInteraction.collectIsFocusedAsState()
-
-                LaunchedVirtualIO(firebaseViewModel, movie?.id, initial?.id) {
-                    val id = movie?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
-                    bookmarked = id?.let {
-                        firebaseViewModel.isMovieBookmarked(it)
-                    } ?: bookmarked
-                }
 
                 LaunchedMain(isTrailerFocused) {
                     if (isTrailerFocused) {
