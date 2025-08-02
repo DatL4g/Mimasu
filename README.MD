@@ -9,3 +9,8 @@ Powered by The Movie Database (TMDB), Mimasu helps you stay up-to-date with the 
 Get it on [Google Play](https://play.google.com/store/apps/details?id=dev.datlag.mimasu) now.
 
 [![Google Play](https://playbadges.pavi2410.me/badge/full?id=dev.datlag.mimasu)](https://play.google.com/store/apps/details?id=dev.datlag.mimasu)
+
+## Videos not playing
+
+You need a compatible extension installed in the first place.  
+AdBlock software like apps or custom DNS might break this functionality!
