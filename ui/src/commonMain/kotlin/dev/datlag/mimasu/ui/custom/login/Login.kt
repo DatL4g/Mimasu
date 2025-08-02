@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +42,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.rememberGoogleAuthParams
@@ -77,19 +77,19 @@ fun Login(
     onSuccess: () -> Unit
 ) {
     val loginViewModel = loginViewModel()
-    val loginResult by loginViewModel.loginResult.collectAsStateWithLifecycle()
+    val loginResult by loginViewModel.loginResult.collectAsState()
 
-    val emailValue by loginViewModel.email.collectAsStateWithLifecycle()
-    val emailHasError by loginViewModel.emailHasError.collectAsStateWithLifecycle(false)
+    val emailValue by loginViewModel.email.collectAsState()
+    val emailHasError by loginViewModel.emailHasError.collectAsState(false)
     val emailValid = remember(emailValue, emailHasError) {
         emailValue.isNotBlank() && !emailHasError
     }
-    val emailReadonly by loginViewModel.emailReadonly.collectAsStateWithLifecycle()
+    val emailReadonly by loginViewModel.emailReadonly.collectAsState()
     val emailInteractionSource = remember { MutableInteractionSource() }
     val typingEmail by emailInteractionSource.collectIsFocusedAsState()
 
-    val passwordValue by loginViewModel.password.collectAsStateWithLifecycle()
-    val passwordErrorState by loginViewModel.passwordErrorState.collectAsStateWithLifecycle(null)
+    val passwordValue by loginViewModel.password.collectAsState()
+    val passwordErrorState by loginViewModel.passwordErrorState.collectAsState(null)
     val passwordHasError = remember(passwordErrorState) {
         passwordErrorState?.hasError == true
     }
@@ -98,8 +98,8 @@ fun Login(
     }
     val passwordInteractionSource = remember { MutableInteractionSource() }
     val typingPassword by passwordInteractionSource.collectIsFocusedAsState()
-    val passwordResetCode by loginViewModel.passwordResetCode.collectAsStateWithLifecycle()
-    val passwordResetUi by loginViewModel.passwordResetUi.collectAsStateWithLifecycle()
+    val passwordResetCode by loginViewModel.passwordResetCode.collectAsState()
+    val passwordResetUi by loginViewModel.passwordResetUi.collectAsState()
 
     val focusManager = LocalFocusManager.current
 

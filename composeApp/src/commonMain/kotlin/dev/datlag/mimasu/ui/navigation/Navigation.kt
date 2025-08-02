@@ -30,7 +30,9 @@ import dev.datlag.mimasu.ui.navigation.video.VideoScreen
 import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import kotlinx.serialization.Serializable
+import kotlin.js.JsName
 
+@JsName("NavigationRoute")
 object Navigation {
 
     @Serializable

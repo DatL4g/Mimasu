@@ -19,10 +19,12 @@ import dev.datlag.mimasu.other.AdManager
 import dev.datlag.mimasu.ui.LaunchedMain
 import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.findActivity
+import kotlinx.atomicfu.atomic
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
+import kotlin.math.max
 
 @Serializable
 actual class RewardAdManager(
@@ -31,9 +33,16 @@ actual class RewardAdManager(
     private val available: Boolean
 ) {
 
+    private var rewardCount by atomic(0)
+
     actual fun showRewardAd(
         onRewarded: () -> Unit
     ) {
+        if (rewardCount > 0) {
+            showCallback(onRewarded, callAnyway = true)
+            return
+        }
+
         if (activity != null && available) {
             val unitId = if (BuildConfig.DEBUG) {
                 AdMobTestIds.REWARDED
@@ -51,13 +60,21 @@ actual class RewardAdManager(
                         }
                     ),
                     onRewarded = {
-                        onRewarded()
+                        rewardCount = it.amount
+                        showCallback(onRewarded, callAnyway = true)
                     }
                 )
             } else {
-                onRewarded()
+                showCallback(onRewarded, callAnyway = false)
             }
         } else {
+            showCallback(onRewarded, callAnyway = false)
+        }
+    }
+
+    private fun showCallback(onRewarded: () -> Unit, callAnyway: Boolean) {
+        if (--rewardCount >= 0 || callAnyway) {
+            rewardCount = max(rewardCount, 0)
             onRewarded()
         }
     }

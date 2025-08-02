@@ -49,11 +49,11 @@ kotlin {
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
     }
 
-    js {
+    /*js {
         outputModuleName.set("composeApp.js")
         browser()
         binaries.executable()
-    }
+    }*/
 
     /*
     wasmJs {
@@ -195,11 +195,15 @@ android {
         generateLocaleConfig = false
     }
     signingConfigs {
-        maybeCreate("release").apply {
-            storeFile = rootProject.layout.projectDirectory.file("keystore.jks").asFile
-            storePassword = systemEnv("KEYSTORE_PASSWORD")
-            keyAlias = systemEnv("KEY_ALIAS")
-            keyPassword = systemEnv("KEY_PASSWORD")
+        rootProject.layout.projectDirectory.file("keystore.jks").asFile.takeIf {
+            it.existsSafely()
+        }?.let {
+            maybeCreate("release").apply {
+                storeFile = it
+                storePassword = systemEnv("KEYSTORE_PASSWORD")
+                keyAlias = systemEnv("KEY_ALIAS")
+                keyPassword = systemEnv("KEY_PASSWORD")
+            }
         }
     }
     buildTypes {
@@ -207,7 +211,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             manifestPlaceholders["admob_app_id"] = getAdmobAppId() ?: ADMOB_ANDROID_TESTING
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 file("src/androidMain/proguard-rules.pro")
