@@ -10,7 +10,11 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 actual infix fun <T : Any> KClass<T>.typeOf(base: KClass<*>): Boolean {
-    return this == base || this.isSubclassOf(base)
+    return scopeCatching {
+        this == base
+    }.getOrNull() == true || scopeCatching {
+        this.isSubclassOf(base)
+    }.getOrNull() == true
 }
 
 private val virtualDispatcher: CoroutineDispatcher? by lazy {
