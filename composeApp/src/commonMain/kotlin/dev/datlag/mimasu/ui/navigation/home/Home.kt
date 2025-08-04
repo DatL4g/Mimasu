@@ -35,7 +35,6 @@ import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.custom.PersonCard
 import dev.datlag.mimasu.ui.custom.ShowCard
-import dev.datlag.mimasu.ui.navigation.home.components.AccountVerification
 import dev.datlag.mimasu.ui.navigation.home.components.ExtensionUpdate
 import dev.datlag.mimasu.ui.navigation.home.components.TimeWindowSelection
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
@@ -62,12 +61,6 @@ fun Home(
         item {
             ExtensionUpdate(
                 modifier = Modifier.fillParentMaxWidth().padding(16.dp)
-            )
-        }
-        item {
-            AccountVerification(
-                modifier = Modifier.fillParentMaxWidth().padding(16.dp),
-                onLogout = onLogout
             )
         }
         item {

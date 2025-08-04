@@ -35,6 +35,7 @@ jobs:
           ./gradlew composeApp:createSekretValue -Pkey=ADMOB_VIDEO_REWARD -Pvalue=${{ secrets.ADMOB_VIDEO_REWARD }}
           ./gradlew composeApp:createSekretValue -Pkey=FIREBASE_WEB_ID -Pvalue=${{ secrets.FIREBASE_WEB_ID }}
           ./gradlew composeApp:createSekretValue -Pkey=FIREBASE_WEB_API_KEY -Pvalue=${{ secrets.FIREBASE_WEB_API_KEY }}
+          ./gradlew composeApp:createSekretValue -Pkey=FIREBASE_WEB_AUTH_DOMAIN -Pvalue=${{ secrets.FIREBASE_WEB_AUTH_DOMAIN }}
 
       - name: Create Google-Services
         env:

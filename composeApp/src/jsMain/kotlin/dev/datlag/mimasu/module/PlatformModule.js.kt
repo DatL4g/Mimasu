@@ -1,6 +1,11 @@
 package dev.datlag.mimasu.module
 
 import coil3.PlatformContext
+import dev.datlag.mimasu.BuildKonfig
+import dev.datlag.mimasu.Sekret
+import dev.datlag.mimasu.common.firebaseDataSource
+import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvider
+import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProviderJS
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.js.Js
 import io.ktor.client.plugins.cache.HttpCache
@@ -29,6 +34,12 @@ actual object PlatformModule {
                 }
                 install(HttpCache)
             }
+        }
+        bindSingleton<FirebaseGoogleAuthProvider> {
+            FirebaseGoogleAuthProviderJS(
+                firebaseAuthDataSource = firebaseDataSource(),
+                serverClientId = Sekret.firebaseWebOrAuthId(BuildKonfig.packageName).orEmpty()
+            )
         }
     }
 }
