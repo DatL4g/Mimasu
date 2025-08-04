@@ -6,10 +6,12 @@ import co.touchlab.kermit.Logger
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
+import dev.datlag.mimasu.common.toExpressiveTypography
 import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.firebase.config.FirebaseRemoteConfigService
 import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.other.Network
+import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.tooling.compose.TargetIO
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions
@@ -50,6 +52,9 @@ fun main() {
     }
 
     ComposeViewport(viewportContainerId = "composeRoot") {
-        App(di = di)
+        App(
+            di = di,
+            typography = Font.manrope().toExpressiveTypography()
+        )
     }
 }
