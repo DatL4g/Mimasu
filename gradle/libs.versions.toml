@@ -63,7 +63,7 @@ rive = "10.3.1"
 sekret = "2.2.0"
 serialization = "1.9.0"
 splashscreen = "1.0.1"
-stacktrace-decoroutinator = "2.5.4"
+stacktrace-decoroutinator = "2.5.6"
 tolgee = "2.0.0-RC-1"
 tooling = "1.7.0"
 tv-foundation = "1.0.0-alpha12"
@@ -103,7 +103,7 @@ collection = { group = "androidx.collection", name = "collection", version.ref =
 constraint-layout = { group = "tech.annexflow.compose", name = "constraintlayout-compose-multiplatform", version.ref = "constraint-layout" }
 coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-coroutines-js = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-js", version.ref = "coroutines" }
+coroutines-js = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-js", version.ref = "coroutines" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 cronet = { group = "com.google.android.gms", name = "play-services-cronet", version.ref = "cronet" }
 cronet-okhttp = { group = "com.google.net.cronet", name = "cronet-okhttp", version.ref = "cronet-okhttp" }

@@ -65,9 +65,9 @@ fun SeriesNavigation(
             )
         },
         detailPane = {
-            AnimatedPane {
-                when (detailNavigation) {
-                    is Navigation.Series.Detail.Show -> {
+            when (detailNavigation) {
+                is Navigation.Series.Detail.Show -> {
+                    AnimatedPane {
                         ShowDetail(
                             onBack = {
                                 controller.navigateBack()
@@ -77,8 +77,8 @@ fun SeriesNavigation(
                             onLogin = onLogin
                         )
                     }
-                    else -> controller.navigateBack()
                 }
+                else -> controller.navigateBack()
             }
         }
     )

@@ -66,9 +66,9 @@ fun MoviesNavigation(
             )
         },
         detailPane = {
-            AnimatedPane {
-                when (detailNavigation) {
-                    is Navigation.Movies.Detail.Movie -> {
+            when (detailNavigation) {
+                is Navigation.Movies.Detail.Movie -> {
+                    AnimatedPane {
                         MovieDetail(
                             onBack = {
                                 controller.navigateBack()
@@ -81,8 +81,8 @@ fun MoviesNavigation(
                             onLogin = onLogin
                         )
                     }
-                    else -> controller.navigateBack()
                 }
+                else -> controller.navigateBack()
             }
         },
         extraPane = when (extraNavigation) {

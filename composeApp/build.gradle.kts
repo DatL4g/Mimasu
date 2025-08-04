@@ -49,11 +49,11 @@ kotlin {
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
     }
 
-    /*js {
+    js {
         outputModuleName.set("composeApp.js")
         browser()
         binaries.executable()
-    }*/
+    }
 
     /*
     wasmJs {
@@ -147,8 +147,8 @@ kotlin {
         }
 
         jsMain.dependencies {
-            implementation(compose.html.core)
             implementation(libs.ktor.js)
+            implementation(libs.coroutines.js)
         }
 
         iosMain.dependencies {
@@ -242,11 +242,7 @@ compose {
     resources {
         generateResClass = auto
     }
-    desktop {
-        application {
-            mainClass = "dev.datlag.mimasu.MainKt"
-        }
-    }
+    web { }
 }
 
 buildkonfig {

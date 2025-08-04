@@ -19,6 +19,7 @@ import dev.datlag.mimasu.firebase.auth.provider.google.FirebaseGoogleAuthProvide
 import dev.datlag.mimasu.firebase.firestore.FirebaseFirestoreWrapper
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.ui.GoogleProvider
+import dev.datlag.tooling.Platform
 import io.ktor.client.HttpClient
 import org.kodein.di.DI
 import org.kodein.di.DirectDI
@@ -166,12 +167,25 @@ inline fun <reified VM : ViewModel> kodeinViewModel(
         CreationExtras.Empty
     }
 ): VM {
-    val factory by di.instanceOrNull<ViewModelProvider.Factory>()
+    val kodein by di.instanceOrNull<KodeinViewModelFactory>()
+    val factory = kodein ?: run {
+        val fallback by di.instanceOrNull<ViewModelProvider.Factory>()
+        fallback
+    }
 
-    return viewModel<VM>(
-        viewModelStoreOwner = viewModelStoreOwner,
-        key = key,
-        factory = factory,
-        extras = extras
-    )
+    return if (Platform.isJs) {
+        viewModel(
+            viewModelStoreOwner = viewModelStoreOwner,
+            key = key
+        ) {
+            factory?.create(VM::class, this) ?: error("No Factory found to create ViewModel: $factory")
+        }
+    } else {
+        viewModel<VM>(
+            viewModelStoreOwner = viewModelStoreOwner,
+            key = key,
+            factory = factory,
+            extras = extras
+        )
+    }
 }

@@ -80,9 +80,9 @@ fun SearchNavigation(
             )
         },
         detailPane = {
-            AnimatedPane {
-                when (detailNavigation) {
-                    is Navigation.Search.Detail.Movie -> {
+            when (detailNavigation) {
+                is Navigation.Search.Detail.Movie -> {
+                    AnimatedPane {
                         MovieDetail(
                             onBack = {
                                 controller.navigateBack()
@@ -95,14 +95,18 @@ fun SearchNavigation(
                             onLogin = onLogin
                         )
                     }
-                    is Navigation.Search.Detail.Person -> {
+                }
+                is Navigation.Search.Detail.Person -> {
+                    AnimatedPane {
                         PersonDetail(
                             onBack = {
                                 controller.navigateBack()
                             }
                         )
                     }
-                    is Navigation.Search.Detail.Show -> {
+                }
+                is Navigation.Search.Detail.Show -> {
+                    AnimatedPane {
                         ShowDetail(
                             onBack = {
                                 controller.navigateBack()
@@ -116,8 +120,8 @@ fun SearchNavigation(
                             onLogin = onLogin
                         )
                     }
-                    else -> controller.navigateBack()
                 }
+                else -> controller.navigateBack()
             }
         },
         extraPane = when (extraNavigation) {
