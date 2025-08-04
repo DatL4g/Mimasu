@@ -16,6 +16,7 @@ import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.viewmodel.KodeinViewModelFactory
+import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.TargetIO
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.Dispatchers
@@ -54,10 +55,14 @@ data object NetworkModule {
                         .build()
                 }
                 .diskCache {
-                    DiskCache.Builder()
-                        .directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
-                        .maxSizeBytes(50L * 1024 * 1024)
-                        .build()
+                    if (Platform.isJs) {
+                        null
+                    } else {
+                        DiskCache.Builder()
+                            .directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
+                            .maxSizeBytes(50L * 1024 * 1024)
+                            .build()
+                    }
                 }
                 .crossfade(true)
                 .build()
