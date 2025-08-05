@@ -29,6 +29,7 @@ import dev.datlag.mimasu.ui.navigation.series.seriesItem
 import dev.datlag.mimasu.ui.navigation.video.VideoScreen
 import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
+import dev.datlag.tooling.Platform
 import kotlinx.serialization.Serializable
 import kotlin.js.JsName
 
@@ -309,7 +310,7 @@ fun Navigation() {
         }
 
         LaunchedMain(user) {
-            if (user == null) {
+            if (!Platform.isJs && user == null) {
                 controller.bringToFront(Navigation.Login) {
                     launchSingleTop = true
                 }
