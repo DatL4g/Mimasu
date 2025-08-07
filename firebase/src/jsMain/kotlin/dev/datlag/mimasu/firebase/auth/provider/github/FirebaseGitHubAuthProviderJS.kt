@@ -8,8 +8,6 @@ import dev.gitlive.firebase.auth.GithubAuthProvider
 import dev.gitlive.firebase.auth.externals.getAuth
 import dev.gitlive.firebase.auth.externals.signInWithPopup
 import dev.gitlive.firebase.auth.externals.updateCurrentUser
-import dev.gitlive.firebase.auth.js
-import dev.gitlive.firebase.js
 import kotlinx.coroutines.await
 import kotlinx.coroutines.flow.firstOrNull
 import kotlin.time.ExperimentalTime

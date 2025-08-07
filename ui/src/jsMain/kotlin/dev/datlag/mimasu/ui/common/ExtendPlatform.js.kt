@@ -11,8 +11,8 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.format.byUnicodePattern
-import kotlinx.datetime.toJSDate
-import kotlin.js.Date
+import kotlin.time.ExperimentalTime
+import kotlin.time.toJSDate
 
 @OptIn(ExperimentalComposeUiApi::class)
 actual fun clipEntryOf(text: String): ClipEntry {
@@ -29,6 +29,7 @@ actual fun rememberGoogleAuthParams(): GoogleAuthParams {
     return remember { GoogleAuthParams(isRetrying = false) }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 actual fun LocalDate?.formatMedium(fallbackFormat: String): String? {
     if (this == null) {

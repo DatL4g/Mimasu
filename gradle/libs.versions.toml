@@ -9,7 +9,7 @@ android-annotation = "1.9.1"
 android-autofill = "1.3.0"
 android-core = "1.16.0"
 android-credentials = "1.5.0"
-android-firebase = "33.16.0"
+android-firebase = "34.0.0"
 android-startup = "1.2.0"
 assertk = "0.28.1"
 atomicfu = "0.29.0"
@@ -23,12 +23,12 @@ compose-report = "1.4.2"
 compose-reload = "1.0.0-alpha10"
 constraint-layout = "0.4.0"
 coroutines = "1.10.2"
-crashlytics = "3.0.5"
+crashlytics = "3.0.6"
 cronet = "18.1.0"
 cronet-okhttp = "0.1.0"
 datetime = "0.7.1-0.6.x-compat"
 desugar = "2.1.5"
-firebase = "2.1.0"
+firebase = "2.1.0-SNAPSHOT"
 fonticons = "2.1.1"
 google-fonts = "1.8.3"
 google-identity = "1.1.1"
@@ -55,7 +55,7 @@ nanoid = "1.0.1"
 navigation = "2.9.0-beta04"
 osdetector = "1.7.3"
 paging = "3.4.0-alpha02"
-performance = "2.0.0"
+performance = "2.0.1"
 placeholder = "1.0.11"
 play-services = "21.4.0"
 review = "2.0.2"
@@ -109,10 +109,10 @@ cronet = { group = "com.google.android.gms", name = "play-services-cronet", vers
 cronet-okhttp = { group = "com.google.net.cronet", name = "cronet-okhttp", version.ref = "cronet-okhttp" }
 datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
 desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar" }
-firebase = { group = "dev.gitlive", name = "firebase-app", version.ref = "firebase" }
-firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "firebase" }
-firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "firebase" }
-firebase-config = { group = "dev.gitlive", name = "firebase-config", version.ref = "firebase" }
+firebase = { group = "dev.datlag.firebase", name = "firebase-app", version.ref = "firebase" }
+firebase-firestore = { group = "dev.datlag.firebase", name = "firebase-firestore", version.ref = "firebase" }
+firebase-auth = { group = "dev.datlag.firebase", name = "firebase-auth", version.ref = "firebase" }
+firebase-config = { group = "dev.datlag.firebase", name = "firebase-config", version.ref = "firebase" }
 fonticons = { group = "dev.tclement.fonticons", name = "core", version.ref = "fonticons" }
 google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "google-fonts" }
 google-play-service = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services" }

@@ -7,11 +7,6 @@ import dev.datlag.mimasu.firebase.auth.datasource.FirebaseAuthDataSource
 import dev.datlag.mimasu.firebase.auth.provider.FirebaseAuthException
 import dev.datlag.mimasu.firebase.auth.provider.FirebaseProvider
 import dev.datlag.tooling.async.suspendCatching
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.FirebaseApp
-import dev.gitlive.firebase.app
-import dev.gitlive.firebase.auth.android
-import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
