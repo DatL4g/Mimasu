@@ -4,12 +4,16 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,8 +27,10 @@ import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.ui.LazyPagingItems
 import dev.datlag.mimasu.ui.common.plus
+import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.custom.PersonCard
+import dev.datlag.mimasu.ui.custom.ScrollIconButton
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
@@ -53,17 +59,48 @@ fun SearchContent(
                         .padding(bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = stringResource(Res.string.search_people),
-                        style = Platform.typography().headlineSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1
-                    )
+                    val listState = rememberLazyListState()
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.search_people),
+                            style = Platform.typography().headlineSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1
+                        )
+                        if (!Platform.isAndroid) {
+                            Spacer(modifier = Modifier.weight(1F))
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.Start,
+                                maxScrollItem = people.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                    contentDescription = null
+                                )
+                            }
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.End,
+                                maxScrollItem = people.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        state = listState
                     ) {
                         items(people.itemCount) { index ->
                             PersonCard(
@@ -96,17 +133,48 @@ fun SearchContent(
                         .padding(bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = stringResource(Res.string.search_series),
-                        style = Platform.typography().headlineSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1
-                    )
+                    val listState = rememberLazyListState()
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.search_series),
+                            style = Platform.typography().headlineSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1
+                        )
+                        if (!Platform.isAndroid) {
+                            Spacer(modifier = Modifier.weight(1F))
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.Start,
+                                maxScrollItem = tv.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                    contentDescription = null
+                                )
+                            }
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.End,
+                                maxScrollItem = tv.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        state = listState
                     ) {
                         items(tv.itemCount) { index ->
                             ShowCard(
@@ -139,17 +207,48 @@ fun SearchContent(
                         .padding(bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = stringResource(Res.string.search_movies),
-                        style = Platform.typography().headlineSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1
-                    )
+                    val listState = rememberLazyListState()
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.search_movies),
+                            style = Platform.typography().headlineSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1
+                        )
+                        if (!Platform.isAndroid) {
+                            Spacer(modifier = Modifier.weight(1F))
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.Start,
+                                maxScrollItem = movies.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                    contentDescription = null
+                                )
+                            }
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.End,
+                                maxScrollItem = movies.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        state = listState
                     ) {
                         items(movies.itemCount) { index ->
                             MovieCard(

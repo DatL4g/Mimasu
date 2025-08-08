@@ -4,6 +4,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -25,6 +29,8 @@ import dev.datlag.mimasu.composeapp.generated.resources.series_popular
 import dev.datlag.mimasu.composeapp.generated.resources.series_top_rated
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
+import dev.datlag.mimasu.ui.custom.MaterialSymbols
+import dev.datlag.mimasu.ui.custom.ScrollIconButton
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.mimasu.ui.viewmodel.TvSeriesListsViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
@@ -52,18 +58,48 @@ fun Series(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val airingToday = seriesListsViewModel.airingToday.collectAsLazyPagingItems()
+                val listState = rememberLazyListState()
 
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.series_airing_today),
-                    style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.series_airing_today),
+                        style = Platform.typography().headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
+                    if (!Platform.isAndroid) {
+                        Spacer(modifier = Modifier.weight(1F))
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.Start,
+                            maxScrollItem = airingToday.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                contentDescription = null
+                            )
+                        }
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.End,
+                            maxScrollItem = airingToday.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    state = listState
                 ) {
                     items(airingToday.itemCount) { index ->
                         val series = airingToday[index]
@@ -94,18 +130,48 @@ fun Series(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val topRated = seriesListsViewModel.topRated.collectAsLazyPagingItems()
+                val listState = rememberLazyListState()
 
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.series_top_rated),
-                    style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.series_top_rated),
+                        style = Platform.typography().headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
+                    if (!Platform.isAndroid) {
+                        Spacer(modifier = Modifier.weight(1F))
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.Start,
+                            maxScrollItem = topRated.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                contentDescription = null
+                            )
+                        }
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.End,
+                            maxScrollItem = topRated.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    state = listState
                 ) {
                     items(topRated.itemCount) { index ->
                         val series = topRated[index]
@@ -136,18 +202,49 @@ fun Series(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val onTheAir = seriesListsViewModel.onTheAir.collectAsLazyPagingItems()
+                val listState = rememberLazyListState()
 
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.series_on_the_air),
-                    style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.series_on_the_air),
+                        style = Platform.typography().headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
+
+                    if (!Platform.isAndroid) {
+                        Spacer(modifier = Modifier.weight(1F))
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.Start,
+                            maxScrollItem = onTheAir.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                contentDescription = null
+                            )
+                        }
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.End,
+                            maxScrollItem = onTheAir.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    state = listState
                 ) {
                     items(onTheAir.itemCount) { index ->
                         val series = onTheAir[index]
@@ -178,18 +275,48 @@ fun Series(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val popular = seriesListsViewModel.popular.collectAsLazyPagingItems()
+                val listState = rememberLazyListState()
 
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.series_popular),
-                    style = Platform.typography().headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.series_popular),
+                        style = Platform.typography().headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
+                    if (!Platform.isAndroid) {
+                        Spacer(modifier = Modifier.weight(1F))
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.Start,
+                            maxScrollItem = popular.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                contentDescription = null
+                            )
+                        }
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.End,
+                            maxScrollItem = popular.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    state = listState
                 ) {
                     items(popular.itemCount) { index ->
                         val series = popular[index]

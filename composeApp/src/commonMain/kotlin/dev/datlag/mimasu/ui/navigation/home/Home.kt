@@ -4,6 +4,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,14 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
+import co.touchlab.kermit.Logger
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.home_movies
 import dev.datlag.mimasu.composeapp.generated.resources.home_people
@@ -32,8 +37,10 @@ import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.ui.ads.BannerAd
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
+import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.custom.PersonCard
+import dev.datlag.mimasu.ui.custom.ScrollIconButton
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.mimasu.ui.navigation.home.components.ExtensionUpdate
 import dev.datlag.mimasu.ui.navigation.home.components.TimeWindowSelection
@@ -72,17 +79,47 @@ fun Home(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val bookmarked = firebaseViewModel.bookmarkedShows.collectAsLazyPagingItems()
+                    val listState = rememberLazyListState()
 
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = stringResource(Res.string.home_your_series),
-                        style = Platform.typography().headlineSmall,
-                        maxLines = 1
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.home_your_series),
+                            style = Platform.typography().headlineSmall,
+                            maxLines = 1
+                        )
+                        if (!Platform.isAndroid) {
+                            Spacer(modifier = Modifier.weight(1F))
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.Start,
+                                maxScrollItem = bookmarked.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                    contentDescription = null
+                                )
+                            }
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.End,
+                                maxScrollItem = bookmarked.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        state = listState
                     ) {
                         items(bookmarked.itemCount) { index ->
                             val show = bookmarked[index]
@@ -116,18 +153,48 @@ fun Home(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val bookmarked = firebaseViewModel.bookmarkedMovies.collectAsLazyPagingItems()
+                    val listState = rememberLazyListState()
 
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = stringResource(Res.string.home_your_movies),
-                        style = Platform.typography().headlineSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.home_your_movies),
+                            style = Platform.typography().headlineSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1
+                        )
+                        if (!Platform.isAndroid) {
+                            Spacer(modifier = Modifier.weight(1F))
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.Start,
+                                maxScrollItem = bookmarked.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                    contentDescription = null
+                                )
+                            }
+                            ScrollIconButton(
+                                listState = listState,
+                                alignment = Alignment.End,
+                                maxScrollItem = bookmarked.itemCount
+                            ) {
+                                MaterialSymbols(
+                                    name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        state = listState
                     ) {
                         items(bookmarked.itemCount) { index ->
                             val movie = bookmarked[index]
@@ -185,17 +252,48 @@ fun Home(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val people = trendingViewModel.people.collectAsLazyPagingItems()
+                val listState = rememberLazyListState()
 
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.home_people),
-                    style = Platform.typography().headlineSmall,
-                    maxLines = 1
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = stringResource(Res.string.home_people),
+                        style = Platform.typography().headlineSmall,
+                        maxLines = 1
+                    )
+                    if (!Platform.isAndroid) {
+                        Spacer(modifier = Modifier.weight(1F))
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.Start,
+                            maxScrollItem = people.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                contentDescription = null
+                            )
+                        }
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.End,
+                            maxScrollItem = people.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    state = listState
                 ) {
                     items(people.itemCount) { index ->
                         val person = people[index]
@@ -234,17 +332,47 @@ fun Home(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val series = trendingViewModel.tv.collectAsLazyPagingItems()
+                val listState = rememberLazyListState()
 
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.home_series),
-                    style = Platform.typography().headlineSmall,
-                    maxLines = 1
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.home_series),
+                        style = Platform.typography().headlineSmall,
+                        maxLines = 1
+                    )
+                    if (!Platform.isAndroid) {
+                        Spacer(modifier = Modifier.weight(1F))
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.Start,
+                            maxScrollItem = series.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                contentDescription = null
+                            )
+                        }
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.End,
+                            maxScrollItem = series.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    state = listState
                 ) {
                     items(series.itemCount) { index ->
                         val show = series[index]
@@ -277,17 +405,47 @@ fun Home(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val movies = trendingViewModel.movies.collectAsLazyPagingItems()
+                val listState = rememberLazyListState()
 
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(Res.string.home_movies),
-                    style = Platform.typography().headlineSmall,
-                    maxLines = 1
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.home_movies),
+                        style = Platform.typography().headlineSmall,
+                        maxLines = 1
+                    )
+                    if (!Platform.isAndroid) {
+                        Spacer(modifier = Modifier.weight(1F))
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.Start,
+                            maxScrollItem = movies.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_LEFT,
+                                contentDescription = null
+                            )
+                        }
+                        ScrollIconButton(
+                            listState = listState,
+                            alignment = Alignment.End,
+                            maxScrollItem = movies.itemCount
+                        ) {
+                            MaterialSymbols(
+                                name = MaterialSymbols.KEYBOARD_ARROW_RIGHT,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    state = listState
                 ) {
                     items(movies.itemCount) { index ->
                         val movie = movies[index]

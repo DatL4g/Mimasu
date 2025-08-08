@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.rounded.KeyboardBackspace
 import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.automirrored.rounded.Redo
@@ -161,6 +163,8 @@ data object MaterialSymbols {
     const val RSS_FEED = "rss_feed"
     const val KEYBOARD_ARROW_DOWN = "keyboard_arrow_down"
     const val KEYBOARD_ARROW_UP = "keyboard_arrow_up"
+    const val KEYBOARD_ARROW_LEFT = "keyboard_arrow_left"
+    const val KEYBOARD_ARROW_RIGHT = "keyboard_arrow_right"
     const val PLAY_ARROW = "play_arrow"
     const val GLOBE_LOCATION_PIN = "globe_location_pin"
     const val APARTMENT = "apartment"
@@ -607,6 +611,8 @@ data object MaterialSymbols {
         name.equals(RSS_FEED, ignoreCase = true) -> Icons.Rounded.RssFeed
         name.equals(KEYBOARD_ARROW_DOWN, ignoreCase = true) -> Icons.Rounded.KeyboardArrowDown
         name.equals(KEYBOARD_ARROW_UP, ignoreCase = true) -> Icons.Rounded.KeyboardArrowUp
+        name.equals(KEYBOARD_ARROW_LEFT, ignoreCase = true) -> Icons.AutoMirrored.Rounded.KeyboardArrowLeft
+        name.equals(KEYBOARD_ARROW_RIGHT, ignoreCase = true) -> Icons.AutoMirrored.Rounded.KeyboardArrowRight
         name.equals(PLAY_ARROW, ignoreCase = true) -> Icons.Rounded.PlayArrow
         name.equals(GLOBE_LOCATION_PIN, ignoreCase = true) -> Icons.Rounded.Public
         name.equals(APARTMENT, ignoreCase = true) -> Icons.Rounded.Apartment
