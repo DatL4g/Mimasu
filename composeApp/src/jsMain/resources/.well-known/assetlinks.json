@@ -1,0 +1,14 @@
+[{
+  "relation": [
+    "delegate_permission/common.handle_all_urls",
+    "delegate_permission/common.get_login_creds"
+  ],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "dev.datlag.mimasu",
+    "sha256_cert_fingerprints": [
+      "23:2C:6B:16:A7:9C:48:1E:6F:42:CB:3A:38:9C:C9:A0:92:44:66:E6:E7:7D:B1:12:3D:D9:94:CA:93:44:4C:1F",
+      "81:C8:0F:F7:2F:BB:45:01:DE:D6:52:37:27:4B:CB:13:ED:FE:73:84:9F:C4:1A:1D:E5:FF:C5:F0:BD:DA:E9:F8"
+    ]
+  }
+}]
