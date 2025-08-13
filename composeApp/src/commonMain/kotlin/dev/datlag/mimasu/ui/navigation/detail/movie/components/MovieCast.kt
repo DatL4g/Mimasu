@@ -20,8 +20,8 @@ import dev.datlag.mimasu.composeapp.generated.resources.movie_cast
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
+import io.tolgee.stringResource
 import kotlinx.collections.immutable.toImmutableList
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MovieCast(

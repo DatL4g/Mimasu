@@ -43,8 +43,8 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
+import io.tolgee.stringResource
 import kotlinx.collections.immutable.toImmutableList
-import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

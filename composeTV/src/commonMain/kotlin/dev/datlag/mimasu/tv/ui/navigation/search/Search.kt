@@ -38,7 +38,7 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.SearchInfo
 import dev.datlag.mimasu.ui.viewmodel.SearchViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 fun Search(

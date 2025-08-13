@@ -18,7 +18,7 @@ import dev.datlag.mimasu.ui.navigation.detail.person.PersonDetail
 import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 fun NavigationSuiteScope.movieItem(
     selected: Boolean,

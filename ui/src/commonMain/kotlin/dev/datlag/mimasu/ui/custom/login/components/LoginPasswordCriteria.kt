@@ -6,13 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.datlag.mimasu.ui.common.tolgeeInstance
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.localContentColor
+import io.tolgee.stringResource
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun LoginPasswordCriteria(
@@ -48,6 +49,6 @@ internal fun LoginPasswordCriteria(
     modifier: Modifier = Modifier
 ) = LoginPasswordCriteria(
     fulfilled = fulfilled,
-    text = stringResource(text),
+    text = stringResource(tolgeeInstance(), text),
     modifier = modifier
 )

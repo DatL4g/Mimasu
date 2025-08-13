@@ -59,12 +59,12 @@ performance = "2.0.1"
 placeholder = "1.0.11"
 play-services = "21.4.0"
 review = "2.0.2"
-rive = "10.4.0"
+rive = "10.4.1"
 sekret = "2.2.0"
 serialization = "1.9.0"
 splashscreen = "1.0.1"
 stacktrace-decoroutinator = "2.5.6"
-tolgee = "2.0.0-RC-1"
+tolgee = "1.0.0-alpha01"
 tooling = "1.7.0"
 tv-foundation = "1.0.0-alpha12"
 tv-material = "1.0.1"
@@ -168,7 +168,7 @@ serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-seri
 splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
-tolgee = { group = "dev.datlag.tolgee", name = "compose", version.ref = "tolgee" }
+tolgee = { group = "io.tolgee.mobile-kotlin-sdk", name = "compose", version.ref = "tolgee" }
 tooling = { group = "dev.datlag.tooling", name = "tooling-async", version.ref = "tooling" }
 tooling-compose = { group = "dev.datlag.tooling", name = "tooling-compose", version.ref = "tooling" }
 tooling-decompose = { group = "dev.datlag.tooling", name = "tooling-decompose", version.ref = "tooling" }
@@ -203,7 +203,7 @@ ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 osdetector = { id = "com.google.osdetector", version.ref = "osdetector" }
 performance = { id = "com.google.firebase.firebase-perf", version.ref = "performance" }
-tolgee = { id = "dev.datlag.tolgee", version.ref = "tolgee" }
+tolgee = { id = "io.tolgee.mobile-kotlin-sdk", version.ref = "tolgee" }
 sekret = { id = "dev.datlag.sekret", version.ref = "sekret" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 stacktrace-decoroutinator = { id = "dev.reformator.stacktracedecoroutinator", version.ref = "stacktrace-decoroutinator" }

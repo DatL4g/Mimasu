@@ -7,9 +7,9 @@ import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.currency_billion
 import dev.datlag.mimasu.composeapp.generated.resources.currency_million
 import dev.datlag.mimasu.composeapp.generated.resources.currency_thousand
-import dev.datlag.tolgee.common.sprintf
+import io.tolgee.common.sprintf
+import io.tolgee.stringResource
 import kotlinx.serialization.Serializable
-import org.jetbrains.compose.resources.stringResource
 import kotlin.math.abs
 
 @Composable

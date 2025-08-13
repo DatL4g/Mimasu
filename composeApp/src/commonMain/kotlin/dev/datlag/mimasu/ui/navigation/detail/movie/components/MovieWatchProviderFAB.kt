@@ -32,8 +32,8 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
+import io.tolgee.stringResource
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

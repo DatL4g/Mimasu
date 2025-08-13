@@ -3,7 +3,6 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import com.mikepenz.aboutlibraries.plugin.DuplicateMode
 import com.mikepenz.aboutlibraries.plugin.DuplicateRule
-import dev.datlag.tolgee.common.set
 import dev.datlag.tooling.existsSafely
 import dev.datlag.tooling.scopeCatching
 import dev.datlag.tooling.systemEnv
@@ -35,11 +34,7 @@ val ADMOB_ANDROID_TESTING = "ca-app-pub-3940256099942544~3347511713"
 group = artifact
 
 composeCompiler {
-    featureFlags.set(
-        ComposeFeatureFlag.StrongSkipping,
-        ComposeFeatureFlag.IntrinsicRemember,
-        ComposeFeatureFlag.OptimizeNonSkippingGroups
-    )
+    featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 }
 
 kotlin {
@@ -271,7 +266,7 @@ aboutLibraries {
         duplicationRule.set(DuplicateRule.GROUP)
     }
     export {
-        excludeFields.set("generated")
+        excludeFields.set(setOf("generated"))
         prettyPrint.set(true)
         outputPath.set(project.layout.projectDirectory.file("src/commonMain/composeResources/files/aboutlibraries.json"))
     }

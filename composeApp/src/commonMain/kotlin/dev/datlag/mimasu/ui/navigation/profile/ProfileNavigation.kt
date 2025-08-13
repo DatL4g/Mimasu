@@ -19,7 +19,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.profile
 import dev.datlag.mimasu.firebase.auth.User
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 fun NavigationSuiteScope.profileItem(
     selected: Boolean,

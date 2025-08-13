@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.profile_extension
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 fun ExtensionSection(

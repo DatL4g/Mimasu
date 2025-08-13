@@ -26,6 +26,11 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.AsyncImagePainter.State
 import coil3.compose.rememberAsyncImagePainter
 import dev.datlag.tooling.scopeCatching
+import io.tolgee.Tolgee
+import io.tolgee.common.PlatformTolgee
+import org.kodein.di.DI
+import org.kodein.di.compose.localDI
+import org.kodein.di.instanceOrNull
 import kotlin.reflect.KClass
 
 @Composable
@@ -189,5 +194,18 @@ fun <T : Any> NavController.bringToFront(route: T, builder: NavOptionsBuilder.()
         popBackStack(route = route, inclusive = false)
     } else {
         navigate(route, builder)
+    }
+}
+
+@Composable
+internal fun tolgeeInstance(
+    di: DI = localDI()
+): Tolgee = with(di) {
+    val uiInstance by instanceOrNull<Tolgee>("UiTolgee")
+
+    return@with uiInstance ?: run {
+        val instance by instanceOrNull<Tolgee>()
+
+        instance ?: Tolgee.instance
     }
 }

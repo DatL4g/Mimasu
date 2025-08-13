@@ -1,5 +1,6 @@
 package dev.datlag.mimasu
 
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
@@ -8,10 +9,15 @@ import androidx.lifecycle.lifecycleScope
 import dev.datlag.mimasu.extension.AppInstallReceiver
 import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.tooling.scopeCatching
+import io.tolgee.TolgeeContextWrapper
 
 open class MimasuActivity : ComponentActivity() {
 
     private val appInstallReceiver = AppInstallReceiver()
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(TolgeeContextWrapper.wrap(newBase))
+    }
 
     open fun bindExtension(predicate: () -> Boolean) {
         if (predicate()) {

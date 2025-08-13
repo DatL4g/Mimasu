@@ -25,8 +25,8 @@ import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieOverview
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MoviePosterContent
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieProduction
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieTrailer
+import io.tolgee.stringResource
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.stringResource
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable

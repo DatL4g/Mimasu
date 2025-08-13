@@ -23,7 +23,7 @@ import dev.datlag.mimasu.ui.github
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.onClick
 import dev.datlag.tooling.compose.platform.shapes
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 fun RepositorySection(

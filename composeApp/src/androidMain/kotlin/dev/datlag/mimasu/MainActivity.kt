@@ -37,11 +37,6 @@ class MainActivity : AdActivity() {
             ?: DIAware::class.safeCast(applicationContext)?.di
             ?: DIAware::class.safeCast(application)?.di
 
-    // ToDo("use Tolgee wrapper")
-    override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(newBase)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         fun exit(reason: String?) {
             reason?.let { Logger.e(messageString = it) }

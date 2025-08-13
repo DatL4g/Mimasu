@@ -61,8 +61,8 @@ import dev.datlag.mimasu.ui.rememberAdjustableState
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.compose.TargetIO
+import io.tolgee.stringResource
 import kotlinx.coroutines.Dispatchers
-import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration

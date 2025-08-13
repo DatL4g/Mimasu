@@ -34,7 +34,7 @@ import dev.datlag.mimasu.extension.UpdateProviderAndroid
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
 

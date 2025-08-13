@@ -21,7 +21,7 @@ import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable

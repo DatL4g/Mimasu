@@ -22,7 +22,7 @@ import dev.datlag.mimasu.tv.ui.navigation.home.components.BookmarkedMovies
 import dev.datlag.mimasu.tv.ui.navigation.home.components.BookmarkedShows
 import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 fun Home(

@@ -18,7 +18,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source
 import dev.datlag.mimasu.composeapp.generated.resources.profile_open_source_text
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -15,8 +15,8 @@ import dev.datlag.mimasu.composeapp.generated.resources.person_also_known_as
 import dev.datlag.mimasu.tmdb.model.details.Person
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
+import io.tolgee.stringResource
 import kotlinx.collections.immutable.toImmutableList
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PersonAKA(

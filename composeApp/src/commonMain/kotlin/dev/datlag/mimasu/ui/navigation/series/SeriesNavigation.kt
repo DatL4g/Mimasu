@@ -17,7 +17,7 @@ import dev.datlag.mimasu.ui.navigation.detail.show.ShowDetail
 import dev.datlag.mimasu.ui.navigation.rememberListDetailController
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 fun NavigationSuiteScope.seriesItem(
     selected: Boolean,

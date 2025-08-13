@@ -28,8 +28,8 @@ import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.tv_movie_cast
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
+import io.tolgee.stringResource
 import kotlinx.collections.immutable.toImmutableList
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MovieCast(

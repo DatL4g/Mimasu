@@ -57,7 +57,7 @@ import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.ifTrue
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 internal fun LazyItemScope.BookmarkedShows(

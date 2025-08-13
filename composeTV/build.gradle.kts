@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.splashscreen)
             implementation(libs.placeholder)
+            implementation(libs.tolgee)
 
             implementation(libs.bundles.android.media)
 

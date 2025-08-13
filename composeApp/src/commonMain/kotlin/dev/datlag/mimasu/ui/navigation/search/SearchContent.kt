@@ -34,7 +34,7 @@ import dev.datlag.mimasu.ui.custom.ScrollIconButton
 import dev.datlag.mimasu.ui.custom.ShowCard
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 fun SearchContent(

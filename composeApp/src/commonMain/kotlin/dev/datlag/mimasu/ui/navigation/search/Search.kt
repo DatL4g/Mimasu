@@ -37,7 +37,7 @@ import dev.datlag.mimasu.ui.viewmodel.SearchViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable

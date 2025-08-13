@@ -18,7 +18,7 @@ import dev.datlag.mimasu.tv.ui.custom.MoviesSection
 import dev.datlag.mimasu.ui.common.plus
 import dev.datlag.mimasu.ui.viewmodel.MovieListsViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 fun Movies(

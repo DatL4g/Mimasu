@@ -49,7 +49,7 @@ import dev.datlag.mimasu.ui.viewmodel.TrendingViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 fun Home(
@@ -260,7 +260,6 @@ fun Home(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
                         text = stringResource(Res.string.home_people),
                         style = Platform.typography().headlineSmall,
                         maxLines = 1

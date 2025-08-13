@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.collection)
             implementation(libs.kermit)
             implementation(libs.ktor)
+            implementation(libs.tolgee)
 
             implementation(libs.coil)
             implementation(libs.coil.network)
@@ -74,6 +75,10 @@ kotlin {
             implementation(libs.bundles.android.cast)
             implementation(libs.bundles.android.media)
 
+            implementation(project(":rive"))
+        }
+
+        jsMain.dependencies {
             implementation(project(":rive"))
         }
 

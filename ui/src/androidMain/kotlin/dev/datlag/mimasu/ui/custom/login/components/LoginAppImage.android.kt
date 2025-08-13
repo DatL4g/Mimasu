@@ -32,12 +32,13 @@ import dev.datlag.mimasu.ui.AppInitializer
 import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.supportsRive
+import dev.datlag.mimasu.ui.common.tolgeeInstance
 import dev.datlag.mimasu.ui.login_rive_bunny_license
 import dev.datlag.mimasu.ui.login_rive_bunny_marketplace
 import dev.datlag.mimasu.ui.login_rive_bunny_owner
 import dev.datlag.mimasu.ui.login_rive_bunny_text
 import dev.datlag.mimasu.ui.login_rive_bunny_title
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -88,10 +89,19 @@ internal actual fun LoginAppImage(
                     RichTooltip(
                         caretSize = DpSize(32.dp, 16.dp),
                         title = {
-                            Text(stringResource(UiRes.string.login_rive_bunny_title))
+                            Text(stringResource(tolgeeInstance(), UiRes.string.login_rive_bunny_title))
                         },
                         text = {
-                            Text(stringResource(UiRes.string.login_rive_bunny_text, stringResource(UiRes.string.login_rive_bunny_owner)))
+                            Text(
+                                text = stringResource(
+                                    tolgee = tolgeeInstance(),
+                                    resource = UiRes.string.login_rive_bunny_text,
+                                    stringResource(
+                                        tolgee = tolgeeInstance(),
+                                        resource = UiRes.string.login_rive_bunny_owner
+                                    )
+                                )
+                            )
                         },
                         action = {
                             val uriHandler = LocalUriHandler.current
@@ -106,7 +116,7 @@ internal actual fun LoginAppImage(
                                     },
                                     shapes = ButtonDefaults.shapes()
                                 ) {
-                                    Text(stringResource(UiRes.string.login_rive_bunny_marketplace))
+                                    Text(stringResource(tolgeeInstance(), UiRes.string.login_rive_bunny_marketplace))
                                 }
                                 TextButton(
                                     onClick = {
@@ -114,7 +124,7 @@ internal actual fun LoginAppImage(
                                     },
                                     shapes = ButtonDefaults.shapes()
                                 ) {
-                                    Text(stringResource(UiRes.string.login_rive_bunny_license))
+                                    Text(stringResource(tolgeeInstance(), UiRes.string.login_rive_bunny_license))
                                 }
                             }
                         }

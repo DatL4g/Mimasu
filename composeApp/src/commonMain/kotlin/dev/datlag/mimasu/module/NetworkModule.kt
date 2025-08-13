@@ -8,6 +8,7 @@ import coil3.memory.MemoryCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
+import dev.datlag.mimasu.common.instanceOrInit
 import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.firebase.auth.FirebaseAuthService
 import dev.datlag.mimasu.firebase.auth.api.DisposableDebounce
@@ -19,16 +20,19 @@ import dev.datlag.mimasu.ui.viewmodel.KodeinViewModelFactory
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.TargetIO
 import io.ktor.client.HttpClient
+import io.tolgee.Tolgee
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import okio.FileSystem
 import org.kodein.di.DI
+import org.kodein.di.bindEagerSingleton
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
 data object NetworkModule {
 
     const val NAME = "NetworkModule"
+    private const val TOLGEE_CDN = "https://cdn.tolg.ee/797a90722333a2fd606264f021d7c2b9"
 
     val di: DI.Module = DI.Module(NAME) {
         import(PlatformModule.di)
@@ -96,6 +100,33 @@ data object NetworkModule {
             GoogleDoH.create(
                 client = instance()
             )
+        }
+        bindEagerSingleton<Tolgee> {
+            Tolgee.instanceOrInit {
+                network {
+                    client(instance<HttpClient>())
+                    context(Dispatchers.Virtual ?: Dispatchers.TargetIO)
+                }
+                contentDelivery {
+                    formatter(Tolgee.Formatter.ICU)
+                    url(TOLGEE_CDN)
+                }
+            }
+        }
+        bindSingleton<Tolgee>(tag = "UiTolgee") {
+            Tolgee.new {
+                network {
+                    client(instance<HttpClient>())
+                    context(Dispatchers.Virtual ?: Dispatchers.TargetIO)
+                }
+                contentDelivery {
+                    formatter(Tolgee.Formatter.ICU)
+                    url(TOLGEE_CDN)
+                    path { language ->
+                        "ui/$language.json"
+                    }
+                }
+            }
         }
     }
 }

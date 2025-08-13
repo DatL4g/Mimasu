@@ -46,11 +46,9 @@ data object Network {
             if (tmdb.isFailure) {
                 Config.Failure.Fetching(tmdb.exceptionOrNull())
             } else {
-                val tolgee = remoteService.getNullableString(Config.TOLGEE_KEY)?.ifBlank { null }
 
                 Config.Success(
-                    tmdb = tmdb.getOrNull() ?: return@update Config.Failure.Fetching(),
-                    tolgee = tolgee
+                    tmdb = tmdb.getOrNull() ?: return@update Config.Failure.Fetching()
                 )
             }
         }
@@ -65,11 +63,6 @@ data object Network {
 
         fun getOrThrow(): Success {
             return this as? Success ?: throw AccessException(this)
-        }
-
-        fun tolgeeApiKey(): String? = when (this) {
-            is Success -> tolgee?.ifBlank { null }
-            else -> null
         }
 
         @Serializable
@@ -90,14 +83,12 @@ data object Network {
         @Serializable
         data class Success(
             @Secret val tmdb: String,
-            @Secret val tolgee: String?
         ) : Config
 
         class AccessException(state: Config) : Exception("Tried to access config data while in $state state.")
 
         companion object {
             internal const val TMDB_KEY = "tmdb_api_key"
-            internal const val TOLGEE_KEY = "tolgee_api_key"
         }
     }
 }

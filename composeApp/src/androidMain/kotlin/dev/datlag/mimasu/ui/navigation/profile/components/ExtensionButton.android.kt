@@ -14,7 +14,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.Res
 import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_info
 import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_open
 import dev.datlag.mimasu.extension.AIDLService
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

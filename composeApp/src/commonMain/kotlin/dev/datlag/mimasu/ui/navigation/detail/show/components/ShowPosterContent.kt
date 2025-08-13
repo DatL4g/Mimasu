@@ -37,8 +37,8 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.setFrom
+import io.tolgee.stringResource
 import kotlinx.collections.immutable.toImmutableList
-import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 

@@ -22,7 +22,7 @@ import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.PersonViewModel
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 fun NavigationSuiteScope.searchItem(
     selected: Boolean,

@@ -11,7 +11,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_header
 import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_info_close
 import dev.datlag.mimasu.composeapp.generated.resources.profile_extension_text
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

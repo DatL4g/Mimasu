@@ -22,7 +22,7 @@ import dev.datlag.mimasu.tv.tv_home_your_movies
 import dev.datlag.mimasu.tv.ui.custom.MovieCard
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 internal fun BookmarkedMovies(

@@ -16,6 +16,10 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    js(IR) {
+        browser()
+    }
+
     cocoapods {
         pod("RiveRuntime")
     }
@@ -32,6 +36,10 @@ kotlin {
 
         androidMain.dependencies {
             api(libs.rive.android)
+        }
+
+        jsMain.dependencies {
+            implementation(npm("@rive-app/canvas", "2.31.1"))
         }
     }
 }

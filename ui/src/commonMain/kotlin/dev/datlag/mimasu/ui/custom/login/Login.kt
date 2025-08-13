@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.rememberGoogleAuthParams
+import dev.datlag.mimasu.ui.common.tolgeeInstance
 import dev.datlag.mimasu.ui.custom.EMailTextField
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.login.components.LoginAgreement
@@ -59,14 +60,11 @@ import dev.datlag.mimasu.ui.login_password
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.mimasu.ui.viewmodel.loginViewModel
 import dev.datlag.tooling.Platform
-import dev.datlag.tooling.compose.platform.PlatformButton
-import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.PlatformIconButton
-import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.localTextStyle
 import dev.datlag.tooling.compose.platform.rememberIsTv
 import dev.datlag.tooling.compose.withMainContext
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -136,7 +134,7 @@ fun Login(
                             loginViewModel.updateEmail(it)
                         },
                         label = {
-                            Text(text = stringResource(UiRes.string.login_email))
+                            Text(text = stringResource(tolgeeInstance(), UiRes.string.login_email))
                         },
                         textStyle = textStyle,
                         isError = emailHasError || loginResult is LoginViewModel.LoginResult.Disposable,
@@ -163,7 +161,7 @@ fun Login(
                         )
                     },
                     label = {
-                        Text(text = stringResource(UiRes.string.login_password))
+                        Text(text = stringResource(tolgeeInstance(), UiRes.string.login_password))
                     },
                     textStyle = textStyle,
                     trailingIcon = if (passwordValue.isBlank()) null else {

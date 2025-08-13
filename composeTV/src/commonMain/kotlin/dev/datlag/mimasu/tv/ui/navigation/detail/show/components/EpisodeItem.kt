@@ -41,10 +41,10 @@ import dev.datlag.tooling.compose.TargetIO
 import dev.datlag.tooling.compose.withMainContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 import dev.datlag.mimasu.extension.model.Show as Extension
+import io.tolgee.stringResource
 
 @Composable
 fun EpisodeItem(

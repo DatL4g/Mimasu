@@ -33,9 +33,9 @@ import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.onClick
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.tooling.compose.platform.typography
+import io.tolgee.stringResource
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
-import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

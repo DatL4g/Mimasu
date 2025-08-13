@@ -20,7 +20,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.home_today
 import dev.datlag.mimasu.composeapp.generated.resources.home_week
 import dev.datlag.mimasu.tmdb.model.trending.TimeWindow
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

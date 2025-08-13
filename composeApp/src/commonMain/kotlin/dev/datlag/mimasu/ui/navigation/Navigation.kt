@@ -308,13 +308,5 @@ fun Navigation() {
                 )
             }
         }
-
-        LaunchedMain(user) {
-            if (!Platform.isJs && user == null) {
-                controller.bringToFront(Navigation.Login) {
-                    launchSingleTop = true
-                }
-            }
-        }
     }
 }

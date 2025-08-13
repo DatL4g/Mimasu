@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.ui.UiRes
+import dev.datlag.mimasu.ui.common.tolgeeInstance
 import dev.datlag.mimasu.ui.login_forgot_password
 import dev.datlag.mimasu.ui.login_password_criteria_length_minimum
 import dev.datlag.mimasu.ui.login_password_criteria_lowercase
@@ -28,7 +29,7 @@ import dev.datlag.mimasu.ui.login_password_criteria_uppercase
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.rememberIsTv
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 
 @Composable
 internal fun LoginPasswordCriteriaSection(
@@ -82,7 +83,7 @@ internal fun LoginPasswordCriteriaSection(
                 },
                 enabled = emailValid && !resetPasswordSent
             ) {
-                Text(text = stringResource(UiRes.string.login_forgot_password))
+                Text(text = stringResource(tolgeeInstance(), UiRes.string.login_forgot_password))
             }
         }
     }

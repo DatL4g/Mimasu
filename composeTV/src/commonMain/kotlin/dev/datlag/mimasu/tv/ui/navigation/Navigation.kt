@@ -64,8 +64,8 @@ import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
+import io.tolgee.stringResource
 import kotlinx.serialization.Serializable
-import org.jetbrains.compose.resources.stringResource
 
 object Navigation {
 

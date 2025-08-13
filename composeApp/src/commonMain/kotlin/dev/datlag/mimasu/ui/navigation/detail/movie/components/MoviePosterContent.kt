@@ -31,7 +31,7 @@ import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
-import org.jetbrains.compose.resources.stringResource
+import io.tolgee.stringResource
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie

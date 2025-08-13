@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ClipEntry
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.firebase.auth.provider.google.GoogleAuthParams
+import io.tolgee.stringResource
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 expect fun rememberGitHubAuthParams(): GitHubAuthParams?
