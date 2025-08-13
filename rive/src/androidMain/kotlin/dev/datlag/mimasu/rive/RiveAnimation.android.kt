@@ -19,6 +19,7 @@ actual fun RiveAnimation(
     alignment: RiveAlignment,
     loop: RiveLoop,
     modifier: Modifier,
+    onUnavailable: () -> Unit,
     state: (RiveState) -> Unit
 ) {
     var used by remember(bytes, artboardName, animationName, stateMachineName) {

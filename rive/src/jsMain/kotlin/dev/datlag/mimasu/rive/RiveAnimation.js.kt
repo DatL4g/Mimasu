@@ -27,6 +27,7 @@ actual fun RiveAnimation(
     alignment: RiveAlignment,
     loop: RiveLoop,
     modifier: Modifier,
+    onUnavailable: () -> Unit,
     state: (RiveState) -> Unit
 ) {
     var rive by remember { mutableStateOf<Rive?>(null) }
@@ -37,22 +38,23 @@ actual fun RiveAnimation(
             document.createElement("canvas") as HTMLCanvasElement
         },
         update = { canvas ->
-            console.log("Rive in Compose, checking WebGL1: ${isWebGL1Supported(canvas)}")
-            console.log("Rive in Compose, checking WebGL2: ${isWebGL2Supported(canvas)}")
+            if (!isWebGL2Supported(canvas)) {
+                onUnavailable()
+            }
 
             val params = RiveParameters {
                 this.canvas = canvas
                 this.buffer = bytes.toInt8Array().buffer
                 this.artboard = artboardName
                 this.autoplay = autoplay
-                this.onLoad = {
-                    console.log("Rive onLoad called", it)
-                }
                 this.onLoadError = {
-                    console.warn("Rive onLoadError called", it)
+                    onUnavailable()
                 }
             }
-            rive = Rive(params)
+            rive?.cleanup()
+            rive = Rive(params).also {
+                it.resizeDrawingSurfaceToCanvas()
+            }
         },
         onRelease = {
             rive?.cleanup()

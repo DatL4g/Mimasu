@@ -50,8 +50,9 @@ internal actual fun LoginAppImage(
     riveModifier: Modifier
 ) {
     val context = LocalContext.current
+    var fallback by remember { mutableStateOf(false) }
 
-    if (!context.supportsRive()) {
+    if (fallback || !context.supportsRive()) {
         Image(
             painter = imagePainter,
             contentDescription = null,
@@ -133,7 +134,10 @@ internal actual fun LoginAppImage(
             ) {
                 RiveAnimation(
                     bytes = bytes,
-                    modifier = riveModifier
+                    modifier = riveModifier,
+                    onUnavailable = {
+                        fallback = true
+                    }
                 ) { state ->
 
                     state.setBoolean(

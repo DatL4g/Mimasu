@@ -14,5 +14,6 @@ expect fun RiveAnimation(
     alignment: RiveAlignment = RiveAlignment.Center,
     loop: RiveLoop = RiveLoop.Auto,
     modifier: Modifier = Modifier,
+    onUnavailable: () -> Unit = { },
     state: (RiveState) -> Unit
 )
