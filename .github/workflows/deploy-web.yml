@@ -45,6 +45,10 @@ jobs:
       - name: Generate Sekrets
         run: ./gradlew composeApp:generateSekret
 
+      - name: Build
+        continue-on-error: true
+        run: ./gradlew build
+
       # 4. Build the WasmJS App
       - name: "🛠️ Build WasmJS App"
         run: gradle :composeApp:jsBrowserDistribution

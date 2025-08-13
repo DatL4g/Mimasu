@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.ui.UiRes
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.login_forgot_password
 import dev.datlag.mimasu.ui.login_password_criteria_length_minimum
 import dev.datlag.mimasu.ui.login_password_criteria_lowercase
@@ -83,7 +83,7 @@ internal fun LoginPasswordCriteriaSection(
                 },
                 enabled = emailValid && !resetPasswordSent
             ) {
-                Text(text = stringResource(tolgeeInstance(), UiRes.string.login_forgot_password))
+                Text(text = uiStringRes(UiRes.string.login_forgot_password))
             }
         }
     }

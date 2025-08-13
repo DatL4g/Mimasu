@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
@@ -49,6 +49,6 @@ internal fun LoginPasswordCriteria(
     modifier: Modifier = Modifier
 ) = LoginPasswordCriteria(
     fulfilled = fulfilled,
-    text = stringResource(tolgeeInstance(), text),
+    text = uiStringRes(text),
     modifier = modifier
 )

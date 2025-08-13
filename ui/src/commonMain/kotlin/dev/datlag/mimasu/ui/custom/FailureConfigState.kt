@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.clipEntryOf
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.config_fail_config_title
 import dev.datlag.mimasu.ui.config_fail_connecting_services
 import dev.datlag.mimasu.ui.config_fail_data
@@ -54,8 +54,8 @@ fun FailureConfigState(
             PlatformText(
                 modifier = Modifier.fillParentMaxWidth().padding(horizontal = 16.dp),
                 text = when (state) {
-                    is Network.Config.Failure.Initialize -> stringResource(tolgeeInstance(), UiRes.string.config_fail_initialize_title)
-                    is Network.Config.Failure.Fetching -> stringResource(tolgeeInstance(), UiRes.string.config_fail_config_title)
+                    is Network.Config.Failure.Initialize -> uiStringRes(UiRes.string.config_fail_initialize_title)
+                    is Network.Config.Failure.Fetching -> uiStringRes(UiRes.string.config_fail_config_title)
                 },
                 style = Platform.typography().headlineMedium,
                 textAlign = TextAlign.Center
@@ -64,7 +64,7 @@ fun FailureConfigState(
         item {
             PlatformText(
                 modifier = Modifier.fillParentMaxWidth().padding(vertical = 32.dp, horizontal = 16.dp),
-                text = stringResource(tolgeeInstance(), UiRes.string.config_fail_description),
+                text = uiStringRes(UiRes.string.config_fail_description),
                 textAlign = TextAlign.Center,
                 softWrap = true
             )
@@ -104,7 +104,7 @@ fun FailureConfigState(
                     name = MaterialSymbols.CLOUD_OFF,
                     contentDescription = null,
                 )
-                PlatformText(text = stringResource(tolgeeInstance(), UiRes.string.config_fail_data))
+                PlatformText(text = uiStringRes(UiRes.string.config_fail_data))
             }
         }
         item {
@@ -117,7 +117,7 @@ fun FailureConfigState(
                     name = MaterialSymbols.WARNING,
                     contentDescription = null
                 )
-                PlatformText(text = stringResource(tolgeeInstance(), UiRes.string.config_fail_connecting_services))
+                PlatformText(text = uiStringRes(UiRes.string.config_fail_connecting_services))
             }
         }
         item {
@@ -128,7 +128,7 @@ fun FailureConfigState(
                 onClick = {
                     uriHandler.openUri(Constants.GITHUB_REPOSITORY)
                 },
-                text = stringResource(tolgeeInstance(), UiRes.string.github)
+                text = uiStringRes(UiRes.string.github)
             )
         }
     }

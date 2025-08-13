@@ -46,7 +46,9 @@ actual fun RiveAnimation(
                 this.canvas = canvas
                 this.buffer = bytes.toInt8Array().buffer
                 this.artboard = artboardName
+                this.animations = animationName
                 this.autoplay = autoplay
+                this.stateMachines = stateMachineName
                 this.onLoadError = {
                     onUnavailable()
                 }
@@ -54,6 +56,7 @@ actual fun RiveAnimation(
             rive?.cleanup()
             rive = Rive(params).also {
                 it.resizeDrawingSurfaceToCanvas()
+                state(RiveState(it))
             }
         },
         onRelease = {

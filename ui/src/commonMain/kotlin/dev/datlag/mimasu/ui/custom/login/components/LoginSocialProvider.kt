@@ -8,12 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.firebase.auth.provider.github.GitHubAuthParams
 import dev.datlag.mimasu.ui.UiRes
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.custom.GitHubButton
 import dev.datlag.mimasu.ui.custom.GoogleButton
 import dev.datlag.mimasu.ui.github
 import dev.datlag.mimasu.ui.google
-import io.tolgee.stringResource
 
 @Composable
 internal fun LoginSocialProvider(
@@ -33,14 +32,14 @@ internal fun LoginSocialProvider(
             GitHubButton(
                 modifier = Modifier.weight(1F),
                 onClick = onGitHubClicked,
-                text = stringResource(tolgeeInstance(), UiRes.string.github)
+                text = uiStringRes(UiRes.string.github)
             )
         }
         if (hasGoogleProvider) {
             GoogleButton(
                 modifier = Modifier.weight(1F),
                 onClick = onGoogleClicked,
-                text = stringResource(tolgeeInstance(), UiRes.string.google)
+                text = uiStringRes(UiRes.string.google)
             )
         }
     }

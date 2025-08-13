@@ -32,7 +32,7 @@ import dev.datlag.mimasu.ui.AppInitializer
 import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.supportsRive
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.login_rive_bunny_license
 import dev.datlag.mimasu.ui.login_rive_bunny_marketplace
 import dev.datlag.mimasu.ui.login_rive_bunny_owner
@@ -90,15 +90,13 @@ internal actual fun LoginAppImage(
                     RichTooltip(
                         caretSize = DpSize(32.dp, 16.dp),
                         title = {
-                            Text(stringResource(tolgeeInstance(), UiRes.string.login_rive_bunny_title))
+                            Text(uiStringRes(UiRes.string.login_rive_bunny_title))
                         },
                         text = {
                             Text(
-                                text = stringResource(
-                                    tolgee = tolgeeInstance(),
+                                text = uiStringRes(
                                     resource = UiRes.string.login_rive_bunny_text,
-                                    stringResource(
-                                        tolgee = tolgeeInstance(),
+                                    uiStringRes(
                                         resource = UiRes.string.login_rive_bunny_owner
                                     )
                                 )
@@ -117,7 +115,7 @@ internal actual fun LoginAppImage(
                                     },
                                     shapes = ButtonDefaults.shapes()
                                 ) {
-                                    Text(stringResource(tolgeeInstance(), UiRes.string.login_rive_bunny_marketplace))
+                                    Text(uiStringRes(UiRes.string.login_rive_bunny_marketplace))
                                 }
                                 TextButton(
                                     onClick = {
@@ -125,7 +123,7 @@ internal actual fun LoginAppImage(
                                     },
                                     shapes = ButtonDefaults.shapes()
                                 ) {
-                                    Text(stringResource(tolgeeInstance(), UiRes.string.login_rive_bunny_license))
+                                    Text(uiStringRes(UiRes.string.login_rive_bunny_license))
                                 }
                             }
                         }

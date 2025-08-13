@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.firebase.auth.provider.email.EmailAuthParams
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.rememberGoogleAuthParams
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.custom.EMailTextField
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.login.components.LoginAgreement
@@ -134,7 +134,7 @@ fun Login(
                             loginViewModel.updateEmail(it)
                         },
                         label = {
-                            Text(text = stringResource(tolgeeInstance(), UiRes.string.login_email))
+                            Text(text = uiStringRes(UiRes.string.login_email))
                         },
                         textStyle = textStyle,
                         isError = emailHasError || loginResult is LoginViewModel.LoginResult.Disposable,
@@ -161,7 +161,7 @@ fun Login(
                         )
                     },
                     label = {
-                        Text(text = stringResource(tolgeeInstance(), UiRes.string.login_password))
+                        Text(text = uiStringRes(UiRes.string.login_password))
                     },
                     textStyle = textStyle,
                     trailingIcon = if (passwordValue.isBlank()) null else {

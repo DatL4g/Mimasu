@@ -3,7 +3,7 @@ package dev.datlag.mimasu.ui.custom.login.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.datlag.mimasu.ui.UiRes
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.login_new_password
 import dev.datlag.mimasu.ui.login_sign_in
 import dev.datlag.tooling.compose.platform.PlatformButton
@@ -35,9 +35,9 @@ internal fun LoginSignInButton(
         )
     ) {
         if (passwordReset) {
-            PlatformText(text = stringResource(tolgeeInstance(), UiRes.string.login_new_password))
+            PlatformText(text = uiStringRes(UiRes.string.login_new_password))
         } else {
-            PlatformText(text = stringResource(tolgeeInstance(), UiRes.string.login_sign_in))
+            PlatformText(text = uiStringRes(UiRes.string.login_sign_in))
         }
     }
 }

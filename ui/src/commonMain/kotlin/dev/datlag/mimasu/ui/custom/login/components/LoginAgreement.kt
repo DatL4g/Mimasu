@@ -13,12 +13,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.ui.UiRes
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.login_agreement
 import dev.datlag.mimasu.ui.login_privacy_policy
 import dev.datlag.mimasu.ui.login_terms_of_service
 import dev.datlag.tooling.compose.platform.PlatformText
-import io.tolgee.stringResource
 import kotlin.math.min
 
 @Composable
@@ -26,9 +25,9 @@ internal fun LoginAgreement(
     modifier: Modifier = Modifier
 ) {
     val uriHandler = LocalUriHandler.current
-    val rawAgreement = stringResource(tolgeeInstance(), UiRes.string.login_agreement)
-    val terms = stringResource(tolgeeInstance(), UiRes.string.login_terms_of_service)
-    val privacy = stringResource(tolgeeInstance(), UiRes.string.login_privacy_policy)
+    val rawAgreement = uiStringRes(UiRes.string.login_agreement)
+    val terms = uiStringRes(UiRes.string.login_terms_of_service)
+    val privacy = uiStringRes(UiRes.string.login_privacy_policy)
     val agreement = remember(rawAgreement, terms, privacy) {
         buildAnnotatedString {
             val termsIndex = rawAgreement.indexOf("{terms}")

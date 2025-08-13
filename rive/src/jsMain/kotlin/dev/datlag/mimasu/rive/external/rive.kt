@@ -12,7 +12,9 @@ external interface RiveParameters {
     var src: String?
     var buffer: ArrayBuffer?
     var artboard: String?
+    var animations: String?
     var autoplay: Boolean?
+    var stateMachines: String?
 
     var onLoad: EventCallback?
     var onLoadError: EventCallback?

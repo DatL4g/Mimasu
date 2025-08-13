@@ -20,18 +20,17 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import coil3.compose.AsyncImagePainter
 import coil3.compose.AsyncImagePainter.State
 import coil3.compose.rememberAsyncImagePainter
 import dev.datlag.tooling.scopeCatching
 import io.tolgee.Tolgee
-import io.tolgee.common.PlatformTolgee
+import io.tolgee.stringResource
+import org.jetbrains.compose.resources.StringResource
 import org.kodein.di.DI
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
-import kotlin.reflect.KClass
 
 @Composable
 operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
@@ -198,14 +197,28 @@ fun <T : Any> NavController.bringToFront(route: T, builder: NavOptionsBuilder.()
 }
 
 @Composable
-internal fun tolgeeInstance(
+private fun tolgeeInstance(
     di: DI = localDI()
-): Tolgee = with(di) {
+): Tolgee? = with(di) {
     val uiInstance by instanceOrNull<Tolgee>("UiTolgee")
 
     return@with uiInstance ?: run {
         val instance by instanceOrNull<Tolgee>()
 
-        instance ?: Tolgee.instance
+        instance ?: Tolgee.instanceOrNull
     }
+}
+
+@Composable
+fun uiStringRes(resource: StringResource): String {
+    return tolgeeInstance()?.let {
+        stringResource(tolgee = it, resource = resource)
+    } ?: stringResource(resource = resource)
+}
+
+@Composable
+fun uiStringRes(resource: StringResource, vararg formatArgs: Any): String {
+    return tolgeeInstance()?.let {
+        stringResource(tolgee = it, resource = resource, formatArgs = formatArgs)
+    } ?: stringResource(resource = resource, formatArgs = formatArgs)
 }

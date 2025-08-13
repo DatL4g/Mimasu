@@ -8,10 +8,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.ui.UiRes
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.login_or_login_with
 import dev.datlag.tooling.compose.platform.PlatformText
-import io.tolgee.stringResource
 
 @Composable
 internal fun LoginSocialProviderDivider(
@@ -28,7 +27,7 @@ internal fun LoginSocialProviderDivider(
             HorizontalDivider(
                 modifier = Modifier.weight(1F)
             )
-            PlatformText(text = stringResource(tolgeeInstance(), UiRes.string.login_or_login_with))
+            PlatformText(text = uiStringRes(UiRes.string.login_or_login_with))
             HorizontalDivider(
                 modifier = Modifier.weight(1F)
             )

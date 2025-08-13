@@ -47,6 +47,7 @@ import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.rememberGitHubAuthParams
 import dev.datlag.mimasu.ui.common.rememberGoogleAuthParams
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.github
 import dev.datlag.mimasu.ui.google
@@ -229,11 +230,11 @@ fun Profile(
                     Icon(
                         modifier = Modifier.size(24.dp),
                         imageVector = MaterialSymbols.GoogleGLogo,
-                        contentDescription = stringResource(UiRes.string.google),
+                        contentDescription = uiStringRes(UiRes.string.google),
                         tint = Color.Unspecified
                     )
                     Text(
-                        text = stringResource(UiRes.string.google)
+                        text = uiStringRes(UiRes.string.google)
                     )
                     Spacer(modifier = Modifier.weight(1F))
                     Button(
@@ -276,10 +277,10 @@ fun Profile(
                     Icon(
                         modifier = Modifier.size(24.dp),
                         imageVector = MaterialSymbols.Github,
-                        contentDescription = stringResource(UiRes.string.github)
+                        contentDescription = uiStringRes(UiRes.string.github)
                     )
                     Text(
-                        text = stringResource(UiRes.string.github)
+                        text = uiStringRes(UiRes.string.github)
                     )
                     Spacer(modifier = Modifier.weight(1F))
                     Button(

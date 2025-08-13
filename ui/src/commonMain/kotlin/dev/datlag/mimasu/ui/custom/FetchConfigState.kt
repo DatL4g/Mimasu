@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.ui.UiRes
-import dev.datlag.mimasu.ui.common.tolgeeInstance
+import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.fetch_connecting_services
 import dev.datlag.mimasu.ui.fetch_description
 import dev.datlag.mimasu.ui.fetch_initialize_app
@@ -38,7 +38,7 @@ fun FetchConfigState() {
         item {
             PlatformText(
                 modifier = Modifier.fillParentMaxWidth().padding(horizontal = 16.dp),
-                text = stringResource(tolgeeInstance(), UiRes.string.fetch_title),
+                text = uiStringRes(UiRes.string.fetch_title),
                 style = Platform.typography().headlineMedium,
                 textAlign = TextAlign.Center
             )
@@ -46,7 +46,7 @@ fun FetchConfigState() {
         item {
             PlatformText(
                 modifier = Modifier.fillParentMaxWidth().padding(vertical = 32.dp, horizontal = 16.dp),
-                text = stringResource(tolgeeInstance(), UiRes.string.fetch_description),
+                text = uiStringRes(UiRes.string.fetch_description),
                 textAlign = TextAlign.Center,
                 softWrap = true
             )
@@ -61,7 +61,7 @@ fun FetchConfigState() {
                     name = MaterialSymbols.CLOUD_DOWNLOAD,
                     contentDescription = null,
                 )
-                PlatformText(text = stringResource(tolgeeInstance(), UiRes.string.fetch_loading_data))
+                PlatformText(text = uiStringRes(UiRes.string.fetch_loading_data))
             }
         }
         item {
@@ -74,7 +74,7 @@ fun FetchConfigState() {
                     name = MaterialSymbols.SETTINGS_ETHERNET,
                     contentDescription = null,
                 )
-                PlatformText(text = stringResource(tolgeeInstance(), UiRes.string.fetch_connecting_services))
+                PlatformText(text = uiStringRes(UiRes.string.fetch_connecting_services))
             }
         }
         item {
@@ -87,7 +87,7 @@ fun FetchConfigState() {
                     name = MaterialSymbols.PLAY_CIRCLE,
                     contentDescription = null,
                 )
-                PlatformText(text = stringResource(tolgeeInstance(), UiRes.string.fetch_initialize_app))
+                PlatformText(text = uiStringRes(UiRes.string.fetch_initialize_app))
             }
         }
     }
