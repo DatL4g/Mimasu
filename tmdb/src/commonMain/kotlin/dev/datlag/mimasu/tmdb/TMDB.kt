@@ -20,7 +20,6 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
-import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
 @ConsistentCopyVisibility

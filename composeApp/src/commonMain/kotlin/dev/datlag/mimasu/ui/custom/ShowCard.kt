@@ -28,6 +28,7 @@ import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
+import dev.datlag.mimasu.ui.common.rememberResolvedKanaTitles
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 
@@ -36,13 +37,15 @@ fun ShowCard(
     tv: TV?,
     onClick: (TV) -> Unit = { }
 ) {
+    val (romajiTitle, originalTitle) = rememberResolvedKanaTitles(tv)
+
     ShowCard(
         onClick = { tv?.let(onClick) },
         placeholder = tv == null,
         id = tv?.id,
         posters = tv.posters(fallbackShow = null),
-        name = tv?.name,
-        originalName = tv?.originalName,
+        name = romajiTitle ?: tv?.name,
+        originalName = originalTitle ?: tv?.originalName,
     )
 }
 
@@ -51,13 +54,15 @@ fun ShowCard(
     show: Show?,
     onClick: (Show) -> Unit = { }
 ) {
+    val (romajiTitle, originalTitle) = rememberResolvedKanaTitles(show)
+
     ShowCard(
         onClick = { show?.let(onClick) },
         placeholder = show == null,
         id = show?.id,
         posters = show.posters(fallbackShow = null),
-        name = show?.name,
-        originalName = show?.originalName,
+        name = romajiTitle ?: show?.name,
+        originalName = originalTitle ?: show?.originalName,
     )
 }
 

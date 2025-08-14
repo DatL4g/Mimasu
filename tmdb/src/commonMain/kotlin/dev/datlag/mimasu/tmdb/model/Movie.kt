@@ -29,7 +29,13 @@ data class Movie internal constructor(
     @SerialName("video") val video: Boolean = true,
     @SerialName("vote_average") val voteAverage: Float = 0F,
     @SerialName("vote_count") val voteCount: Int = 0
-) : Response, HasBackdrop, HasPoster {
+) : Response, HasBackdrop, HasPoster, HasKana {
+
+    @Transient
+    override val kanaSource: String? = title.ifBlank { null }
+
+    @Transient
+    override val kanaBackupSource: String? = originalTitle?.ifBlank { null }
 
     @Transient
     val releaseLocalDate = releaseDate?.ifBlank { null }?.let { scopeCatching {

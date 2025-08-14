@@ -17,6 +17,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
@@ -24,6 +25,9 @@ import androidx.navigation.NavOptionsBuilder
 import coil3.compose.AsyncImagePainter
 import coil3.compose.AsyncImagePainter.State
 import coil3.compose.rememberAsyncImagePainter
+import dev.datlag.mimasu.tmdb.model.HasKana
+import dev.datlag.tooling.country.Country
+import dev.datlag.tooling.country.Japan
 import dev.datlag.tooling.scopeCatching
 import io.tolgee.Tolgee
 import io.tolgee.stringResource
@@ -221,4 +225,51 @@ fun uiStringRes(resource: StringResource, vararg formatArgs: Any): String {
     return tolgeeInstance()?.let {
         stringResource(tolgee = it, resource = resource, formatArgs = formatArgs)
     } ?: stringResource(resource = resource, formatArgs = formatArgs)
+}
+
+@Composable
+fun rememberLocaleIsJapanese(): Boolean {
+    val locale = Locale.current
+
+    return remember(locale) {
+        locale.language.equals("ja", ignoreCase = true)
+                || locale.toLanguageTag().equals("ja", ignoreCase = true)
+                || run {
+            val country = Country.forCodeOrNull(locale.language)
+                ?: Country.forCodeOrNull(locale.toLanguageTag())
+
+            country is Japan
+        }
+    }
+}
+
+@Composable
+fun rememberResolvedKanaTitles(hasKana: HasKana?): Pair<String?, String?> {
+    val japaneseAllowed = rememberLocaleIsJapanese()
+
+    if (hasKana == null) {
+        return null to null
+    }
+    val title = remember(hasKana) {
+        hasKana.kanaSource?.trim()?.ifBlank { null }
+    }
+    val originalTitle = remember(hasKana) {
+        hasKana.kanaBackupSource?.trim()?.ifBlank { null }
+    }
+
+    return remember(title, originalTitle, japaneseAllowed, hasKana) {
+        if (japaneseAllowed || title.isNullOrBlank()) {
+            title to originalTitle
+        } else {
+            if (hasKana.kanaSourceIsJapanese) {
+                if (originalTitle.isNullOrBlank() || hasKana.kanaBackupSourceIsJapanese) {
+                    (hasKana.kanaSourceRomaji ?: title) to (originalTitle ?: title)
+                } else {
+                    title to originalTitle
+                }
+            } else {
+                title to originalTitle
+            }
+        }
+    }
 }

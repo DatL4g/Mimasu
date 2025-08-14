@@ -23,7 +23,13 @@ data class People internal constructor(
     @SerialName("known_for_department") val knownForDepartment: String? = null,
     @SerialName("profile_path") override val logoSource: String? = null,
     @SerialName("known_for") private val knownFor: SerializableImmutableSet<Response> = persistentSetOf(),
-): Response, HasLogo {
+): Response, HasLogo, HasKana {
+
+    @Transient
+    override val kanaSource: String? = name.ifBlank { null }
+
+    @Transient
+    override val kanaBackupSource: String? = originalName?.ifBlank { null }
 
     @Transient
     val knownForMovie = knownFor.filterIsInstance<Movie>().toImmutableList()

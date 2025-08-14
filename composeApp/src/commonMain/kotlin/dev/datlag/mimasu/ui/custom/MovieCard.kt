@@ -29,6 +29,7 @@ import com.eygraber.compose.placeholder.material3.placeholder
 import dev.datlag.mimasu.tmdb.common.posters
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
+import dev.datlag.mimasu.ui.common.rememberResolvedKanaTitles
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 import dev.datlag.mimasu.tmdb.model.details.Movie as DetailedMovie
@@ -39,14 +40,16 @@ fun MovieCard(
     modifier: Modifier = Modifier,
     onClick: (Movie) -> Unit = { }
 ) {
+    val (romajiTitle, originalTitle) = rememberResolvedKanaTitles(movie)
+
     MovieCard(
         onClick = { movie?.let(onClick) },
         placeholder = movie == null,
         modifier = modifier,
         id = movie?.id,
         posters = movie.posters(fallbackMovie = null),
-        title = movie?.title,
-        originalTitle = movie?.originalTitle
+        title = romajiTitle ?: movie?.title,
+        originalTitle = originalTitle ?: movie?.originalTitle
     )
 }
 
@@ -56,14 +59,16 @@ fun MovieCard(
     modifier: Modifier = Modifier,
     onClick: (DetailedMovie) -> Unit = { }
 ) {
+    val (romajiTitle, originalTitle) = rememberResolvedKanaTitles(detailed)
+
     MovieCard(
         onClick = { detailed?.let(onClick) },
         placeholder = detailed == null,
         modifier = modifier,
         id = detailed?.id,
         posters = detailed.posters(fallbackMovie = null),
-        title = detailed?.title,
-        originalTitle = detailed?.originalTitle
+        title = romajiTitle ?: detailed?.title,
+        originalTitle = originalTitle ?: detailed?.originalTitle
     )
 }
 

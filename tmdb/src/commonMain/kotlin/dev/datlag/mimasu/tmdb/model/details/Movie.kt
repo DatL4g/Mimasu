@@ -3,6 +3,7 @@ package dev.datlag.mimasu.tmdb.model.details
 import dev.datlag.mimasu.core.serialization.SerializableImmutableMap
 import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.model.HasBackdrop
+import dev.datlag.mimasu.tmdb.model.HasKana
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.mimasu.tmdb.model.People
@@ -58,10 +59,16 @@ data class Movie(
     @SerialName("external_ids") val externalIDs: ExternalIDs? = null,
     @SerialName("watch/providers") val watchProviders: WatchProviders? = null,
     @SerialName("videos") private val videos: VideoResult? = null,
-) : HasBackdrop, HasPoster {
+) : HasBackdrop, HasPoster, HasKana {
 
     @Transient
     val originalTitle: String? = _originalTitle?.trim()?.ifBlank { null }
+
+    @Transient
+    override val kanaSource: String? = title.ifBlank { null }
+
+    @Transient
+    override val kanaBackupSource: String? = originalTitle?.ifBlank { null }
 
     @Transient
     val overview: String? = _overview?.trim()?.ifBlank { null }

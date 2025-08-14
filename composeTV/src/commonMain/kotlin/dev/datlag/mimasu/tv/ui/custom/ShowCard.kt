@@ -35,6 +35,7 @@ import dev.datlag.mimasu.tv.common.fadeHighlightColor
 import dev.datlag.mimasu.ui.LaunchedMain
 import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
+import dev.datlag.mimasu.ui.common.rememberResolvedKanaTitles
 
 @Composable
 internal fun ShowCard(
@@ -45,6 +46,7 @@ internal fun ShowCard(
 ) {
     val posters = remember(tv) { tv.posters(fallbackShow = null) }
     val backdrops = remember(tv) { tv.backdrops(fallback = null) }
+    val (romajiTitle, originalTitle) = rememberResolvedKanaTitles(tv)
 
     ShowCard(
         onClick = { tv?.let(onClick) },
@@ -59,8 +61,8 @@ internal fun ShowCard(
         orientation = orientation,
         posters = posters,
         backdrops = backdrops,
-        name = tv?.name,
-        originalName = tv?.originalName
+        name = romajiTitle ?: tv?.name,
+        originalName = originalTitle ?: tv?.originalName
     )
 }
 
@@ -73,6 +75,7 @@ internal fun ShowCard(
 ) {
     val posters = remember(show) { show.posters(fallbackShow = null) }
     val backdrops = remember(show) { show.backdrops(fallback = null) }
+    val (romajiTitle, originalTitle) = rememberResolvedKanaTitles(show)
 
     ShowCard(
         onClick = { show?.let(onClick) },
@@ -87,8 +90,8 @@ internal fun ShowCard(
         orientation = orientation,
         posters = posters,
         backdrops = backdrops,
-        name = show?.name,
-        originalName = show?.originalName
+        name = romajiTitle ?: show?.name,
+        originalName = originalTitle ?: show?.originalName
     )
 }
 

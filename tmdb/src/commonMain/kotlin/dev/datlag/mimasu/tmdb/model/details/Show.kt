@@ -3,6 +3,7 @@ package dev.datlag.mimasu.tmdb.model.details
 import dev.datlag.mimasu.core.serialization.SerializableImmutableMap
 import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
 import dev.datlag.mimasu.tmdb.model.HasBackdrop
+import dev.datlag.mimasu.tmdb.model.HasKana
 import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.mimasu.tmdb.model.HasPoster
 import dev.datlag.mimasu.tmdb.model.TV
@@ -58,7 +59,13 @@ data class Show(
     @SerialName("vote_count") val voteCount: Int = 0,
     @SerialName("external_ids") val externalIDs: ExternalIDs? = null,
     @SerialName("watch/providers") val watchProviders: WatchProviders? = null
-) : HasBackdrop, HasPoster {
+) : HasBackdrop, HasPoster, HasKana {
+
+    @Transient
+    override val kanaSource: String? = name.ifBlank { null }
+
+    @Transient
+    override val kanaBackupSource: String? = originalName?.ifBlank { null }
 
     @Transient
     val imdbId: String? = _imdbId?.ifBlank { null } ?: externalIDs?.imdbId?.ifBlank { null }

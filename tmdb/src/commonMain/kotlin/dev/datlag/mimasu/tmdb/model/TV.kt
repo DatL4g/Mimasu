@@ -28,7 +28,13 @@ data class TV(
     @SerialName("vote_average") val voteAverage: Float = 0F,
     @SerialName("vote_count") val voteCount: Int = 0,
     @SerialName("origin_country") val originCountry: SerializableImmutableSet<String> = persistentSetOf()
-): Response, HasBackdrop, HasPoster {
+): Response, HasBackdrop, HasPoster, HasKana {
+
+    @Transient
+    override val kanaSource: String? = name.ifBlank { null }
+
+    @Transient
+    override val kanaBackupSource: String? = originalName?.ifBlank { null }
 
     @Transient
     val overview: String? = _overview?.trim()?.ifBlank { null }

@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.tmdb.model.details
 
 import dev.datlag.mimasu.core.serialization.SerializableImmutableSet
+import dev.datlag.mimasu.tmdb.model.HasKana
 import dev.datlag.mimasu.tmdb.model.HasLogo
 import dev.datlag.tooling.scopeCatching
 import kotlinx.collections.immutable.persistentSetOf
@@ -22,10 +23,17 @@ data class Person(
     @SerialName("imdb_id") val imdbId: String? = null,
     @SerialName("known_for_department") val knownForDepartment: String? = null,
     @SerialName("name") val name: String,
+    @SerialName("original_name") val originalName: String? = null,
     @SerialName("place_of_birth") val placeOfBirth: String? = null,
     @SerialName("popularity") val popularity: Float = 0F,
     @SerialName("profile_path") override val logoSource: String? = null
-) : HasLogo {
+) : HasLogo, HasKana {
+
+    @Transient
+    override val kanaSource: String? = name.ifBlank { null }
+
+    @Transient
+    override val kanaBackupSource: String? = originalName?.ifBlank { null }
 
     @Transient
     val birthdayLocalDate = birthday?.ifBlank { null }?.let { scopeCatching {

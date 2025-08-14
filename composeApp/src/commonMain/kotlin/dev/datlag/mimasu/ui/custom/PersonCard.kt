@@ -30,6 +30,7 @@ import com.eygraber.compose.placeholder.material3.placeholder
 import dev.datlag.mimasu.tmdb.common.logos
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
+import dev.datlag.mimasu.ui.common.rememberResolvedKanaTitles
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.shapes
 
@@ -49,6 +50,7 @@ fun PersonCard(
     ) {
         var loading by remember(person?.id) { mutableStateOf(true) }
         var fallback by remember(person?.id) { mutableStateOf(false) }
+        val (romajiTitle, originalTitle) = rememberResolvedKanaTitles(person)
 
         if (fallback && !placeholder) {
             Surface(
@@ -109,7 +111,7 @@ fun PersonCard(
                     shape = Platform.shapes().small,
                     highlight = PlaceholderHighlight.fade()
                 ),
-            text = person?.name ?: person?.originalName ?: "",
+            text = romajiTitle ?: person?.name ?: originalTitle ?: person?.originalName ?: "",
             maxLines = 2,
             textAlign = TextAlign.Center
         )

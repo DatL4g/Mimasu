@@ -36,6 +36,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(libs.fonticons)
             implementation(libs.tooling.compose)
+            implementation(libs.tooling.country)
             implementation(libs.navigation)
 
             implementation(libs.material3)

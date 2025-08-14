@@ -65,7 +65,7 @@ serialization = "1.9.0"
 splashscreen = "1.0.1"
 stacktrace-decoroutinator = "2.5.6"
 tolgee = "1.0.0-alpha01"
-tooling = "1.7.0"
+tooling = "1.8.0"
 tv-foundation = "1.0.0-alpha12"
 tv-material = "1.0.1"
 ump = "3.2.0"
@@ -171,7 +171,8 @@ test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "ko
 tolgee = { group = "io.tolgee.mobile-kotlin-sdk", name = "compose", version.ref = "tolgee" }
 tooling = { group = "dev.datlag.tooling", name = "tooling-async", version.ref = "tooling" }
 tooling-compose = { group = "dev.datlag.tooling", name = "tooling-compose", version.ref = "tooling" }
-tooling-decompose = { group = "dev.datlag.tooling", name = "tooling-decompose", version.ref = "tooling" }
+tooling-country = { group = "dev.datlag.tooling", name = "tooling-country", version.ref = "tooling" }
+tooling-wanakana = { group = "dev.datlag.tooling", name = "tooling-wanakana", version.ref = "tooling" }
 tv-foundation = { group = "androidx.tv", name = "tv-foundation", version.ref = "tv-foundation" }
 tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tv-material" }
 ump = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "ump" }

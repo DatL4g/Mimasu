@@ -29,6 +29,7 @@ import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
+import dev.datlag.mimasu.ui.common.rememberResolvedKanaTitles
 import dev.datlag.mimasu.tmdb.model.Movie as CommonMovie
 
 @Composable
@@ -39,6 +40,7 @@ internal fun MovieCard(
 ) {
     val posters = remember(detail) { detail.posters(fallbackMovie = null) }
     val backdrops = remember(detail) { detail.backdrops(fallbackMovie = null) }
+    val (romajiTitle, originalTitle) = rememberResolvedKanaTitles(detail)
 
     MovieCard(
         onClick = { detail?.let(onClick) },
@@ -46,8 +48,8 @@ internal fun MovieCard(
         orientation = orientation,
         posters = posters,
         backdrops = backdrops,
-        title = detail?.title,
-        originalTitle = detail?.originalTitle
+        title = romajiTitle ?: detail?.title,
+        originalTitle = originalTitle ?: detail?.originalTitle
     )
 }
 
@@ -59,6 +61,7 @@ internal fun MovieCard(
 ) {
     val posters = remember(movie) { movie.posters(fallbackMovie = null) }
     val backdrops = remember(movie) { movie.backdrops(fallbackMovie = null) }
+    val (romajiTitle, originalTitle) = rememberResolvedKanaTitles(movie)
 
     MovieCard(
         onClick = { movie?.let(onClick) },
@@ -66,8 +69,8 @@ internal fun MovieCard(
         orientation = orientation,
         posters = posters,
         backdrops = backdrops,
-        title = movie?.title,
-        originalTitle = movie?.originalTitle
+        title = romajiTitle ?: movie?.title,
+        originalTitle = originalTitle ?: movie?.originalTitle
     )
 }
 
