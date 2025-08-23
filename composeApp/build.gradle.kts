@@ -253,7 +253,7 @@ sekret {
         enabled.set(true)
 
         googleServicesFile.set(project.layout.projectDirectory.file("google-services.json"))
-        propertiesFile.set(project.layout.projectDirectory.file("sekret.properties"))
+        yamlFile.set(project.layout.projectDirectory.file("sekret.yaml"))
     }
 }
 

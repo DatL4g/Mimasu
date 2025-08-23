@@ -263,7 +263,14 @@ fun rememberResolvedKanaTitles(hasKana: HasKana?): Pair<String?, String?> {
         } else {
             if (hasKana.kanaSourceIsJapanese) {
                 if (originalTitle.isNullOrBlank() || hasKana.kanaBackupSourceIsJapanese) {
-                    (hasKana.kanaSourceRomaji ?: title) to (originalTitle ?: title)
+                    val normalTitle = (hasKana.kanaSourceRomaji ?: title)
+                    val otherTitle = (originalTitle ?: title)
+
+                    normalTitle to if (normalTitle.equals(otherTitle, ignoreCase = true)) {
+                        null
+                    } else {
+                        otherTitle
+                    }
                 } else {
                     title to originalTitle
                 }

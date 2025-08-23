@@ -4,6 +4,8 @@ composeApp/sekret/src
 composeApp/src/androidMain/google-services.json
 composeApp/google-services.json
 composeApp/release
+composeApp/sekret.yaml
+composeApp/sekret.yml
 
 *.so
 *.dll

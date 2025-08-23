@@ -111,7 +111,7 @@ kotlin {
         }
         // Can be used for JS, WASM and WASI
         // Add your required targets accordingly
-        val jsCommonMain by creating {
+        val webMain by creating {
             dependsOn(commonMain.get())
             jsMain.orNull?.dependsOn(this)
         }

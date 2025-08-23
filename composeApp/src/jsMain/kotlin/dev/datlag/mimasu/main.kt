@@ -34,7 +34,7 @@ fun main() {
             projectId = Sekret.projectId(BuildKonfig.packageName),
             gcmSenderId = Sekret.projectNumber(BuildKonfig.packageName),
             applicationId = Sekret.firebaseWebId(BuildKonfig.packageName)!!,
-            authDomain = Sekret.firebaseWebAuthDomain(BuildKonfig.packageName)
+            authDomain = Sekret.firebaseAuthDomain(BuildKonfig.packageName)
         )
     )
     val di = DI {
