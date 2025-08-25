@@ -149,6 +149,7 @@ media3-smooth = { group = "androidx.media3", name = "media3-exoplayer-smoothstre
 media3-ui = { group = "androidx.media3", name = "media3-ui-compose", version.ref = "media3" }
 media3-cast = { group = "androidx.media3", name = "media3-cast", version.ref = "media3" }
 media3-cronet = { group = "androidx.media3", name = "media3-datasource-cronet", version.ref = "media3" }
+media3-okhttp = { group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 nanoid = { group = "dev.datlag.nanoid", name = "nanoid", version.ref = "nanoid" }
@@ -182,7 +183,7 @@ youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", na
 [bundles]
 android-ads = [ "admob", "ump", "jetads" ]
 android-cast = [ "cast", "cast-framework", "kast" ]
-android-media = [ "media3", "media3-dash", "media3-hls", "media3-rtsp", "media3-session", "media3-smooth", "media3-ui", "media3-cast", "media3-cronet" ]
+android-media = [ "media3", "media3-dash", "media3-hls", "media3-rtsp", "media3-session", "media3-smooth", "media3-ui", "media3-cast", "media3-cronet", "media3-okhttp" ]
 google-auth = [ "google-credentials", "google-credentials-play-service", "google-identity", "google-play-service" ]
 
 [plugins]

@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.ui.custom.video
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
 import android.view.Surface
@@ -36,6 +37,7 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cronet.CronetDataSource
+import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
@@ -53,9 +55,15 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import okhttp3.OkHttpClient
 import org.chromium.net.CronetEngine
 import org.kodein.di.compose.localDI
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import java.util.concurrent.Executors
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
 
 @UnstableApi
 class PlayerWrapper(
@@ -69,6 +77,24 @@ class PlayerWrapper(
         FLAG_ALLOW_NON_IDR_KEYFRAMES and FLAG_DETECT_ACCESS_UNITS and FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS
     )
 
+    @SuppressLint("CustomX509TrustManager")
+    private val trustAllCerts = object : X509TrustManager {
+        override fun checkClientTrusted(chain: Array<out X509Certificate?>?, authType: String?) { }
+        override fun checkServerTrusted(chain: Array<out X509Certificate?>?, authType: String?) { }
+        override fun getAcceptedIssuers(): Array<out X509Certificate?>? = arrayOf()
+    }
+
+    private val sslContext = scopeCatching {
+        SSLContext.getInstance("TLS")
+    }.getOrNull() ?: scopeCatching {
+        SSLContext.getInstance("SSL")
+    }.getOrNull()
+
+    private val trustAllSocketFactory = scopeCatching {
+        sslContext?.init(null, arrayOf(trustAllCerts), SecureRandom())
+        sslContext?.socketFactory
+    }.getOrNull()
+
     private val cronetExecutor = Executors.newSingleThreadExecutor()
     private val cronetDataSourceFactory = cronetEngine?.let {
         CronetDataSource.Factory(it, cronetExecutor)
@@ -76,6 +102,17 @@ class PlayerWrapper(
             .setHandleSetCookieRequests(true)
     }
 
+    private val okHttpClient = OkHttpClient.Builder()
+        .apply {
+            if (trustAllSocketFactory != null) {
+                sslSocketFactory(trustAllSocketFactory, trustAllCerts)
+            }
+        }
+        .hostnameVerifier { _, _ -> true }
+        .followRedirects(true)
+        .build()
+
+    private val okHttpDataSource = OkHttpDataSource.Factory(okHttpClient)
     private val httpDataSourceFactory = DefaultHttpDataSource.Factory()
         .setAllowCrossProtocolRedirects(true)
         .setKeepPostFor302Redirects(true)
@@ -83,6 +120,8 @@ class PlayerWrapper(
     private val fallbackDataSourceFactory = DataSource.Factory {
         scopeCatching {
             cronetDataSourceFactory?.createDataSource()
+        }.getOrNull() ?: scopeCatching {
+            okHttpDataSource.createDataSource()
         }.getOrNull() ?: httpDataSourceFactory.createDataSource()
     }
 
