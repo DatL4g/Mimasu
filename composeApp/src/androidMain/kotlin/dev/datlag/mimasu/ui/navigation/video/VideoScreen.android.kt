@@ -217,6 +217,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
         topBar = {
             TopControls(
                 state = controlsState,
+                requestedLayout = requestedLayout,
                 layout = layout,
                 pipActive = pipActive,
                 watchType = type,

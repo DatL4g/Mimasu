@@ -43,6 +43,7 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun TopControls(
     state: ControlsState,
+    requestedLayout: VideoLayout,
     layout: VideoLayout,
     watchType: VideoViewModel.WatchType?,
     modifier: Modifier = Modifier,
@@ -87,7 +88,7 @@ fun TopControls(
                 )
             },
             actions = {
-                if (layout is VideoLayout.Landscape) {
+                if (requestedLayout is VideoLayout.Landscape) {
                     IconButton(
                         onClick = exitFullscreen
                     ) {
