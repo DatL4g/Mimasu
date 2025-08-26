@@ -43,6 +43,7 @@ import dev.datlag.mimasu.other.AudioHelper
 import dev.datlag.mimasu.other.rememberBrightnessHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.video.states.ControlsState
+import dev.datlag.mimasu.ui.navigation.video.VideoLayout
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.platform.colorScheme
@@ -54,7 +55,7 @@ import kotlin.math.roundToInt
 @Composable
 fun VolumeBrightnessControl(
     controlsState: ControlsState,
-    isInCompactMode: Boolean,
+    layout: VideoLayout,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -83,7 +84,7 @@ fun VolumeBrightnessControl(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             AnimatedVisibility(
-                visible = volumeVisible && !isInCompactMode,
+                visible = volumeVisible && layout !is VideoLayout.Portrait,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -118,7 +119,7 @@ fun VolumeBrightnessControl(
             }
 
             AnimatedVisibility(
-                visible = brightnessVisible && !isInCompactMode,
+                visible = brightnessVisible && layout !is VideoLayout.Portrait,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -175,7 +176,7 @@ fun VolumeBrightnessControl(
                     .weight(1F)
                     .fillMaxHeight()
                     .padding(start = start, end = end)
-                    .ifFalse(isInCompactMode) {
+                    .ifFalse(layout is VideoLayout.Portrait) {
                         pointerInput(Unit) {
                             detectVerticalDragGestures(
                                 onDragStart = {
@@ -198,7 +199,7 @@ fun VolumeBrightnessControl(
                     .weight(1F)
                     .fillMaxHeight()
                     .padding(start = end, end = start)
-                    .ifFalse(isInCompactMode) {
+                    .ifFalse(layout is VideoLayout.Portrait) {
                         pointerInput(Unit) {
                             detectVerticalDragGestures(
                                 onDragStart = {

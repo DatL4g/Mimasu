@@ -20,49 +20,38 @@ import dev.datlag.tooling.compose.platform.typography
 fun VideoInfo(
     watchType: VideoViewModel.WatchType?,
     contentPadding: PaddingValues,
-    forceCompact: Boolean = false,
+    requestedLayout: VideoLayout = VideoLayout.Unknown,
     videoContent: @Composable (VideoInfo) -> Unit
 ) {
     val windowSize = currentWindowAdaptiveInfo().windowSizeClass
-    if (watchType != null && (forceCompact || windowSize.isCompactWidth())) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = contentPadding
-        ) {
-            stickyHeader {
-                videoContent(
-                    VideoInfo(
-                        modifier = Modifier.fillParentMaxWidth(),
-                        showingCompact = true
-                    )
+
+    if (watchType != null) {
+        when (requestedLayout) {
+            is VideoLayout.Portrait -> PortraitLayout(
+                watchType = watchType,
+                contentPadding = contentPadding,
+                videoContent = videoContent
+            )
+            is VideoLayout.Landscape -> videoContent(
+                VideoInfo(
+                    modifier = Modifier.fillMaxSize(),
+                    layout = VideoLayout.Landscape
                 )
-            }
-            if (watchType is VideoViewModel.WatchType.Show) {
-                watchType.seasonInfo.name?.ifBlank { null }?.let { season ->
-                    item {
-                        Text(
-                            modifier = Modifier.fillParentMaxWidth().padding(16.dp),
-                            text = season,
-                            style = Platform.typography().labelMedium,
-                            color = Platform.colorScheme().primary
-                        )
-                    }
-                }
-                item {
-                    Text(
-                        modifier = Modifier.fillParentMaxWidth().padding(horizontal = 16.dp),
-                        text = watchType.showInfo.name,
-                        style = Platform.typography().titleLarge,
-                        fontWeight = FontWeight.SemiBold
+            )
+            else -> {
+                if (windowSize.isCompactWidth()) {
+                    PortraitLayout(
+                        watchType = watchType,
+                        contentPadding = contentPadding,
+                        videoContent = videoContent
                     )
-                }
-                (watchType.episodeInfo.overview?.ifBlank { null } ?: watchType.seasonInfo.overview?.ifBlank { null } ?: watchType.showInfo.overview?.ifBlank { null })?.let { overview ->
-                    item {
-                        Text(
-                            modifier = Modifier.fillParentMaxWidth().padding(16.dp),
-                            text = overview
+                } else {
+                    videoContent(
+                        VideoInfo(
+                            modifier = Modifier.fillMaxSize(),
+                            layout = VideoLayout.Landscape
                         )
-                    }
+                    )
                 }
             }
         }
@@ -70,13 +59,62 @@ fun VideoInfo(
         videoContent(
             VideoInfo(
                 modifier = Modifier.fillMaxSize(),
-                showingCompact = false
+                layout = VideoLayout.Unknown
             )
         )
     }
 }
 
+@Composable
+private fun PortraitLayout(
+    watchType: VideoViewModel.WatchType,
+    contentPadding: PaddingValues,
+    videoContent: @Composable (VideoInfo) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = contentPadding
+    ) {
+        stickyHeader {
+            videoContent(
+                VideoInfo(
+                    modifier = Modifier.fillParentMaxWidth(),
+                    layout = VideoLayout.Portrait
+                )
+            )
+        }
+        if (watchType is VideoViewModel.WatchType.Show) {
+            watchType.seasonInfo.name?.ifBlank { null }?.let { season ->
+                item {
+                    Text(
+                        modifier = Modifier.fillParentMaxWidth().padding(16.dp),
+                        text = season,
+                        style = Platform.typography().labelMedium,
+                        color = Platform.colorScheme().primary
+                    )
+                }
+            }
+            item {
+                Text(
+                    modifier = Modifier.fillParentMaxWidth().padding(horizontal = 16.dp),
+                    text = watchType.showInfo.name,
+                    style = Platform.typography().titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            (watchType.episodeInfo.overview?.ifBlank { null } ?: watchType.seasonInfo.overview?.ifBlank { null } ?: watchType.showInfo.overview?.ifBlank { null })?.let { overview ->
+                item {
+                    Text(
+                        modifier = Modifier.fillParentMaxWidth().padding(16.dp),
+                        text = overview
+                    )
+                }
+            }
+        }
+    }
+}
+
 data class VideoInfo(
     val modifier: Modifier,
-    val showingCompact: Boolean
+    val layout: VideoLayout
 )

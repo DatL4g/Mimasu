@@ -4,6 +4,14 @@ import android.app.Activity
 import android.os.Build
 import androidx.compose.ui.window.DialogProperties
 import dev.datlag.mimasu.ui.navigation.Navigation
+import dev.datlag.mimasu.ui.navigation.video.VideoLayout
+import android.content.res.Configuration
+import android.view.View
+import androidx.activity.compose.LocalActivity
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import dev.datlag.mimasu.ui.common.findActivity
 
 fun Activity.isInPiPMode(): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -29,4 +37,26 @@ actual fun Navigation.Login.dialogProperties(): DialogProperties {
         usePlatformDefaultWidth = false,
         decorFitsSystemWindows = false
     )
+}
+
+fun VideoLayout.Companion.fromOrientation(orientation: Int): VideoLayout {
+    return when (orientation) {
+        Configuration.ORIENTATION_PORTRAIT -> VideoLayout.Portrait
+        Configuration.ORIENTATION_LANDSCAPE -> VideoLayout.Landscape
+        else -> VideoLayout.Unknown
+    }
+}
+
+fun VideoLayout.Companion.requestedOrOrientation(requested: VideoLayout, orientation: Int): VideoLayout {
+    return when (requested) {
+        !is VideoLayout.Unknown -> requested
+        else -> fromOrientation(orientation)
+    }
+}
+
+@Composable
+fun rememberActivity(
+    view: View = LocalView.current
+): Activity? {
+    return LocalActivity.current ?: view.context?.findActivity() ?: LocalContext.current.findActivity()
 }

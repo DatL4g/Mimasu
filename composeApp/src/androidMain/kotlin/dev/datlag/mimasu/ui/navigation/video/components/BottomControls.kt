@@ -15,11 +15,12 @@ import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.custom.video.ProgressBar
 import dev.datlag.mimasu.ui.custom.video.states.ControlsState
 import dev.datlag.mimasu.ui.custom.video.states.ProgressState
+import dev.datlag.mimasu.ui.navigation.video.VideoLayout
 
 @Composable
 fun BottomControls(
     controlsState: ControlsState,
-    isInCompactMode: Boolean,
+    layout: VideoLayout,
     state: ProgressState,
     modifier: Modifier = Modifier,
     pipActive: Boolean = PiPHelper.active.value,
@@ -28,7 +29,7 @@ fun BottomControls(
 
     AnimatedVisibility(
         modifier = modifier,
-        visible = visibility && !pipActive && !isInCompactMode,
+        visible = visibility && !pipActive && layout !is VideoLayout.Portrait,
         enter = slideInVertically { it / 2 } + fadeIn(),
         exit = slideOutVertically { it / 2 } + fadeOut()
     ) {

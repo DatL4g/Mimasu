@@ -41,6 +41,8 @@ import androidx.compose.material.icons.rounded.Face2
 import androidx.compose.material.icons.rounded.Face4
 import androidx.compose.material.icons.rounded.Face5
 import androidx.compose.material.icons.rounded.Face6
+import androidx.compose.material.icons.rounded.Fullscreen
+import androidx.compose.material.icons.rounded.FullscreenExit
 import androidx.compose.material.icons.rounded.Handshake
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
@@ -231,6 +233,8 @@ data object MaterialSymbols {
     const val SPACE_BAR = "space_bar"
     const val KEYBOARD_BACKSPACE = "keyboard_backspace"
     const val CANCEL = "cancel"
+    const val FULLSCREEN = "fullscreen"
+    const val FULLSCREEN_EXIT = "fullscreen_exit"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -682,6 +686,9 @@ data object MaterialSymbols {
         name.equals(SPACE_BAR, ignoreCase = true) -> Icons.Rounded.SpaceBar
         name.equals(KEYBOARD_BACKSPACE, ignoreCase = true) -> Icons.AutoMirrored.Rounded.KeyboardBackspace
         name.equals(CANCEL, ignoreCase = true) -> Icons.Rounded.Cancel
+
+        name.equals(FULLSCREEN, ignoreCase = true) -> Icons.Rounded.Fullscreen
+        name.equals(FULLSCREEN_EXIT, ignoreCase = true) -> Icons.Rounded.FullscreenExit
         else -> null
     }
 

@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.custom.video.states.ControlsState
+import dev.datlag.mimasu.ui.navigation.video.VideoLayout
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.colorScheme
@@ -26,7 +27,7 @@ import dev.datlag.tooling.compose.platform.colorScheme
 @Composable
 fun ExtraControls(
     controlsState: ControlsState,
-    isInCompactMode: Boolean,
+    layout: VideoLayout,
     player: Player,
     viewModel: VideoViewModel,
     pipHelper: PiPHelper,
@@ -41,7 +42,7 @@ fun ExtraControls(
     val visibility by controlsState.controlsVisibility.collectAsStateWithLifecycle()
 
     AnimatedVisibility(
-        visible = (visibility || isInCompactMode) && !pipActive,
+        visible = (visibility || layout is VideoLayout.Portrait) && !pipActive,
         modifier = modifier,
         enter = fadeIn(),
         exit = fadeOut()

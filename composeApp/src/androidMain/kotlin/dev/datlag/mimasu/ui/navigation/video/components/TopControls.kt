@@ -35,6 +35,7 @@ import dev.datlag.kast.UnselectReason
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.video.states.ControlsState
+import dev.datlag.mimasu.ui.navigation.video.VideoLayout
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import kotlinx.collections.immutable.toImmutableList
 
@@ -42,10 +43,11 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun TopControls(
     state: ControlsState,
-    isInCompactMode: Boolean,
+    layout: VideoLayout,
     watchType: VideoViewModel.WatchType?,
     modifier: Modifier = Modifier,
     pipActive: Boolean = PiPHelper.active.value,
+    exitFullscreen: () -> Unit,
     onBack: () -> Unit
 ) {
     val visibility by state.controlsVisibility.collectAsStateWithLifecycle()
@@ -55,7 +57,7 @@ fun TopControls(
 
     AnimatedVisibility(
         modifier = modifier,
-        visible = (visibility || isInCompactMode) && !pipActive,
+        visible = (visibility || layout is VideoLayout.Portrait) && !pipActive,
         enter = slideInVertically() + fadeIn(),
         exit = slideOutVertically() + fadeOut()
     ) {
@@ -73,7 +75,7 @@ fun TopControls(
             title = {
                 Text(text = watchType?.title ?: "")
             },
-            colors = if (isInCompactMode) {
+            colors = if (layout is VideoLayout.Portrait) {
                 TopAppBarDefaults.topAppBarColors()
             } else {
                 TopAppBarDefaults.topAppBarColors(
@@ -85,6 +87,16 @@ fun TopControls(
                 )
             },
             actions = {
+                if (layout is VideoLayout.Landscape) {
+                    IconButton(
+                        onClick = exitFullscreen
+                    ) {
+                        MaterialSymbols(
+                            name = MaterialSymbols.FULLSCREEN_EXIT,
+                            contentDescription = null
+                        )
+                    }
+                }
                 if (Kast.isSupported) {
                     IconButton(
                         onClick = {
