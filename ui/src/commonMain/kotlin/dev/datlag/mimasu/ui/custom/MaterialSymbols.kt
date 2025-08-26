@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.rounded.VolumeOff
 import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.outlined.HideImage
 import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.AdsClick
 import androidx.compose.material.icons.rounded.Apartment
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Beenhere
@@ -80,6 +81,7 @@ import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.Tv
+import androidx.compose.material.icons.rounded.VideoLibrary
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material.icons.rounded.Warning
@@ -235,6 +237,8 @@ data object MaterialSymbols {
     const val CANCEL = "cancel"
     const val FULLSCREEN = "fullscreen"
     const val FULLSCREEN_EXIT = "fullscreen_exit"
+    const val ANIMATED_IMAGES = "animated_images"
+    const val WEB_TRAFFIC = "web_traffic"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -689,6 +693,9 @@ data object MaterialSymbols {
 
         name.equals(FULLSCREEN, ignoreCase = true) -> Icons.Rounded.Fullscreen
         name.equals(FULLSCREEN_EXIT, ignoreCase = true) -> Icons.Rounded.FullscreenExit
+
+        name.equals(ANIMATED_IMAGES, ignoreCase = true) -> Icons.Rounded.VideoLibrary
+        name.equals(WEB_TRAFFIC, ignoreCase = true) -> Icons.Rounded.AdsClick
         else -> null
     }
 

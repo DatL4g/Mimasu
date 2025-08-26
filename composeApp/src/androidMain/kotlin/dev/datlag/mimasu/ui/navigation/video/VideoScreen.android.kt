@@ -401,6 +401,7 @@ actual fun VideoScreen(onBack: () -> Unit) {
         onDispose {
             mediaSession?.release()
             mediaSession = null
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
 }

@@ -12,7 +12,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +28,7 @@ import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.ui.custom.ErrorState
+import dev.datlag.mimasu.ui.navigation.detail.show.components.EpisodeDialog
 import dev.datlag.mimasu.ui.navigation.detail.show.components.EpisodeItem
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowGenres
 import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowInfo
@@ -58,6 +62,16 @@ fun ShowContent(
     onDiscover: (Int) -> Unit,
     onLogin: () -> Unit
 ) {
+    var episodeDialogVisible by remember { mutableStateOf(false) }
+
+    if (episodeDialogVisible) {
+        EpisodeDialog(
+            onDismiss = {
+                episodeDialogVisible = false
+            }
+        )
+    }
+
     LazyColumn(
         state = listState,
         modifier = Modifier
@@ -167,6 +181,9 @@ fun ShowContent(
                         showAvailability = showAvailability,
                         loggedIn = loggedIn,
                         modifier = Modifier.fillParentMaxWidth().padding(4.dp),
+                        onDialog = {
+                            episodeDialogVisible = true
+                        },
                         onStream = {
                             onStream(watchData.copy(
                                 sources = it.sources.map { (k, v) ->

@@ -102,6 +102,7 @@
     <string name="profile_extension_open">Open</string>
     <string name="profile_extension_info">More</string>
     <string name="profile_extension_info_close">Close</string>
+    <string name="profile_homepage">Homepage</string>
 
     <string name="show_air_date_format">MM.dd.yyyy</string>
     <string name="show_rating_placeholder">%1$d%</string>
@@ -128,6 +129,11 @@
     <string name="show_justwatch_rent">Rent</string>
     <string name="show_justwatch_free">Free</string>
     <string name="show_justwatch_ads">Ads</string>
+
+    <string name="show_episode_dialog_title">Unable to Play</string>
+    <string name="show_episode_dialog_text">No streaming extension found, or the episode couldn't be loaded.</string>
+    <string name="show_episode_dialog_close">Close</string>
+    <string name="show_episode_dialog_more">Read More</string>
 
     <string name="account_verification">Account Verification</string>
     <string name="account_verification_text">Please verify your account within 30 days or it will be deleted, the process may take a while.</string>

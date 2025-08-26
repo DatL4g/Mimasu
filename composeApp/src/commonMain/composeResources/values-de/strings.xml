@@ -129,6 +129,11 @@
     <string name="show_justwatch_free">Kostenlos</string>
     <string name="show_justwatch_ads">Werbung</string>
 
+    <string name="show_episode_dialog_title">Wiedergabe nicht möglich</string>
+    <string name="show_episode_dialog_text">Keine Streaming-Erweiterung gefunden oder die Episode konnte nicht geladen werden.</string>
+    <string name="show_episode_dialog_close">Schließen</string>
+    <string name="show_episode_dialog_more">Mehr erfahren</string>
+
     <string name="account_verification">Kontobestätigung</string>
     <string name="account_verification_text">Bitte bestätige dein Konto innerhalb von 30 Tagen oder es wird gelöscht, der Vorgang kann eine Weile dauern.</string>
     <string name="account_verification_send">Bestätigung senden</string>

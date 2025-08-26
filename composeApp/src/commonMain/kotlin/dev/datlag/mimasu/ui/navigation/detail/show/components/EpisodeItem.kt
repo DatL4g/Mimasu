@@ -65,6 +65,7 @@ fun EpisodeItem(
     showAvailability: ShowState,
     loggedIn: Boolean,
     modifier: Modifier = Modifier,
+    onDialog: () -> Unit,
     onStream: (Extension.Response) -> Unit,
     markAsWatched: suspend () -> Unit,
     markAsUnWatched: suspend () -> Unit,
@@ -93,7 +94,7 @@ fun EpisodeItem(
         isRevealed = isRevealed,
         onCardClick = {
             scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
-                val stream = episodeStream.getStream() ?: return@launch
+                val stream = episodeStream.getStream() ?: return@launch onDialog()
 
                 withMainContext {
                     onStream(stream)
