@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProduceStateScope
 import androidx.compose.runtime.State
 import dev.datlag.mimasu.core.Virtual
-import dev.datlag.tooling.compose.TargetIO
+import dev.datlag.tooling.async.VirtualIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,7 +15,7 @@ fun <T> produceVirtualIOState(
 ): State<T> {
     return produceCoroutineState(
         initialValue = initialValue,
-        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO
+        coroutineContext = Dispatchers.VirtualIO
     ) {
         withContext(coroutineContext) {
             producer()
@@ -31,7 +31,7 @@ fun <T> produceVirtualIOState(
 ): State<T> {
     return produceCoroutineState(
         initialValue = initialValue,
-        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO,
+        coroutineContext = Dispatchers.VirtualIO,
         key1 = key1
     ) {
         withContext(coroutineContext) {
@@ -49,7 +49,7 @@ fun <T> produceVirtualIOState(
 ): State<T> {
     return produceCoroutineState(
         initialValue = initialValue,
-        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO,
+        coroutineContext = Dispatchers.VirtualIO,
         key1 = key1,
         key2 = key2
     ) {
@@ -69,7 +69,7 @@ fun <T> produceVirtualIOState(
 ): State<T> {
     return produceCoroutineState(
         initialValue = initialValue,
-        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO,
+        coroutineContext = Dispatchers.VirtualIO,
         key1 = key1,
         key2 = key2,
         key3 = key3
@@ -88,7 +88,7 @@ fun <T> produceVirtualIOState(
 ): State<T> {
     return produceCoroutineState(
         initialValue = initialValue,
-        coroutineContext = Dispatchers.Virtual ?: Dispatchers.TargetIO,
+        coroutineContext = Dispatchers.VirtualIO,
         keys = keys
     ) {
         withContext(coroutineContext) {

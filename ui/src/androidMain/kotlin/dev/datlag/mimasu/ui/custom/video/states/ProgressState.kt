@@ -3,10 +3,9 @@ package dev.datlag.mimasu.ui.custom.video.states
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.media3.common.Player
-import dev.datlag.mimasu.ui.LaunchedDefault
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
-import dev.datlag.tooling.compose.withDefaultContext
-import dev.datlag.tooling.compose.withMainContext
+import dev.datlag.tooling.async.withDefaultContext
+import dev.datlag.tooling.async.withMainContext
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

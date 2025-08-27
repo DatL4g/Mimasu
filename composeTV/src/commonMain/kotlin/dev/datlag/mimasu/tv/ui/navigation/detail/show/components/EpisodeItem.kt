@@ -37,8 +37,8 @@ import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.other.EpisodeStreamState
 import dev.datlag.mimasu.ui.other.ShowState
 import dev.datlag.mimasu.ui.other.rememberEpisodeStream
-import dev.datlag.tooling.compose.TargetIO
-import dev.datlag.tooling.compose.withMainContext
+import dev.datlag.tooling.async.VirtualIO
+import dev.datlag.tooling.async.withMainContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.time.DurationUnit
@@ -84,7 +84,7 @@ fun EpisodeItem(
         modifier = modifier,
         selected = selected,
         onClick = {
-            scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
+            scope.launch(Dispatchers.VirtualIO) {
                 val stream = episodeStream.getStream() ?: return@launch
 
                 withMainContext {
@@ -94,7 +94,7 @@ fun EpisodeItem(
         },
         onLongClick = {
             if (loggedIn) {
-                scope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
+                scope.launch(Dispatchers.VirtualIO) {
                     if (watched) {
                         markAsUnWatched()
                     } else {

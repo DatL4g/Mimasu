@@ -60,10 +60,10 @@ import dev.datlag.mimasu.ui.login_password
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.mimasu.ui.viewmodel.loginViewModel
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.async.withMainContext
 import dev.datlag.tooling.compose.platform.PlatformIconButton
 import dev.datlag.tooling.compose.platform.localTextStyle
 import dev.datlag.tooling.compose.platform.rememberIsTv
-import dev.datlag.tooling.compose.withMainContext
 import io.tolgee.stringResource
 
 @OptIn(ExperimentalComposeUiApi::class)

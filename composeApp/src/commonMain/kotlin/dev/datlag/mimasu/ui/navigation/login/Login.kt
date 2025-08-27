@@ -9,9 +9,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.custom.login.Login
 import dev.datlag.mimasu.ui.viewmodel.loginViewModel
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

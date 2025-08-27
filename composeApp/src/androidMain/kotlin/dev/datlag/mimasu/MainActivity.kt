@@ -21,7 +21,7 @@ import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.theme.Font
 import dev.datlag.mimasu.ui.viewmodel.LoginViewModel
 import dev.datlag.tooling.Platform
-import dev.datlag.tooling.compose.launchIO
+import dev.datlag.tooling.async.launchIO
 import dev.datlag.tooling.safeCast
 import org.kodein.di.DI
 import org.kodein.di.DIAware

@@ -12,8 +12,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import dev.datlag.mimasu.common.dialogProperties
-import dev.datlag.mimasu.ui.LaunchedMain
-import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.bringToFront
 import dev.datlag.mimasu.ui.navigation.home.HomeNavigation
 import dev.datlag.mimasu.ui.navigation.home.homeItem
@@ -30,6 +28,7 @@ import dev.datlag.mimasu.ui.navigation.video.VideoScreen
 import dev.datlag.mimasu.ui.viewmodel.DiscoverViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.MainThread
 import kotlinx.serialization.Serializable
 import kotlin.js.JsName
 

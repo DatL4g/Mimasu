@@ -2,8 +2,7 @@ package dev.datlag.mimasu.ui.custom.video.states
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import dev.datlag.mimasu.ui.LaunchedDefault
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.onFailure

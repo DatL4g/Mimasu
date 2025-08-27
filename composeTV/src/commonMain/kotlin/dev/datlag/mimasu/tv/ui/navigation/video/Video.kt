@@ -25,8 +25,6 @@ import androidx.media3.session.MediaSession
 import androidx.tv.material3.DrawerValue
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.rememberDrawerState
-import dev.datlag.mimasu.ui.LaunchedMain
-import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.asMediaMetaData
 import dev.datlag.mimasu.ui.common.handleDPadKeyEvents
 import dev.datlag.mimasu.ui.common.handlePlayerKeyEvents
@@ -38,6 +36,8 @@ import dev.datlag.mimasu.ui.custom.video.states.rememberProgressState
 import dev.datlag.mimasu.ui.custom.video.states.rememberSeekState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.compose.LaunchedMain
+import dev.datlag.tooling.compose.MainThread
 import dev.datlag.tooling.compose.ifTrue
 import kotlin.time.Duration.Companion.seconds
 

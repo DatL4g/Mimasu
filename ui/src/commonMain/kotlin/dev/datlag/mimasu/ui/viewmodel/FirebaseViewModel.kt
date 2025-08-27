@@ -14,7 +14,7 @@ import dev.datlag.mimasu.firebase.firestore.ShowData
 import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tmdb.model.details.Show
 import dev.datlag.mimasu.tmdb.repository.DetailsRepository
-import dev.datlag.tooling.compose.TargetIO
+import dev.datlag.tooling.async.VirtualIO
 import dev.datlag.tooling.safeSubSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -92,7 +92,7 @@ class FirebaseViewModel(
      *
      * @return amount of bookmarked items.
      */
-    suspend fun bookmark(bookmarked: Boolean, show: Show): Int = withContext(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
+    suspend fun bookmark(bookmarked: Boolean, show: Show): Int = withContext(Dispatchers.VirtualIO) {
         return@withContext firestoreWrapper.bookmark(
             ShowData(
                 _bookmarked = bookmarked,

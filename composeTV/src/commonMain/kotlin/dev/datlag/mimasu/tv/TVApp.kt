@@ -15,7 +15,6 @@ import androidx.tv.material3.Typography
 import dev.datlag.mimasu.tv.ui.navigation.Navigation
 import dev.datlag.mimasu.tv.ui.theme.getDarkScheme
 import dev.datlag.mimasu.tv.ui.theme.getLightScheme
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.custom.FailureConfigState
 import dev.datlag.mimasu.ui.custom.FetchConfigState
@@ -23,6 +22,7 @@ import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.theme.Colors
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 import dev.datlag.tooling.compose.platform.rememberIsTv
 import org.kodein.di.DI
 import org.kodein.di.compose.withDI

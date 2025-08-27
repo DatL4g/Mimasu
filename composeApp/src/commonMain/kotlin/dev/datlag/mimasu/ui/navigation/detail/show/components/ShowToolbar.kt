@@ -37,7 +37,6 @@ import dev.datlag.mimasu.core.Virtual
 import dev.datlag.mimasu.tmdb.common.backdrops
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Show
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.CollapsingToolbar
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -46,7 +45,7 @@ import dev.datlag.mimasu.ui.rememberAdjustableState
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
-import dev.datlag.tooling.compose.TargetIO
+import dev.datlag.tooling.async.VirtualIO
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.typography
@@ -190,7 +189,7 @@ fun ShowToolbar(
                     key1 = show?.id,
                     key2 = initial?.id,
                     key3 = loggedIn,
-                    context = Dispatchers.Virtual ?: Dispatchers.TargetIO
+                    context = Dispatchers.VirtualIO
                 ) { current ->
                     val id = show?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
 

@@ -55,8 +55,6 @@ import dev.datlag.mimasu.tv.ui.navigation.movies.Movies
 import dev.datlag.mimasu.tv.ui.navigation.search.Search
 import dev.datlag.mimasu.tv.ui.navigation.series.Series
 import dev.datlag.mimasu.tv.ui.navigation.video.Video
-import dev.datlag.mimasu.ui.LaunchedMain
-import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.bringToFront
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
@@ -64,6 +62,8 @@ import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
+import dev.datlag.tooling.compose.LaunchedMain
+import dev.datlag.tooling.compose.MainThread
 import io.tolgee.stringResource
 import kotlinx.serialization.Serializable
 

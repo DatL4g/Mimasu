@@ -16,11 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.datlag.mimasu.ui.LaunchedDefault
 import dev.datlag.mimasu.ui.common.toDuration
 import dev.datlag.mimasu.ui.custom.video.states.ControlsState
 import dev.datlag.mimasu.ui.custom.video.states.ProgressState
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.LaunchedDefault
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.colorScheme
 import kotlin.math.roundToLong

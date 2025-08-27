@@ -20,7 +20,9 @@ interface HasKana {
     val kanaSourceRomaji: String?
         get() = kanaSource.let {
             if (kanaSourceIsJapanese && !it.isNullOrBlank()) {
-                WanaKana.toRomaji(it).trim().ifBlank { it }
+                WanaKana.toRomaji(it).trim().takeUnless { r ->
+                    WanaKana.hasJapanese(r)
+                }?.ifBlank { it } ?: it
             } else {
                 it
             }
@@ -29,7 +31,9 @@ interface HasKana {
     val kanaBackupSourceRomaji: String?
         get() = kanaBackupSource.let {
             if (kanaBackupSourceIsJapanese && !it.isNullOrBlank()) {
-                WanaKana.toRomaji(it).trim().ifBlank { it }
+                WanaKana.toRomaji(it).trim().takeUnless { r ->
+                    WanaKana.hasJapanese(r)
+                }?.ifBlank { it } ?: it
             } else {
                 it
             }

@@ -10,10 +10,8 @@ import dev.datlag.mimasu.extension.ShowProviderAndroid
 import dev.datlag.mimasu.tmdb.model.TV
 import dev.datlag.mimasu.tmdb.model.details.Season
 import dev.datlag.mimasu.tmdb.model.details.Show
-import dev.datlag.mimasu.ui.LaunchedDefault
-import dev.datlag.mimasu.ui.LaunchedMain
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.produceVirtualIOState
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 import org.kodein.di.compose.localDI
 import org.kodein.di.instanceOrNull
 import dev.datlag.mimasu.extension.model.Show as Extension

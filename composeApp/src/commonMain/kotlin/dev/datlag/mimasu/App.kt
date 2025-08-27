@@ -10,7 +10,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.LocalDarkMode
 import dev.datlag.mimasu.ui.custom.FailureConfigState
 import dev.datlag.mimasu.ui.custom.FetchConfigState
@@ -21,6 +20,7 @@ import dev.datlag.mimasu.ui.theme.dynamicDark
 import dev.datlag.mimasu.ui.theme.dynamicLight
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 import dev.datlag.tooling.compose.platform.PlatformMaterialTheme
 import dev.datlag.tooling.compose.platform.PlatformSurface
 import dev.datlag.tooling.compose.platform.colorScheme

@@ -37,14 +37,14 @@ import androidx.tv.material3.ModalNavigationDrawer
 import androidx.tv.material3.NavigationDrawerItem
 import androidx.tv.material3.NavigationDrawerItemDefaults
 import androidx.tv.material3.Text
-import dev.datlag.mimasu.ui.LaunchedMain
-import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.video.ProgressBar
 import dev.datlag.mimasu.ui.custom.video.states.ControlsState
 import dev.datlag.mimasu.ui.custom.video.states.PlayPauseButtonState
 import dev.datlag.mimasu.ui.custom.video.states.ProgressState
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
+import dev.datlag.tooling.compose.LaunchedMain
+import dev.datlag.tooling.compose.MainThread
 import kotlinx.collections.immutable.toImmutableList
 
 @MainThread

@@ -120,12 +120,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.details.Movie
-import dev.datlag.mimasu.ui.LaunchedDefault
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.MaterialSymbolsRounded
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.produceVirtualIOState
 import dev.datlag.tooling.Platform
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 import dev.datlag.tooling.compose.platform.PlatformIcon
 import dev.datlag.tooling.compose.platform.localContentColor
 import dev.datlag.tooling.scopeCatching

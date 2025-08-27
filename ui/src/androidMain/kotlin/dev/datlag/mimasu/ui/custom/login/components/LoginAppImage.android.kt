@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.core.Constants
 import dev.datlag.mimasu.rive.RiveAnimation
 import dev.datlag.mimasu.ui.AppInitializer
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.supportsRive
 import dev.datlag.mimasu.ui.common.uiStringRes
@@ -38,6 +37,7 @@ import dev.datlag.mimasu.ui.login_rive_bunny_marketplace
 import dev.datlag.mimasu.ui.login_rive_bunny_owner
 import dev.datlag.mimasu.ui.login_rive_bunny_text
 import dev.datlag.mimasu.ui.login_rive_bunny_title
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 import io.tolgee.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)

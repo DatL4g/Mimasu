@@ -4,8 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.media3.common.Player
 import androidx.media3.common.listen
-import dev.datlag.mimasu.ui.LaunchedDefault
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

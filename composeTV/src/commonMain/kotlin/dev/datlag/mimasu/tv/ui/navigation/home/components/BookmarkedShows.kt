@@ -49,12 +49,12 @@ import dev.datlag.mimasu.tv.Res
 import dev.datlag.mimasu.tv.common.color
 import dev.datlag.mimasu.tv.common.fadeHighlightColor
 import dev.datlag.mimasu.tv.tv_home_your_series
-import dev.datlag.mimasu.ui.LaunchedMain
-import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.compose.LaunchedMain
+import dev.datlag.tooling.compose.MainThread
 import dev.datlag.tooling.compose.ifFalse
 import dev.datlag.tooling.compose.ifTrue
 import io.tolgee.stringResource

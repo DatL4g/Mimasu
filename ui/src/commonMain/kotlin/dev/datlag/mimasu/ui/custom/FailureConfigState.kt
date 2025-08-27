@@ -33,7 +33,7 @@ import dev.datlag.mimasu.ui.config_fail_initialize_title
 import dev.datlag.mimasu.ui.github
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.tooling.Platform
-import dev.datlag.tooling.compose.launchMain
+import dev.datlag.tooling.async.launchMain
 import dev.datlag.tooling.compose.platform.PlatformCard
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.typography

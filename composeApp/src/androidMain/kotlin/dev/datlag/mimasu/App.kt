@@ -19,9 +19,8 @@ import dev.datlag.mimasu.module.NetworkModule
 import dev.datlag.mimasu.ui.AppInitializer
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.tooling.Platform
-import dev.datlag.tooling.compose.TargetIO
-import dev.datlag.tooling.compose.ioDispatcher
-import dev.datlag.tooling.compose.launchIO
+import dev.datlag.tooling.async.VirtualIO
+import dev.datlag.tooling.async.ioDispatcher
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions
 import dev.gitlive.firebase.initialize
@@ -96,7 +95,7 @@ class App : MultiDexApplication(), DIAware {
         }
 
         val config by di.instance<FirebaseRemoteConfigService>()
-        applicationScope.launch(Dispatchers.Virtual ?: Dispatchers.TargetIO) {
+        applicationScope.launch(Dispatchers.VirtualIO) {
             Network.fetchConfig(config)
         }
     }

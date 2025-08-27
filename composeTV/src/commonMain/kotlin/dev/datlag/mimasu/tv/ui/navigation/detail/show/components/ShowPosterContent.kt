@@ -50,16 +50,15 @@ import dev.datlag.mimasu.tv.tv_show_first_air_date
 import dev.datlag.mimasu.tv.tv_show_first_air_date_format
 import dev.datlag.mimasu.tv.tv_show_rating
 import dev.datlag.mimasu.tv.tv_show_rating_placeholder
-import dev.datlag.mimasu.ui.LaunchedMain
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
-import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.formatMedium
 import dev.datlag.mimasu.ui.common.rememberNestedImagePainter
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.rememberAdjustableState
 import dev.datlag.mimasu.ui.viewmodel.FirebaseViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
-import dev.datlag.tooling.compose.TargetIO
+import dev.datlag.tooling.async.VirtualIO
+import dev.datlag.tooling.compose.LaunchedMain
+import dev.datlag.tooling.compose.MainThread
 import io.tolgee.stringResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -239,7 +238,7 @@ internal fun ShowPosterContent(
                     key1 = show?.id,
                     key2 = initial?.id,
                     key3 = loggedIn,
-                    context = Dispatchers.Virtual ?: Dispatchers.TargetIO
+                    context = Dispatchers.VirtualIO
                 ) { current ->
                     val id = show?.id?.takeIf { it > 0 } ?: initial?.id?.takeIf { it > 0 }
 

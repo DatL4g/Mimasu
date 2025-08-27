@@ -56,8 +56,6 @@ import dev.datlag.mimasu.common.rememberActivity
 import dev.datlag.mimasu.common.requestedOrOrientation
 import dev.datlag.mimasu.other.PiPHelper
 import dev.datlag.mimasu.other.rememberPiPHelper
-import dev.datlag.mimasu.ui.LaunchedMain
-import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.asMediaMetaData
 import dev.datlag.mimasu.ui.common.handleDPadKeyEvents
 import dev.datlag.mimasu.ui.common.handlePlayerKeyEvents
@@ -78,6 +76,8 @@ import dev.datlag.mimasu.ui.navigation.video.components.TopControls
 import dev.datlag.mimasu.ui.navigation.video.components.VolumeBrightnessControl
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
+import dev.datlag.tooling.compose.LaunchedMain
+import dev.datlag.tooling.compose.MainThread
 import dev.datlag.tooling.compose.ifFalse
 import kotlin.math.max
 

@@ -6,11 +6,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import co.touchlab.kermit.Logger
-import dev.datlag.mimasu.ui.LaunchedVirtualIO
 import dev.datlag.mimasu.ui.UiRes
 import dev.datlag.mimasu.ui.common.uiStringRes
 import dev.datlag.mimasu.ui.error_state_text
 import dev.datlag.mimasu.ui.error_state_with_throwable_text
+import dev.datlag.tooling.compose.LaunchedVirtualIO
 import dev.datlag.tooling.compose.platform.PlatformText
 
 @Composable

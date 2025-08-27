@@ -16,9 +16,9 @@ import dev.datlag.mimasu.BuildConfig
 import dev.datlag.mimasu.BuildKonfig
 import dev.datlag.mimasu.Sekret
 import dev.datlag.mimasu.other.AdManager
-import dev.datlag.mimasu.ui.LaunchedMain
-import dev.datlag.mimasu.ui.MainThread
 import dev.datlag.mimasu.ui.common.findActivity
+import dev.datlag.tooling.compose.LaunchedMain
+import dev.datlag.tooling.compose.MainThread
 import kotlinx.atomicfu.atomic
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient

@@ -18,7 +18,7 @@ import dev.datlag.mimasu.tmdb.TMDB
 import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.mimasu.ui.viewmodel.KodeinViewModelFactory
 import dev.datlag.tooling.Platform
-import dev.datlag.tooling.compose.TargetIO
+import dev.datlag.tooling.async.VirtualIO
 import io.ktor.client.HttpClient
 import io.tolgee.Tolgee
 import kotlinx.coroutines.Dispatchers
@@ -75,7 +75,7 @@ data object NetworkModule {
             TMDB.init {
                 network {
                     client(instance<HttpClient>())
-                    context(Dispatchers.Virtual ?: Dispatchers.TargetIO)
+                    context(Dispatchers.VirtualIO)
                 }
                 apiKey(Network.tmdbApiKey)
                 language(Locale.current.language)
@@ -105,7 +105,7 @@ data object NetworkModule {
             Tolgee.instanceOrInit {
                 network {
                     client(instance<HttpClient>())
-                    context(Dispatchers.Virtual ?: Dispatchers.TargetIO)
+                    context(Dispatchers.VirtualIO)
                 }
                 contentDelivery {
                     formatter(Tolgee.Formatter.ICU)
@@ -117,7 +117,7 @@ data object NetworkModule {
             Tolgee.new {
                 network {
                     client(instance<HttpClient>())
-                    context(Dispatchers.Virtual ?: Dispatchers.TargetIO)
+                    context(Dispatchers.VirtualIO)
                 }
                 contentDelivery {
                     formatter(Tolgee.Formatter.ICU)
