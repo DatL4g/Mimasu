@@ -8,15 +8,15 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import dev.datlag.mimasu.extension.AppInstallReceiver
 import dev.datlag.mimasu.extension.ExtensionInitializer
+import dev.datlag.mimasu.other.CustomTolgeeWrapper
 import dev.datlag.tooling.scopeCatching
-import io.tolgee.TolgeeContextWrapper
 
 open class MimasuActivity : ComponentActivity() {
 
     private val appInstallReceiver = AppInstallReceiver()
 
     override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(TolgeeContextWrapper.wrap(newBase))
+        super.attachBaseContext(CustomTolgeeWrapper.wrap(newBase))
     }
 
     open fun bindExtension(predicate: () -> Boolean) {
