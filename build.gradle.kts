@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.compose) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.compose.report) apply false
-    alias(libs.plugins.compose.reload) apply false
     alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.konfig) apply false

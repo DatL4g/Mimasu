@@ -14,13 +14,11 @@ android-startup = "1.2.0"
 assertk = "0.28.1"
 atomicfu = "0.29.0"
 cast = "22.1.0"
-certificate-transparency = "2.8.3"
+certificate-transparency = "2.8.4"
 coil = "3.3.0"
 collection = "1.5.0"
 compose = "1.9.0-rc01"
 compose-report = "1.4.2"
-compose-reload = "1.0.0-alpha10"
-constraint-layout = "0.4.0"
 coroutines = "1.10.2"
 crashlytics = "3.0.6"
 cronet = "18.1.0"
@@ -98,7 +96,6 @@ coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", versio
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
 collection = { group = "androidx.collection", name = "collection", version.ref = "collection" }
-constraint-layout = { group = "tech.annexflow.compose", name = "constraintlayout-compose-multiplatform", version.ref = "constraint-layout" }
 coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-js = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-js", version.ref = "coroutines" }
@@ -194,7 +191,6 @@ cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotli
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "compose-report" }
-compose-reload = { id = "org.jetbrains.compose.hot-reload", version.ref = "compose-reload" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 konfig = { id = "com.codingfeline.buildkonfig", version.ref = "konfig" }
