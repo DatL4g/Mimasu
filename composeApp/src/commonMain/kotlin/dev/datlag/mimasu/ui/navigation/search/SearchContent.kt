@@ -25,7 +25,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.search_series
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.TV
-import dev.datlag.mimasu.ui.LazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import dev.datlag.mimasu.ui.common.plus
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.MovieCard

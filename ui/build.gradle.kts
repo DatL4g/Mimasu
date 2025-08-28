@@ -64,10 +64,10 @@ kotlin {
             api(libs.kodein.compose)
             api(libs.viewmodel)
             api(libs.paging)
+            api(libs.paging.compose)
         }
 
         androidMain.dependencies {
-            api(libs.paging.compose)
             implementation(libs.activity.compose)
             implementation(libs.android.startup)
             implementation(libs.cronet)
@@ -83,7 +83,7 @@ kotlin {
             implementation(project(":rive"))
         }
 
-        val pagingCommonMain by creating {
+        val skikoMain by creating {
             dependsOn(commonMain.get())
 
             jvmMain.orNull?.dependsOn(this)

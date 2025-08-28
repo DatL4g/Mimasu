@@ -27,7 +27,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.search_info_error
 import dev.datlag.mimasu.tmdb.model.Movie
 import dev.datlag.mimasu.tmdb.model.People
 import dev.datlag.mimasu.tmdb.model.TV
-import dev.datlag.mimasu.ui.collectAsLazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.common.merge
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.SearchInfo

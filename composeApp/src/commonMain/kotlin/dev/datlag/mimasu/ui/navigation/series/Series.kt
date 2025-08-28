@@ -28,7 +28,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.series_on_the_air
 import dev.datlag.mimasu.composeapp.generated.resources.series_popular
 import dev.datlag.mimasu.composeapp.generated.resources.series_top_rated
 import dev.datlag.mimasu.tmdb.model.TV
-import dev.datlag.mimasu.ui.collectAsLazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.ScrollIconButton
 import dev.datlag.mimasu.ui.custom.ShowCard

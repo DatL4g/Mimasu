@@ -27,7 +27,6 @@ import dev.datlag.mimasu.composeapp.generated.resources.movies_popular
 import dev.datlag.mimasu.composeapp.generated.resources.movies_top_rated
 import dev.datlag.mimasu.composeapp.generated.resources.movies_upcoming
 import dev.datlag.mimasu.tmdb.model.Movie
-import dev.datlag.mimasu.ui.collectAsLazyPagingItems
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.custom.MaterialSymbols.invoke
 import dev.datlag.mimasu.ui.custom.MovieCard
@@ -37,6 +36,7 @@ import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
 import io.tolgee.stringResource
+import androidx.paging.compose.collectAsLazyPagingItems
 
 @Composable
 fun Movies(
