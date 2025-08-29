@@ -5,15 +5,18 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
@@ -22,10 +25,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Create Sekrets
-        run: |
-          touch composeApp/sekret.properties
-          ./gradlew composeApp:createSekretValue -Pkey=ADMOB_HOME_BANNER -Pvalue=${{ secrets.ADMOB_HOME_BANNER }}
-          ./gradlew composeApp:createSekretValue -Pkey=ADMOB_VIDEO_REWARD -Pvalue=${{ secrets.ADMOB_VIDEO_REWARD }}
+        env:
+          YAML: ${{ secrets.SEKRET_YAML_BASE64 }}
+        run: echo "${YAML// /}" | base64 -d > composeApp/sekret.yaml
 
       - name: Create Google-Services
         env:
@@ -64,7 +66,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload Release Packages
-        uses: ospfranco/action-gh-release@2.3.4 # Use softprops when merged/fixed
+        uses: softprops/action-gh-release@v2.3.2
         if: ${{ github.event_name == 'release' }}
         with:
           files: |
