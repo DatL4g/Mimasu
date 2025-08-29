@@ -21,6 +21,11 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - name: Create Keystore
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE_BASE64 }}
+        run: echo "${KEYSTORE// /}" | base64 -d > keystore.jks
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
@@ -43,11 +48,6 @@ jobs:
       - name: Pre-Build
         continue-on-error: true
         run: ./gradlew build
-
-      - name: Create Keystore
-        env:
-          KEYSTORE: ${{ secrets.KEYSTORE_BASE64 }}
-        run: echo "${KEYSTORE// /}" | base64 -d > keystore.jks
 
       - name: Build Release APK
         run: ./gradlew composeApp:assembleRelease
