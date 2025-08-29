@@ -21,5 +21,8 @@
         <domain includeSubdomains="true">githubusercontent.com</domain>
 
         <domain includeSubdomains="false">disposable.debounce.io</domain>
+
+        <domain includeSubdomains="true">tolgee.io</domain>
+        <domain includeSubdomains="true">tolg.ee</domain>
     </domain-config>
 </network-security-config>
