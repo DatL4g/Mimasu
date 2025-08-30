@@ -101,7 +101,7 @@ data object NetworkModule {
                 client = instance()
             )
         }
-        bindEagerSingleton<Tolgee> {
+        bindSingleton<Tolgee> {
             Tolgee.instanceOrInit {
                 network {
                     client(instance<HttpClient>())

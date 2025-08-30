@@ -26,12 +26,6 @@ import kotlin.reflect.safeCast
 
 class TVActivity : MimasuActivity() {
 
-    private val di: DI?
-        get() = this.applicationContext.safeCast<DIAware>()?.di
-            ?: this.application.safeCast<DIAware>()?.di
-            ?: DIAware::class.safeCast(this.applicationContext)?.di
-            ?: DIAware::class.safeCast(this.application)?.di
-
     override fun onCreate(savedInstanceState: Bundle?) {
         fun exit(reason: String?) {
             reason?.let { Logger.Companion.e(messageString = it) }
@@ -55,7 +49,7 @@ class TVActivity : MimasuActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
 
-        val di = this.di ?: return exit("Could not find dependency injection.")
+        val di = this.di() ?: return exit("Could not find dependency injection.")
         bindExtension { Platform.isTelevision(this) }
 
         setContent {

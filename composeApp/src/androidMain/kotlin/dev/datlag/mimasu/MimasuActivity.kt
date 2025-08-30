@@ -4,19 +4,65 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import dev.datlag.mimasu.extension.AppInstallReceiver
 import dev.datlag.mimasu.extension.ExtensionInitializer
 import dev.datlag.mimasu.other.CustomTolgeeWrapper
+import dev.datlag.tooling.safeCast
 import dev.datlag.tooling.scopeCatching
+import io.tolgee.Tolgee
+import io.tolgee.TolgeeAndroid
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.instanceOrNull
+import kotlin.reflect.safeCast
 
 open class MimasuActivity : ComponentActivity() {
 
     private val appInstallReceiver = AppInstallReceiver()
 
+    protected val appContext: Context
+        get() = scopeCatching {
+            applicationContext
+        }.getOrNull() ?: scopeCatching {
+            baseContext
+        }.getOrNull() ?: this
+
+    protected fun di(context: Context? = appContext): DI? {
+        return context?.safeCast<DIAware>()?.di
+            ?: DIAware::class.safeCast(context)?.di
+            ?: appContext.safeCast<DIAware>()?.di
+            ?: application.safeCast<DIAware>()?.di
+            ?: DIAware::class.safeCast(appContext)?.di
+            ?: DIAware::class.safeCast(application)?.di
+    }
+
     override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(CustomTolgeeWrapper.wrap(newBase))
+        val instance = di(newBase)?.instanceOrNull<Tolgee>()?.let {
+            val value by it
+            value ?: Tolgee.instanceOrNull
+        } ?: Tolgee.instanceOrNull
+
+        val wrapper = if (instance != null) {
+            CustomTolgeeWrapper.wrap(newBase, instance)
+        } else {
+            CustomTolgeeWrapper.wrap(newBase)
+        }
+
+        super.attachBaseContext(wrapper)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val tolgeeInstance = di()?.instanceOrNull<Tolgee>()?.let {
+            val value by it
+            value ?: Tolgee.instanceOrNull
+        } ?: Tolgee.instanceOrNull
+
+        (tolgeeInstance as? TolgeeAndroid)?.preload(this)
     }
 
     open fun bindExtension(predicate: () -> Boolean) {

@@ -30,12 +30,6 @@ import kotlin.reflect.safeCast
 
 class MainActivity : AdActivity() {
 
-    private val di: DI?
-        get() = applicationContext.safeCast<DIAware>()?.di
-            ?: application.safeCast<DIAware>()?.di
-            ?: DIAware::class.safeCast(applicationContext)?.di
-            ?: DIAware::class.safeCast(application)?.di
-
     override fun onCreate(savedInstanceState: Bundle?) {
         fun exit(reason: String?) {
             reason?.let { Logger.e(messageString = it) }
@@ -59,7 +53,7 @@ class MainActivity : AdActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
 
-        val di = this.di ?: return exit("Could not find dependency injection.")
+        val di = this.di() ?: return exit("Could not find dependency injection.")
         val nullableAdManager by di.instanceOrNull<AdManager>()
         (nullableAdManager ?: AdManager(this)).requestConsentUpdate(this)
         bindExtension { !Platform.isTelevision(this) }
@@ -137,7 +131,7 @@ class MainActivity : AdActivity() {
                             LoginViewModel.setResetCode(oobCode)
                         }
                         mode.equals("verify", ignoreCase = true) || mode.equals("verifyEmail", ignoreCase = true) -> {
-                            val authService = di?.let {
+                            val authService = di()?.let {
                                 val instance by it.instanceOrNull<FirebaseAuthService>()
                                 instance
                             }

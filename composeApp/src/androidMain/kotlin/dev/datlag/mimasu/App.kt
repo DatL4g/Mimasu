@@ -21,6 +21,7 @@ import dev.datlag.mimasu.ui.other.Network
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.async.VirtualIO
 import dev.datlag.tooling.async.ioDispatcher
+import dev.datlag.tooling.scopeCatching
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions
 import dev.gitlive.firebase.initialize
@@ -38,10 +39,16 @@ import org.kodein.di.instanceOrNull
 class App : MultiDexApplication(), DIAware {
 
     private val applicationScope = CoroutineScope(ioDispatcher() + SupervisorJob())
+    private val appContext: Context
+        get() = scopeCatching {
+            applicationContext
+        }.getOrNull() ?: scopeCatching {
+            baseContext
+        }.getOrNull() ?: this
 
     override val di: DI = DI {
         bindSingleton<Context> {
-            applicationContext
+            appContext
         }
         bindSingleton<FirebaseRemoteConfigService> {
             FirebaseRemoteConfigService(
@@ -59,7 +66,7 @@ class App : MultiDexApplication(), DIAware {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA && !Platform.isTelevision(this)) {
             installCertificateTransparencyProvider {
                 logger = BasicAndroidCTLogger(BuildConfig.DEBUG)
-                diskCache = AndroidDiskCache(applicationContext)
+                diskCache = AndroidDiskCache(appContext)
             }
         }
 
@@ -68,7 +75,7 @@ class App : MultiDexApplication(), DIAware {
 
         CronetProviderInstaller.installProvider(this)
 
-        if (AppInitializer.isSekretLoaded(applicationContext)) {
+        if (AppInitializer.isSekretLoaded(appContext)) {
             val appId = Sekret.firebaseAppId(BuildKonfig.packageName)
             val apiKey = Sekret.firebaseApiKey(BuildKonfig.packageName)
 
