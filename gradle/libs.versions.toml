@@ -1,5 +1,5 @@
 [versions]
-app = "1.4.0"
+app = "1.4.1"
 about = "12.2.4"
 activity = "1.10.1"
 adaptive = "1.2.0-alpha05"
