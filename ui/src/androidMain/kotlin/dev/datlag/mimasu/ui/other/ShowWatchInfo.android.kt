@@ -74,7 +74,8 @@ actual fun rememberEpisodeStream(
         Extension.EpisodeRequest(
             episodeNumber = episode.episodeNumber,
             episodeTitle = episode.name,
-            season = seasonNumber
+            season = seasonNumber,
+            appLocale = Locale.current.toLanguageTag()
         )
     }
 

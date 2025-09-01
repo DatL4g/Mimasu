@@ -45,6 +45,7 @@ import dev.datlag.mimasu.ui.other.ShowState
 import dev.datlag.mimasu.ui.other.rememberEpisodeStream
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.async.VirtualIO
+import dev.datlag.tooling.async.launchVirtualIO
 import dev.datlag.tooling.async.withMainContext
 import dev.datlag.tooling.compose.platform.colorScheme
 import dev.datlag.tooling.compose.platform.shapes
@@ -64,12 +65,14 @@ fun EpisodeItem(
     seasonNumber: Int?,
     showAvailability: ShowState,
     loggedIn: Boolean,
+    clickBlocked: Boolean,
     modifier: Modifier = Modifier,
     onDialog: () -> Unit,
     onStream: (Extension.Response) -> Unit,
     markAsWatched: suspend () -> Unit,
     markAsUnWatched: suspend () -> Unit,
-    onLogin: () -> Unit
+    onLogin: () -> Unit,
+    blockClick: (Boolean) -> Unit
 ) {
     val episodeStream = rememberEpisodeStream(
         showState = showAvailability,
@@ -93,8 +96,13 @@ fun EpisodeItem(
         modifier = modifier,
         isRevealed = isRevealed,
         onCardClick = {
-            scope.launch(Dispatchers.VirtualIO) {
-                val stream = episodeStream.getStream() ?: return@launch onDialog()
+            scope.launchVirtualIO {
+                blockClick(true)
+                val stream = episodeStream.getStream() ?: return@launchVirtualIO run {
+                    blockClick(false)
+                    onDialog()
+                }
+                blockClick(false)
 
                 withMainContext {
                     onStream(stream)
@@ -106,7 +114,7 @@ fun EpisodeItem(
             contentColor = Platform.colorScheme().onBackground
         ),
         revealedCardColors = CardDefaults.cardColors(),
-        cardEnabled = !isRevealed && when (val current = episodeStreamState) {
+        cardEnabled = !clickBlocked && !isRevealed && when (val current = episodeStreamState) {
             is EpisodeStreamState.Available -> current.state
             else -> current !is EpisodeStreamState.Unavailable
         },
@@ -116,7 +124,7 @@ fun EpisodeItem(
                 onClick = {
                     isRevealed = false
                     if (loggedIn) {
-                        scope.launch(Dispatchers.VirtualIO) {
+                        scope.launchVirtualIO {
                             if (watched) {
                                 markAsUnWatched()
                             } else {

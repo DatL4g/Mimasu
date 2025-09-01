@@ -39,9 +39,12 @@ import dev.datlag.mimasu.ui.navigation.detail.show.components.ShowSeason
 import dev.datlag.mimasu.ui.other.ShowState
 import dev.datlag.mimasu.ui.viewmodel.ShowViewModel
 import dev.datlag.mimasu.ui.viewmodel.VideoViewModel
+import dev.datlag.tooling.compose.LaunchedDefault
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ShowContent(
@@ -63,6 +66,14 @@ fun ShowContent(
     onLogin: () -> Unit
 ) {
     var episodeDialogVisible by remember { mutableStateOf(false) }
+    var episodeClickBlocked by remember { mutableStateOf(false) }
+
+    LaunchedDefault(episodeClickBlocked) {
+        if (episodeClickBlocked) {
+            delay(10.seconds)
+            episodeClickBlocked = false
+        }
+    }
 
     if (episodeDialogVisible) {
         EpisodeDialog(
@@ -180,6 +191,7 @@ fun ShowContent(
                         seasonNumber = seasonState.season.seasonNumber,
                         showAvailability = showAvailability,
                         loggedIn = loggedIn,
+                        clickBlocked = episodeClickBlocked,
                         modifier = Modifier.fillParentMaxWidth().padding(4.dp),
                         onDialog = {
                             episodeDialogVisible = true
@@ -201,7 +213,10 @@ fun ShowContent(
                         markAsUnWatched = {
                             markAsUnWatched(episode)
                         },
-                        onLogin = onLogin
+                        onLogin = onLogin,
+                        blockClick = {
+                            episodeClickBlocked = it
+                        }
                     )
                 }
             }
