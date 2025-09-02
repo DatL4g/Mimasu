@@ -9,11 +9,11 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import dev.datlag.mimasu.extension.AppInstallReceiver
 import dev.datlag.mimasu.extension.ExtensionInitializer
-import dev.datlag.mimasu.other.CustomTolgeeWrapper
 import dev.datlag.tooling.safeCast
 import dev.datlag.tooling.scopeCatching
 import io.tolgee.Tolgee
 import io.tolgee.TolgeeAndroid
+import io.tolgee.TolgeeContextWrapper
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.instanceOrNull
@@ -46,9 +46,9 @@ open class MimasuActivity : ComponentActivity() {
         } ?: Tolgee.instanceOrNull
 
         val wrapper = if (instance != null) {
-            CustomTolgeeWrapper.wrap(newBase, instance)
+            TolgeeContextWrapper.wrap(newBase, instance)
         } else {
-            CustomTolgeeWrapper.wrap(newBase)
+            TolgeeContextWrapper.wrap(newBase)
         }
 
         super.attachBaseContext(wrapper)
