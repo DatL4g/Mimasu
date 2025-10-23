@@ -88,7 +88,7 @@ internal actual fun LoginAppImage(
                 state = tooltipState,
                 tooltip = {
                     RichTooltip(
-                        caretSize = DpSize(32.dp, 16.dp),
+                        caretShape = TooltipDefaults.caretShape(DpSize(32.dp, 16.dp)),
                         title = {
                             Text(uiStringRes(UiRes.string.login_rive_bunny_title))
                         },

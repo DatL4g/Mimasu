@@ -109,12 +109,6 @@ kotlin {
             androidMain.orNull?.dependsOn(this)
             jvmMain.orNull?.dependsOn(this)
         }
-        // Can be used for JS, WASM and WASI
-        // Add your required targets accordingly
-        val webMain by creating {
-            dependsOn(commonMain.get())
-            jsMain.orNull?.dependsOn(this)
-        }
     }
 }
 android {

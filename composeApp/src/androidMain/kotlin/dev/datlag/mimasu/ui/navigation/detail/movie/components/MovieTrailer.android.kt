@@ -111,7 +111,7 @@ actual fun MovieTrailer(url: String?, modifier: Modifier) {
 
                                         playbackPosition = second
                                     }
-                                }, IFramePlayerOptions.Builder().autoplay(0).build())
+                                }, IFramePlayerOptions.Builder(ctx).autoplay(0).build())
                             }
                         }
                     )
