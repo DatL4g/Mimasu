@@ -118,11 +118,11 @@ class PlayerWrapper(
         .setKeepPostFor302Redirects(true)
 
     private val fallbackDataSourceFactory = DataSource.Factory {
-        scopeCatching {
-            cronetDataSourceFactory?.createDataSource()
-        }.getOrNull() ?: scopeCatching {
-            okHttpDataSource.createDataSource()
-        }.getOrNull() ?: httpDataSourceFactory.createDataSource()
+        FallbackDataSource(
+            cronetDataSourceFactory?.createDataSource(),
+            okHttpDataSource.createDataSource(),
+            httpDataSourceFactory.createDataSource()
+        )
     }
 
     private val cacheDataSourceFactory = CacheDataSource.Factory()
