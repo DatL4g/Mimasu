@@ -31,6 +31,7 @@
         android:allowAudioPlaybackCapture="false"
         android:enableOnBackInvokedCallback="true"
         android:name=".App"
+        android:manageSpaceActivity=".SpaceActivity"
         android:resizeableActivity="true"
         android:networkSecurityConfig="@xml/network_security"
         android:largeHeap="true"
@@ -75,6 +76,15 @@
 
                 <data android:scheme="https" android:host="mimasu.datlag.dev" android:pathPrefix="/auth" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SpaceActivity"
+            android:launchMode="singleInstance"
+            android:configChanges="orientation|smallestScreenSize|screenSize|screenLayout|keyboardHidden"
+            android:resizeableActivity="true"
+            android:theme="@style/AppTheme"
+            android:exported="true">
         </activity>
 
         <meta-data

@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Mimasu</string>
     <string name="profile">Profile</string>
     <string name="movies">Movies</string>
     <string name="home">Home</string>
@@ -113,7 +114,7 @@
     <string name="show_production">Production</string>
     <string name="show_countries">Countries: </string>
     <string name="show_watch">Watch</string>
-    <string name="show_season_placeholder">Season %1$d%</string>
+    <string name="show_season_placeholder">Season %1$d</string>
     <string name="show_season_next">Next</string>
     <string name="show_season_select_info">Select the season you are currently watching or your interested in, then confirm to see it's details.</string>
 
@@ -141,4 +142,14 @@
     <string name="account_verification_check">Check Status</string>
 
     <string name="feature_temporarily_disabled">Feature temporarily disabled.</string>
+
+    <string name="space_bytes_format">%1$d%2$s</string>
+    <string-array name="space_bytes_format_sizes">
+        <item>B</item>
+        <item>KB</item>
+        <item>MB</item>
+        <item>GB</item>
+        <item>TB</item>
+        <item>PB</item>
+    </string-array>
 </resources>

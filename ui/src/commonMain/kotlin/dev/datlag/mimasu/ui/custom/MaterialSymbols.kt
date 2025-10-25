@@ -34,6 +34,8 @@ import androidx.compose.material.icons.rounded.CloudOff
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Computer
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Event
@@ -238,6 +240,8 @@ data object MaterialSymbols {
     const val FULLSCREEN_EXIT = "fullscreen_exit"
     const val ANIMATED_IMAGES = "animated_images"
     const val WEB_TRAFFIC = "web_traffic"
+    const val DELETE = "delete"
+    const val DELETE_FOREVER = "delete_forever"
 
     private const val DEFAULT_GRADE = 24
     private const val DEFAULT_OPSZ = 24F
@@ -695,6 +699,9 @@ data object MaterialSymbols {
 
         name.equals(ANIMATED_IMAGES, ignoreCase = true) -> Icons.Rounded.VideoLibrary
         name.equals(WEB_TRAFFIC, ignoreCase = true) -> Icons.Rounded.AdsClick
+
+        name.equals(DELETE, ignoreCase = true) -> Icons.Rounded.Delete
+        name.equals(DELETE_FOREVER, ignoreCase = true) -> Icons.Rounded.DeleteForever
         else -> null
     }
 

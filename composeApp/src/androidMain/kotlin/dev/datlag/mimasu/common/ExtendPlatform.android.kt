@@ -12,6 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import dev.datlag.mimasu.ui.common.findActivity
+import dev.datlag.tooling.deleteSafely
+import dev.datlag.tooling.existsSafely
+import java.io.File
 
 fun Activity.isInPiPMode(): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -59,4 +62,8 @@ fun rememberActivity(
     view: View = LocalView.current
 ): Activity? {
     return LocalActivity.current ?: view.context?.findActivity() ?: LocalContext.current.findActivity()
+}
+
+fun File.deleteRecursivelySafely(): Boolean = walkBottomUp().fold(true) { res, it ->
+    (it.deleteSafely(res) || !it.existsSafely(res)) && res
 }
