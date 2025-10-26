@@ -143,7 +143,8 @@ fun SpaceContent() {
                         },
                         onClearCache = {
                             spaceManager.extensionClearCache()
-                        }
+                        },
+                        tonal = true
                     )
                 }
             }
