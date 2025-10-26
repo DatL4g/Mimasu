@@ -10,6 +10,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import dev.datlag.mimasu.common.deleteRecursivelySafely
+import dev.datlag.mimasu.extension.AIDLService
+import dev.datlag.mimasu.extension.service.SpaceService
 import dev.datlag.tooling.scopeCatching
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -35,8 +37,17 @@ class SpaceManager(
         context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
     }.getOrNull() ?: ContextCompat.getSystemService(context, ActivityManager::class.java)
 
+    private val extensionSpace by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+        SpaceService.bind(context)
+    }
+
     private val _sizes = MutableStateFlow<Sizes?>(null)
     val sizes = _sizes.asStateFlow()
+
+    val extensionSizes by lazy { extensionSpace?.space ?: MutableStateFlow(null) }
+    val extensionAvailable by lazy {
+        extensionSpace != null || AIDLService.extensionInstalled(context)
+    }
 
     suspend fun loadSizes() {
         _sizes.update {
@@ -58,6 +69,14 @@ class SpaceManager(
         return activityManager?.clearApplicationUserData()?.let {
             it && clearCache()
         } ?: clearCache()
+    }
+
+    fun extensionClearCache() {
+        extensionSpace?.clearCache() ?: AIDLService.extensionStorageSettings(context)
+    }
+
+    fun extensionClearStorage() {
+        extensionSpace?.clearStorage() ?: AIDLService.extensionStorageSettings(context)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

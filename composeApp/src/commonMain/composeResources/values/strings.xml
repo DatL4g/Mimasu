@@ -143,6 +143,11 @@
 
     <string name="feature_temporarily_disabled">Feature temporarily disabled.</string>
 
+    <string name="space_extension">Extension</string>
+    <string name="space_app_text">Free up space by clearing the cache or permanently deleting all data.</string>
+    <string name="space_extension_text">Manage the extension space by clearing it's cache or all data.</string>
+    <string name="space_clear_space">Clear Storage</string>
+    <string name="space_clear_cache">Clear Cache</string>
     <string name="space_bytes_format">%1$d%2$s</string>
     <string-array name="space_bytes_format_sizes">
         <item>B</item>

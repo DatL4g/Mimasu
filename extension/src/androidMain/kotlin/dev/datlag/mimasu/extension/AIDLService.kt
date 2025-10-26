@@ -8,6 +8,7 @@ import android.content.ServiceConnection
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -219,6 +220,19 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
             } ?: return
 
             context.startActivity(launchIntent)
+        }
+
+        fun extensionStorageSettings(context: Context) {
+            if (extensionInstalled(context)) {
+                val intent = Intent(
+                    Intent.ACTION_MANAGE_PACKAGE_STORAGE,
+                    Uri.parse("package:$EXTENSION_PACKAGE")
+                ).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                }
+                context.startActivity(intent)
+            }
         }
     }
 }
