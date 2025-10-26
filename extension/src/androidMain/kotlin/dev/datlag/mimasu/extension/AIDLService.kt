@@ -13,6 +13,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.IInterface
+import android.provider.Settings
 import dev.datlag.mimasu.extension.model.AppInfo
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.async.scopeCatching
@@ -224,14 +225,21 @@ abstract class AIDLService<T : IInterface>(context: Context) : ServiceConnection
 
         fun extensionStorageSettings(context: Context) {
             if (extensionInstalled(context)) {
-                val intent = Intent(
-                    Intent.ACTION_MANAGE_PACKAGE_STORAGE,
-                    Uri.parse("package:$EXTENSION_PACKAGE")
-                ).apply {
+                val uri = Uri.fromParts("package", EXTENSION_PACKAGE, null)
+                val intent = Intent(Intent.ACTION_MANAGE_PACKAGE_STORAGE, uri).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 }
-                context.startActivity(intent)
+
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                } else {
+                    val fallbackIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    }
+                    context.startActivity(fallbackIntent)
+                }
             }
         }
     }
