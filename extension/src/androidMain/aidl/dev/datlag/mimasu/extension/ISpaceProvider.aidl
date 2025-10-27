@@ -6,6 +6,6 @@ interface ISpaceProvider {
     const int VERSION = 1;
 
     void requestSpace(in SpaceCallback callback);
-    void clearCache(in SpaceCallback callback);
-    void clearStorage(in SpaceCallback callback);
+    boolean clearCache(in SpaceCallback callback);
+    boolean clearStorage(in SpaceCallback callback);
 }

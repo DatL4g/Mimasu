@@ -50,12 +50,12 @@ class SpaceService(private val context: Context) : AIDLService<ISpaceProvider>(c
         _space.update { null }
     }
 
-    fun clearCache() {
-        service?.clearCache(spaceCallback)
+    fun clearCache(): Boolean {
+        return service?.clearCache(spaceCallback) ?: false
     }
 
-    fun clearStorage() {
-        service?.clearStorage(spaceCallback)
+    fun clearStorage(): Boolean {
+        return service?.clearStorage(spaceCallback) ?: false
     }
 
     companion object {

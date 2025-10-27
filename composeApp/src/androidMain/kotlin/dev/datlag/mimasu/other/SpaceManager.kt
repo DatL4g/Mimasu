@@ -72,11 +72,15 @@ class SpaceManager(
     }
 
     fun extensionClearCache() {
-        extensionSpace?.clearCache() ?: AIDLService.extensionStorageSettings(context)
+        extensionSpace?.takeIf {
+            it.clearCache()
+        } ?: AIDLService.extensionStorageSettings(context)
     }
 
     fun extensionClearStorage() {
-        extensionSpace?.clearStorage() ?: AIDLService.extensionStorageSettings(context)
+        extensionSpace?.takeIf {
+            it.clearStorage()
+        } ?: AIDLService.extensionStorageSettings(context)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
