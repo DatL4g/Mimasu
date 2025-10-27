@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.ui.space
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
@@ -19,6 +20,8 @@ import dev.datlag.mimasu.composeapp.generated.resources.space_app_text
 import dev.datlag.mimasu.composeapp.generated.resources.space_extension
 import dev.datlag.mimasu.composeapp.generated.resources.space_extension_text
 import dev.datlag.mimasu.other.SpaceManager
+import dev.datlag.mimasu.ui.ads.Banner
+import dev.datlag.mimasu.ui.ads.BannerAd
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.space.components.ClearRow
 import dev.datlag.mimasu.ui.space.components.SizeInfo
@@ -34,7 +37,15 @@ import io.tolgee.stringResource
 @Composable
 fun SpaceContent() {
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            if (!Platform.rememberIsTv()) {
+                BannerAd(
+                    type = Banner.Space,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     ) { padding ->
         val context = LocalContext.current
         val spaceManager = remember(context) { SpaceManager(context) }

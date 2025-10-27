@@ -25,12 +25,14 @@ import org.kodein.di.instanceOrNull
 
 @OptIn(MainThread::class)
 @Composable
-actual fun BannerAd(modifier: Modifier) = with(localDI()) {
+actual fun BannerAd(type: Banner, modifier: Modifier) = with(localDI()) {
     val bannerId = remember {
         if (BuildConfig.DEBUG) {
             AdMobTestIds.ADAPTIVE_BANNER
-        } else {
-            Sekret.admobHomeBanner(BuildKonfig.packageName)?.ifBlank { null }
+        } else when (type) {
+            is Banner.Home -> Sekret.admobHomeBanner(BuildKonfig.packageName)?.ifBlank { null }
+            is Banner.Space -> Sekret.admobSpaceBanner(BuildKonfig.packageName)?.ifBlank { null }
+            else -> null
         }
     } ?: return
     val nullableAdManager by instanceOrNull<AdManager>()

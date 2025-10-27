@@ -50,6 +50,7 @@ import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.typography
 import io.tolgee.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
+import dev.datlag.mimasu.ui.ads.Banner
 
 @Composable
 fun Home(
@@ -316,6 +317,7 @@ fun Home(
         }
         item {
             BannerAd(
+                type = Banner.Home,
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .animateContentSize()
