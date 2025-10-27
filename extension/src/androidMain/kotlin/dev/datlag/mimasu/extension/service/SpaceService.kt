@@ -25,7 +25,7 @@ class SpaceService(private val context: Context) : AIDLService<ISpaceProvider>(c
                     app = app,
                     user = user,
                     cache = cache
-                )
+                ).takeUnless { e -> e.isEmpty() } ?: it
             }
         }
     }
