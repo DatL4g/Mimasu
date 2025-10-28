@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.ui.space
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import dev.datlag.mimasu.composeapp.generated.resources.space_extension_text
 import dev.datlag.mimasu.other.SpaceManager
 import dev.datlag.mimasu.ui.ads.Banner
 import dev.datlag.mimasu.ui.ads.BannerAd
+import dev.datlag.mimasu.ui.common.findActivity
 import dev.datlag.mimasu.ui.custom.MaterialSymbols
 import dev.datlag.mimasu.ui.space.components.ClearRow
 import dev.datlag.mimasu.ui.space.components.SizeInfo
@@ -31,6 +33,7 @@ import dev.datlag.tooling.compose.LaunchedVirtualIO
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.rememberIsTv
 import dev.datlag.tooling.compose.platform.typography
+import dev.datlag.tooling.scopeCatching
 import io.tolgee.stringResource
 
 @OptIn(MaterialSymbols.RedrawRequired::class)
@@ -48,6 +51,7 @@ fun SpaceContent() {
         }
     ) { padding ->
         val context = LocalContext.current
+        val activity = LocalActivity.current ?: context.findActivity()
         val spaceManager = remember(context) { SpaceManager(context) }
         val scope = rememberCoroutineScope()
         val sizes by if (Platform.rememberIsTv()) {
@@ -111,6 +115,11 @@ fun SpaceContent() {
                     onClearStorage = {
                         scope.launchVirtualIO {
                             spaceManager.clearApplicationData()
+                            scopeCatching {
+                                activity?.finishAffinity()
+                            }.onFailure {
+                                activity?.finish()
+                            }
                         }
                     },
                     onClearCache = {
@@ -151,6 +160,11 @@ fun SpaceContent() {
                             .padding(top = 16.dp),
                         onClearStorage = {
                             spaceManager.extensionClearStorage()
+                            scopeCatching {
+                                activity?.finishAffinity()
+                            }.onFailure {
+                                activity?.finish()
+                            }
                         },
                         onClearCache = {
                             spaceManager.extensionClearCache()

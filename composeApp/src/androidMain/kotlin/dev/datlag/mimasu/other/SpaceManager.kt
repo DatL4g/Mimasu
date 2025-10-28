@@ -77,10 +77,13 @@ class SpaceManager(
         } ?: AIDLService.extensionStorageSettings(context)
     }
 
-    fun extensionClearStorage() {
-        extensionSpace?.takeIf {
-            it.clearStorage()
-        } ?: AIDLService.extensionStorageSettings(context)
+    fun extensionClearStorage(): Boolean {
+        val result = extensionSpace?.clearStorage() ?: false
+
+        if (!result) {
+            AIDLService.extensionStorageSettings(context)
+        }
+        return result
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

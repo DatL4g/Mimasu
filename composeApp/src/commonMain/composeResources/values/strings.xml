@@ -148,6 +148,9 @@
     <string name="space_extension_text">Manage the extension space by clearing it's cache or all data.</string>
     <string name="space_clear_space">Clear Storage</string>
     <string name="space_clear_cache">Clear Cache</string>
+    <string name="space_sizes_app">App</string>
+    <string name="space_sizes_user">User</string>
+    <string name="space_sizes_cache">Cache</string>
     <string name="space_bytes_format">%1$d%2$s</string>
     <string-array name="space_bytes_format_sizes">
         <item>B</item>

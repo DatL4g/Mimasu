@@ -8,10 +8,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.datlag.mimasu.common.formatBytesHumanReadable
+import dev.datlag.mimasu.composeapp.generated.resources.Res
+import dev.datlag.mimasu.composeapp.generated.resources.space_sizes_app
+import dev.datlag.mimasu.composeapp.generated.resources.space_sizes_cache
+import dev.datlag.mimasu.composeapp.generated.resources.space_sizes_user
 import dev.datlag.mimasu.other.SpaceManager
 import dev.datlag.tooling.Platform
 import dev.datlag.tooling.compose.platform.PlatformText
 import dev.datlag.tooling.compose.platform.typography
+import io.tolgee.stringResource
 
 @Composable
 fun SizeInfo(
@@ -30,7 +35,7 @@ fun SizeInfo(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 PlatformText(
-                    text = "App",
+                    text = stringResource(Res.string.space_sizes_app),
                     style = Platform.typography().labelSmall
                 )
                 PlatformText(
@@ -46,7 +51,7 @@ fun SizeInfo(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 PlatformText(
-                    text = "User",
+                    text = stringResource(Res.string.space_sizes_user),
                     style = Platform.typography().labelSmall
                 )
                 PlatformText(
@@ -62,7 +67,7 @@ fun SizeInfo(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 PlatformText(
-                    text = "Cache",
+                    text = stringResource(Res.string.space_sizes_cache),
                     style = Platform.typography().labelSmall
                 )
                 PlatformText(
