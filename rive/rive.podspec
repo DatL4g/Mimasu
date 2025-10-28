@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'rive'
-    spec.version                  = '1.4.3'
+    spec.version                  = '1.5.0'
     spec.homepage                 = ''
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
