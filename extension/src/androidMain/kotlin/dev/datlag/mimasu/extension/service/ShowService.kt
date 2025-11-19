@@ -11,11 +11,12 @@ import dev.datlag.mimasu.extension.show.StreamCallback
 import dev.datlag.tooling.scopeCatching
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.util.concurrent.ConcurrentHashMap
 
 internal class ShowService(context: Context) : AIDLService<IShowInfoProvider>(context) {
     override val connectionAction: String = ACTION
 
-    private val mappedIds by atomic<MutableMap<Int, Int>>(mutableMapOf())
+    private val mappedIds = ConcurrentHashMap<Int, Int>()
 
     override fun bind(service: IBinder?): IShowInfoProvider? {
         return scopeCatching {

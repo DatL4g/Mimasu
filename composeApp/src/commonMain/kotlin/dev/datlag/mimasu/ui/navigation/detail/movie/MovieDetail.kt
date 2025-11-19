@@ -1,5 +1,6 @@
 package dev.datlag.mimasu.ui.navigation.detail.movie
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisbanes.haze.HazeState
@@ -28,6 +31,8 @@ import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.ui.custom.ErrorState
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieToolbar
 import dev.datlag.mimasu.ui.navigation.detail.movie.components.MovieWatchProviderFAB
+import dev.datlag.mimasu.ui.other.MovieState
+import dev.datlag.mimasu.ui.other.rememberMovieAvailability
 import dev.datlag.mimasu.ui.viewmodel.MovieViewModel
 import dev.datlag.mimasu.ui.viewmodel.accountViewModel
 import dev.datlag.mimasu.ui.viewmodel.kodeinViewModel
@@ -53,6 +58,10 @@ fun MovieDetail(
     val haze = remember { HazeState() }
     val listState = rememberLazyListState()
     val snackbarState = remember { SnackbarHostState() }
+    val movieAvailability = rememberMovieAvailability(
+        movie = movieState.getOrNull(),
+        initial = initial
+    )
 
     BackHandler(enabled = true) {
         onBack()
@@ -77,10 +86,22 @@ fun MovieDetail(
             )
         },
         floatingActionButton = {
-            MovieWatchProviderFAB(
-                movie = movieState.getOrNull(),
-                onWatchClick = onWatchClick
-            )
+            when (movieAvailability) {
+                is MovieState.Available -> {
+                    if (movieAvailability.state) {
+                        Text("Movie Available", modifier = Modifier.background(Color.Red), color = Color.White)
+                    } else {
+                        MovieWatchProviderFAB(
+                            movie = movieState.getOrNull(),
+                            onWatchClick = onWatchClick
+                        )
+                    }
+                }
+                else -> MovieWatchProviderFAB(
+                    movie = movieState.getOrNull(),
+                    onWatchClick = onWatchClick
+                )
+            }
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarState)
