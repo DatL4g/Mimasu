@@ -1,6 +1,7 @@
 package dev.datlag.mimasu.ui.other
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.intl.Locale
@@ -19,8 +20,12 @@ import dev.datlag.mimasu.extension.model.Movie as Extension
 actual fun rememberMovieAvailability(
     movie: Movie?,
     initial: IMovie?
-): MovieState = with(localDI()) {
-    if (movie == null && initial == null) return MovieState.Unavailable
+): MovieStream = with(localDI()) {
+    if (movie == null && initial == null) return MovieStream(
+        state = MovieState.Unavailable,
+        provider = null,
+        tmdbId = null
+    )
 
     val context = LocalContext.current
     val singletonProvider by instanceOrNull<MovieProvider>()
@@ -32,9 +37,12 @@ actual fun rememberMovieAvailability(
         (movieProvider as? MovieProviderAndroid)?.rebindIfNoneAvailable(context)
     }
 
-    val request = remember(movie, initial) {
+    val tmdbId = remember(movie?.id, initial?.id) {
+        movie?.id?.takeIf { it > 0 } ?: initial?.id
+    }
+    val request = remember(movie, initial, tmdbId) {
         Extension.Request(
-            tmdbId = movie?.id?.takeIf { it > 0 } ?: initial?.id,
+            tmdbId = tmdbId,
             imdbId = movie?.imdbId?.ifBlank { null },
             wikidataId = movie?.externalIDs?.wikidataId?.ifBlank { null },
             title = movie?.title?.ifBlank { null } ?: initial?.title?.ifBlank { null },
@@ -45,9 +53,17 @@ actual fun rememberMovieAvailability(
         )
     }
 
-    return produceVirtualIOState<MovieState>(initialValue = MovieState.Initializing, request) {
+    val state by produceVirtualIOState<MovieState>(initialValue = MovieState.Initializing, request) {
         val anyWatchProvider = movieProvider.requestId(request)
 
         value = MovieState.Available(anyWatchProvider)
-    }.value
+    }
+
+    return remember(state, movieProvider, tmdbId) {
+        MovieStream(
+            state = state,
+            provider = movieProvider,
+            tmdbId = tmdbId
+        )
+    }
 }

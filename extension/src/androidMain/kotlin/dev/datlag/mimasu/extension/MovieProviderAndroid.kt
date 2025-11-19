@@ -72,4 +72,14 @@ class MovieProviderAndroid(private val context: Context) : MovieProvider {
             }.getOrNull()
         } }.awaitAll().filterNotNull().any { it }
     }
+
+    override suspend fun requestStream(tmdbId: Int): Movie.Response? = coroutineScope {
+        return@coroutineScope boundServices.map { async {
+            suspendCatching {
+                it.requestStream(tmdbId)
+            }.getOrNull()
+        } }.awaitAll().filterNotNull().fold(Movie.Response()) { left, right ->
+            left + right
+        }.takeUnless { it.isEmpty() }
+    }
 }

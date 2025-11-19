@@ -58,7 +58,7 @@ fun MovieDetail(
     val haze = remember { HazeState() }
     val listState = rememberLazyListState()
     val snackbarState = remember { SnackbarHostState() }
-    val movieAvailability = rememberMovieAvailability(
+    val movieStream = rememberMovieAvailability(
         movie = movieState.getOrNull(),
         initial = initial
     )
@@ -86,18 +86,10 @@ fun MovieDetail(
             )
         },
         floatingActionButton = {
-            when (movieAvailability) {
-                is MovieState.Available -> {
-                    if (movieAvailability.state) {
-                        Text("Movie Available", modifier = Modifier.background(Color.Red), color = Color.White)
-                    } else {
-                        MovieWatchProviderFAB(
-                            movie = movieState.getOrNull(),
-                            onWatchClick = onWatchClick
-                        )
-                    }
-                }
-                else -> MovieWatchProviderFAB(
+            if (movieStream.isAvailable) {
+                Text("Movie Available", modifier = Modifier.background(Color.Red), color = Color.White)
+            } else {
+                MovieWatchProviderFAB(
                     movie = movieState.getOrNull(),
                     onWatchClick = onWatchClick
                 )

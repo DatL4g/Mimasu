@@ -5,4 +5,4 @@ import dev.datlag.mimasu.tmdb.model.details.Movie
 import dev.datlag.mimasu.tmdb.model.Movie as IMovie
 
 @Composable
-expect fun rememberMovieAvailability(movie: Movie?, initial: IMovie?): MovieState
+expect fun rememberMovieAvailability(movie: Movie?, initial: IMovie?): MovieStream

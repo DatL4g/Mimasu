@@ -6,4 +6,5 @@ interface MovieProvider {
 
     suspend fun initialize()
     suspend fun requestId(request: Movie.Request): Boolean
+    suspend fun requestStream(tmdbId: Int): Movie.Response?
 }
